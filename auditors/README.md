@@ -54,6 +54,12 @@ After a full review passes, create an **EAS offchain attestation** (ERC-8176 sch
 
 - Go to [Ethereum Attestation Service](https://easscan.org/schema/view/0xe023eef113c1670774801c34b377fdf612dd8a4d2fa92fe382e15bd91fafb5c2), select 'Attest with schema' and use 'Offchain'
 
+- Copy and save the raw attestation data on EAS as json file and submit it via PR to the registry at:
+
+```
+registry/<project>/sigs/<descriptorname>.eip155-1-0xYourAddress.json
+```
+If a sig folder does not exist, create one.
 
 ---
 
