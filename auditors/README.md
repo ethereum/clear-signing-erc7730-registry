@@ -37,23 +37,12 @@ Run the descriptor through the Tester tool to simulate transactions and confirm 
 
 After a full review passes, create an **EAS offchain attestation** (ERC-8176 schema):
 
-```json
-{
-  "$type": "8176/v1",
-  "descriptorHash": "0x...",
-  "attester": "eip155:1:0xYourAddress",
-  "attesterType": "EOA",
-  "issuedAt": <unix timestamp>,
-  "expiresAt": null,
-  "signature": "0x..."
-}
-```
 - Calculate the descriptor hash
 
 `descriptorHash = keccak256(RFC 8785 JCS-canonicalized descriptor JSON)` — do not hash raw file bytes.
 
 - Go to [Ethereum Attestation Service](https://easscan.org/schema/view/0xe023eef113c1670774801c34b377fdf612dd8a4d2fa92fe382e15bd91fafb5c2), select 'Attest with schema' and use 'Offchain'
-
+- Sign the attestation
 - Copy and save the raw attestation data on EAS as json file and submit it via PR to the registry at:
 
 ```
