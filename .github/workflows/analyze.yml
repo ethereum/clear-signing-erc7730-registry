@@ -61,26 +61,32 @@ jobs:
 
     steps:
       - name: Checkout PR branch
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ github.head_ref || github.ref }}
 
       - name: Get changed calldata files
         id: changed-files
-        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46.0.5
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
         with:
           files: |
             registry/**/calldata-*.json
 
       - name: Set up uv
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: astral-sh/setup-uv@803947b9bd8e9f986429fa0c5a41c367cd732b41 # v7.2.1
+        uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v8.0.0
 
       - name: Run analysis
         if: steps.changed-files.outputs.any_changed == 'true'
         id: analyze
         env:
           SERVICE_URL: ${{ vars.ANALYZER_SERVICE_URL }}
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          ANALYSIS_MODE: ${{ inputs.analysis_mode || 'multi' }}
+          MODEL: ${{ inputs.model || 'gpt-5.4' }}
+          REASONING_EFFORT: ${{ inputs.reasoning_effort || 'high' }}
+          ENABLE_SCREENSHOTS: ${{ inputs.enable_screenshots || 'true' }}
+          SCREENSHOT_DEVICE: ${{ inputs.screenshot_device || 'stax' }}
         run: |
           set -euo pipefail
 
@@ -101,7 +107,7 @@ jobs:
           CRITICALS=0
           FAILURES=0
 
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+          for file in $CHANGED_FILES; do
             echo "::group::📋 Analyzing $file"
             TOTAL=$((TOTAL + 1))
 
@@ -113,15 +119,15 @@ jobs:
               --service-url "$SERVICE_URL"
               --descriptor "$file"
               --output-dir "$OUTDIR"
-              --analysis-mode "${{ inputs.analysis_mode || 'multi' }}"
-              --model "${{ inputs.model || 'gpt-5.4' }}"
-              --reasoning-effort "${{ inputs.reasoning_effort || 'high' }}"
+              --analysis-mode "$ANALYSIS_MODE"
+              --model "$MODEL"
+              --reasoning-effort "$REASONING_EFFORT"
               --verbose
             )
 
-            if [ "${{ inputs.enable_screenshots || 'true' }}" = "true" ]; then
+            if [ "$ENABLE_SCREENSHOTS" = "true" ]; then
               ARGS+=(--enable-screenshots)
-              ARGS+=(--screenshot-device "${{ inputs.screenshot_device || 'stax' }}")
+              ARGS+=(--screenshot-device "$SCREENSHOT_DEVICE")
             else
               ARGS+=(--no-screenshots)
             fi
@@ -225,7 +231,7 @@ jobs:
 
       - name: Upload reports
         if: always() && steps.changed-files.outputs.any_changed == 'true'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: analysis-reports
           path: output/
@@ -233,14 +239,17 @@ jobs:
 
       - name: Add reports to job summary
         if: always() && steps.changed-files.outputs.any_changed == 'true'
+        env:
+          TOTAL: ${{ steps.analyze.outputs.total || '0' }}
+          RESULTS: ${{ steps.aggregate.outputs.results }}
         run: |
           SUMMARY=$(mktemp)
           {
             echo "## 📊 ERC-7730 Analysis Results"
             echo ""
-            echo "**Descriptors analyzed:** ${{ steps.analyze.outputs.total || '0' }}"
+            echo "**Descriptors analyzed:** $TOTAL"
             echo ""
-            echo -e "${{ steps.aggregate.outputs.results }}"
+            echo -e "$RESULTS"
 
             for f in output/*/CRITICALS_*.md; do
               [ -f "$f" ] || continue
@@ -264,14 +273,19 @@ jobs:
       - name: Post summary to PR
         if: always() && steps.changed-files.outputs.any_changed == 'true'
         continue-on-error: true
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          HAS_CRITICALS: ${{ steps.aggregate.outputs.has_criticals }}
+          TOTAL: ${{ steps.analyze.outputs.total }}
+          FAILURES: ${{ steps.analyze.outputs.failures }}
+          RESULTS: ${{ steps.aggregate.outputs.results }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const hasCriticals = '${{ steps.aggregate.outputs.has_criticals }}' === 'true';
-            const total = '${{ steps.analyze.outputs.total }}' || '0';
-            const failures = '${{ steps.analyze.outputs.failures }}' || '0';
-            const results = `${{ steps.aggregate.outputs.results }}`.trim();
+            const hasCriticals = process.env.HAS_CRITICALS === 'true';
+            const total = process.env.TOTAL || '0';
+            const failures = process.env.FAILURES || '0';
+            const results = (process.env.RESULTS || '').trim();
 
             const marker = '<!-- erc7730-analysis-bot -->';
             let body = `${marker}\n`;
@@ -344,8 +358,10 @@ jobs:
 
       - name: Block merge if critical issues found
         if: always() && steps.changed-files.outputs.any_changed == 'true'
+        env:
+          HAS_CRITICALS: ${{ steps.aggregate.outputs.has_criticals }}
         run: |
-          if [ "${{ steps.aggregate.outputs.has_criticals }}" = "true" ]; then
+          if [ "$HAS_CRITICALS" = "true" ]; then
             echo "::error::❌ BLOCKING MERGE — Critical issues detected in one or more descriptors"
             exit 1
           fi

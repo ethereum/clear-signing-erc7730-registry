@@ -63,7 +63,7 @@ jobs:
 
       - name: Upload PR metadata
         if: steps.check.outputs.is_fork == 'true' && steps.check.outputs.can_run_tests == 'false'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: pr-metadata
           path: pr-metadata.json
@@ -78,13 +78,13 @@ jobs:
       has_tests: ${{ steps.detect.outputs.has_tests }}
       test_matrix: ${{ steps.detect.outputs.test_matrix }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
         with:
           # For pull_request_target, checkout the PR head
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Checkout base scripts
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
         with:
           ref: ${{ github.event.pull_request.base.sha }}
           path: base-scripts
@@ -92,7 +92,7 @@ jobs:
 
       - name: Get changed descriptor files
         id: changed-files
-        uses: tj-actions/changed-files@v47
+        uses: tj-actions/changed-files@v47.0.5
         with:
           files: |
             registry/**/calldata-*.json
@@ -146,20 +146,20 @@ jobs:
         device: [flex]
     steps:
       - name: Checkout registry
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           path: registry
 
       - name: Checkout base scripts
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
         with:
           ref: ${{ github.event.pull_request.base.sha }}
           path: base-scripts
           sparse-checkout: .github/scripts
 
       - name: Checkout device-management-kit
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
         with:
           repository: ${{ env.DMK_REPO }}
           ref: ${{ env.DMK_REF }}
@@ -189,7 +189,7 @@ jobs:
           repositories: coin-apps
 
       - name: Checkout coin-apps
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
         with:
           repository: LedgerHQ/coin-apps
           ref: master
@@ -211,10 +211,11 @@ jobs:
       - name: Resolve descriptor includes
         env:
           DESCRIPTOR: ${{ matrix.test.descriptor }}
+          WORKSPACE: ${{ github.workspace }}
         run: |
-          node "${{ github.workspace }}/base-scripts/.github/scripts/resolve-erc7730-includes.js" \
-            "${{ github.workspace }}/registry/$DESCRIPTOR" \
-            "${{ github.workspace }}/test-inputs/resolved-descriptor.json"
+          node "$WORKSPACE/base-scripts/.github/scripts/resolve-erc7730-includes.js" \
+            "$WORKSPACE/registry/$DESCRIPTOR" \
+            "$WORKSPACE/test-inputs/resolved-descriptor.json"
 
       - name: Run clear signing tests
         id: run-tests
@@ -223,14 +224,17 @@ jobs:
           FORCE_COLOR: "0"
           GATING_TOKEN: ${{ secrets.GATING_TOKEN }}
           COIN_APPS_PATH: "${{ github.workspace }}/coin-apps"
+          WORKSPACE: ${{ github.workspace }}
+          TEST_TYPE: ${{ matrix.test.test_type }}
+          DEVICE: ${{ matrix.device }}
         run: |
-          CMD=$([[ "${{ matrix.test.test_type }}" == "calldata" ]] && echo "raw-file" || echo "typed-data-file")
+          CMD=$([[ "$TEST_TYPE" == "calldata" ]] && echo "raw-file" || echo "typed-data-file")
 
           set +e
-          pnpm cs-tester cli $CMD "${{ github.workspace }}/test-inputs/tests.json" \
-            --device ${{ matrix.device }} \
-            --erc7730-files "${{ github.workspace }}/test-inputs/resolved-descriptor.json" \
-            --screenshot-folder-path "${{ github.workspace }}/screenshots" \
+          pnpm cs-tester cli $CMD "$WORKSPACE/test-inputs/tests.json" \
+            --device "$DEVICE" \
+            --erc7730-files "$WORKSPACE/test-inputs/resolved-descriptor.json" \
+            --screenshot-folder-path "$WORKSPACE/screenshots" \
             --log-level info 2>&1 | tee test-output.log
           EXIT_CODE=${PIPESTATUS[0]}
           echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
@@ -238,11 +242,15 @@ jobs:
       - name: Write job summary
         if: always()
         working-directory: dmk
+        env:
+          ENTITY: ${{ matrix.test.entity }}
+          DESCRIPTOR_NAME: ${{ matrix.test.descriptor_name }}
+          DEVICE: ${{ matrix.device }}
+          EXIT_CODE: ${{ steps.run-tests.outputs.exit_code }}
         run: |
-          echo "## ${{ matrix.test.entity }} / ${{ matrix.test.descriptor_name }} (${{ matrix.device }})" >> $GITHUB_STEP_SUMMARY
+          echo "## $ENTITY / $DESCRIPTOR_NAME ($DEVICE)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          EXIT_CODE="${{ steps.run-tests.outputs.exit_code }}"
           if [ "$EXIT_CODE" == "0" ]; then
             echo "✅ **All tests passed (clear signed)**" >> $GITHUB_STEP_SUMMARY
           else
@@ -257,10 +265,12 @@ jobs:
 
       - name: Upload screenshots
         if: always()
+        env:
+          EXIT_CODE: ${{ steps.run-tests.outputs.exit_code }}
         run: |
           # Save exit code for PR comment
-          echo "${{ steps.run-tests.outputs.exit_code }}" > screenshots/exit_code.txt
-      - uses: actions/upload-artifact@v7
+          echo "$EXIT_CODE" > screenshots/exit_code.txt
+      - uses: actions/upload-artifact@v7.0.1
         if: always()
         with:
           name: screenshots-${{ matrix.device }}-${{ matrix.test.entity }}-${{ matrix.test.descriptor_name }}
@@ -269,7 +279,7 @@ jobs:
 
       - name: Upload logs
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: logs-${{ matrix.device }}-${{ matrix.test.entity }}-${{ matrix.test.descriptor_name }}
           path: dmk/test-output.log
@@ -286,7 +296,7 @@ jobs:
           path: artifacts
 
       - name: Post PR comment
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9.0.0
         with:
           script: |
             const fs = require('fs');
@@ -338,13 +348,13 @@ jobs:
     if: needs.check-permissions.outputs.can_run_tests == 'true' && needs.detect-tests.outputs.has_tests == 'false'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Check for changed descriptors
         id: check
-        uses: tj-actions/changed-files@v47
+        uses: tj-actions/changed-files@v47.0.5
         with:
           files: |
             registry/**/calldata-*.json
@@ -353,7 +363,7 @@ jobs:
 
       - name: Post comment
         if: steps.check.outputs.any_changed == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9.0.0
         with:
           script: |
             const body = `## Clear Signing Tests\n\n> ℹNo test files found for the changed descriptors.\n\nCreate a test file at \`registry/<entity>/tests/<descriptor-name>.tests.json\`\n\nSee [testing documentation](../blob/master/README.md#reference-test-cases) for details.`;
