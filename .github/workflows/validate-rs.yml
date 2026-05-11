@@ -1,0 +1,61 @@
+name: Validate with clear-signing-rs
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "clear-signing ref to test against (branch, tag, or full SHA)"
+        required: false
+        default: "main"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout registry
+        uses: actions/checkout@v4
+        with:
+          path: registry
+          persist-credentials: false
+
+      - name: Checkout clear-signing
+        uses: actions/checkout@v4
+        with:
+          repository: llbartekll/clear-signing
+          ref: ${{ inputs.ref }}
+          path: clear-signing
+          persist-credentials: false
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: clear-signing
+
+      - name: Build cs-test
+        working-directory: clear-signing
+        run: cargo build -p cs-test --release
+
+      - name: Run cs-test on aave/calldata-lpv2
+        id: run
+        working-directory: clear-signing
+        run: |
+          set -o pipefail
+          ./target/release/cs-test run \
+            "${GITHUB_WORKSPACE}/registry/registry/aave/shared-tests/calldata-lpv2.tests.json" \
+            | tee "${GITHUB_WORKSPACE}/cs-test-report.md"
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cs-test-report
+          path: cs-test-report.md
+          if-no-files-found: warn
