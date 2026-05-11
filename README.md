@@ -1,6 +1,6 @@
 # ERC-7730 (Clear Signing Metadata) Registry
 
-The objective of ERC-7730 is to establish a standardized method for clear signing contracts and messages on EVM chains, by offering metadata formatting that complements ABIs and message types. To learn more about the ERC-7730 standard, visit [Ledger Developer Portal](https://developers.ledger.com/docs/clear-signing/erc7730).
+The objective of ERC-7730 is to establish a standardized method for clear signing contracts and messages on EVM chains, by offering metadata formatting that complements ABIs and message types. To learn more about the ERC-7730 standard, available tooling and adoption, visit [Clearsigning.org](https://clearsigning.org).
 
 This repository maintains records of past and current metadata files in the `registry` directory.
 
@@ -31,16 +31,15 @@ ercs/
 
 ## Submission Process
 
-- Submit the files through a pull request to this registry repository, following the requirements below.
-- After your PR is accepted, the submitted files are automatically imported in the Ledger Cryptoassets list, which allows users to clear sign.
+- Submit the files through a pull request to this registry repository.
+- See https://ethereum.org/developers/tutorials/clear-signing.
 
 ## Pull Request content requirements
 
-- The PR is submitted by a user whose email matches the entity's name.
 - Each PR modifies **only one entity**, meaning it affects only one sub-folder within the top-level `registry` directory.
 - Each entity folder includes **at least one file that is compatible with ERC-7730**, located at the root of the entity's folder.
 - All ERC-7730 compatible files are prefixed with either `calldata` for smart contracts or `eip712` for EIP-712 messages.
-- All ERC-7730 compatible files are correctly validated against the schema file located at `specs/erc7730-v1.schema.json`.
+- All ERC-7730 compatible files are correctly validated against the schema file located at `specs/erc7730-v2.schema.json`.
 - Do not use the `calldata` or `eip712` prefixes for common files which are included by the ERC-7730 files and placed at the top level of the entity folder.
 
 ## How to validate
