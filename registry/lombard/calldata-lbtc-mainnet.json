@@ -1,0 +1,125 @@
+{
+  "$schema": "https://github.com/LedgerHQ/clear-signing-erc7730-registry/blob/master/specs/erc7730-v2.schema.json",
+  "context": { "$id": "LBTC", "contract": { "deployments": [{ "chainId": 1, "address": "0x8236a87084f8b84306f72007f36f2618a5634494" }] } },
+  "metadata": { "owner": "Lombard Finance", "info": { "url": "https://www.lombard.finance/" }, "contractName": "LBTC" },
+  "display": {
+    "formats": {
+      "approve(address spender, uint256 value)": {
+        "$id": "approve",
+        "intent": "Approve",
+        "fields": [
+          {
+            "path": "value",
+            "label": "Amount to Approve",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "burn(uint256 amount)": {
+        "$id": "burn",
+        "intent": "Burn",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to Burn",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          }
+        ]
+      },
+      "mint(bytes rawPayload, bytes proof)": {
+        "$id": "mint",
+        "intent": "Mint",
+        "fields": [
+          { "path": "rawPayload", "label": "Payload", "format": "raw", "visible": "always" },
+          { "path": "proof", "label": "Proof", "format": "raw", "visible": "always" }
+        ]
+      },
+      "permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s)": {
+        "$id": "permit",
+        "intent": "Permit",
+        "fields": [
+          { "path": "owner", "label": "Owner", "format": "addressName", "params": { "types": ["eoa", "wallet"] }, "visible": "always" },
+          {
+            "path": "spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] },
+            "visible": "always"
+          },
+          { "path": "value", "label": "Allowance", "format": "tokenAmount", "params": { "tokenPath": "@.to" }, "visible": "always" },
+          { "path": "deadline", "label": "Valid Until", "format": "date", "params": { "encoding": "timestamp" } },
+          { "label": "V", "path": "v", "visible": "never" },
+          { "label": "R", "path": "r", "visible": "never" },
+          { "label": "S", "path": "s", "visible": "never" }
+        ]
+      },
+      "redeem(uint256 amount)": {
+        "$id": "redeem",
+        "intent": "Redeem",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to Redeem",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          }
+        ]
+      },
+      "redeemForBtc(bytes scriptPubkey, uint256 amount)": {
+        "$id": "redeemForBtc",
+        "intent": "Redeem BTC",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to Burn",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          { "path": "scriptPubkey", "label": "ScriptPubKey (BTC)", "format": "raw", "visible": "always" }
+        ]
+      },
+      "transfer(address to, uint256 value)": {
+        "$id": "transfer(address,uint256)",
+        "intent": "Send",
+        "fields": [
+          {
+            "path": "value",
+            "label": "Amount to Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          { "path": "to", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"] }, "visible": "always" }
+        ]
+      },
+      "transferFrom(address from, address to, uint256 value)": {
+        "$id": "transferFrom",
+        "intent": "Transfer",
+        "fields": [
+          {
+            "path": "value",
+            "label": "Amount to Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          { "path": "from", "label": "From", "format": "addressName", "params": { "types": ["eoa", "wallet"] }, "visible": "always" },
+          { "path": "to", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"] }, "visible": "always" }
+        ]
+      }
+    }
+  }
+}

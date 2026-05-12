@@ -1,0 +1,130 @@
+{
+  "$schema": "https://github.com/LedgerHQ/clear-signing-erc7730-registry/blob/master/specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Celo Governance",
+    "contract": {
+      "deployments": [
+        { "chainId": 42220, "address": "0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972" },
+        { "chainId": 44787, "address": "0xAA963FC97281d9632d96700aB62A4D1340F9a28a" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Celo",
+    "info": { "url": "https://celo.org/" },
+    "enums": { "ProposalsVoteValue": { "0": "None", "1": "Abstain", "2": "No", "3": "Yes" } },
+    "contractName": "Celo Governance"
+  },
+  "display": {
+    "formats": {
+      "approve(uint256 proposalId, uint256 index)": {
+        "$id": "approve(uint256,uint256)",
+        "intent": "Approve",
+        "fields": [
+          { "path": "proposalId", "label": "Proposal ID", "format": "raw", "visible": "always" },
+          { "path": "index", "label": "Item Index", "format": "raw", "visible": "always" }
+        ]
+      },
+      "dequeueProposalsIfReady()": { "$id": "dequeueProposalsIfReady", "intent": "Dequeue Proposals", "fields": [] },
+      "execute(uint256 proposalId, uint256 index)": {
+        "$id": "execute",
+        "intent": "Execute Proposal",
+        "fields": [
+          { "path": "proposalId", "label": "Proposal ID", "format": "raw", "visible": "always" },
+          { "label": "Index", "path": "index", "visible": "never" }
+        ]
+      },
+      "executeHotfix(uint256[] values, address[] destinations, bytes data, uint256[] dataLengths, bytes32 salt)": {
+        "$id": "executeHotfix",
+        "intent": "Execute Hotfix",
+        "fields": [
+          { "path": "values.[]", "label": "CELO to Send", "format": "amount" },
+          { "path": "destinations.[]", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "label": "Data", "path": "data", "visible": "never" },
+          { "label": "Data Lengths", "path": "dataLengths", "visible": "never" },
+          { "label": "Salt", "path": "salt", "visible": "never" }
+        ]
+      },
+      "prepareHotfix(bytes32 hash)": {
+        "$id": "prepareHotfix",
+        "intent": "Prepare Hotfix",
+        "fields": [{ "path": "hash", "label": "Hotfix Hash", "format": "raw", "visible": "always" }]
+      },
+      "propose(uint256[] values, address[] destinations, bytes data, uint256[] dataLengths, string descriptionUrl)": {
+        "$id": "propose",
+        "intent": "Propose",
+        "fields": [
+          { "path": "values.[]", "label": "Amount to Send", "format": "amount" },
+          { "path": "destinations.[]", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "@.value", "label": "Deposit", "format": "amount", "visible": "always" },
+          { "path": "descriptionUrl", "label": "Description URL", "format": "raw" },
+          { "label": "Data", "path": "data", "visible": "never" },
+          { "label": "Data Lengths", "path": "dataLengths", "visible": "never" }
+        ]
+      },
+      "revokeUpvote(uint256 lesser, uint256 greater)": {
+        "$id": "revokeUpvote",
+        "intent": "Revoke Upvote",
+        "fields": [{ "label": "Lesser", "path": "lesser", "visible": "never" }, { "label": "Greater", "path": "greater", "visible": "never" }]
+      },
+      "revokeVotes()": {
+        "$id": "revokeVotes",
+        "intent": "Revoke Votes",
+        "fields": [
+          {
+            "path": "@.from",
+            "label": "Signing Address",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "value": "Revoke votes on all your proposals that are currently in the referendum stage.",
+            "label": "Summary",
+            "format": "raw"
+          }
+        ]
+      },
+      "upvote(uint256 proposalId, uint256 lesser, uint256 greater)": {
+        "$id": "upvote",
+        "intent": "Upvote",
+        "fields": [
+          { "path": "proposalId", "label": "Proposal ID", "format": "raw", "visible": "always" },
+          { "label": "Lesser", "path": "lesser", "visible": "never" },
+          { "label": "Greater", "path": "greater", "visible": "never" }
+        ]
+      },
+      "vote(uint256 proposalId, uint256 index, uint8 value)": {
+        "$id": "vote",
+        "intent": "Vote",
+        "fields": [
+          { "path": "proposalId", "label": "Proposal ID", "format": "raw", "visible": "always" },
+          {
+            "path": "value",
+            "label": "Vote",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.ProposalsVoteValue" },
+            "visible": "always"
+          },
+          { "label": "Index", "path": "index", "visible": "never" }
+        ]
+      },
+      "votePartially(uint256 proposalId, uint256 index, uint256 yesVotes, uint256 noVotes, uint256 abstainVotes)": {
+        "$id": "votePartially",
+        "intent": "Partial Vote",
+        "fields": [
+          { "path": "proposalId", "label": "Proposal ID", "format": "raw", "visible": "always" },
+          { "path": "yesVotes", "label": "Yes Votes", "format": "raw", "visible": "always" },
+          { "path": "noVotes", "label": "No Votes", "format": "raw", "visible": "always" },
+          { "path": "abstainVotes", "label": "Abstain Votes", "format": "raw", "visible": "always" },
+          { "label": "Index", "path": "index", "visible": "never" }
+        ]
+      },
+      "withdraw()": {
+        "$id": "withdraw",
+        "intent": "Withdraw",
+        "fields": [{ "path": "@.from", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"] }, "visible": "always" }]
+      }
+    }
+  }
+}

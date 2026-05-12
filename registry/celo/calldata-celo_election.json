@@ -1,0 +1,117 @@
+{
+  "$schema": "https://github.com/LedgerHQ/clear-signing-erc7730-registry/blob/master/specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Celo Election",
+    "contract": {
+      "deployments": [
+        { "chainId": 42220, "address": "0x8D6677192144292870907E3Fa8A5527fE55A7ff6" },
+        { "chainId": 44787, "address": "0x1c3eDf937CFc2F6F51784D20DEB1af1F9a8655fA" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Celo", "info": { "url": "https://celo.org/" }, "contractName": "Celo Election" },
+  "display": {
+    "formats": {
+      "activate(address group)": {
+        "$id": "activate",
+        "intent": "Activate",
+        "fields": [
+          {
+            "path": "group",
+            "label": "Validator Group",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          },
+          { "path": "@.from", "label": "Vote signer", "format": "addressName", "params": { "types": ["eoa"] }, "visible": "always" }
+        ]
+      },
+      "activateForAccount(address group, address account)": {
+        "$id": "activateForAccount",
+        "intent": "Activate Votes",
+        "fields": [
+          {
+            "path": "group",
+            "label": "Validator Group",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "account",
+            "label": "Account",
+            "format": "addressName",
+            "params": { "types": ["contract", "eoa"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "revokeActive(address group, uint256 value, address lesser, address greater, uint256 index)": {
+        "$id": "revokeActive",
+        "intent": "Revoke Votes",
+        "fields": [
+          {
+            "path": "group",
+            "label": "Validator Group",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          },
+          { "path": "value", "label": "Votes to Revoke", "format": "raw", "visible": "always" },
+          { "label": "Lesser", "path": "lesser", "visible": "never" },
+          { "label": "Greater", "path": "greater", "visible": "never" },
+          { "label": "Index", "path": "index", "visible": "never" }
+        ]
+      },
+      "revokeAllActive(address group, address lesser, address greater, uint256 index)": {
+        "$id": "revokeAllActive",
+        "intent": "Revoke Votes",
+        "fields": [
+          {
+            "path": "group",
+            "label": "Validator Group",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          },
+          { "label": "Lesser", "path": "lesser", "visible": "never" },
+          { "label": "Greater", "path": "greater", "visible": "never" },
+          { "label": "Index", "path": "index", "visible": "never" }
+        ]
+      },
+      "revokePending(address group, uint256 value, address lesser, address greater, uint256 index)": {
+        "$id": "revokePending",
+        "intent": "Revoke Votes",
+        "fields": [
+          { "path": "value", "label": "Votes to Revoke", "format": "raw", "visible": "always" },
+          {
+            "path": "group",
+            "label": "Validator Group",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          },
+          { "label": "Lesser", "path": "lesser", "visible": "never" },
+          { "label": "Greater", "path": "greater", "visible": "never" },
+          { "label": "Index", "path": "index", "visible": "never" }
+        ]
+      },
+      "vote(address group, uint256 value, address lesser, address greater)": {
+        "$id": "vote",
+        "intent": "Vote",
+        "fields": [
+          {
+            "path": "group",
+            "label": "Validator Group",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          },
+          { "path": "value", "label": "Gold to Vote", "format": "raw", "visible": "always" },
+          { "label": "Lesser", "path": "lesser", "visible": "never" },
+          { "label": "Greater", "path": "greater", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

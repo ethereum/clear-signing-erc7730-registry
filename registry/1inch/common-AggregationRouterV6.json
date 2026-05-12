@@ -1,8 +1,11 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "metadata": {
-    "owner": "1inch",
-    "info": { "url": "https://1inch.io/", "legalName": "1inch Network", "deploymentDate": "2024-02-12T03:44:35Z" },
+    "owner": "1inch Network",
+    "info": {
+      "url": "https://1inch.io/",
+      "deploymentDate": "2024-02-12T03:44:35Z"
+    },
     "enums": {
       "takerTraits": {
         "0": "None",
@@ -23,228 +26,576 @@
       "sendAmount": {
         "label": "Amount to Send",
         "format": "tokenAmount",
-        "params": { "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"] }
+        "params": {
+          "nativeCurrencyAddress": [
+            "$.metadata.constants.addressAsEth",
+            "$.metadata.constants.addressAsNull"
+          ]
+        }
       },
       "minReceiveAmount": {
         "label": "Minimum to Receive",
         "format": "tokenAmount",
-        "params": { "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"] }
+        "params": {
+          "nativeCurrencyAddress": [
+            "$.metadata.constants.addressAsEth",
+            "$.metadata.constants.addressAsNull"
+          ]
+        }
       },
       "makingAmount": {
         "label": "Order purchasing amt",
         "format": "tokenAmount",
-        "params": { "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"] }
+        "params": {
+          "nativeCurrencyAddress": [
+            "$.metadata.constants.addressAsEth",
+            "$.metadata.constants.addressAsNull"
+          ]
+        }
       },
       "takingAmount": {
         "label": "Order selling amount",
         "format": "tokenAmount",
-        "params": { "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"] }
+        "params": {
+          "nativeCurrencyAddress": [
+            "$.metadata.constants.addressAsEth",
+            "$.metadata.constants.addressAsNull"
+          ]
+        }
       },
       "fillAmount": {
         "label": "Amount to sell",
         "format": "tokenAmount",
-        "params": { "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"] }
+        "params": {
+          "nativeCurrencyAddress": [
+            "$.metadata.constants.addressAsEth",
+            "$.metadata.constants.addressAsNull"
+          ]
+        }
       },
       "takerTraits": {
         "format": "enum",
         "label": "Additional action",
-        "params": { "$ref": "$.metadata.enums.takerTraits" }
+        "params": {
+          "$ref": "$.metadata.enums.takerTraits"
+        }
       },
-      "beneficiary": { "label": "Beneficiary", "format": "addressName" },
-      "lastPool": { "label": "Last pool", "format": "addressName", "params": { "types": ["contract"] } },
-      "expirationTime": { "label": "Expiration time", "format": "date", "params": { "encoding": "timestamp" } }
+      "beneficiary": {
+        "label": "Beneficiary",
+        "format": "addressName"
+      },
+      "lastPool": {
+        "label": "Last pool",
+        "format": "addressName",
+        "params": {
+          "types": [
+            "contract"
+          ]
+        }
+      },
+      "expirationTime": {
+        "label": "Expiration time",
+        "format": "date",
+        "params": {
+          "encoding": "timestamp"
+        }
+      }
     },
     "formats": {
       "permitAndCall(bytes permit, bytes action)": {
         "$id": "permitAndCall",
         "intent": "Execute with permit",
         "fields": [
-          { "path": "action", "label": "Swap", "format": "calldata", "params": { "calleePath": "@.to" } }
-        ],
-        "required": ["action"],
-        "excluded": ["permit"]
+          {
+            "path": "action",
+            "label": "Swap",
+            "format": "calldata",
+            "params": {
+              "calleePath": "@.to"
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Permit",
+            "path": "permit",
+            "visible": "never"
+          }
+        ]
       },
       "swap(address executor, (address srcToken, address dstToken, address srcReceiver, address dstReceiver, uint256 amount, uint256 minReturnAmount, uint256 flags) desc, bytes data)": {
         "$id": "swap",
         "intent": "Swap",
         "fields": [
-          { "path": "desc.amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "desc.srcToken" } },
+          {
+            "path": "desc.amount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": {
+              "tokenPath": "desc.srcToken"
+            },
+            "visible": "always"
+          },
           {
             "path": "desc.minReturnAmount",
             "$ref": "$.display.definitions.minReceiveAmount",
-            "params": { "tokenPath": "desc.dstToken" }
+            "params": {
+              "tokenPath": "desc.dstToken"
+            },
+            "visible": "always"
           },
-          { "path": "desc.dstReceiver", "$ref": "$.display.definitions.beneficiary" }
-        ],
-        "required": ["desc.amount", "desc.minReturnAmount", "desc.dstReceiver"],
-        "excluded": ["executor", "desc.srcReceiver", "desc.flags", "data"]
+          {
+            "path": "desc.dstReceiver",
+            "$ref": "$.display.definitions.beneficiary",
+            "visible": "always"
+          },
+          {
+            "label": "Executor",
+            "path": "executor",
+            "visible": "never"
+          },
+          {
+            "label": "Desc Src Receiver",
+            "path": "desc.srcReceiver",
+            "visible": "never"
+          },
+          {
+            "label": "Desc Flags",
+            "path": "desc.flags",
+            "visible": "never"
+          },
+          {
+            "label": "Data",
+            "path": "data",
+            "visible": "never"
+          }
+        ]
       },
       "unoswap(uint256 token, uint256 amount, uint256 minReturn, uint256 dex)": {
         "$id": "unoswap",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "token.[-20:]" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "@.from", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "dex.[-20:]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amount", "minReturn", "@.from", "dex"]
+          {
+            "path": "amount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": {
+              "tokenPath": "token.[-20:]"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "visible": "always"
+          },
+          {
+            "path": "@.from",
+            "$ref": "$.display.definitions.beneficiary",
+            "visible": "always"
+          },
+          {
+            "path": "dex.[-20:]",
+            "$ref": "$.display.definitions.lastPool"
+          }
+        ]
       },
       "unoswap2(uint256 token, uint256 amount, uint256 minReturn, uint256 dex, uint256 dex2)": {
         "$id": "unoswap2",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "token.[-20:]" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "@.from", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "dex2.[-20:]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amount", "minReturn", "@.from", "dex2"],
-        "excluded": ["dex"]
+          {
+            "path": "amount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": {
+              "tokenPath": "token.[-20:]"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "visible": "always"
+          },
+          {
+            "path": "@.from",
+            "$ref": "$.display.definitions.beneficiary",
+            "visible": "always"
+          },
+          {
+            "path": "dex2.[-20:]",
+            "$ref": "$.display.definitions.lastPool"
+          },
+          {
+            "label": "Dex",
+            "path": "dex",
+            "visible": "never"
+          }
+        ]
       },
       "unoswap3(uint256 token, uint256 amount, uint256 minReturn, uint256 dex, uint256 dex2, uint256 dex3)": {
         "$id": "unoswap3",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "token.[-20:]" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "@.from", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "dex3.[-20:]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amount", "minReturn", "@.from", "dex3"],
-        "excluded": ["dex", "dex2"]
+          {
+            "path": "amount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": {
+              "tokenPath": "token.[-20:]"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "visible": "always"
+          },
+          {
+            "path": "@.from",
+            "$ref": "$.display.definitions.beneficiary",
+            "visible": "always"
+          },
+          {
+            "path": "dex3.[-20:]",
+            "$ref": "$.display.definitions.lastPool"
+          },
+          {
+            "label": "Dex",
+            "path": "dex",
+            "visible": "never"
+          },
+          {
+            "label": "Dex2",
+            "path": "dex2",
+            "visible": "never"
+          }
+        ]
       },
       "unoswapTo(uint256 to, uint256 token, uint256 amount, uint256 minReturn, uint256 dex)": {
         "$id": "unoswapTo",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "token.[-20:]" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "to.[-20:]", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "dex.[-20:]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amount", "minReturn", "to", "dex"]
+          {
+            "path": "amount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": {
+              "tokenPath": "token.[-20:]"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "visible": "always"
+          },
+          {
+            "path": "to.[-20:]",
+            "$ref": "$.display.definitions.beneficiary"
+          },
+          {
+            "path": "dex.[-20:]",
+            "$ref": "$.display.definitions.lastPool"
+          }
+        ]
       },
       "unoswapTo2(uint256 to, uint256 token, uint256 amount, uint256 minReturn, uint256 dex, uint256 dex2)": {
         "$id": "unoswapTo2",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "token.[-20:]" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "to.[-20:]", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "dex2.[-20:]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amount", "minReturn", "to", "dex2"],
-        "excluded": ["dex"]
+          {
+            "path": "amount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": {
+              "tokenPath": "token.[-20:]"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "visible": "always"
+          },
+          {
+            "path": "to.[-20:]",
+            "$ref": "$.display.definitions.beneficiary"
+          },
+          {
+            "path": "dex2.[-20:]",
+            "$ref": "$.display.definitions.lastPool"
+          },
+          {
+            "label": "Dex",
+            "path": "dex",
+            "visible": "never"
+          }
+        ]
       },
       "unoswapTo3(uint256 to, uint256 token, uint256 amount, uint256 minReturn, uint256 dex, uint256 dex2, uint256 dex3)": {
         "$id": "unoswapTo3",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "token.[-20:]" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "to.[-20:]", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "dex3.[-20:]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amount", "minReturn", "to", "dex3"],
-        "excluded": ["dex", "dex2"]
+          {
+            "path": "amount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": {
+              "tokenPath": "token.[-20:]"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "visible": "always"
+          },
+          {
+            "path": "to.[-20:]",
+            "$ref": "$.display.definitions.beneficiary"
+          },
+          {
+            "path": "dex3.[-20:]",
+            "$ref": "$.display.definitions.lastPool"
+          },
+          {
+            "label": "Dex",
+            "path": "dex",
+            "visible": "never"
+          },
+          {
+            "label": "Dex2",
+            "path": "dex2",
+            "visible": "never"
+          }
+        ]
       },
-      "ethUnoswap(uint256 minReturn, uint256 dex)" : {
+      "ethUnoswap(uint256 minReturn, uint256 dex)": {
         "$id": "ethUnoswap",
         "intent": "Swap",
         "fields": [
-          { "path": "@.value", "label": "Amount to Send", "format": "amount" },
-          { "path": "minReturn.[-20:]", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "@.from", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "dex.[-20:]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["minReturn", "@.value", "@.from", "dex"]
+          {
+            "path": "@.value",
+            "label": "Amount to Send",
+            "format": "amount",
+            "visible": "always"
+          },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "visible": "always"
+          },
+          {
+            "path": "@.from",
+            "$ref": "$.display.definitions.beneficiary",
+            "visible": "always"
+          },
+          {
+            "path": "dex.[-20:]",
+            "$ref": "$.display.definitions.lastPool"
+          }
+        ]
       },
-      "ethUnoswap2(uint256 minReturn, uint256 dex, uint256 dex2)" : {
+      "ethUnoswap2(uint256 minReturn, uint256 dex, uint256 dex2)": {
         "$id": "ethUnoswap2",
         "intent": "Swap",
         "fields": [
-          { "path": "@.value", "label": "Amount to Send", "format": "amount" },
-          { "path": "minReturn.[-20:]", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "@.from", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "dex2.[-20:]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["minReturn", "@.value", "@.from", "dex2"],
-        "excluded": ["dex"]
+          {
+            "path": "@.value",
+            "label": "Amount to Send",
+            "format": "amount",
+            "visible": "always"
+          },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "visible": "always"
+          },
+          {
+            "path": "@.from",
+            "$ref": "$.display.definitions.beneficiary",
+            "visible": "always"
+          },
+          {
+            "path": "dex2.[-20:]",
+            "$ref": "$.display.definitions.lastPool"
+          },
+          {
+            "label": "Dex",
+            "path": "dex",
+            "visible": "never"
+          }
+        ]
       },
-      "ethUnoswap3(uint256 minReturn, uint256 dex, uint256 dex2, uint256 dex3)" : {
+      "ethUnoswap3(uint256 minReturn, uint256 dex, uint256 dex2, uint256 dex3)": {
         "$id": "ethUnoswap3",
         "intent": "Swap",
         "fields": [
-          { "path": "@.value", "label": "Amount to Send", "format": "amount" },
-          { "path": "minReturn.[-20:]", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "@.from", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "dex3.[-20:]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["minReturn", "@.value", "@.from", "dex3"],
-        "excluded": ["dex", "dex2"]
+          {
+            "path": "@.value",
+            "label": "Amount to Send",
+            "format": "amount",
+            "visible": "always"
+          },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "visible": "always"
+          },
+          {
+            "path": "@.from",
+            "$ref": "$.display.definitions.beneficiary",
+            "visible": "always"
+          },
+          {
+            "path": "dex3.[-20:]",
+            "$ref": "$.display.definitions.lastPool"
+          },
+          {
+            "label": "Dex",
+            "path": "dex",
+            "visible": "never"
+          },
+          {
+            "label": "Dex2",
+            "path": "dex2",
+            "visible": "never"
+          }
+        ]
       },
-      "ethUnoswapTo(uint256 to, uint256 minReturn, uint256 dex)" : {
+      "ethUnoswapTo(uint256 to, uint256 minReturn, uint256 dex)": {
         "$id": "ethUnoswapTo",
         "intent": "Swap",
         "fields": [
-          { "path": "@.value", "label": "Amount to Send", "format": "amount" },
-          { "path": "minReturn.[-20:]", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "to.[-20:]", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "dex.[-20:]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["minReturn", "to", "@.value", "dex"]
+          {
+            "path": "@.value",
+            "label": "Amount to Send",
+            "format": "amount",
+            "visible": "always"
+          },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "visible": "always"
+          },
+          {
+            "path": "to.[-20:]",
+            "$ref": "$.display.definitions.beneficiary"
+          },
+          {
+            "path": "dex.[-20:]",
+            "$ref": "$.display.definitions.lastPool"
+          }
+        ]
       },
-      "ethUnoswapTo2(uint256 to, uint256 minReturn, uint256 dex, uint256 dex2)" : {
+      "ethUnoswapTo2(uint256 to, uint256 minReturn, uint256 dex, uint256 dex2)": {
         "$id": "ethUnoswapTo2",
         "intent": "Swap",
         "fields": [
-          { "path": "@.value", "label": "Amount to Send", "format": "amount" },
-          { "path": "minReturn.[-20:]", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "to.[-20:]", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "dex2.[-20:]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["minReturn", "to", "@.value", "dex2"],
-        "excluded": ["dex"]
+          {
+            "path": "@.value",
+            "label": "Amount to Send",
+            "format": "amount",
+            "visible": "always"
+          },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "visible": "always"
+          },
+          {
+            "path": "to.[-20:]",
+            "$ref": "$.display.definitions.beneficiary"
+          },
+          {
+            "path": "dex2.[-20:]",
+            "$ref": "$.display.definitions.lastPool"
+          },
+          {
+            "label": "Dex",
+            "path": "dex",
+            "visible": "never"
+          }
+        ]
       },
-      "ethUnoswapTo3(uint256 to, uint256 minReturn, uint256 dex, uint256 dex2, uint256 dex3)" : {
+      "ethUnoswapTo3(uint256 to, uint256 minReturn, uint256 dex, uint256 dex2, uint256 dex3)": {
         "$id": "ethUnoswapTo3",
         "intent": "Swap",
         "fields": [
-          { "path": "@.value", "label": "Amount to Send", "format": "amount" },
-          { "path": "minReturn.[-20:]", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "to.[-20:]", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "dex3.[-20:]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["minReturn", "to", "@.value", "dex3"],
-        "excluded": ["dex", "dex2"]
+          {
+            "path": "@.value",
+            "label": "Amount to Send",
+            "format": "amount",
+            "visible": "always"
+          },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "visible": "always"
+          },
+          {
+            "path": "to.[-20:]",
+            "$ref": "$.display.definitions.beneficiary"
+          },
+          {
+            "path": "dex3.[-20:]",
+            "$ref": "$.display.definitions.lastPool"
+          },
+          {
+            "label": "Dex",
+            "path": "dex",
+            "visible": "never"
+          },
+          {
+            "label": "Dex2",
+            "path": "dex2",
+            "visible": "never"
+          }
+        ]
       },
-      "cancelOrder(uint256 makerTraits, bytes32 orderHash)" : {
+      "cancelOrder(uint256 makerTraits, bytes32 orderHash)": {
         "$id": "cancelOrder",
-        "intent": "Cancel limit order",
+        "intent": "Cancel limit orders",
         "fields": [
-          { "path": "orderHash", "label": "Order", "format": "raw" }
-        ],
-        "required": ["orderHash"],
-        "excluded": ["makerTraits"]
+          {
+            "path": "orderHash",
+            "label": "Order",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "label": "Maker Traits",
+            "path": "makerTraits",
+            "visible": "never"
+          }
+        ]
       },
-      "cancelOrders(uint256[] makerTraits, bytes32[] orderHashes)" : {
+      "cancelOrders(uint256[] makerTraits, bytes32[] orderHashes)": {
         "$id": "cancelOrders",
         "intent": "Cancel limit orders",
         "fields": [
-          { "path": "orderHashes.[]", "label": "Order", "format": "raw" }
-        ],
-        "required": ["orderHashes"],
-        "excluded": ["makerTraits"]
+          {
+            "path": "orderHashes.[]",
+            "label": "Order",
+            "format": "raw"
+          },
+          {
+            "label": "Maker Traits",
+            "path": "makerTraits",
+            "visible": "never"
+          }
+        ]
       },
-      "increaseEpoch(uint96 series)" : {
+      "increaseEpoch(uint96 series)": {
         "$id": "increaseEpoch",
         "intent": "Cancel all limit orders",
         "fields": [
-          { "path": "@.from", "label": "Orders maker", "format": "raw" }
-        ],
-        "required": ["@.from"],
-        "excluded": ["series"]
+          {
+            "path": "@.from",
+            "label": "Orders maker",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "label": "Series",
+            "path": "series",
+            "visible": "never"
+          }
+        ]
       },
       "fillContractOrder((uint256 salt, uint256 maker, uint256 receiver, uint256 makerAsset, uint256 takerAsset, uint256 makingAmount, uint256 takingAmount, uint256 makerTraits) order, bytes signature, uint256 amount, uint256 takerTraits)": {
         "$id": "fillContractOrder",
@@ -253,22 +604,57 @@
           {
             "path": "order.takingAmount",
             "$ref": "$.display.definitions.takingAmount",
-            "params": { "tokenPath": "order.takerAsset" }
+            "params": {
+              "tokenPath": "order.takerAsset"
+            },
+            "visible": "always"
           },
           {
             "path": "order.makingAmount",
             "$ref": "$.display.definitions.makingAmount",
-            "params": { "tokenPath": "order.makerAsset" }
+            "params": {
+              "tokenPath": "order.makerAsset"
+            },
+            "visible": "always"
           },
           {
             "path": "amount",
             "$ref": "$.display.definitions.fillAmount",
-            "params": { "tokenPath": "order.takerAsset" }
+            "params": {
+              "tokenPath": "order.takerAsset"
+            },
+            "visible": "always"
           },
-          { "path": "takerTraits.[:1]", "$ref": "$.display.definitions.takerTraits" }
-        ],
-        "required": ["order.makingAmount", "order.makerAsset", "order.takingAmount", "order.takerAsset", "amount", "takerTraits"],
-        "excluded": ["signature", "order.salt", "order.maker", "order.receiver", "order.makerTraits"]
+          {
+            "path": "takerTraits.[:1]",
+            "$ref": "$.display.definitions.takerTraits"
+          },
+          {
+            "label": "Signature",
+            "path": "signature",
+            "visible": "never"
+          },
+          {
+            "label": "Order Salt",
+            "path": "order.salt",
+            "visible": "never"
+          },
+          {
+            "label": "Order Maker",
+            "path": "order.maker",
+            "visible": "never"
+          },
+          {
+            "label": "Order Receiver",
+            "path": "order.receiver",
+            "visible": "never"
+          },
+          {
+            "label": "Order Maker Traits",
+            "path": "order.makerTraits",
+            "visible": "never"
+          }
+        ]
       },
       "fillContractOrderArgs((uint256 salt, uint256 maker, uint256 receiver, uint256 makerAsset, uint256 takerAsset, uint256 makingAmount, uint256 takingAmount, uint256 makerTraits) order, bytes signature, uint256 amount, uint256 takerTraits, bytes args)": {
         "$id": "fillContractOrder",
@@ -277,22 +663,62 @@
           {
             "path": "order.takingAmount",
             "$ref": "$.display.definitions.takingAmount",
-            "params": { "tokenPath": "order.takerAsset" }
+            "params": {
+              "tokenPath": "order.takerAsset"
+            },
+            "visible": "always"
           },
           {
             "path": "order.makingAmount",
             "$ref": "$.display.definitions.makingAmount",
-            "params": { "tokenPath": "order.makerAsset" }
+            "params": {
+              "tokenPath": "order.makerAsset"
+            },
+            "visible": "always"
           },
           {
             "path": "amount",
             "$ref": "$.display.definitions.fillAmount",
-            "params": { "tokenPath": "order.takerAsset" }
+            "params": {
+              "tokenPath": "order.takerAsset"
+            },
+            "visible": "always"
           },
-          { "path": "takerTraits.[:1]", "$ref": "$.display.definitions.takerTraits" }
-        ],
-        "required": ["order.makingAmount", "order.makerAsset", "order.takingAmount", "order.takerAsset", "amount", "takerTraits"],
-        "excluded": ["signature", "args", "order.salt", "order.maker", "order.receiver", "order.makerTraits"]
+          {
+            "path": "takerTraits.[:1]",
+            "$ref": "$.display.definitions.takerTraits"
+          },
+          {
+            "label": "Signature",
+            "path": "signature",
+            "visible": "never"
+          },
+          {
+            "label": "Args",
+            "path": "args",
+            "visible": "never"
+          },
+          {
+            "label": "Order Salt",
+            "path": "order.salt",
+            "visible": "never"
+          },
+          {
+            "label": "Order Maker",
+            "path": "order.maker",
+            "visible": "never"
+          },
+          {
+            "label": "Order Receiver",
+            "path": "order.receiver",
+            "visible": "never"
+          },
+          {
+            "label": "Order Maker Traits",
+            "path": "order.makerTraits",
+            "visible": "never"
+          }
+        ]
       },
       "fillOrder((uint256 salt, uint256 maker, uint256 receiver, uint256 makerAsset, uint256 takerAsset, uint256 makingAmount, uint256 takingAmount, uint256 makerTraits) order, bytes32 r, bytes32 vs, uint256 amount, uint256 takerTraits)": {
         "$id": "fillContractOrder",
@@ -301,22 +727,62 @@
           {
             "path": "order.takingAmount",
             "$ref": "$.display.definitions.takingAmount",
-            "params": { "tokenPath": "order.takerAsset" }
+            "params": {
+              "tokenPath": "order.takerAsset"
+            },
+            "visible": "always"
           },
           {
             "path": "order.makingAmount",
             "$ref": "$.display.definitions.makingAmount",
-            "params": { "tokenPath": "order.makerAsset" }
+            "params": {
+              "tokenPath": "order.makerAsset"
+            },
+            "visible": "always"
           },
           {
             "path": "amount",
             "$ref": "$.display.definitions.fillAmount",
-            "params": { "tokenPath": "order.takerAsset" }
+            "params": {
+              "tokenPath": "order.takerAsset"
+            },
+            "visible": "always"
           },
-          { "path": "takerTraits.[:1]", "$ref": "$.display.definitions.takerTraits" }
-        ],
-        "required": ["order.makingAmount", "order.makerAsset", "order.takingAmount", "order.takerAsset", "amount", "takerTraits"],
-        "excluded": ["r", "vs", "order.salt", "order.maker", "order.receiver", "order.makerTraits"]
+          {
+            "path": "takerTraits.[:1]",
+            "$ref": "$.display.definitions.takerTraits"
+          },
+          {
+            "label": "R",
+            "path": "r",
+            "visible": "never"
+          },
+          {
+            "label": "Vs",
+            "path": "vs",
+            "visible": "never"
+          },
+          {
+            "label": "Order Salt",
+            "path": "order.salt",
+            "visible": "never"
+          },
+          {
+            "label": "Order Maker",
+            "path": "order.maker",
+            "visible": "never"
+          },
+          {
+            "label": "Order Receiver",
+            "path": "order.receiver",
+            "visible": "never"
+          },
+          {
+            "label": "Order Maker Traits",
+            "path": "order.makerTraits",
+            "visible": "never"
+          }
+        ]
       },
       "fillOrderArgs((uint256 salt, uint256 maker, uint256 receiver, uint256 makerAsset, uint256 takerAsset, uint256 makingAmount, uint256 takingAmount, uint256 makerTraits) order, bytes32 r, bytes32 vs, uint256 amount, uint256 takerTraits, bytes args)": {
         "$id": "fillContractOrder",
@@ -325,22 +791,67 @@
           {
             "path": "order.takingAmount",
             "$ref": "$.display.definitions.takingAmount",
-            "params": { "tokenPath": "order.takerAsset" }
+            "params": {
+              "tokenPath": "order.takerAsset"
+            },
+            "visible": "always"
           },
           {
             "path": "order.makingAmount",
             "$ref": "$.display.definitions.makingAmount",
-            "params": { "tokenPath": "order.makerAsset" }
+            "params": {
+              "tokenPath": "order.makerAsset"
+            },
+            "visible": "always"
           },
           {
             "path": "amount",
             "$ref": "$.display.definitions.fillAmount",
-            "params": { "tokenPath": "order.takerAsset" }
+            "params": {
+              "tokenPath": "order.takerAsset"
+            },
+            "visible": "always"
           },
-          { "path": "takerTraits.[:1]", "$ref": "$.display.definitions.takerTraits" }
-        ],
-        "required": ["order.makingAmount", "order.makerAsset", "order.takingAmount", "order.takerAsset", "amount", "takerTraits"],
-        "excluded": ["r", "vs", "args", "order.salt", "order.maker", "order.receiver", "order.makerTraits"]
+          {
+            "path": "takerTraits.[:1]",
+            "$ref": "$.display.definitions.takerTraits"
+          },
+          {
+            "label": "R",
+            "path": "r",
+            "visible": "never"
+          },
+          {
+            "label": "Vs",
+            "path": "vs",
+            "visible": "never"
+          },
+          {
+            "label": "Args",
+            "path": "args",
+            "visible": "never"
+          },
+          {
+            "label": "Order Salt",
+            "path": "order.salt",
+            "visible": "never"
+          },
+          {
+            "label": "Order Maker",
+            "path": "order.maker",
+            "visible": "never"
+          },
+          {
+            "label": "Order Receiver",
+            "path": "order.receiver",
+            "visible": "never"
+          },
+          {
+            "label": "Order Maker Traits",
+            "path": "order.makerTraits",
+            "visible": "never"
+          }
+        ]
       }
     }
   }

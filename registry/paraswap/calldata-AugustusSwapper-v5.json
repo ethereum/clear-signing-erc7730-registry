@@ -1,364 +1,8 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "AugustusSwapperV5",
     "contract": {
-      "abi": [
-        {
-          "inputs": [
-            { "internalType": "uint256", "name": "amountInMax", "type": "uint256" },
-            { "internalType": "uint256", "name": "amountOut", "type": "uint256" },
-            { "internalType": "address[]", "name": "path", "type": "address[]" }
-          ],
-          "name": "buyOnUniswap",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "address", "name": "factory", "type": "address" },
-            { "internalType": "bytes32", "name": "initCode", "type": "bytes32" },
-            { "internalType": "uint256", "name": "amountInMax", "type": "uint256" },
-            { "internalType": "uint256", "name": "amountOut", "type": "uint256" },
-            { "internalType": "address[]", "name": "path", "type": "address[]" }
-          ],
-          "name": "buyOnUniswapFork",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "address", "name": "tokenIn", "type": "address" },
-            { "internalType": "uint256", "name": "amountInMax", "type": "uint256" },
-            { "internalType": "uint256", "name": "amountOut", "type": "uint256" },
-            { "internalType": "address", "name": "weth", "type": "address" },
-            { "internalType": "uint256[]", "name": "pools", "type": "uint256[]" }
-          ],
-          "name": "buyOnUniswapV2Fork",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "address", "name": "tokenIn", "type": "address" },
-            { "internalType": "uint256", "name": "amountInMax", "type": "uint256" },
-            { "internalType": "uint256", "name": "amountOut", "type": "uint256" },
-            { "internalType": "address", "name": "weth", "type": "address" },
-            { "internalType": "uint256[]", "name": "pools", "type": "uint256[]" },
-            { "internalType": "bytes", "name": "permit", "type": "bytes" }
-          ],
-          "name": "buyOnUniswapV2ForkWithPermit",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            {
-              "components": [
-                { "internalType": "address", "name": "fromToken", "type": "address" },
-                { "internalType": "uint256", "name": "fromAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "toAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "expectedAmount", "type": "uint256" },
-                { "internalType": "address payable", "name": "beneficiary", "type": "address" },
-                {
-                  "components": [
-                    { "internalType": "uint256", "name": "fromAmountPercent", "type": "uint256" },
-                    {
-                      "components": [
-                        { "internalType": "address", "name": "to", "type": "address" },
-                        { "internalType": "uint256", "name": "totalNetworkFee", "type": "uint256" },
-                        {
-                          "components": [
-                            { "internalType": "address payable", "name": "adapter", "type": "address" },
-                            { "internalType": "uint256", "name": "percent", "type": "uint256" },
-                            { "internalType": "uint256", "name": "networkFee", "type": "uint256" },
-                            {
-                              "components": [
-                                { "internalType": "uint256", "name": "index", "type": "uint256" },
-                                { "internalType": "address", "name": "targetExchange", "type": "address" },
-                                { "internalType": "uint256", "name": "percent", "type": "uint256" },
-                                { "internalType": "bytes", "name": "payload", "type": "bytes" },
-                                { "internalType": "uint256", "name": "networkFee", "type": "uint256" }
-                              ],
-                              "internalType": "struct Utils.Route[]",
-                              "name": "route",
-                              "type": "tuple[]"
-                            }
-                          ],
-                          "internalType": "struct Utils.Adapter[]",
-                          "name": "adapters",
-                          "type": "tuple[]"
-                        }
-                      ],
-                      "internalType": "struct Utils.Path[]",
-                      "name": "path",
-                      "type": "tuple[]"
-                    }
-                  ],
-                  "internalType": "struct Utils.MegaSwapPath[]",
-                  "name": "path",
-                  "type": "tuple[]"
-                },
-                { "internalType": "address payable", "name": "partner", "type": "address" },
-                { "internalType": "uint256", "name": "feePercent", "type": "uint256" },
-                { "internalType": "bytes", "name": "permit", "type": "bytes" },
-                { "internalType": "uint256", "name": "deadline", "type": "uint256" },
-                { "internalType": "bytes16", "name": "uuid", "type": "bytes16" }
-              ],
-              "internalType": "struct Utils.MegaSwapSellData",
-              "name": "data",
-              "type": "tuple"
-            }
-          ],
-          "name": "megaSwap",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            {
-              "components": [
-                { "internalType": "address", "name": "fromToken", "type": "address" },
-                { "internalType": "uint256", "name": "fromAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "toAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "expectedAmount", "type": "uint256" },
-                { "internalType": "address payable", "name": "beneficiary", "type": "address" },
-                {
-                  "components": [
-                    { "internalType": "address", "name": "to", "type": "address" },
-                    { "internalType": "uint256", "name": "totalNetworkFee", "type": "uint256" },
-                    {
-                      "components": [
-                        { "internalType": "address payable", "name": "adapter", "type": "address" },
-                        { "internalType": "uint256", "name": "percent", "type": "uint256" },
-                        { "internalType": "uint256", "name": "networkFee", "type": "uint256" },
-                        {
-                          "components": [
-                            { "internalType": "uint256", "name": "index", "type": "uint256" },
-                            { "internalType": "address", "name": "targetExchange", "type": "address" },
-                            { "internalType": "uint256", "name": "percent", "type": "uint256" },
-                            { "internalType": "bytes", "name": "payload", "type": "bytes" },
-                            { "internalType": "uint256", "name": "networkFee", "type": "uint256" }
-                          ],
-                          "internalType": "struct Utils.Route[]",
-                          "name": "route",
-                          "type": "tuple[]"
-                        }
-                      ],
-                      "internalType": "struct Utils.Adapter[]",
-                      "name": "adapters",
-                      "type": "tuple[]"
-                    }
-                  ],
-                  "internalType": "struct Utils.Path[]",
-                  "name": "path",
-                  "type": "tuple[]"
-                },
-                { "internalType": "address payable", "name": "partner", "type": "address" },
-                { "internalType": "uint256", "name": "feePercent", "type": "uint256" },
-                { "internalType": "bytes", "name": "permit", "type": "bytes" },
-                { "internalType": "uint256", "name": "deadline", "type": "uint256" },
-                { "internalType": "bytes16", "name": "uuid", "type": "bytes16" }
-              ],
-              "internalType": "struct Utils.SellData",
-              "name": "data",
-              "type": "tuple"
-            }
-          ],
-          "name": "multiSwap",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            {
-              "components": [
-                { "internalType": "address", "name": "fromToken", "type": "address" },
-                { "internalType": "address", "name": "toToken", "type": "address" },
-                { "internalType": "uint256", "name": "fromAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "toAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "expectedAmount", "type": "uint256" },
-                { "internalType": "address[]", "name": "callees", "type": "address[]" },
-                { "internalType": "bytes", "name": "exchangeData", "type": "bytes" },
-                { "internalType": "uint256[]", "name": "startIndexes", "type": "uint256[]" },
-                { "internalType": "uint256[]", "name": "values", "type": "uint256[]" },
-                { "internalType": "address payable", "name": "beneficiary", "type": "address" },
-                { "internalType": "address payable", "name": "partner", "type": "address" },
-                { "internalType": "uint256", "name": "feePercent", "type": "uint256" },
-                { "internalType": "bytes", "name": "permit", "type": "bytes" },
-                { "internalType": "uint256", "name": "deadline", "type": "uint256" },
-                { "internalType": "bytes16", "name": "uuid", "type": "bytes16" }
-              ],
-              "internalType": "struct Utils.SimpleData",
-              "name": "data",
-              "type": "tuple"
-            }
-          ],
-          "name": "simpleBuy",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            {
-              "components": [
-                { "internalType": "address", "name": "fromToken", "type": "address" },
-                { "internalType": "address", "name": "toToken", "type": "address" },
-                { "internalType": "uint256", "name": "fromAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "toAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "expectedAmount", "type": "uint256" },
-                { "internalType": "address[]", "name": "callees", "type": "address[]" },
-                { "internalType": "bytes", "name": "exchangeData", "type": "bytes" },
-                { "internalType": "uint256[]", "name": "startIndexes", "type": "uint256[]" },
-                { "internalType": "uint256[]", "name": "values", "type": "uint256[]" },
-                { "internalType": "address payable", "name": "beneficiary", "type": "address" },
-                { "internalType": "address payable", "name": "partner", "type": "address" },
-                { "internalType": "uint256", "name": "feePercent", "type": "uint256" },
-                { "internalType": "bytes", "name": "permit", "type": "bytes" },
-                { "internalType": "uint256", "name": "deadline", "type": "uint256" },
-                { "internalType": "bytes16", "name": "uuid", "type": "bytes16" }
-              ],
-              "internalType": "struct Utils.SimpleData",
-              "name": "data",
-              "type": "tuple"
-            }
-          ],
-          "name": "simpleSwap",
-          "outputs": [{ "internalType": "uint256", "name": "receivedAmount", "type": "uint256" }],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
-            { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" },
-            { "internalType": "address[]", "name": "path", "type": "address[]" }
-          ],
-          "name": "swapOnUniswap",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "address", "name": "factory", "type": "address" },
-            { "internalType": "bytes32", "name": "initCode", "type": "bytes32" },
-            { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
-            { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" },
-            { "internalType": "address[]", "name": "path", "type": "address[]" }
-          ],
-          "name": "swapOnUniswapFork",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "address", "name": "tokenIn", "type": "address" },
-            { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
-            { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" },
-            { "internalType": "address", "name": "weth", "type": "address" },
-            { "internalType": "uint256[]", "name": "pools", "type": "uint256[]" }
-          ],
-          "name": "swapOnUniswapV2Fork",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "contract IERC20", "name": "fromToken", "type": "address" },
-            { "internalType": "contract IERC20", "name": "toToken", "type": "address" },
-            { "internalType": "uint256", "name": "fromAmount", "type": "uint256" },
-            { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" },
-            { "internalType": "address", "name": "exchange", "type": "address" },
-            { "internalType": "bytes", "name": "payload", "type": "bytes" }
-          ],
-          "name": "swapOnZeroXv2",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "contract IERC20", "name": "fromToken", "type": "address" },
-            { "internalType": "contract IERC20", "name": "toToken", "type": "address" },
-            { "internalType": "uint256", "name": "fromAmount", "type": "uint256" },
-            { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" },
-            { "internalType": "address", "name": "exchange", "type": "address" },
-            { "internalType": "bytes", "name": "payload", "type": "bytes" }
-          ],
-          "name": "swapOnZeroXv4",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "address", "name": "tokenIn", "type": "address" },
-            { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
-            { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" },
-            { "internalType": "address", "name": "weth", "type": "address" },
-            { "internalType": "uint256[]", "name": "pools", "type": "uint256[]" },
-            { "internalType": "bytes", "name": "permit", "type": "bytes" }
-          ],
-          "name": "swapOnUniswapV2ForkWithPermit",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "contract IERC20", "name": "fromToken", "type": "address" },
-            { "internalType": "contract IERC20", "name": "toToken", "type": "address" },
-            { "internalType": "uint256", "name": "fromAmount", "type": "uint256" },
-            { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" },
-            { "internalType": "address", "name": "exchange", "type": "address" },
-            { "internalType": "bytes", "name": "payload", "type": "bytes" },
-            { "internalType": "bytes", "name": "permit", "type": "bytes" }
-          ],
-          "name": "swapOnZeroXv4WithPermit",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            {
-              "components": [
-                { "internalType": "address", "name": "fromToken", "type": "address" },
-                { "internalType": "address", "name": "toToken", "type": "address" },
-                { "internalType": "address", "name": "exchange", "type": "address" },
-                { "internalType": "uint256", "name": "fromAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "toAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "expectedAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "feePercent", "type": "uint256" },
-                { "internalType": "uint256", "name": "deadline", "type": "uint256" },
-                { "internalType": "address payable", "name": "partner", "type": "address" },
-                { "internalType": "bool", "name": "isApproved", "type": "bool" },
-                { "internalType": "address payable", "name": "beneficiary", "type": "address" },
-                { "internalType": "bytes", "name": "path", "type": "bytes" },
-                { "internalType": "bytes", "name": "permit", "type": "bytes" },
-                { "internalType": "bytes16", "name": "uuid", "type": "bytes16" }
-              ],
-              "internalType": "struct Utils.DirectUniV3",
-              "name": "data",
-              "type": "tuple"
-            }
-          ],
-          "name": "directUniV3Swap",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        }
-      ],
       "deployments": [
         { "chainId": 56, "address": "0xDEF171Fe48CF0115B1d80b88dc8eAB59176FEe57" },
         { "chainId": 1, "address": "0xDEF171Fe48CF0115B1d80b88dc8eAB59176FEe57" },
@@ -368,30 +12,31 @@
   },
   "metadata": {
     "owner": "Velora",
-    "info": { "url": "https://www.paraswap.io/", "legalName": "Velora", "deploymentDate": "2021-08-18T12:42:05Z" },
-    "constants": { "addressAsEth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" }
+    "info": { "url": "https://www.paraswap.io/", "deploymentDate": "2021-08-18T12:42:05Z" },
+    "constants": { "addressAsEth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" },
+    "contractName": "AugustusSwapperV5"
   },
   "display": {
     "definitions": {
       "sendAmount": {
         "label": "Amount to Send",
         "format": "tokenAmount",
-        "params": { "tokenPath": "fromToken", "nativeCurrencyAddress": "$.metadata.constants.addressAsEth" }
+        "params": { "nativeCurrencyAddress": "$.metadata.constants.addressAsEth" }
       },
       "minReceiveAmount": {
-        "label": "Minimum to Receive",
+        "label": "Receive before fees",
         "format": "tokenAmount",
-        "params": { "tokenPath": "toToken", "nativeCurrencyAddress": "$.metadata.constants.addressAsEth" }
+        "params": { "nativeCurrencyAddress": "$.metadata.constants.addressAsEth" }
       },
       "maxSendAmount": {
         "label": "Maximum to Send",
         "format": "tokenAmount",
-        "params": { "tokenPath": "tokenIn", "nativeCurrencyAddress": "$.metadata.constants.addressAsEth" }
+        "params": { "nativeCurrencyAddress": "$.metadata.constants.addressAsEth" }
       },
       "receiveAmount": {
         "label": "Amount to Receive",
         "format": "tokenAmount",
-        "params": { "tokenPath": "tokenOut", "nativeCurrencyAddress": "$.metadata.constants.addressAsEth" }
+        "params": { "nativeCurrencyAddress": "$.metadata.constants.addressAsEth" }
       },
       "lastPool": { "label": "Last pool", "format": "addressName", "params": { "types": ["contract"] } },
       "beneficiary": { "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
@@ -399,129 +44,208 @@
       "factory": { "label": "Uniswap Factory", "format": "addressName", "params": { "types": ["contract"], "sources": ["local", "ens"] } }
     },
     "formats": {
-      "0x2298207a": {
+      "simpleBuy((address fromToken, address toToken, uint256 fromAmount, uint256 toAmount, uint256 expectedAmount, address[] callees, bytes exchangeData, uint256[] startIndexes, uint256[] values, address beneficiary, address partner, uint256 feePercent, bytes permit, uint256 deadline, bytes16 uuid) data)": {
         "$id": "simpleBuy",
         "intent": "Swap",
         "fields": [
-          { "path": "data.fromAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "data.fromToken" } },
-          { "path": "data.toAmount", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "data.toToken" } },
-          { "path": "data.beneficiary", "$ref": "$.display.definitions.beneficiary" }
-        ],
-        "required": ["data.fromAmount", "data.toAmount", "data.beneficiary"]
-      },
-      "0x46c67b6d": {
-        "$id": "megaSwap",
-        "intent": "Swap",
-        "fields": [
-          { "path": "data.fromAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "data.fromToken" } },
+          {
+            "path": "data.fromAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "data.fromToken" },
+            "visible": "always"
+          },
           {
             "path": "data.toAmount",
             "$ref": "$.display.definitions.minReceiveAmount",
-            "params": { "tokenPath": "data.path.[0].path.[-1].to" }
+            "params": { "tokenPath": "data.toToken" },
+            "visible": "always"
           },
-          { "path": "data.beneficiary", "$ref": "$.display.definitions.beneficiary" }
-        ],
-        "required": ["data.fromAmount", "data.toAmount", "data.beneficiary"]
+          { "path": "data.beneficiary", "$ref": "$.display.definitions.beneficiary", "visible": "always" }
+        ]
       },
-      "0xa6886da9": {
+      "megaSwap((address fromToken, uint256 fromAmount, uint256 toAmount, uint256 expectedAmount, address beneficiary, (uint256 fromAmountPercent, (address to, uint256 totalNetworkFee, (address adapter, uint256 percent, uint256 networkFee, (uint256 index, address targetExchange, uint256 percent, bytes payload, uint256 networkFee)[] route)[] adapters)[] path)[] path, address partner, uint256 feePercent, bytes permit, uint256 deadline, bytes16 uuid) data)": {
+        "$id": "megaSwap",
+        "intent": "Swap",
+        "fields": [
+          {
+            "path": "data.fromAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "data.fromToken" },
+            "visible": "always"
+          },
+          {
+            "path": "data.toAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "data.path.[0].path.[-1].to" },
+            "visible": "always"
+          },
+          { "path": "data.beneficiary", "$ref": "$.display.definitions.beneficiary", "visible": "always" }
+        ]
+      },
+      "directUniV3Swap((address fromToken, address toToken, address exchange, uint256 fromAmount, uint256 toAmount, uint256 expectedAmount, uint256 feePercent, uint256 deadline, address partner, bool isApproved, address beneficiary, bytes path, bytes permit, bytes16 uuid) data)": {
         "$id": "directUniV3Swap",
         "intent": "Swap",
         "fields": [
-          { "path": "data.fromAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "data.fromToken" } },
-          { "path": "data.toAmount", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "data.toToken" } },
-          { "path": "data.beneficiary", "$ref": "$.display.definitions.beneficiary" }
-        ],
-        "required": ["data.fromAmount", "data.toAmount", "data.beneficiary"]
+          {
+            "path": "data.fromAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "data.fromToken" },
+            "visible": "always"
+          },
+          {
+            "path": "data.toAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "data.toToken" },
+            "visible": "always"
+          },
+          { "path": "data.beneficiary", "$ref": "$.display.definitions.beneficiary", "visible": "always" }
+        ]
       },
-      "0x54840d1a": {
+      "swapOnUniswap(uint256 amountIn, uint256 amountOutMin, address[] path)": {
         "$id": "swapOnUniswap",
         "intent": "Swap",
         "fields": [
-          { "path": "amountIn", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "path.[0]" } },
-          { "path": "amountOutMin", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "path.[-1]" } }
-        ],
-        "required": ["amountIn", "amountOutMin"]
+          { "path": "amountIn", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "path.[0]" }, "visible": "always" },
+          {
+            "path": "amountOutMin",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "path.[-1]" },
+            "visible": "always"
+          }
+        ]
       },
-      "0xf5661034": {
+      "swapOnUniswapFork(address factory, bytes32 initCode, uint256 amountIn, uint256 amountOutMin, address[] path)": {
         "$id": "swapOnUniswapFork",
         "intent": "Swap",
         "fields": [
-          { "path": "amountIn", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "path.[0]" } },
-          { "path": "amountOutMin", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "path.[-1]" } },
+          { "path": "amountIn", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "path.[0]" }, "visible": "always" },
+          {
+            "path": "amountOutMin",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "path.[-1]" },
+            "visible": "always"
+          },
           { "path": "factory", "$ref": "$.display.definitions.factory" }
-        ],
-        "required": ["amountIn", "amountOutMin"]
+        ]
       },
-      "0x0b86a4c1": {
+      "swapOnUniswapV2Fork(address tokenIn, uint256 amountIn, uint256 amountOutMin, address weth, uint256[] pools)": {
         "$id": "swapOnUniswapV2Fork",
         "intent": "Swap",
         "fields": [
-          { "path": "amountIn", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "tokenIn" } },
-          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "raw" },
+          { "path": "amountIn", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "tokenIn" }, "visible": "always" },
+          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "raw", "visible": "always" },
           { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amountIn", "amountOutMin", "pools"]
+        ]
       },
-      "0x54e3f31b": {
+      "simpleSwap((address fromToken, address toToken, uint256 fromAmount, uint256 toAmount, uint256 expectedAmount, address[] callees, bytes exchangeData, uint256[] startIndexes, uint256[] values, address beneficiary, address partner, uint256 feePercent, bytes permit, uint256 deadline, bytes16 uuid) data)": {
         "$id": "simpleSwap",
         "intent": "Swap",
         "fields": [
-          { "path": "data.fromAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "data.fromToken" } },
-          { "path": "data.toAmount", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "data.toToken" } },
-          { "path": "data.beneficiary", "$ref": "$.display.definitions.beneficiary" }
-        ],
-        "required": ["data.fromAmount", "data.toAmount", "data.beneficiary"]
+          {
+            "path": "data.fromAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "data.fromToken" },
+            "visible": "always"
+          },
+          {
+            "path": "data.toAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "data.toToken" },
+            "visible": "always"
+          },
+          { "path": "data.beneficiary", "$ref": "$.display.definitions.beneficiary", "visible": "always" }
+        ]
       },
-      "0x64466805": {
+      "swapOnZeroXv4(address fromToken, address toToken, uint256 fromAmount, uint256 amountOutMin, address exchange, bytes payload)": {
         "$id": "swapOnZeroXv4",
         "intent": "Swap",
         "fields": [
-          { "path": "fromAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "fromToken" } },
-          { "path": "amountOutMin", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "toToken" } },
+          {
+            "path": "fromAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "fromToken" },
+            "visible": "always"
+          },
+          {
+            "path": "amountOutMin",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "toToken" },
+            "visible": "always"
+          },
           { "path": "exchange", "$ref": "$.display.definitions.exchange" }
-        ],
-        "required": ["fromAmount", "amountOutMin"]
+        ]
       },
-      "0x81033120": {
+      "swapOnZeroXv2(address fromToken, address toToken, uint256 fromAmount, uint256 amountOutMin, address exchange, bytes payload)": {
         "$id": "swapOnZeroXv2",
         "intent": "Swap",
         "fields": [
-          { "path": "fromAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "fromToken" } },
-          { "path": "amountOutMin", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "toToken" } },
+          {
+            "path": "fromAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "fromToken" },
+            "visible": "always"
+          },
+          {
+            "path": "amountOutMin",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "toToken" },
+            "visible": "always"
+          },
           { "path": "exchange", "$ref": "$.display.definitions.exchange" }
-        ],
-        "required": ["fromAmount", "amountOutMin"]
+        ]
       },
-      "0x935fb84b": {
+      "buyOnUniswap(uint256 amountInMax, uint256 amountOut, address[] path)": {
         "$id": "buyOnUniswap",
         "intent": "Buy",
         "fields": [
-          { "path": "amountInMax", "$ref": "$.display.definitions.maxSendAmount", "params": { "tokenPath": "path.[0]" } },
-          { "path": "amountOut", "$ref": "$.display.definitions.receiveAmount", "params": { "tokenPath": "path.[-1]" } }
-        ],
-        "required": ["amountInMax", "amountOut"]
+          {
+            "path": "amountInMax",
+            "$ref": "$.display.definitions.maxSendAmount",
+            "params": { "tokenPath": "path.[0]" },
+            "visible": "always"
+          },
+          {
+            "path": "amountOut",
+            "$ref": "$.display.definitions.receiveAmount",
+            "params": { "tokenPath": "path.[-1]" },
+            "visible": "always"
+          }
+        ]
       },
-      "0xc03786b0": {
+      "buyOnUniswapFork(address factory, bytes32 initCode, uint256 amountInMax, uint256 amountOut, address[] path)": {
         "$id": "buyOnUniswapFork",
         "intent": "Buy",
         "fields": [
-          { "path": "amountInMax", "$ref": "$.display.definitions.maxSendAmount", "params": { "tokenPath": "path.[0]" } },
-          { "path": "amountOut", "$ref": "$.display.definitions.receiveAmount", "params": { "tokenPath": "path.[-1]" } },
+          {
+            "path": "amountInMax",
+            "$ref": "$.display.definitions.maxSendAmount",
+            "params": { "tokenPath": "path.[0]" },
+            "visible": "always"
+          },
+          {
+            "path": "amountOut",
+            "$ref": "$.display.definitions.receiveAmount",
+            "params": { "tokenPath": "path.[-1]" },
+            "visible": "always"
+          },
           { "path": "factory", "$ref": "$.display.definitions.factory" }
-        ],
-        "required": ["amountInMax", "amountOut"]
+        ]
       },
-      "0xb2f1e6db": {
+      "buyOnUniswapV2Fork(address tokenIn, uint256 amountInMax, uint256 amountOut, address weth, uint256[] pools)": {
         "$id": "buyOnUniswapV2Fork",
         "intent": "Buy",
         "fields": [
-          { "path": "amountInMax", "$ref": "$.display.definitions.maxSendAmount", "params": { "tokenPath": "tokenIn" } },
-          { "path": "amountOut", "label": "Amount to Receive", "format": "raw" },
-          { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amountInMax", "amountOut", "pools.[-1]"]
+          {
+            "path": "amountInMax",
+            "$ref": "$.display.definitions.maxSendAmount",
+            "params": { "tokenPath": "tokenIn" },
+            "visible": "always"
+          },
+          { "path": "amountOut", "label": "Amount to Receive", "format": "raw", "visible": "always" },
+          { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool", "visible": "always" }
+        ]
       },
-      "0x2941a712": {
+      "buyOnUniswapV2ForkWithPermit(address tokenIn, uint256 amountInMax, uint256 amountOut, address weth, uint256[] pools, bytes permit)": {
         "$id": "buyOnUniswapV2ForkWithPermit",
         "intent": "Buy",
         "fields": [
@@ -530,35 +254,52 @@
           { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool" }
         ]
       },
-      "0xa94e78ef": {
+      "multiSwap((address fromToken, uint256 fromAmount, uint256 toAmount, uint256 expectedAmount, address beneficiary, (address to, uint256 totalNetworkFee, (address adapter, uint256 percent, uint256 networkFee, (uint256 index, address targetExchange, uint256 percent, bytes payload, uint256 networkFee)[] route)[] adapters)[] path, address partner, uint256 feePercent, bytes permit, uint256 deadline, bytes16 uuid) data)": {
         "$id": "multiSwap",
         "intent": "Swap",
         "fields": [
-          { "path": "data.fromAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "data.fromToken" } },
-          { "path": "data.toAmount", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "data.path.[-1].to" } },
-          { "path": "data.beneficiary", "$ref": "$.display.definitions.beneficiary" }
-        ],
-        "required": ["data.fromAmount", "data.toAmount", "data.beneficiary"]
+          {
+            "path": "data.fromAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "data.fromToken" },
+            "visible": "always"
+          },
+          {
+            "path": "data.toAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "data.path.[-1].to" },
+            "visible": "always"
+          },
+          { "path": "data.beneficiary", "$ref": "$.display.definitions.beneficiary", "visible": "always" }
+        ]
       },
-      "0x6b4109d3": {
+      "swapOnZeroXv4WithPermit(address fromToken, address toToken, uint256 fromAmount, uint256 amountOutMin, address exchange, bytes payload, bytes permit)": {
         "$id": "swapOnZeroXv4WithPermit",
         "intent": "Swap",
         "fields": [
-          { "path": "fromAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "fromToken" } },
-          { "path": "amountOutMin", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "toToken" } },
-          { "path": "exchange", "$ref": "$.display.definitions.exchange" }
-        ],
-        "required": ["fromAmount", "amountOutMin", "exchange"]
+          {
+            "path": "fromAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "fromToken" },
+            "visible": "always"
+          },
+          {
+            "path": "amountOutMin",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "toToken" },
+            "visible": "always"
+          },
+          { "path": "exchange", "$ref": "$.display.definitions.exchange", "visible": "always" }
+        ]
       },
-      "0x6e91538b": {
+      "swapOnUniswapV2ForkWithPermit(address tokenIn, uint256 amountIn, uint256 amountOutMin, address weth, uint256[] pools, bytes permit)": {
         "$id": "swapOnUniswapV2ForkWithPermit",
         "intent": "Swap",
         "fields": [
           { "path": "amountIn", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "tokenIn" } },
           { "path": "amountOutMin", "label": "Minimum to Receive", "format": "raw" },
           { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": []
+        ]
       }
     }
   }

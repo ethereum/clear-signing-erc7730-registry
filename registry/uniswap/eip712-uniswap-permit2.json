@@ -1,84 +1,38 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "includes": "uniswap-common-eip712.json",
-  "context": {
-    "eip712": {
-      "schemas": [
-        {
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "PermitDetails": [
-              { "name": "token", "type": "address" },
-              { "name": "amount", "type": "uint160" },
-              { "name": "expiration", "type": "uint48" },
-              { "name": "nonce", "type": "uint48" }
-            ],
-            "PermitBatch": [
-              { "name": "details", "type": "PermitDetails[]" },
-              { "name": "spender", "type": "address" },
-              { "name": "sigDeadline", "type": "uint256" }
-            ]
-          },
-          "primaryType": "PermitBatch"
-        },
-        {
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "PermitDetails": [
-              { "name": "token", "type": "address" },
-              { "name": "amount", "type": "uint160" },
-              { "name": "expiration", "type": "uint48" },
-              { "name": "nonce", "type": "uint48" }
-            ],
-            "PermitSingle": [
-              { "name": "details", "type": "PermitDetails" },
-              { "name": "spender", "type": "address" },
-              { "name": "sigDeadline", "type": "uint256" }
-            ]
-          },
-          "primaryType": "PermitSingle"
-        }
-      ]
-    }
-  },
   "display": {
     "formats": {
-      "PermitSingle": {
+      "PermitSingle(PermitDetails details,address spender,uint256 sigDeadline)PermitDetails(address token,uint160 amount,uint48 expiration,uint48 nonce)": {
         "$id": "Permit2 Permit Single",
         "intent": "Authorize spending of token",
         "fields": [
-          { "path": "spender", "label": "Spender", "format": "raw" },
-          { "path": "details.amount", "label": "Amount allowance", "format": "tokenAmount", "params": { "tokenPath": "details.token" } },
-          { "path": "details.expiration", "label": "Approval expires", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["spender", "details.amount"],
-        "excluded": ["sigDeadline"],
-        "screens": {}
+          { "path": "spender", "label": "Spender", "format": "raw", "visible": "always" },
+          {
+            "path": "details.amount",
+            "label": "Amount allowance",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "details.token" },
+            "visible": "always"
+          },
+          { "path": "details.expiration", "label": "Approval expires", "format": "date", "params": { "encoding": "timestamp" } },
+          { "label": "Sig Deadline", "path": "sigDeadline", "visible": "never" }
+        ]
       },
-      "PermitBatch": {
+      "PermitBatch(PermitDetails[] details,address spender,uint256 sigDeadline)PermitDetails(address token,uint160 amount,uint48 expiration,uint48 nonce)": {
         "$id": "Permit2 Permit Batch",
         "intent": "Authorize spending of tokens",
         "fields": [
-          { "path": "spender", "label": "Spender", "format": "raw" },
+          { "path": "spender", "label": "Spender", "format": "raw", "visible": "always" },
           {
             "path": "details.[]",
             "fields": [
               { "path": "amount", "label": "Amount allowance", "format": "tokenAmount", "params": { "tokenPath": "token" } },
               { "path": "expiration", "label": "Approval expires", "format": "date", "params": { "encoding": "timestamp" } }
             ]
-          }
-        ],
-        "required": ["spender", "details"],
-        "excluded": ["sigDeadline"],
-        "screens": {}
+          },
+          { "label": "Sig Deadline", "path": "sigDeadline", "visible": "never" }
+        ]
       }
     }
   }

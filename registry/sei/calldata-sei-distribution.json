@@ -1,0 +1,58 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "SeiDistributionPrecompile",
+    "contract": {
+      "deployments": [
+        { "chainId": 1329, "address": "0x0000000000000000000000000000000000001007" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Sei",
+    "contractName": "SeiDistributionPrecompile",
+    "info": { "url": "https://www.sei.io/" }
+  },
+  "display": {
+    "formats": {
+      "setWithdrawAddress(address withdrawAddr)": {
+        "intent": "Set withdraw address",
+        "fields": [
+          {
+            "path": "#.withdrawAddr",
+            "label": "Withdraw address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdrawDelegationRewards(string validator)": {
+        "intent": "Claim rewards",
+        "fields": [
+          {
+            "path": "#.validator",
+            "label": "Validator",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "withdrawMultipleDelegationRewards(string[] validators)": {
+        "intent": "Claim multiple rewards",
+        "fields": [
+          {
+            "path": "#.validators.[]",
+            "label": "Validators",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "withdrawValidatorCommission()": {
+        "intent": "Claim validator commission",
+        "fields": []
+      }
+    }
+  }
+}

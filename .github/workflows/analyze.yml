@@ -1,0 +1,368 @@
+name: Analyze
+
+on:
+  pull_request:
+    types: [ready_for_review, synchronize]
+    paths:
+      - 'registry/**/calldata-*.json'
+  workflow_dispatch:
+    inputs:
+      analysis_mode:
+        description: "Analysis strategy"
+        required: true
+        type: choice
+        options:
+          - multi
+          - single
+        default: "multi"
+      model:
+        description: "LLM model name"
+        required: true
+        default: "gpt-5.4"
+      reasoning_effort:
+        description: "LLM reasoning effort"
+        required: true
+        type: choice
+        options:
+          - low
+          - medium
+          - high
+        default: "high"
+      enable_screenshots:
+        description: "Enable device screenshot capture (higher CPU/memory usage)"
+        required: true
+        type: boolean
+        default: true
+      screenshot_device:
+        description: "Target device for screenshots (only used when screenshots are enabled)"
+        required: false
+        type: choice
+        options:
+          - stax
+          - flex
+        default: "stax"
+
+permissions:
+  contents: read
+  id-token: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: erc7730-analysis
+  cancel-in-progress: false
+
+jobs:
+  analyze:
+    name: ERC-7730 Analysis
+    if: github.event.pull_request.draft == false || github.event_name == 'workflow_dispatch'
+    runs-on: public-ledgerhq-shared-small
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+
+      - name: Get changed calldata files
+        id: changed-files
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
+        with:
+          files: |
+            registry/**/calldata-*.json
+
+      - name: Set up uv
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v8.0.0
+
+      - name: Run analysis
+        if: steps.changed-files.outputs.any_changed == 'true'
+        id: analyze
+        env:
+          SERVICE_URL: ${{ vars.ANALYZER_SERVICE_URL }}
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          ANALYSIS_MODE: ${{ inputs.analysis_mode || 'multi' }}
+          MODEL: ${{ inputs.model || 'gpt-5.4' }}
+          REASONING_EFFORT: ${{ inputs.reasoning_effort || 'high' }}
+          ENABLE_SCREENSHOTS: ${{ inputs.enable_screenshots || 'true' }}
+          SCREENSHOT_DEVICE: ${{ inputs.screenshot_device || 'stax' }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$SERVICE_URL" ]; then
+            echo "::error::ANALYZER_SERVICE_URL variable is not set. Configure it under Settings → Variables."
+            exit 1
+          fi
+
+          # Ensure https:// scheme
+          case "$SERVICE_URL" in
+            https://*) ;;
+            http://*)  SERVICE_URL="${SERVICE_URL/http:/https:}" ;;
+            *)         SERVICE_URL="https://${SERVICE_URL}" ;;
+          esac
+
+          mkdir -p output
+          TOTAL=0
+          CRITICALS=0
+          FAILURES=0
+
+          for file in $CHANGED_FILES; do
+            echo "::group::📋 Analyzing $file"
+            TOTAL=$((TOTAL + 1))
+
+            BASENAME=$(basename "$file" .json)
+            OUTDIR="output/${BASENAME}"
+            mkdir -p "$OUTDIR"
+
+            ARGS=(
+              --service-url "$SERVICE_URL"
+              --descriptor "$file"
+              --output-dir "$OUTDIR"
+              --analysis-mode "$ANALYSIS_MODE"
+              --model "$MODEL"
+              --reasoning-effort "$REASONING_EFFORT"
+              --verbose
+            )
+
+            if [ "$ENABLE_SCREENSHOTS" = "true" ]; then
+              ARGS+=(--enable-screenshots)
+              ARGS+=(--screenshot-device "$SCREENSHOT_DEVICE")
+            else
+              ARGS+=(--no-screenshots)
+            fi
+
+            MAX_RETRIES=3
+            RETRY_DELAY=10
+            ATTEMPT=0
+            SUCCESS=false
+
+            while [ $ATTEMPT -lt $((MAX_RETRIES + 1)) ]; do
+              ATTEMPT=$((ATTEMPT + 1))
+
+              set +e
+              uvx --from "erc7730-analyzer @ git+https://github.com/LedgerHQ/erc7730-analyzer@main" \
+                erc7730-client "${ARGS[@]}"
+              EXIT_CODE=$?
+              set -e
+
+              if [ $EXIT_CODE -eq 0 ]; then
+                echo "✅ No critical issues in $file"
+                SUCCESS=true
+                break
+              elif [ $EXIT_CODE -eq 1 ]; then
+                echo "❌ Critical issues found in $file"
+                CRITICALS=$((CRITICALS + 1))
+                SUCCESS=true
+                break
+              elif [ $EXIT_CODE -eq 3 ]; then
+                echo "⚠️ Analysis lost in-flight job state for $file — not retrying the same descriptor"
+                FAILURES=$((FAILURES + 1))
+                break
+              else
+                if [ $ATTEMPT -le $MAX_RETRIES ]; then
+                  echo "⚠️ Attempt $ATTEMPT failed for $file (exit code $EXIT_CODE) — retrying in ${RETRY_DELAY}s..."
+                  sleep $RETRY_DELAY
+                  rm -rf "$OUTDIR"
+                  mkdir -p "$OUTDIR"
+                else
+                  echo "⚠️ Analysis failed for $file after $ATTEMPT attempts (exit code $EXIT_CODE)"
+                  FAILURES=$((FAILURES + 1))
+                fi
+              fi
+            done
+
+            echo "::endgroup::"
+          done
+
+          echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
+          echo "criticals=$CRITICALS" >> "$GITHUB_OUTPUT"
+          echo "failures=$FAILURES" >> "$GITHUB_OUTPUT"
+
+      - name: Aggregate results and create annotations
+        if: always() && steps.changed-files.outputs.any_changed == 'true'
+        id: aggregate
+        run: |
+          HAS_CRITICALS=false
+          RESULTS=""
+
+          for status_file in output/*/analysis_status.json; do
+            [ -f "$status_file" ] || continue
+
+            SUBDIR=$(dirname "$status_file")
+            PROTOCOL=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('protocol','unknown'))" "$status_file")
+            STATUS=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('status','unknown'))" "$status_file")
+            HAS_CRIT=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('has_criticals',False))" "$status_file")
+
+            if [ "$HAS_CRIT" = "True" ]; then
+              HAS_CRITICALS=true
+              RESULTS="${RESULTS}❌ **${PROTOCOL}** — Critical issues found\n"
+
+              CRITICALS_MD=$(ls "$SUBDIR"/CRITICALS_*.md 2>/dev/null | head -1)
+              CALLDATA_FILE=$(find registry -name "calldata-*.json" 2>/dev/null | grep -i "$(echo "$PROTOCOL" | tr '_' '-')" | head -1 || true)
+
+              if [ -f "$CRITICALS_MD" ]; then
+                while IFS='|' read -r _ col1 col2 col3 _; do
+                  echo "$col3" | grep -q "🔴" || continue
+                  FUNC=$(echo "$col1" | sed 's/`//g;s/^[[:space:]]*//;s/[[:space:]]*$//')
+                  SEL=$(echo "$col2" | sed 's/`//g;s/^[[:space:]]*//;s/[[:space:]]*$//')
+                  [ -z "$FUNC" ] || [ "$FUNC" = "Function" ] && continue
+                  if [ -n "$CALLDATA_FILE" ]; then
+                    echo "::error file=${CALLDATA_FILE},title=🔴 Critical: ${FUNC} (${SEL})::Review the analysis report for details"
+                  else
+                    echo "::error title=🔴 Critical: ${PROTOCOL} / ${FUNC} (${SEL})::Review the analysis report for details"
+                  fi
+                done < "$CRITICALS_MD"
+              fi
+            elif [ "$STATUS" = "succeeded" ]; then
+              RESULTS="${RESULTS}✅ **${PROTOCOL}** — No critical issues\n"
+            else
+              ERROR=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('error',''))" "$status_file")
+              RESULTS="${RESULTS}⚠️ **${PROTOCOL}** — ${STATUS}: ${ERROR}\n"
+            fi
+          done
+
+          echo "has_criticals=$HAS_CRITICALS" >> "$GITHUB_OUTPUT"
+          {
+            echo "results<<EOFRESULTS"
+            echo -e "$RESULTS"
+            echo "EOFRESULTS"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Upload reports
+        if: always() && steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: analysis-reports
+          path: output/
+          retention-days: 30
+
+      - name: Add reports to job summary
+        if: always() && steps.changed-files.outputs.any_changed == 'true'
+        env:
+          TOTAL: ${{ steps.analyze.outputs.total || '0' }}
+          RESULTS: ${{ steps.aggregate.outputs.results }}
+        run: |
+          SUMMARY=$(mktemp)
+          {
+            echo "## 📊 ERC-7730 Analysis Results"
+            echo ""
+            echo "**Descriptors analyzed:** $TOTAL"
+            echo ""
+            echo -e "$RESULTS"
+
+            for f in output/*/CRITICALS_*.md; do
+              [ -f "$f" ] || continue
+              echo ""
+              echo "---"
+              echo ""
+              # Extract header + summary table only (stop before detailed analysis)
+              sed -n '1,/^## .*Detailed Analysis/{ /^## .*Detailed Analysis/d; p; }' "$f"
+            done
+
+            echo ""
+            echo "---"
+            echo ""
+            echo "📸 **Full reports with detailed analysis and screenshots are available in the Artifacts section below.**"
+          } > "$SUMMARY"
+
+          # Hard cap at 950KB to stay safely under GitHub's 1024KB limit
+          head -c 972800 "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
+          rm -f "$SUMMARY"
+
+      - name: Post summary to PR
+        if: always() && steps.changed-files.outputs.any_changed == 'true'
+        continue-on-error: true
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          HAS_CRITICALS: ${{ steps.aggregate.outputs.has_criticals }}
+          TOTAL: ${{ steps.analyze.outputs.total }}
+          FAILURES: ${{ steps.analyze.outputs.failures }}
+          RESULTS: ${{ steps.aggregate.outputs.results }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const hasCriticals = process.env.HAS_CRITICALS === 'true';
+            const total = process.env.TOTAL || '0';
+            const failures = process.env.FAILURES || '0';
+            const results = (process.env.RESULTS || '').trim();
+
+            const marker = '<!-- erc7730-analysis-bot -->';
+            let body = `${marker}\n`;
+            body += `## 🔍 ERC-7730 Analysis Complete\n\n`;
+            body += `📊 **${total} descriptor(s) analyzed**\n\n`;
+
+            if (results) {
+              body += `${results}\n\n`;
+            }
+
+            body += `📥 **[View workflow run & download reports](${context.payload.repository.html_url}/actions/runs/${context.runId})**\n\n`;
+
+            if (hasCriticals) {
+              body += `---\n\n`;
+              body += `## ❌ Status: CRITICAL ISSUES FOUND\n\n`;
+              body += `**This PR cannot be merged until critical issues are resolved.**\n`;
+              body += `Review the analysis reports above and fix the identified issues.\n`;
+            } else if (parseInt(failures) > 0) {
+              body += `---\n\n`;
+              body += `## ⚠️ Status: ${failures} ANALYSIS FAILURE(S)\n\n`;
+              body += `Some analyses failed to complete. Check the workflow logs for details.\n`;
+            } else {
+              body += `---\n\n`;
+              body += `## ✅ Status: ALL CLEAR\n\n`;
+              body += `**No critical issues detected** — this PR is safe to merge (based on automated analysis).\n`;
+            }
+
+            if (!context.issue?.number) {
+              core.notice('No PR number found; skipping PR comment.');
+              return;
+            }
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+
+            const existing = comments.find(c => c.body?.includes(marker));
+
+            for (let attempt = 1; attempt <= 3; attempt++) {
+              try {
+                if (existing) {
+                  await github.rest.issues.updateComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    comment_id: existing.id,
+                    body,
+                  });
+                  core.info(`Updated existing PR comment on attempt ${attempt}.`);
+                } else {
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: context.issue.number,
+                    body,
+                  });
+                  core.info(`Created PR comment on attempt ${attempt}.`);
+                }
+                break;
+              } catch (error) {
+                if (attempt === 3) {
+                  core.warning(`Failed to post PR comment after 3 attempts: ${error.message}`);
+                } else {
+                  await new Promise(r => setTimeout(r, attempt * 2000));
+                }
+              }
+            }
+
+      - name: Block merge if critical issues found
+        if: always() && steps.changed-files.outputs.any_changed == 'true'
+        env:
+          HAS_CRITICALS: ${{ steps.aggregate.outputs.has_criticals }}
+        run: |
+          if [ "$HAS_CRITICALS" = "true" ]; then
+            echo "::error::❌ BLOCKING MERGE — Critical issues detected in one or more descriptors"
+            exit 1
+          fi
+          echo "✅ No critical issues — merge allowed"

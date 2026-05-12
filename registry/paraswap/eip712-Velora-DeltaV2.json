@@ -1,5 +1,5 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "eip712": {
       "deployments": [
@@ -8,56 +8,20 @@
         { "chainId": 56, "address": "0x0000000000bbf5c5fd284e657f01bd000933c96d" },
         { "chainId": 8453, "address": "0x0000000000bbf5c5fd284e657f01bd000933c96d" }
       ],
-      "domain": { "name": "Velora" },
-      "schemas": [
-        {
-          "primaryType": "Order",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "Order": [
-              { "name": "owner", "type": "address" },
-              { "name": "beneficiary", "type": "address" },
-              { "name": "srcToken", "type": "address" },
-              { "name": "destToken", "type": "address" },
-              { "name": "srcAmount", "type": "uint256" },
-              { "name": "destAmount", "type": "uint256" },
-              { "name": "expectedAmount", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" },
-              { "name": "kind", "type": "uint8" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "partnerAndFee", "type": "uint256" },
-              { "name": "permit", "type": "bytes" },
-              { "name": "metadata", "type": "bytes" },
-              { "name": "bridge", "type": "Bridge" }
-            ],
-            "Bridge": [
-              { "name": "protocolSelector", "type": "bytes4" },
-              { "name": "destinationChainId", "type": "uint256" },
-              { "name": "outputToken", "type": "address" },
-              { "name": "scalingFactor", "type": "int8" },
-              { "name": "protocolData", "type": "bytes" }
-            ]
-          }
-        }
-      ]
+      "domain": { "name": "Velora", "version": "1" }
     }
   },
   "metadata": { "owner": "Velora" },
   "display": {
     "formats": {
-      "Order": {
+      "Order(address owner,address beneficiary,address srcToken,address destToken,uint256 srcAmount,uint256 destAmount,uint256 expectedAmount,uint256 deadline,uint8 kind,uint256 nonce,uint256 partnerAndFee,bytes permit,bytes metadata,Bridge bridge)Bridge(bytes4 protocolSelector,uint256 destinationChainId,address outputToken,int8 scalingFactor,bytes protocolData)": {
         "intent": "Swap order",
         "fields": [
           { "path": "srcAmount", "label": "Amount to send", "format": "tokenAmount", "params": { "tokenPath": "srcToken" } },
           { "path": "destAmount", "label": "Minimum to receive", "format": "tokenAmount", "params": { "tokenPath": "destToken" } },
           { "path": "bridge.destinationChainId", "label": "Destination chain ID", "format": "raw" },
           { "path": "beneficiary", "label": "Beneficiary", "format": "raw" },
-          { "path": "deadline", "label": "Expiration time", "format": "raw" }
+          { "path": "deadline", "label": "Expiration time", "format": "date", "params": { "encoding": "timestamp" } }
         ]
       }
     }

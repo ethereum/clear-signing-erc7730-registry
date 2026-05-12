@@ -1,73 +1,59 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "FellowFund",
-    "contract": {
-      "abi": [
-        {
-          "inputs": [
-            { "name": "_metadata", "type": "string" },
-            { "name": "_funds", "type": "uint256" },
-            { "name": "_applicationDeadline", "type": "uint256" },
-            { "name": "_marketDeadline", "type": "uint256" },
-            { "name": "_epochDeadline", "type": "uint256" }
-          ],
-          "name": "createFellowship",
-          "type": "function"
-        },
-        {
-          "inputs": [{ "name": "fellowshipId", "type": "uint256" }, { "name": "metadata", "type": "string" }],
-          "name": "applyToFellowship",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "name": "fellowshipId", "type": "uint256" },
-            { "name": "applicationId", "type": "uint256" },
-            { "name": "achieved", "type": "bool" },
-            { "name": "proof", "type": "bytes" }
-          ],
-          "name": "setApplicantImpact",
-          "type": "function"
-        }
-      ],
-      "deployments": [{ "chainId": 1, "address": "0x25d598CBB74fa73290e74697616DE2740d280745" }]
-    }
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x25d598CBB74fa73290e74697616DE2740d280745" }] }
   },
   "metadata": {
     "owner": "FellowFund",
-    "info": { "legalName": "FellowFund", "url": "https://fellow-fund.vercel.app", "deploymentDate": "2024-03-14T00:00:00Z" }
+    "info": { "url": "https://fellow-fund.vercel.app", "deploymentDate": "2024-03-14T00:00:00Z" },
+    "contractName": "FellowFund"
   },
   "display": {
     "formats": {
-      "createFellowship(string _metadata,uint256 _funds,uint256 _applicationDeadline,uint256 _marketDeadline,uint256 _epochDeadline)": {
-        "intent": "Create Fellowship Program",
+      "createFellowship(string _metadata, uint256 _funds, uint256 _applicationDeadline, uint256 _marketDeadline, uint256 _epochDeadline)": {
+        "intent": "Create Fellowship",
         "fields": [
-          { "path": "_metadata", "label": "Program Details", "format": "raw" },
-          { "path": "_funds", "label": "Total Funding", "format": "amount" },
-          { "path": "_applicationDeadline", "label": "Application Deadline", "format": "date", "params": { "encoding": "timestamp" } },
-          { "path": "_marketDeadline", "label": "Market Phase Deadline", "format": "date", "params": { "encoding": "timestamp" } },
-          { "path": "_epochDeadline", "label": "Program End Date", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["_metadata", "_funds", "_applicationDeadline", "_marketDeadline", "_epochDeadline"]
+          { "path": "_metadata", "label": "Program Details", "format": "raw", "visible": "always" },
+          { "path": "_funds", "label": "Total Funding", "format": "amount", "visible": "always" },
+          {
+            "path": "_applicationDeadline",
+            "label": "Application Deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          {
+            "path": "_marketDeadline",
+            "label": "Market Deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          {
+            "path": "_epochDeadline",
+            "label": "Program End Date",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          }
+        ]
       },
-      "applyToFellowship(uint256 fellowshipId,string metadata)": {
-        "intent": "Apply to Fellowship Program",
+      "applyToFellowship(uint256 fellowshipId, string metadata)": {
+        "intent": "Apply to Fellowship",
         "fields": [
-          { "path": "fellowshipId", "label": "Fellowship Program ID", "format": "raw" },
-          { "path": "metadata", "label": "Application Details", "format": "raw" }
-        ],
-        "required": ["fellowshipId", "metadata"]
+          { "path": "fellowshipId", "label": "Fellowship ID", "format": "raw", "visible": "always" },
+          { "path": "metadata", "label": "Application Details", "format": "raw", "visible": "always" }
+        ]
       },
-      "setApplicantImpact(uint256 fellowshipId,uint256 applicationId,bool achieved,bytes proof)": {
-        "intent": "Verify Fellowship Impact",
+      "setApplicantImpact(uint256 fellowshipId, uint256 applicationId, bool achieved, bytes proof)": {
+        "intent": "Verify Impact",
         "fields": [
-          { "path": "fellowshipId", "label": "Fellowship Program ID", "format": "raw" },
-          { "path": "applicationId", "label": "Application ID", "format": "raw" },
-          { "path": "achieved", "label": "Impact Achieved", "format": "raw" },
-          { "path": "proof", "label": "Verification Proof", "format": "raw" }
-        ],
-        "required": ["fellowshipId", "applicationId", "achieved", "proof"]
+          { "path": "fellowshipId", "label": "Fellowship ID", "format": "raw", "visible": "always" },
+          { "path": "applicationId", "label": "Application ID", "format": "raw", "visible": "always" },
+          { "path": "achieved", "label": "Impact Achieved", "format": "raw", "visible": "always" },
+          { "path": "proof", "label": "Verification Proof", "format": "raw", "visible": "always" }
+        ]
       }
     }
   }

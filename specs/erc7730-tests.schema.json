@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/LedgerHQ/clear-signing-erc7730-registry/blob/master/specs/erc7730-tests.schema.json",
+  "title": "ERC-7730 Test Cases Schema",
+  "description": "Schema for defining test cases to validate ERC-7730 clear signing descriptors. Compatible with cs-tester format. Test files must be named <descriptor-name>.tests.json (e.g., calldata-MyContract.tests.json tests calldata-MyContract.json).",
+  "type": "object",
+  "required": ["$schema", "tests"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to the schema file"
+    },
+    "tests": {
+      "type": "array",
+      "description": "List of test cases (cs-tester compatible format)",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          { "$ref": "#/definitions/calldataTest" },
+          { "$ref": "#/definitions/eip712Test" }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "calldataTest": {
+      "type": "object",
+      "description": "Test case for a calldata (raw transaction) descriptor",
+      "required": ["rawTx"],
+      "properties": {
+        "rawTx": {
+          "type": "string",
+          "description": "Raw signed transaction hex string (0x prefixed)",
+          "pattern": "^0x[0-9a-fA-F]+$"
+        },
+        "txHash": {
+          "type": "string",
+          "description": "Transaction hash for reference (e.g., link to Etherscan)",
+          "pattern": "^0x[0-9a-fA-F]{64}$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of what this transaction tests",
+          "minLength": 1
+        },
+        "expectedTexts": {
+          "type": "array",
+          "description": "Expected text strings (labels and values) that should be displayed during clear signing",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "eip712Test": {
+      "type": "object",
+      "description": "Test case for an EIP-712 typed data descriptor",
+      "required": ["data"],
+      "properties": {
+        "data": {
+          "type": "object",
+          "description": "The complete EIP-712 typed data object",
+          "required": ["types", "primaryType", "domain", "message"],
+          "properties": {
+            "types": {
+              "type": "object",
+              "description": "Type definitions for the message"
+            },
+            "primaryType": {
+              "type": "string",
+              "description": "The primary type of the message"
+            },
+            "domain": {
+              "type": "object",
+              "description": "The EIP-712 domain separator"
+            },
+            "message": {
+              "type": "object",
+              "description": "The message data to sign"
+            }
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of what this message tests",
+          "minLength": 1
+        },
+        "expectedTexts": {
+          "type": "array",
+          "description": "Expected text strings (labels and values) that should be displayed during clear signing",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

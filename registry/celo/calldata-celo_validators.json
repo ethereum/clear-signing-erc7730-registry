@@ -1,0 +1,161 @@
+{
+  "$schema": "https://github.com/LedgerHQ/clear-signing-erc7730-registry/blob/master/specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Celo Validators",
+    "contract": {
+      "deployments": [
+        { "chainId": 42220, "address": "0xaEb865bCa93DdC8F47b8e29F40C5399cE34d0C58" },
+        { "chainId": 44787, "address": "0x9acF2A99914E083aD0d610672E93d14b0736BBCc" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Celo", "info": { "url": "https://celo.org/" }, "contractName": "Celo Validators" },
+  "display": {
+    "formats": {
+      "addFirstMember(address validator, address lesser, address greater)": {
+        "$id": "addFirstMember",
+        "intent": "Add Member",
+        "fields": [
+          {
+            "path": "validator",
+            "label": "Validator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          { "label": "Lesser", "path": "lesser", "visible": "never" },
+          { "label": "Greater", "path": "greater", "visible": "never" }
+        ]
+      },
+      "addMember(address validator)": {
+        "$id": "addMember",
+        "intent": "Add Member",
+        "fields": [
+          {
+            "path": "validator",
+            "label": "Validator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "affiliate(address group)": {
+        "$id": "affiliate",
+        "intent": "Affiliate",
+        "fields": [
+          {
+            "path": "group",
+            "label": "Validator Group",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "deaffiliate()": {
+        "$id": "deaffiliate",
+        "intent": "Deaffiliate",
+        "fields": [
+          {
+            "path": "@.from",
+            "label": "Validator Account",
+            "format": "addressName",
+            "params": { "types": ["eoa"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "deregisterValidator(uint256 index)": {
+        "$id": "deregisterValidator",
+        "intent": "Deregister",
+        "fields": [
+          {
+            "path": "@.from",
+            "label": "Validator Address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "index", "label": "Validator Index", "format": "raw", "visible": "always" }
+        ]
+      },
+      "deregisterValidatorGroup(uint256 index)": {
+        "$id": "deregisterValidatorGroup",
+        "intent": "Deregister Group",
+        "fields": [{ "path": "index", "label": "Group Index", "format": "raw", "visible": "always" }]
+      },
+      "registerValidator(bytes ecdsaPublicKey)": {
+        "$id": "registerValidator",
+        "intent": "Register Validator",
+        "fields": [{ "path": "ecdsaPublicKey", "label": "ECDSA Public Key", "format": "raw", "visible": "always" }]
+      },
+      "registerValidatorGroup(uint256 commission)": {
+        "$id": "registerValidatorGroup",
+        "intent": "Register Group",
+        "fields": [
+          {
+            "path": "commission",
+            "label": "Commission",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 22 },
+            "visible": "always"
+          }
+        ]
+      },
+      "registerValidatorNoBls(bytes ecdsaPublicKey)": {
+        "$id": "registerValidatorNoBls",
+        "intent": "Register Validator",
+        "fields": [{ "path": "ecdsaPublicKey", "label": "ECDSA Public Key", "format": "raw", "visible": "always" }]
+      },
+      "removeMember(address validator)": {
+        "$id": "removeMember",
+        "intent": "Remove Member",
+        "fields": [
+          {
+            "path": "validator",
+            "label": "Validator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "reorderMember(address validator, address lesserMember, address greaterMember)": {
+        "$id": "reorderMember",
+        "intent": "Reorder Member",
+        "fields": [
+          {
+            "path": "validator",
+            "label": "Validator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "lesserMember",
+            "label": "Place After",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "greaterMember",
+            "label": "Place Before",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "resetSlashingMultiplier()": {
+        "$id": "resetSlashingMultiplier",
+        "intent": "Reset Slashing",
+        "fields": [
+          { "path": "@.from", "label": "Signer", "format": "addressName", "params": { "types": ["eoa"] }, "visible": "always" },
+          { "value": "Resets group's slashing multiplier to 1 if reset period has passed", "label": "Effect", "format": "raw" }
+        ]
+      }
+    }
+  }
+}

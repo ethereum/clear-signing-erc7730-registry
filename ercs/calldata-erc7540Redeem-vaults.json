@@ -1,0 +1,101 @@
+{
+  "$schema": "../specs/erc7730-v2.schema.json",
+  "context": { "contract": {} },
+  "metadata": { "constants": { "underlyingToken": "0x0" } },
+  "display": {
+    "formats": {
+      "redeem(uint256 shares, address receiver, address controller)": {
+        "intent": "Claim redemption",
+        "fields": [
+          {
+            "path": "shares",
+            "label": "Amount of shares to finalize redemption for",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "Send assets to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "controller",
+            "label": "Controller of the request",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdraw(uint256 assets, address receiver, address controller)": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Claim withdrawal", "format": "raw", "value": "$.metadata.constants.underlyingTicker" },
+          {
+            "path": "assets",
+            "label": "Amount of assets to receive",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "Send assets to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "controller",
+            "label": "Controller of the request",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "requestRedeem(uint256 shares, address controller, address owner)": {
+        "intent": "Request redemption",
+        "fields": [
+          {
+            "path": "shares",
+            "label": "Amount of shares to request redemption for",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "controller",
+            "label": "Controller of the request",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "owner",
+            "label": "Owner of the shares",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "setOperator(address operator, bool approved)": {
+        "intent": "Set operator",
+        "fields": [
+          {
+            "path": "operator",
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          { "path": "approved", "label": "Approved", "format": "raw", "visible": "always" }
+        ]
+      }
+    }
+  }
+}

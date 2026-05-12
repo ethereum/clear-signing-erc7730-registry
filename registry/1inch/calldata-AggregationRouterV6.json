@@ -1,10 +1,9 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "includes": "common-AggregationRouterV6.json",
   "context": {
     "$id": "AggregationRouterV6",
     "contract": {
-      "abi": "https://api.etherscan.io/api?module=contract&action=getabi&address=0x111111125421cA6dc452d289314280a0f8842A65",
       "deployments": [
         { "chainId": 1, "address": "0x111111125421cA6dc452d289314280a0f8842A65" },
         { "chainId": 10, "address": "0x111111125421cA6dc452d289314280a0f8842A65" },
@@ -28,26 +27,49 @@
         "$id": "clipperSwap",
         "intent": "Swap",
         "fields": [
-          { "path": "inputAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken.[-20:]" } },
-          { "path": "outputAmount", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "dstToken" } },
-          { "path": "@.from", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "goodUntil", "$ref": "$.display.definitions.expirationTime" }
-        ],
-        "required": ["srcToken", "dstToken", "inputAmount", "outputAmount", "@.from", "goodUntil"],
-        "excluded": ["clipperExchange", "r", "vs"]
+          {
+            "path": "inputAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "srcToken.[-20:]" },
+            "visible": "always"
+          },
+          {
+            "path": "outputAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "dstToken" },
+            "visible": "always"
+          },
+          { "path": "@.from", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          { "path": "goodUntil.[-4:]", "$ref": "$.display.definitions.expirationTime" },
+          { "label": "Clipper Exchange", "path": "clipperExchange", "visible": "never" },
+          { "label": "R", "path": "r", "visible": "never" },
+          { "label": "Vs", "path": "vs", "visible": "never" }
+        ]
       },
       "clipperSwapTo(address clipperExchange, address recipient, uint256 srcToken, address dstToken, uint256 inputAmount, uint256 outputAmount, uint256 goodUntil, bytes32 r, bytes32 vs)": {
         "$id": "clipperSwapTo",
         "intent": "Swap",
         "fields": [
-          { "path": "inputAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken.[-20:]" } },
-          { "path": "outputAmount", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "dstToken" } },
-          { "path": "recipient", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "goodUntil", "$ref": "$.display.definitions.expirationTime" }
-        ],
-        "required": ["srcToken", "dstToken", "inputAmount", "outputAmount", "recipient", "goodUntil"],
-        "excluded": ["clipperExchange", "r", "vs"]
+          {
+            "path": "inputAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "srcToken.[-20:]" },
+            "visible": "always"
+          },
+          {
+            "path": "outputAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "dstToken" },
+            "visible": "always"
+          },
+          { "path": "recipient", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          { "path": "goodUntil.[-4:]", "$ref": "$.display.definitions.expirationTime" },
+          { "label": "Clipper Exchange", "path": "clipperExchange", "visible": "never" },
+          { "label": "R", "path": "r", "visible": "never" },
+          { "label": "Vs", "path": "vs", "visible": "never" }
+        ]
       }
     }
-  }
+  },
+  "metadata": { "contractName": "AggregationRouterV6" }
 }

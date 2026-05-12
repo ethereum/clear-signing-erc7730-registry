@@ -1,0 +1,109 @@
+---
+description: Run clear signing tests on ERC-7730 descriptors using Ledger device emulator (Speculos)
+globs: registry/**/*.json, registry/**/tests/*.tests.json
+alwaysApply: false
+---
+
+# Clear Signing Tester
+
+When the user wants to test ERC-7730 descriptors against Ledger hardware device emulators using Speculos, use this tool.
+
+## Setup (first time only)
+
+```bash
+cd tools/tester && ./setup.sh
+```
+
+Requires access to private `LedgerHQ/coin-apps` repository.
+
+## Command
+
+```bash
+cd tools/tester && ./run-test.sh <descriptor-file> <test-file> [device] [log-level]
+```
+
+## Arguments
+
+| Argument | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `descriptor-file` | Yes | - | Path to the ERC-7730 descriptor JSON file |
+| `test-file` | Yes | - | Path to the test JSON file (*.tests.json) |
+| `device` | No | `flex` | Device: `flex`, `stax`, `nanosp`, `nanox` |
+| `log-level` | No | `info` | Level: `none`, `error`, `warn`, `info`, `debug` |
+
+## Examples
+
+Test on Ledger Flex:
+
+```bash
+export GATING_TOKEN='your-token'
+cd tools/tester && ./run-test.sh \
+    ../../registry/circle/eip712-TransferWithAuthorization.json \
+    ../../registry/circle/tests/eip712-TransferWithAuthorization.tests.json \
+    flex
+```
+
+Test on Ledger Stax with debug logging:
+
+```bash
+cd tools/tester && ./run-test.sh \
+    ../../registry/1inch/calldata-AggregationRouterV6.json \
+    ../../registry/1inch/tests/calldata-AggregationRouterV6.tests.json \
+    stax \
+    debug
+```
+
+Test on Nano S Plus:
+
+```bash
+cd tools/tester && ./run-test.sh \
+    ../../registry/uniswap/eip712-permit2.json \
+    ../../registry/uniswap/tests/eip712-permit2.tests.json \
+    nanosp
+```
+
+## Supported Devices
+
+| Device | Flag | Description |
+|--------|------|-------------|
+| Ledger Flex | `flex` | Large touchscreen device |
+| Ledger Stax | `stax` | E-ink touchscreen device |
+| Ledger Nano S Plus | `nanosp` | Compact USB device |
+| Ledger Nano X | `nanox` | Bluetooth-enabled device |
+
+## Prerequisites
+
+- Docker running
+- Node.js v18+
+- pnpm (`npm install -g pnpm`)
+- Environment variable: `GATING_TOKEN` (Ledger auth token)
+
+## Output Files
+
+After running tests:
+
+| File | Location | Description |
+|------|----------|-------------|
+| Screenshots | `tools/tester/output/screenshots/` | Device screen captures |
+| Test log | `tools/tester/output/logs/test-output-*.log` | Full test execution log |
+| APDU log | `tools/tester/output/logs/apdu-log-*.txt` | Raw APDU exchanges |
+
+## Analyzing Results
+
+Parse APDU logs:
+
+```bash
+cd tools/tester && ./parse-apdu.sh output/logs/apdu-log-*.txt
+```
+
+Filter raw APDU exchanges:
+
+```bash
+cd tools/tester && ./filter-apdu.sh output/logs/apdu-log-*.txt
+```
+
+Find errors in parsed logs:
+
+```bash
+grep "INVALID_DATA" tools/tester/output/logs/apdu-log-*.parsed.txt
+```

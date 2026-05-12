@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Permit": [
+            { "name": "owner", "type": "address" },
+            { "name": "spender", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "Wrapped BTC",
+          "version": "1",
+          "chainId": 59144,
+          "verifyingContract": "0x3aAB2285ddcDdaD8edf438C1bAB47e1a9D05a9b4"
+        },
+        "message": {
+          "owner": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+          "spender": "0x1111111254EEB25477B68fb85Ed929f73A960582",
+          "value": 12500000,
+          "nonce": 12,
+          "deadline": 1776816000
+        }
+      },
+      "expectedTexts": [
+        "Spender",
+        "0x1111111254EEB25477 B68fb85Ed929f73A960 582",
+        "Max spending amount",
+        "0.125 WBTC",
+        "Valid until",
+        "2026-04-22 12:00:00 AM UTC"
+      ]
+    }
+  ]
+}

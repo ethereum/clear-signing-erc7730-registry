@@ -1,0 +1,59 @@
+---
+description: Lint and validate ERC-7730 descriptor files using the python-erc7730 CLI
+globs: registry/**/*.json
+alwaysApply: false
+---
+
+# Lint ERC-7730 Files
+
+When the user wants to validate, lint, or format ERC-7730 descriptor files, use this tool.
+
+## Setup (first time only)
+
+```bash
+cd tools/linter && ./setup.sh
+```
+
+## Command
+
+Before running any commands, activate the virtual environment:
+
+```bash
+source .env && source tools/linter/.venv/bin/activate
+```
+
+### Lint Files
+
+Validate all registry files:
+
+```bash
+source .env && source tools/linter/.venv/bin/activate && erc7730 lint registry/
+```
+
+Validate a specific file:
+
+```bash
+source .env && source tools/linter/.venv/bin/activate && erc7730 lint registry/uniswap/calldata-permit2.json
+```
+
+## Other Commands
+
+| Command | Description |
+|---------|-------------|
+| `erc7730 lint <path>` | Validate descriptor files |
+| `erc7730 format <path>` | Format descriptor files |
+| `erc7730 generate <abi>` | Generate descriptor from ABI |
+| `erc7730 resolve <path>` | Convert to resolved form |
+| `erc7730 schema` | Print JSON schema |
+| `erc7730 --help` | Show all available commands |
+
+## Prerequisites
+
+- Python 3.12+
+- Environment variable: `ETHERSCAN_API_KEY` (for ABI validation)
+
+## One-liner
+
+```bash
+source .env && source tools/linter/.venv/bin/activate && erc7730 lint registry/
+```

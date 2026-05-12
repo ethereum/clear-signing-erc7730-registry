@@ -1,0 +1,74 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Hyperliquid - CctpExtension",
+    "contract": { "deployments": [{ "chainId": 42161, "address": "0xA95d9c1F655341597C94393fDdc30cf3c08E4fcE" }] }
+  },
+  "metadata": {
+    "owner": "Circle Internet Financial",
+    "info": { "url": "https://www.circle.com/" },
+    "constants": { "usdcToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831" },
+    "enums": { "cctpDomains": { "19": "HyperEVM" }, "destinationDex": { "0": "Perp", "255": "Spot" } },
+    "contractName": "Hyperliquid - CctpExtension"
+  },
+  "display": {
+    "formats": {
+      "batchDepositForBurnWithAuth((uint256 amount, uint256 authValidAfter, uint256 authValidBefore, bytes32 authNonce, uint8 v, bytes32 r, bytes32 s) _receiveWithAuthorizationData, (uint256 amount, uint32 destinationDomain, bytes32 mintRecipient, bytes32 destinationCaller, uint256 maxFee, uint32 minFinalityThreshold, bytes hookData) _depositForBurnData)": {
+        "intent": "Bridge USDC via CCTP",
+        "fields": [
+          {
+            "path": "_depositForBurnData.amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.usdcToken" },
+            "visible": "always"
+          },
+          {
+            "path": "_depositForBurnData.destinationDomain",
+            "label": "Destination chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.cctpDomains" },
+            "visible": "always"
+          },
+          {
+            "path": "_depositForBurnData.mintRecipient.[-20:]",
+            "label": "Mint recipient",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] }
+          },
+          {
+            "path": "_depositForBurnData.destinationCaller.[-20:]",
+            "label": "Destination caller",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] }
+          },
+          {
+            "path": "_depositForBurnData.maxFee",
+            "label": "Max fee",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.usdcToken" },
+            "visible": "always"
+          },
+          {
+            "path": "_depositForBurnData.hookData.[32:52]",
+            "label": "HyperEVM recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "_depositForBurnData.hookData.[52:53]",
+            "label": "Destination DEX",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.destinationDex" }
+          },
+          { "label": "Receive With Authorization Data", "path": "_receiveWithAuthorizationData", "visible": "never" },
+          {
+            "label": "Deposit For Burn Data Min Finality Threshold",
+            "path": "_depositForBurnData.minFinalityThreshold",
+            "visible": "never"
+          }
+        ]
+      }
+    }
+  }
+}

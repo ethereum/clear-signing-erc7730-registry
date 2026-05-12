@@ -1,85 +1,78 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
-  "context": {
-    "$id": "wstETH",
-    "contract": {
-      "deployments": [{ "chainId": 1, "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0" }],
-      "abi": "https://github.com/LedgerHQ/ledger-asset-dapps/blob/211e75ed27de3894f592ca73710fa0b72c3ceeae/ethereum/lido/abis/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.abi.json"
-    }
-  },
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "$id": "wstETH", "contract": { "deployments": [{ "chainId": 1, "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0" }] } },
   "metadata": {
     "owner": "Lido DAO",
-    "info": { "legalName": "Lido DAO", "url": "https://lido.fi" },
+    "info": { "url": "https://lido.fi" },
     "constants": {
       "stETHaddress": "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
       "wstETHaddress": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
-    }
+    },
+    "contractName": "wstETH"
   },
   "display": {
     "formats": {
-      "approve(address,uint256)": {
-        "intent": "authorize wstETH spending",
+      "approve(address spender, uint256 amount)": {
+        "intent": "Authorize spending",
         "fields": [
           {
             "label": "Spender",
             "format": "addressName",
             "params": { "types": ["contract"], "sources": ["local"] },
-            "path": "#.spender"
+            "path": "#.spender",
+            "visible": "always"
           },
           {
             "label": "Amount",
             "format": "tokenAmount",
             "path": "#.amount",
-            "params": { "token": "$.metadata.constants.wstETHaddress" }
+            "params": { "token": "$.metadata.constants.wstETHaddress" },
+            "visible": "always"
           }
-        ],
-        "required": ["#.spender", "#.amount"],
-        "excluded": []
+        ]
       },
-      "wrap(uint256)": {
-        "intent": "wrap stETH to wstETH",
+      "wrap(uint256 _stETHAmount)": {
+        "intent": "Wrap stETH",
         "fields": [
           {
             "label": "stETH amount",
             "format": "tokenAmount",
             "path": "#._stETHAmount",
-            "params": { "token": "$.metadata.constants.stETHaddress" }
+            "params": { "token": "$.metadata.constants.stETHaddress" },
+            "visible": "always"
           }
-        ],
-        "required": ["#._stETHAmount"],
-        "excluded": []
+        ]
       },
-      "unwrap(uint256)": {
-        "intent": "unwrap wstETH to stETH",
+      "unwrap(uint256 _wstETHAmount)": {
+        "intent": "Unwrap wstETH to stETH",
         "fields": [
           {
             "label": "wstETH amount",
             "format": "tokenAmount",
             "path": "#._wstETHAmount",
-            "params": { "token": "$.metadata.constants.wstETHaddress" }
+            "params": { "token": "$.metadata.constants.wstETHaddress" },
+            "visible": "always"
           }
-        ],
-        "required": ["#._wstETHAmount"],
-        "excluded": []
+        ]
       },
-      "transfer(address,uint256)": {
-        "intent": "transfer wstETH",
+      "transfer(address recipient, uint256 amount)": {
+        "intent": "Transfer wstETH",
         "fields": [
           {
             "label": "Recipient",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
-            "path": "#.recipient"
+            "path": "#.recipient",
+            "visible": "always"
           },
           {
             "label": "Amount",
             "format": "tokenAmount",
             "path": "#.amount",
-            "params": { "token": "$.metadata.constants.wstETHaddress" }
+            "params": { "token": "$.metadata.constants.wstETHaddress" },
+            "visible": "always"
           }
-        ],
-        "required": ["#.recipient", "#.amount"],
-        "excluded": []
+        ]
       }
     }
   }

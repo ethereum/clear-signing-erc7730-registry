@@ -1,0 +1,61 @@
+name: Notify Fork PR
+
+on:
+  workflow_run:
+    workflows: ["Clear Signing Tests"]
+    types: [completed]
+
+permissions:
+  pull-requests: write
+  actions: read
+
+jobs:
+  notify:
+    name: Post fork PR notification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download PR metadata
+        id: download
+        uses: actions/download-artifact@v8
+        with:
+          name: pr-metadata
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+        continue-on-error: true
+
+      - name: Post notification comment
+        if: steps.download.outcome == 'success'
+        uses: actions/github-script@v9.0.0
+        with:
+          script: |
+            const fs = require('fs');
+            const metadata = JSON.parse(fs.readFileSync('pr-metadata.json', 'utf8'));
+
+            if (!metadata.needs_notification) return;
+
+            const label = 'run-tests';
+            const body = [
+              '## 🧪 Clear Signing Tests',
+              '',
+              '> ⏳ **Waiting for maintainer approval to run tests.**',
+              '',
+              `This PR is from a fork. A maintainer needs to add the \`${label}\` label to trigger the clear signing tests.`,
+              '',
+              'Once approved, the tests will run automatically and post screenshots here.',
+            ].join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: metadata.pr_number
+            });
+            const existing = comments.find(c => c.user.type === 'Bot' && c.body.includes('Clear Signing Tests'));
+
+            if (!existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: metadata.pr_number,
+                body
+              });
+            }

@@ -3,7 +3,7 @@ name: 🤖 format descriptors
 
 on:
   schedule:
-    - cron: '0 7 * * *'
+    - cron: "0 7 * * *"
   workflow_dispatch:
 
 permissions:
@@ -19,13 +19,12 @@ env:
 jobs:
   format:
     name: format descriptors
-    runs-on: public-ledgerhq-shared-small
+    runs-on: unbuntu-latest
     timeout-minutes: 60
     steps:
-
       - name: Checkout
         timeout-minutes: 10
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
 
       - name: Get date
         timeout-minutes: 10
@@ -35,20 +34,12 @@ jobs:
         timeout-minutes: 10
         uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
-          cache: 'pip'
-
-      - name: Login to Ledger JFrog
-        timeout-minutes: 10
-        uses: LedgerHQ/actions-security/actions/jfrog-login@actions/jfrog-login-1
-
-      - name: Setup pip
-        timeout-minutes: 10
-        run: jf pipc --global --repo-resolve=virtual-pypi-prod-green
+          python-version: "3.12"
+          cache: "pip"
 
       - name: Install ERC-7730 library
         timeout-minutes: 10
-        run: jf pip install erc7730
+        run: pip install erc7730
 
       - name: Format ERC-7730 descriptors
         timeout-minutes: 10
@@ -64,15 +55,15 @@ jobs:
       - name: Open pull request
         if: ${{ !cancelled() && steps.changes.outputs.changes == 'true' }}
         timeout-minutes: 10
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.CI_BOT_TOKEN }}
           author: ${{ secrets.CI_BOT_USERNAME }} <${{ secrets.CI_BOT_USERNAME }}@users.noreply.github.com>
           branch: ${{ env.BRANCH }}-format-descriptors
           base: ${{ env.BRANCH }}
           delete-branch: false
-          commit-message: 'chore: format descriptors - ${{ env.CURRENT_DATE }}'
-          title: 'chore: format descriptors - ${{ env.CURRENT_DATE }}'
+          commit-message: "chore: format descriptors - ${{ env.CURRENT_DATE }}"
+          title: "chore: format descriptors - ${{ env.CURRENT_DATE }}"
           body: ${{ steps.submodules.outputs.prBody }}
           draft: false
           signoff: false

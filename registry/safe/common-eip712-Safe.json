@@ -1,101 +1,15 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
-  "context": {
-    "eip712": {
-      "schemas": [
-        {
-          "primaryType": "SafeTx",
-          "types": {
-            "EIP712Domain": [
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "SafeTx": [
-              { "type": "address", "name": "to" },
-              { "type": "uint256", "name": "value" },
-              { "type": "bytes", "name": "data" },
-              { "type": "uint8", "name": "operation" },
-              { "type": "uint256", "name": "safeTxGas" },
-              { "type": "uint256", "name": "baseGas" },
-              { "type": "uint256", "name": "gasPrice" },
-              { "type": "address", "name": "gasToken" },
-              { "type": "address", "name": "refundReceiver" },
-              { "type": "uint256", "name": "nonce" }
-            ]
-          }
-        },
-        {
-          "primaryType": "DeleteRequest",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "DeleteRequest": [
-              { "type": "bytes32", "name": "safeTxHash" },
-              { "type": "uint256", "name": "totp" }
-            ]
-          }
-        },
-        {
-          "primaryType": "Delegate",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "Delegate": [
-              { "type": "address", "name": "delegateAddress" },
-              { "type": "uint256", "name": "totp" }
-            ]
-          }
-        },
-        {
-          "primaryType": "AddProposer",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "AddProposer": [
-              { "type": "address", "name": "delegateAddress" },
-              { "type": "uint256", "name": "totp" }
-            ]
-          }
-        },
-        {
-          "primaryType": "RemoveProposer",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "RemoveProposer": [
-              { "type": "address", "name": "delegateAddress" },
-              { "type": "uint256", "name": "totp" }
-            ]
-          }
-        }
-      ]
-    }
-  },
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "display": {
     "formats": {
-      "SafeTx": {
+      "SafeTx(address to,uint256 value,bytes data,uint8 operation,uint256 safeTxGas,uint256 baseGas,uint256 gasPrice,address gasToken,address refundReceiver,uint256 nonce)": {
         "intent": "Safe",
         "fields": [
           {
             "path": "operation",
             "label": "Operation type",
-            "format": "raw"
+            "format": "raw",
+            "visible": "always"
           },
           {
             "path": "data",
@@ -105,17 +19,20 @@
               "calleePath": "to",
               "amountPath": "value",
               "spenderPath": "@.to"
-            }
+            },
+            "visible": "always"
           },
           {
             "path": "baseGas",
             "label": "Gas amount",
-            "format": "raw"
+            "format": "raw",
+            "visible": "always"
           },
           {
             "path": "gasPrice",
             "label": "Gas price",
-            "format": "raw"
+            "format": "raw",
+            "visible": "always"
           },
           {
             "path": "gasToken",
@@ -125,59 +42,20 @@
           {
             "path": "refundReceiver",
             "label": "Gas receiver",
-            "format": "raw"
-          }
-        ],
-        "required": ["data", "operation", "baseGas", "gasPrice", "refundReceiver"],
-        "excluded": ["safeTxGas", "nonce"]
-      },
-      "DeleteRequest": {
-        "intent": "Reject transaction",
-        "fields": [
+            "format": "raw",
+            "visible": "always"
+          },
           {
-            "path": "safeTxHash",
-            "label": "Safe TX hash",
-            "format": "raw"
-          }
-        ],
-        "required": ["safeTxHash"],
-        "excluded": ["totp"]
-      },
-      "Delegate": {
-        "intent": "Add or remove proposer",
-        "fields": [
+            "label": "Safe Tx Gas",
+            "path": "safeTxGas",
+            "visible": "never"
+          },
           {
-            "path": "delegateAddress",
-            "label": "Proposer address",
-            "format": "raw"
+            "label": "Nonce",
+            "path": "nonce",
+            "visible": "never"
           }
-        ],
-        "required": ["safeTxHash"],
-        "excluded": ["totp"]
-      },
-      "AddProposer": {
-        "intent": "Add proposer",
-        "fields": [
-          {
-            "path": "delegateAddress",
-            "label": "Proposer address",
-            "format": "raw"
-          }
-        ],
-        "required": ["safeTxHash"],
-        "excluded": ["totp"]
-      },
-      "RemoveProposer": {
-        "intent": "Remove proposer",
-        "fields": [
-          {
-            "path": "delegateAddress",
-            "label": "Proposer address",
-            "format": "raw"
-          }
-        ],
-        "required": ["safeTxHash"],
-        "excluded": ["totp"]
+        ]
       }
     }
   }

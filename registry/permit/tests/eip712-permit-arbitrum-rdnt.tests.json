@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Permit": [
+            { "name": "owner", "type": "address" },
+            { "name": "spender", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": { "name": "Radiant", "version": "1", "chainId": 42161, "verifyingContract": "0x3082CC23568eA640225c2467653dB90e9250AaA0" },
+        "message": {
+          "owner": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+          "spender": "0x794a61358D6845594F94dc1DB02A252b5b4814aD",
+          "value": "2500000000000000000000",
+          "nonce": "7",
+          "deadline": "1776729600"
+        }
+      },
+      "expectedTexts": [
+        "Spender",
+        "0x794a61358D684559 4F94dc1DB02A252b5b 4814aD",
+        "Max spending amount",
+        "2500 RDNT",
+        "Valid until",
+        "2026-04-21 12:00:00 AM UTC"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "UniswapX V2 Dutch Order",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "TokenPermissions": [{ "name": "token", "type": "address" }, { "name": "amount", "type": "uint256" }],
+          "DutchOutput": [
+            { "name": "token", "type": "address" },
+            { "name": "startAmount", "type": "uint256" },
+            { "name": "endAmount", "type": "uint256" },
+            { "name": "recipient", "type": "address" }
+          ],
+          "OrderInfo": [
+            { "name": "reactor", "type": "address" },
+            { "name": "swapper", "type": "address" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" },
+            { "name": "additionalValidationContract", "type": "address" },
+            { "name": "additionalValidationData", "type": "bytes" }
+          ],
+          "V2DutchOrder": [
+            { "name": "info", "type": "OrderInfo" },
+            { "name": "cosigner", "type": "address" },
+            { "name": "baseInputToken", "type": "address" },
+            { "name": "baseInputStartAmount", "type": "uint256" },
+            { "name": "baseInputEndAmount", "type": "uint256" },
+            { "name": "baseOutputs", "type": "DutchOutput[]" }
+          ],
+          "PermitWitnessTransferFrom": [
+            { "name": "permitted", "type": "TokenPermissions" },
+            { "name": "spender", "type": "address" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" },
+            { "name": "witness", "type": "V2DutchOrder" }
+          ]
+        },
+        "primaryType": "PermitWitnessTransferFrom",
+        "domain": { "name": "Permit2", "chainId": 1, "verifyingContract": "0x000000000022D473030F116dDEE9F6B43aC78BA3" },
+        "message": {
+          "permitted": { "token": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "amount": "2500000000" },
+          "spender": "0x6000da47483062A0D734Ba3dc7576Ce6A0B645C4",
+          "nonce": "842119337501",
+          "deadline": "1776988800",
+          "witness": {
+            "info": {
+              "reactor": "0x6000da47483062A0D734Ba3dc7576Ce6A0B645C4",
+              "swapper": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+              "nonce": "842119337501",
+              "deadline": "1776902400",
+              "additionalValidationContract": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+              "additionalValidationData": "0x"
+            },
+            "cosigner": "0x3fC91A3afd70395Cd496C647d5a6Cc9D4B2b7FAD",
+            "baseInputToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "baseInputStartAmount": "2500000000",
+            "baseInputEndAmount": "2450000000",
+            "baseOutputs": [
+              {
+                "token": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+                "startAmount": "980000000000000000",
+                "endAmount": "950000000000000000",
+                "recipient": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+              },
+              {
+                "token": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "startAmount": "5000000",
+                "endAmount": "5000000",
+                "recipient": "0x3fC91A3afd70395Cd496C647d5a6Cc9D4B2b7FAD"
+              }
+            ]
+          }
+        }
+      },
+      "expectedTexts": [
+        "Approve amount",
+        "2500 USDC",
+        "Approve to spender",
+        "0x6000da47483062A0 D734Ba3dc7576Ce6A0 B645C4",
+        "Approval expire",
+        "2026-04-24 12:00:00 AM UTC",
+        "Spend max",
+        "2500 USDC Min amount to receive 950000000000000000 ???"
+      ]
+    }
+  ]
+}

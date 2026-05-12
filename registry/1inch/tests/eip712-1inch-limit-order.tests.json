@@ -1,0 +1,50 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "1inch limit order - swap DAI for USDC",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "OrderStructure": [
+            { "name": "salt", "type": "uint256" },
+            { "name": "maker", "type": "address" },
+            { "name": "receiver", "type": "address" },
+            { "name": "makerAsset", "type": "address" },
+            { "name": "takerAsset", "type": "address" },
+            { "name": "makingAmount", "type": "uint256" },
+            { "name": "takingAmount", "type": "uint256" },
+            { "name": "makerTraits", "type": "uint256" }
+          ]
+        },
+        "primaryType": "OrderStructure",
+        "domain": { "name": "1inch", "version": "4", "chainId": 1, "verifyingContract": "0x119c71d3bbac22029622cbaec24854d3d32d2828" },
+        "message": {
+          "salt": "12345678901234567890123456789012345678901234567890123456789012345678",
+          "maker": "0x1234567890123456789012345678901234567890",
+          "receiver": "0x0987654321098765432109876543210987654321",
+          "makerAsset": "0x6b175474e89094c44da98b954eedeac495271d0f",
+          "takerAsset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "makingAmount": "1000000000000000000000",
+          "takingAmount": "999000000",
+          "makerTraits": "0"
+        }
+      },
+      "expectedTexts": [
+        "From",
+        "0x12345678901234567 890123456789012345 67890",
+        "To",
+        "0x0987654321098765 432109876543210987 654321",
+        "Send",
+        "1000 DAI",
+        "Receive minimum",
+        "999 USDC"
+      ]
+    }
+  ]
+}

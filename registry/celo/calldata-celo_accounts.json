@@ -1,0 +1,275 @@
+{
+  "$schema": "https://github.com/LedgerHQ/clear-signing-erc7730-registry/blob/master/specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Celo Accounts",
+    "contract": {
+      "deployments": [
+        { "chainId": 42220, "address": "0x7d21685C17607338b313a7174bAb6620baD0aaB7" },
+        { "chainId": 44787, "address": "0xed7f51A34B4e71fbE69B3091FcF879cD14bD73A9" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Celo", "info": { "url": "https://celo.org/" }, "contractName": "Celo Accounts" },
+  "display": {
+    "formats": {
+      "addStorageRoot(bytes url)": {
+        "$id": "addStorageRoot",
+        "intent": "Add Storage Root",
+        "fields": [{ "path": "url", "label": "Storage Root URL", "format": "raw", "visible": "always" }]
+      },
+      "authorizeAttestationSigner(address signer, uint8 v, bytes32 r, bytes32 s)": {
+        "$id": "authorizeAttestationSigner",
+        "intent": "Authorize Signer",
+        "fields": [
+          {
+            "path": "signer",
+            "label": "Authorized Signer",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "@.from",
+            "label": "Authorizer",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "label": "V", "path": "v", "visible": "never" },
+          { "label": "R", "path": "r", "visible": "never" },
+          { "label": "S", "path": "s", "visible": "never" }
+        ]
+      },
+      "authorizeSigner(address signer, bytes32 role)": {
+        "$id": "authorizeSigner",
+        "intent": "Authorize Signer",
+        "fields": [
+          {
+            "path": "signer",
+            "label": "Signer",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "role", "label": "Role", "format": "raw", "visible": "always" }
+        ]
+      },
+      "authorizeSignerWithSignature(address signer, bytes32 role, uint8 v, bytes32 r, bytes32 s)": {
+        "$id": "authorizeSignerWithSignature",
+        "intent": "Authorize Signer",
+        "fields": [
+          {
+            "path": "signer",
+            "label": "Signer",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "role", "label": "Role", "format": "raw", "visible": "always" },
+          { "label": "V", "path": "v", "visible": "never" },
+          { "label": "R", "path": "r", "visible": "never" },
+          { "label": "S", "path": "s", "visible": "never" }
+        ]
+      },
+      "authorizeValidatorSigner(address signer, uint8 v, bytes32 r, bytes32 s)": {
+        "$id": "authorizeValidatorSigner",
+        "intent": "Authorize Validator",
+        "fields": [
+          {
+            "path": "signer",
+            "label": "Validator Signer",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "label": "V", "path": "v", "visible": "never" },
+          { "label": "R", "path": "r", "visible": "never" },
+          { "label": "S", "path": "s", "visible": "never" }
+        ]
+      },
+      "authorizeValidatorSignerWithPublicKey(address signer, uint8 v, bytes32 r, bytes32 s, bytes ecdsaPublicKey)": {
+        "$id": "authorizeValSignerPK",
+        "intent": "Authorize Validator",
+        "fields": [
+          {
+            "path": "signer",
+            "label": "Authorized Signer",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "ecdsaPublicKey", "label": "Public Key", "format": "raw", "visible": "always" },
+          { "label": "V", "path": "v", "visible": "never" },
+          { "label": "R", "path": "r", "visible": "never" },
+          { "label": "S", "path": "s", "visible": "never" }
+        ]
+      },
+      "authorizeVoteSigner(address signer, uint8 v, bytes32 r, bytes32 s)": {
+        "$id": "authorizeVoteSigner",
+        "intent": "Authorize & Set Vote",
+        "fields": [
+          {
+            "path": "signer",
+            "label": "Authorized Signer",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "label": "V", "path": "v", "visible": "never" },
+          { "label": "R", "path": "r", "visible": "never" },
+          { "label": "S", "path": "s", "visible": "never" }
+        ]
+      },
+      "completeSignerAuthorization(address account, bytes32 role)": {
+        "$id": "completeSignerAuthorization",
+        "intent": "Authorize Signer",
+        "fields": [
+          {
+            "path": "account",
+            "label": "Authorizing Account",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "role", "label": "Role ID", "format": "raw", "visible": "always" }
+        ]
+      },
+      "createAccount()": {
+        "$id": "createAccount",
+        "intent": "Create Account",
+        "fields": [
+          {
+            "path": "@.from",
+            "label": "Account Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "deletePaymentDelegation()": {
+        "$id": "deletePaymentDelegation",
+        "intent": "Delete Delegation",
+        "fields": [
+          {
+            "path": "@.from",
+            "label": "Account",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "removeAttestationSigner()": {
+        "$id": "removeAttestationSigner",
+        "intent": "Remove Signer",
+        "fields": [
+          {
+            "path": "@.from",
+            "label": "Your Account",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "removeDefaultSigner(bytes32 role)": {
+        "$id": "removeDefaultSigner",
+        "intent": "Remove Signer",
+        "fields": [
+          {
+            "path": "@.from",
+            "label": "Account",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "role", "label": "Role", "format": "raw", "visible": "always" }
+        ]
+      },
+      "removeIndexedSigner(bytes32 role)": {
+        "$id": "removeIndexedSigner",
+        "intent": "Remove Signer",
+        "fields": [{ "path": "role", "label": "Role", "format": "raw", "visible": "always" }]
+      },
+      "removeSigner(address signer, bytes32 role)": {
+        "$id": "removeSigner",
+        "intent": "Remove Signer",
+        "fields": [
+          {
+            "path": "signer",
+            "label": "Signer",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "role", "label": "Role", "format": "raw", "visible": "always" }
+        ]
+      },
+      "removeStorageRoot(uint256 index)": {
+        "$id": "removeStorageRoot",
+        "intent": "Remove Root",
+        "fields": [
+          { "path": "index", "label": "Storage Root Index", "format": "raw", "visible": "always" },
+          {
+            "path": "@.from",
+            "label": "Account",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "removeValidatorSigner()": {
+        "$id": "removeValidatorSigner",
+        "intent": "Remove Signer",
+        "fields": [
+          {
+            "path": "@.from",
+            "label": "Your Account",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "removeVoteSigner()": {
+        "$id": "removeVoteSigner",
+        "intent": "Remove Vote Signer",
+        "fields": [
+          {
+            "path": "@.from",
+            "label": "Account",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "setMetadataURL(string metadataURL)": {
+        "$id": "setMetadataURL",
+        "intent": "Set Metadata URL",
+        "fields": [{ "path": "metadataURL", "label": "Metadata URL", "format": "raw", "visible": "always" }]
+      },
+      "setName(string name)": {
+        "$id": "setName",
+        "intent": "Set Account Name",
+        "fields": [{ "path": "name", "label": "Name", "format": "raw", "visible": "always" }]
+      },
+      "setPaymentDelegation(address beneficiary, uint256 fraction)": {
+        "$id": "setPaymentDelegation",
+        "intent": "Delegate Payment",
+        "fields": [
+          {
+            "path": "beneficiary",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["ens", "local"] },
+            "visible": "always"
+          },
+          { "path": "fraction", "label": "Fraction", "format": "unit", "params": { "base": "%", "decimals": 22 }, "visible": "always" }
+        ]
+      }
+    }
+  }
+}

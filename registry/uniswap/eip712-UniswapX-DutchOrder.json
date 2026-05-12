@@ -1,56 +1,9 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "includes": "uniswap-common-eip712.json",
-  "context": {
-    "eip712": {
-      "schemas": [
-        {
-          "types": {
-            "DutchOrder": [
-              { "name": "info", "type": "OrderInfo" },
-              { "name": "decayStartTime", "type": "uint256" },
-              { "name": "decayEndTime", "type": "uint256" },
-              { "name": "inputToken", "type": "address" },
-              { "name": "inputStartAmount", "type": "uint256" },
-              { "name": "inputEndAmount", "type": "uint256" },
-              { "name": "outputs", "type": "DutchOutput[]" }
-            ],
-            "DutchOutput": [
-              { "name": "token", "type": "address" },
-              { "name": "startAmount", "type": "uint256" },
-              { "name": "endAmount", "type": "uint256" },
-              { "name": "recipient", "type": "address" }
-            ],
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "OrderInfo": [
-              { "name": "reactor", "type": "address" },
-              { "name": "swapper", "type": "address" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" },
-              { "name": "additionalValidationContract", "type": "address" },
-              { "name": "additionalValidationData", "type": "bytes" }
-            ],
-            "PermitWitnessTransferFrom": [
-              { "name": "permitted", "type": "TokenPermissions" },
-              { "name": "spender", "type": "address" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" },
-              { "name": "witness", "type": "DutchOrder" }
-            ],
-            "TokenPermissions": [{ "name": "token", "type": "address" }, { "name": "amount", "type": "uint256" }]
-          },
-          "primaryType": "PermitWitnessTransferFrom"
-        }
-      ]
-    }
-  },
   "display": {
     "formats": {
-      "PermitWitnessTransferFrom": {
+      "PermitWitnessTransferFrom(TokenPermissions permitted,address spender,uint256 nonce,uint256 deadline,DutchOrder witness)DutchOrder(OrderInfo info,uint256 decayStartTime,uint256 decayEndTime,address inputToken,uint256 inputStartAmount,uint256 inputEndAmount,DutchOutput[] outputs)DutchOutput(address token,uint256 startAmount,uint256 endAmount,address recipient)OrderInfo(address reactor,address swapper,uint256 nonce,uint256 deadline,address additionalValidationContract,bytes additionalValidationData)TokenPermissions(address token,uint256 amount)": {
         "intent": "UniswapX Dutch Order",
         "fields": [
           { "path": "spender", "label": "Approve to spender", "format": "raw" },
@@ -73,15 +26,13 @@
               { "path": "recipient", "label": "On Addresses", "format": "raw" }
             ]
           },
-          { "path": "deadline", "label": "Approval expire", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "excluded": [
-          "nonce",
-          "witness.info",
-          "witness.decayStartTime",
-          "witness.decayEndTime",
-          "witness.inputEndAmount",
-          "witness.outputs.[].startAmount"
+          { "path": "deadline", "label": "Approval expire", "format": "date", "params": { "encoding": "timestamp" } },
+          { "label": "Nonce", "path": "nonce", "visible": "never" },
+          { "label": "Witness Info", "path": "witness.info", "visible": "never" },
+          { "label": "Witness Decay Start Time", "path": "witness.decayStartTime", "visible": "never" },
+          { "label": "Witness Decay End Time", "path": "witness.decayEndTime", "visible": "never" },
+          { "label": "Witness Input End Amount", "path": "witness.inputEndAmount", "visible": "never" },
+          { "label": "Witness Outputs Start Amount", "path": "witness.outputs.[].startAmount", "visible": "never" }
         ]
       }
     }

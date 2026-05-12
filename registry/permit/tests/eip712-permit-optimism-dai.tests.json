@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Permit": [
+            { "name": "owner", "type": "address" },
+            { "name": "spender", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "Dai Stablecoin",
+          "version": "1",
+          "chainId": 10,
+          "verifyingContract": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"
+        },
+        "message": {
+          "owner": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "spender": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+          "value": "2500000000000000000000",
+          "nonce": "7",
+          "deadline": "1776748800"
+        }
+      },
+      "expectedTexts": [
+        "Spender",
+        "0xE592427A0AEce92D e3Edee1F18E0157C058 61564",
+        "Max spending amount",
+        "2500 DAI",
+        "Valid until",
+        "2026-04-21 05:20:00 AM UTC"
+      ]
+    }
+  ]
+}

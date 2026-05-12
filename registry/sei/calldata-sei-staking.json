@@ -1,0 +1,155 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "SeiStakingPrecompile",
+    "contract": {
+      "deployments": [
+        { "chainId": 1329, "address": "0x0000000000000000000000000000000000001005" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Sei",
+    "contractName": "SeiStakingPrecompile",
+    "info": { "url": "https://www.sei.io/" },
+    "constants": {
+      "nativeTokenTicker": "SEI",
+      "nativeDecimals": 18
+    }
+  },
+  "display": {
+    "formats": {
+      "createValidator(string pubKeyHex, string moniker, string commissionRate, string commissionMaxRate, string commissionMaxChangeRate, uint256 minSelfDelegation)": {
+        "intent": "Create validator",
+        "fields": [
+          {
+            "path": "#.pubKeyHex",
+            "label": "Public key (hex)",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.moniker",
+            "label": "Moniker",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.commissionRate",
+            "label": "Commission rate",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.commissionMaxRate",
+            "label": "Max commission rate",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.commissionMaxChangeRate",
+            "label": "Max commission rate",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.minSelfDelegation",
+            "label": "Min self delegation",
+            "format": "unit",
+            "params": { "base": "SEI", "decimals": 6 },
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Self stake amount",
+            "format": "amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "delegate(string valAddress)": {
+        "intent": "Delegate",
+        "fields": [
+          {
+            "path": "#.valAddress",
+            "label": "Validator",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Amount",
+            "format": "amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "editValidator(string moniker, string commissionRate, uint256 minSelfDelegation)": {
+        "intent": "Edit validator",
+        "fields": [
+          {
+            "path": "#.moniker",
+            "label": "Moniker",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.commissionRate",
+            "label": "Commission rate",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.minSelfDelegation",
+            "label": "Min self delegation",
+            "format": "unit",
+            "params": { "base": "SEI", "decimals": 6 },
+            "visible": "always"
+          }
+        ]
+      },
+      "redelegate(string srcAddress, string dstAddress, uint256 amount)": {
+        "intent": "Redelegate",
+        "fields": [
+          {
+            "path": "#.srcAddress",
+            "label": "Source validator",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.dstAddress",
+            "label": "Target validator",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.amount",
+            "label": "Amount",
+            "format": "unit",
+            "params": { "base": "SEI", "decimals": 6 },
+            "visible": "always"
+          }
+        ]
+      },
+      "undelegate(string valAddress, uint256 amount)": {
+        "intent": "Undelegate",
+        "fields": [
+          {
+            "path": "#.valAddress",
+            "label": "Validator",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.amount",
+            "label": "Amount",
+            "format": "unit",
+            "params": { "base": "SEI", "decimals": 6 },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,60 +1,18 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "eip712": {
       "deployments": [
         { "chainId": 1, "address": "0x9757f2d2b135150bbeb65308d4a91804107cd8d6" },
         { "chainId": 137, "address": "0x7f19564c35c681099c0c857a7141836cf7edaa53" }
       ],
-      "domain": { "name": "Rarible" },
-      "schemas": [
-        {
-          "primaryType": "Order",
-          "types": {
-            "Asset": [{ "name": "assetType", "type": "AssetType" }, { "name": "value", "type": "uint256" }],
-            "AssetType": [{ "name": "assetClass", "type": "bytes4" }, { "name": "data", "type": "bytes" }],
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "Order": [
-              { "name": "maker", "type": "address" },
-              { "name": "makeAsset", "type": "Asset" },
-              { "name": "taker", "type": "address" },
-              { "name": "takeAsset", "type": "Asset" },
-              { "name": "salt", "type": "uint256" },
-              { "name": "start", "type": "uint256" },
-              { "name": "end", "type": "uint256" },
-              { "name": "dataType", "type": "bytes4" },
-              { "name": "data", "type": "bytes" }
-            ]
-          }
-        },
-        {
-          "primaryType": "MetaTransaction",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "verifyingContract", "type": "address" },
-              { "name": "salt", "type": "bytes32" }
-            ],
-            "MetaTransaction": [
-              { "name": "nonce", "type": "uint256" },
-              { "name": "from", "type": "address" },
-              { "name": "functionSignature", "type": "bytes" }
-            ]
-          }
-        }
-      ]
+      "domain": { "name": "Rarible", "version": "2" }
     }
   },
   "metadata": { "owner": "Rarible ExchangeV2" },
   "display": {
     "formats": {
-      "Order": {
+      "Order(address maker,Asset makeAsset,address taker,Asset takeAsset,uint256 salt,uint256 start,uint256 end,bytes4 dataType,bytes data)Asset(AssetType assetType,uint256 value)AssetType(bytes4 assetClass,bytes data)": {
         "intent": "List Order",
         "fields": [
           { "path": "maker", "label": "Order maker address", "format": "raw" },
@@ -62,25 +20,15 @@
           { "path": "taker", "label": "Order taker address", "format": "raw" },
           { "path": "takeAsset.value", "label": "Order take asset value", "format": "raw" },
           { "path": "start", "label": "Order start time", "format": "raw" },
-          { "path": "end", "label": "Order end time", "format": "raw" }
-        ],
-        "excluded": [
-          "makeAsset.assetType.assetClass",
-          "dataType",
-          "makeAsset.assetType.data",
-          "takeAsset.assetType.data",
-          "takeAsset.assetType.assetClass",
-          "data",
-          "salt"
+          { "path": "end", "label": "Order end time", "format": "raw" },
+          { "label": "Make Asset Asset Type Asset Class", "path": "makeAsset.assetType.assetClass", "visible": "never" },
+          { "label": "Data Type", "path": "dataType", "visible": "never" },
+          { "label": "Make Asset Asset Type Data", "path": "makeAsset.assetType.data", "visible": "never" },
+          { "label": "Take Asset Asset Type Data", "path": "takeAsset.assetType.data", "visible": "never" },
+          { "label": "Take Asset Asset Type Asset Class", "path": "takeAsset.assetType.assetClass", "visible": "never" },
+          { "label": "Data", "path": "data", "visible": "never" },
+          { "label": "Salt", "path": "salt", "visible": "never" }
         ]
-      },
-      "MetaTransaction": {
-        "intent": "Meta Transaction",
-        "fields": [
-          { "path": "from", "label": "User Address", "format": "raw" },
-          { "path": "nonce", "label": "Meta Transaction Nonce", "format": "raw" }
-        ],
-        "excluded": ["functionSignature"]
       }
     }
   }
