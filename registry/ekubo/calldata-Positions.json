@@ -1,0 +1,131 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Ekubo Positions",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x02D9876A21AF7545f8632C3af76eC90b5ad4b66D" },
+        { "chainId": 11155111, "address": "0x02D9876A21AF7545f8632C3af76eC90b5ad4b66D" },
+        { "chainId": 42161, "address": "0x02D9876A21AF7545f8632C3af76eC90b5ad4b66D" },
+        { "chainId": 421614, "address": "0x02D9876A21AF7545f8632C3af76eC90b5ad4b66D" },
+        { "chainId": 4326, "address": "0x02D9876A21AF7545f8632C3af76eC90b5ad4b66D" },
+        { "chainId": 46630, "address": "0x02D9876A21AF7545f8632C3af76eC90b5ad4b66D" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Ekubo Protocol",
+    "contractName": "Ekubo Positions"
+  },
+  "display": {
+    "formats": {
+      "deposit(uint256 id, (address token0, address token1, bytes32 config) poolKey, int32 tickLower, int32 tickUpper, uint128 maxAmount0, uint128 maxAmount1, uint128 minLiquidity)": {
+        "intent": "Add liquidity",
+        "fields": [
+          { "path": "id", "label": "Position ID", "format": "raw", "visible": "always" },
+          { "path": "maxAmount0", "label": "Maximum token 0", "format": "tokenAmount", "params": { "tokenPath": "poolKey.token0" }, "visible": "always" },
+          { "path": "maxAmount1", "label": "Maximum token 1", "format": "tokenAmount", "params": { "tokenPath": "poolKey.token1" }, "visible": "always" },
+          { "path": "minLiquidity", "label": "Minimum liquidity", "format": "raw", "visible": "always" },
+          { "path": "tickLower", "label": "Lower tick", "format": "raw", "visible": "always" },
+          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "mintAndDeposit((address token0, address token1, bytes32 config) poolKey, int32 tickLower, int32 tickUpper, uint128 maxAmount0, uint128 maxAmount1, uint128 minLiquidity)": {
+        "intent": "Create liquidity position",
+        "fields": [
+          { "path": "maxAmount0", "label": "Maximum token 0", "format": "tokenAmount", "params": { "tokenPath": "poolKey.token0" }, "visible": "always" },
+          { "path": "maxAmount1", "label": "Maximum token 1", "format": "tokenAmount", "params": { "tokenPath": "poolKey.token1" }, "visible": "always" },
+          { "path": "minLiquidity", "label": "Minimum liquidity", "format": "raw", "visible": "always" },
+          { "path": "tickLower", "label": "Lower tick", "format": "raw", "visible": "always" },
+          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "mintAndDepositWithSalt(bytes32 salt, (address token0, address token1, bytes32 config) poolKey, int32 tickLower, int32 tickUpper, uint128 maxAmount0, uint128 maxAmount1, uint128 minLiquidity)": {
+        "intent": "Create deterministic liquidity position",
+        "fields": [
+          { "path": "salt", "label": "Salt", "format": "raw", "visible": "optional" },
+          { "path": "maxAmount0", "label": "Maximum token 0", "format": "tokenAmount", "params": { "tokenPath": "poolKey.token0" }, "visible": "always" },
+          { "path": "maxAmount1", "label": "Maximum token 1", "format": "tokenAmount", "params": { "tokenPath": "poolKey.token1" }, "visible": "always" },
+          { "path": "minLiquidity", "label": "Minimum liquidity", "format": "raw", "visible": "always" },
+          { "path": "tickLower", "label": "Lower tick", "format": "raw", "visible": "always" },
+          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "collectFees(uint256 id, (address token0, address token1, bytes32 config) poolKey, int32 tickLower, int32 tickUpper)": {
+        "intent": "Collect position fees",
+        "fields": [
+          { "path": "id", "label": "Position ID", "format": "raw", "visible": "always" },
+          { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "tickLower", "label": "Lower tick", "format": "raw", "visible": "always" },
+          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" }
+        ]
+      },
+      "collectFees(uint256 id, (address token0, address token1, bytes32 config) poolKey, int32 tickLower, int32 tickUpper, address recipient)": {
+        "intent": "Collect position fees",
+        "fields": [
+          { "path": "id", "label": "Position ID", "format": "raw", "visible": "always" },
+          { "path": "recipient", "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "tickLower", "label": "Lower tick", "format": "raw", "visible": "always" },
+          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" }
+        ]
+      },
+      "withdraw(uint256 id, (address token0, address token1, bytes32 config) poolKey, int32 tickLower, int32 tickUpper, uint128 liquidity)": {
+        "intent": "Withdraw liquidity",
+        "fields": [
+          { "path": "id", "label": "Position ID", "format": "raw", "visible": "always" },
+          { "path": "liquidity", "label": "Liquidity", "format": "raw", "visible": "always" },
+          { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "tickLower", "label": "Lower tick", "format": "raw", "visible": "always" },
+          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" }
+        ]
+      },
+      "withdraw(uint256 id, (address token0, address token1, bytes32 config) poolKey, int32 tickLower, int32 tickUpper, uint128 liquidity, address recipient, bool withFees)": {
+        "intent": "Withdraw liquidity",
+        "fields": [
+          { "path": "id", "label": "Position ID", "format": "raw", "visible": "always" },
+          { "path": "liquidity", "label": "Liquidity", "format": "raw", "visible": "always" },
+          { "path": "recipient", "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "withFees", "label": "Collect fees", "format": "raw", "visible": "always" },
+          { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "tickLower", "label": "Lower tick", "format": "raw", "visible": "always" },
+          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" }
+        ]
+      },
+      "maybeInitializePool((address token0, address token1, bytes32 config) poolKey, int32 tick)": {
+        "intent": "Initialize pool if needed",
+        "fields": [
+          { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "tick", "label": "Initial tick", "format": "raw", "visible": "always" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "burn(uint256 id)": {
+        "intent": "Burn position NFT",
+        "fields": [
+          { "path": "id", "label": "Position ID", "format": "raw", "visible": "always" }
+        ]
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Batch position actions",
+        "fields": [
+          { "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to" }, "visible": "always" }
+        ]
+      },
+      "refundNativeToken()": {
+        "intent": "Refund unused native token",
+        "fields": [
+          { "path": "@.from", "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa"] }, "visible": "always" }
+        ]
+      }
+    }
+  }
+}
