@@ -39,7 +39,7 @@
           { "path": "id", "label": "Order ID", "format": "raw", "visible": "always" },
           { "path": "orderKey.token0", "label": "Order token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
           { "path": "orderKey.token1", "label": "Order token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
-          { "path": "amount", "label": "Additional sell amount", "format": "raw", "visible": "always" },
+          { "path": "amount", "label": "Extra sell amount", "format": "raw", "visible": "always" },
           { "path": "maxSaleRate", "label": "Maximum sale rate", "format": "raw", "visible": "always" },
           { "path": "orderKey.config", "label": "Order config", "format": "raw", "visible": "optional" }
         ]
@@ -109,6 +109,87 @@
         "intent": "Refund unused native token",
         "fields": [
           { "path": "@.from", "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa"] }, "visible": "always" }
+        ]
+      },
+      "approve(address account, uint256 id)": {
+        "intent": "Approve order NFT",
+        "fields": [
+          { "path": "account", "label": "Approved account", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "id", "label": "Order ID", "format": "raw", "visible": "always" }
+        ]
+      },
+      "setApprovalForAll(address operator, bool isApproved)": {
+        "intent": "Approve order operator",
+        "fields": [
+          { "path": "operator", "label": "Operator", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "isApproved", "label": "Approved", "format": "raw", "visible": "always" }
+        ]
+      },
+      "transferFrom(address from, address to, uint256 id)": {
+        "intent": "Transfer order NFT",
+        "fields": [
+          { "path": "from", "label": "From", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "to", "label": "To", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "id", "label": "Order ID", "format": "raw", "visible": "always" }
+        ]
+      },
+      "safeTransferFrom(address from, address to, uint256 id)": {
+        "intent": "Transfer order NFT",
+        "fields": [
+          { "path": "from", "label": "From", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "to", "label": "To", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "id", "label": "Order ID", "format": "raw", "visible": "always" }
+        ]
+      },
+      "safeTransferFrom(address from, address to, uint256 id, bytes data)": {
+        "intent": "Transfer order NFT",
+        "fields": [
+          { "path": "from", "label": "From", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "to", "label": "To", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "id", "label": "Order ID", "format": "raw", "visible": "always" },
+          { "path": "data", "label": "Transfer data", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "mint()": {
+        "intent": "Mint order NFT",
+        "fields": []
+      },
+      "mint(bytes32 salt)": {
+        "intent": "Mint salted order NFT",
+        "fields": [
+          { "path": "salt", "label": "Salt", "format": "raw", "visible": "always" }
+        ]
+      },
+      "setMetadata(string newName, string newSymbol, string newBaseUrl)": {
+        "intent": "Update NFT metadata",
+        "fields": [
+          { "path": "newName", "label": "Name", "format": "raw", "visible": "always" },
+          { "path": "newSymbol", "label": "Symbol", "format": "raw", "visible": "always" },
+          { "path": "newBaseUrl", "label": "Base URL", "format": "raw", "visible": "always" }
+        ]
+      },
+      "transferOwnership(address newOwner)": {
+        "intent": "Transfer contract ownership",
+        "fields": [
+          { "path": "newOwner", "label": "New owner", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" }
+        ]
+      },
+      "renounceOwnership()": {
+        "intent": "Renounce ownership",
+        "fields": []
+      },
+      "requestOwnershipHandover()": {
+        "intent": "Request ownership handover",
+        "fields": []
+      },
+      "cancelOwnershipHandover()": {
+        "intent": "Cancel ownership handover",
+        "fields": []
+      },
+      "completeOwnershipHandover(address pendingOwner)": {
+        "intent": "Complete ownership handover",
+        "fields": [
+          { "path": "pendingOwner", "label": "Pending owner", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" }
         ]
       }
     }
