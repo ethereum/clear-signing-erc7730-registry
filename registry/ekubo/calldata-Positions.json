@@ -43,7 +43,7 @@
         ]
       },
       "mintAndDepositWithSalt(bytes32 salt, (address token0, address token1, bytes32 config) poolKey, int32 tickLower, int32 tickUpper, uint128 maxAmount0, uint128 maxAmount1, uint128 minLiquidity)": {
-        "intent": "Create deterministic liquidity position",
+        "intent": "Create salted liquidity",
         "fields": [
           { "path": "salt", "label": "Salt", "format": "raw", "visible": "optional" },
           { "path": "maxAmount0", "label": "Maximum token 0", "format": "tokenAmount", "params": { "tokenPath": "poolKey.token0" }, "visible": "always" },
@@ -61,7 +61,8 @@
           { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
           { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
           { "path": "tickLower", "label": "Lower tick", "format": "raw", "visible": "always" },
-          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" }
+          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
         ]
       },
       "collectFees(uint256 id, (address token0, address token1, bytes32 config) poolKey, int32 tickLower, int32 tickUpper, address recipient)": {
@@ -72,7 +73,8 @@
           { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
           { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
           { "path": "tickLower", "label": "Lower tick", "format": "raw", "visible": "always" },
-          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" }
+          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
         ]
       },
       "withdraw(uint256 id, (address token0, address token1, bytes32 config) poolKey, int32 tickLower, int32 tickUpper, uint128 liquidity)": {
@@ -83,7 +85,8 @@
           { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
           { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
           { "path": "tickLower", "label": "Lower tick", "format": "raw", "visible": "always" },
-          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" }
+          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
         ]
       },
       "withdraw(uint256 id, (address token0, address token1, bytes32 config) poolKey, int32 tickLower, int32 tickUpper, uint128 liquidity, address recipient, bool withFees)": {
@@ -96,7 +99,8 @@
           { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
           { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
           { "path": "tickLower", "label": "Lower tick", "format": "raw", "visible": "always" },
-          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" }
+          { "path": "tickUpper", "label": "Upper tick", "format": "raw", "visible": "always" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
         ]
       },
       "maybeInitializePool((address token0, address token1, bytes32 config) poolKey, int32 tick)": {
@@ -124,6 +128,97 @@
         "intent": "Refund unused native token",
         "fields": [
           { "path": "@.from", "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa"] }, "visible": "always" }
+        ]
+      },
+      "approve(address account, uint256 id)": {
+        "intent": "Approve position NFT",
+        "fields": [
+          { "path": "account", "label": "Approved account", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "id", "label": "Position ID", "format": "raw", "visible": "always" }
+        ]
+      },
+      "setApprovalForAll(address operator, bool isApproved)": {
+        "intent": "Approve position operator",
+        "fields": [
+          { "path": "operator", "label": "Operator", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "isApproved", "label": "Approved", "format": "raw", "visible": "always" }
+        ]
+      },
+      "transferFrom(address from, address to, uint256 id)": {
+        "intent": "Transfer position NFT",
+        "fields": [
+          { "path": "from", "label": "From", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "to", "label": "To", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "id", "label": "Position ID", "format": "raw", "visible": "always" }
+        ]
+      },
+      "safeTransferFrom(address from, address to, uint256 id)": {
+        "intent": "Transfer position NFT",
+        "fields": [
+          { "path": "from", "label": "From", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "to", "label": "To", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "id", "label": "Position ID", "format": "raw", "visible": "always" }
+        ]
+      },
+      "safeTransferFrom(address from, address to, uint256 id, bytes data)": {
+        "intent": "Transfer position NFT",
+        "fields": [
+          { "path": "from", "label": "From", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "to", "label": "To", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "id", "label": "Position ID", "format": "raw", "visible": "always" },
+          { "path": "data", "label": "Transfer data", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "mint()": {
+        "intent": "Mint position NFT",
+        "fields": []
+      },
+      "mint(bytes32 salt)": {
+        "intent": "Mint salted position NFT",
+        "fields": [
+          { "path": "salt", "label": "Salt", "format": "raw", "visible": "always" }
+        ]
+      },
+      "setMetadata(string newName, string newSymbol, string newBaseUrl)": {
+        "intent": "Update NFT metadata",
+        "fields": [
+          { "path": "newName", "label": "Name", "format": "raw", "visible": "always" },
+          { "path": "newSymbol", "label": "Symbol", "format": "raw", "visible": "always" },
+          { "path": "newBaseUrl", "label": "Base URL", "format": "raw", "visible": "always" }
+        ]
+      },
+      "transferOwnership(address newOwner)": {
+        "intent": "Transfer contract ownership",
+        "fields": [
+          { "path": "newOwner", "label": "New owner", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" }
+        ]
+      },
+      "renounceOwnership()": {
+        "intent": "Renounce ownership",
+        "fields": []
+      },
+      "requestOwnershipHandover()": {
+        "intent": "Request ownership handover",
+        "fields": []
+      },
+      "cancelOwnershipHandover()": {
+        "intent": "Cancel ownership handover",
+        "fields": []
+      },
+      "completeOwnershipHandover(address pendingOwner)": {
+        "intent": "Complete ownership handover",
+        "fields": [
+          { "path": "pendingOwner", "label": "Pending owner", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" }
+        ]
+      },
+      "withdrawProtocolFees(address token0, address token1, uint128 amount0, uint128 amount1, address recipient)": {
+        "intent": "Withdraw protocol fees",
+        "fields": [
+          { "path": "token0", "label": "Token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "amount0", "label": "Amount 0", "format": "tokenAmount", "params": { "tokenPath": "token0" }, "visible": "always" },
+          { "path": "token1", "label": "Token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "amount1", "label": "Amount 1", "format": "tokenAmount", "params": { "tokenPath": "token1" }, "visible": "always" },
+          { "path": "recipient", "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" }
         ]
       }
     }
