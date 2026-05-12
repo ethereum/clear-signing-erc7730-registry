@@ -1,0 +1,313 @@
+{
+    "$schema": "../../specs/erc7730-v1.schema.json",
+    "context": {
+        "$id": "OIF Input Settler Escrow",
+        "contract": {
+            "deployments": []
+        }
+    },
+    "metadata": {
+        "owner": "Open Intents Framework",
+        "info": {
+            "url": "https://docs.openintents.xyz/docs",
+            "legalName": "Open Intents Framework"
+        }
+    },
+    "includes": "./calldata-oif-input-settler-compact.json",
+    "display": {
+        "formats": {
+            "open((address user,uint256 nonce,uint256 originChainId,uint32 expires, uint32 fillDeadline,address inputOracle,uint256[2][] inputs,(bytes32 oracle,bytes32 settler,uint256 chainId,bytes32 token,uint256 amount,bytes32 recipient,bytes callbackData, bytes context)[] outputs) order)": {
+                "$id": "openOrder",
+                "intent": "Open Intent Order",
+                "fields": [
+                    {
+                        "path": "order.user",
+                        "$ref": "$.display.definitions.orderUser"
+                    },
+                    {
+                        "path": "order.nonce",
+                        "$ref": "$.display.definitions.orderNonce"
+                    },
+                    {
+                        "path": "order.originChainId",
+                        "$ref": "$.display.definitions.orderOriginChainId"
+                    },
+                    {
+                        "path": "order.expires",
+                        "$ref": "$.display.definitions.orderExpires"
+                    },
+                    {
+                        "path": "order.fillDeadline",
+                        "$ref": "$.display.definitions.orderFillDeadline"
+                    },
+                    {
+                        "path": "order.inputOracle",
+                        "$ref": "$.display.definitions.orderInputOracle"
+                    },
+                    {
+                        "path": "order.inputs.[].[0]",
+                        "$ref": "$.display.definitions.orderInputTokenAddress"
+                    },
+                    {
+                        "path": "order.inputs.[].[1]",
+                        "$ref": "$.display.definitions.orderInputTokenAmount"
+                    },
+                    {
+                        "path": "order.outputs.[].oracle",
+                        "$ref": "$.display.definitions.orderOutputOracle"
+                    },
+                    {
+                        "path": "order.outputs.[].settler",
+                        "$ref": "$.display.definitions.orderOutputSettler"
+                    },
+                    {
+                        "path": "order.outputs.[].chainId",
+                        "$ref": "$.display.definitions.orderOutputChainId"
+                    },
+                    {
+                        "path": "order.outputs.[].token",
+                        "$ref": "$.display.definitions.orderOutputToken"
+                    },
+                    {
+                        "path": "order.outputs.[].amount",
+                        "$ref": "$.display.definitions.orderOutputAmount"
+                    },
+                    {
+                        "path": "order.outputs.[].recipient",
+                        "$ref": "$.display.definitions.orderOutputRecipient"
+                    },
+                    {
+                        "path": "order.outputs.[].callbackData",
+                        "$ref": "$.display.definitions.orderOutputCallbackData"
+                    },
+                    {
+                        "path": "order.outputs.[].context",
+                        "$ref": "$.display.definitions.orderOutputContext"
+                    }
+                ],
+                "required": [
+                    "order.user",
+                    "order.originChainId",
+                    "order.inputs.[].[0]",
+                    "order.inputs.[].[1]",
+                    "order.outputs.[].chainId",
+                    "order.outputs.[].token",
+                    "order.outputs.[].amount",
+                    "order.outputs.[].recipient",
+                    "order.outputs.[].callbackData"
+                ],
+                "excluded": [
+                    "order.nonce",
+                    "order.expires",
+                    "order.fillDeadline",
+                    "order.inputOracle",
+                    "order.outputs.[].oracle",
+                    "order.outputs.[].settler",
+                    "order.outputs.[].context"
+                ]
+            },
+            "openFor((address user,uint256 nonce,uint256 originChainId,uint32 expires, uint32 fillDeadline,address inputOracle,uint256[2][] inputs,(bytes32 oracle,bytes32 settler,uint256 chainId,bytes32 token,uint256 amount,bytes32 recipient,bytes callbackData, bytes context)[] outputs) order,address sponsor,bytes signature)": {
+                "$id": "openOrderFor",
+                "intent": "Open Intent Order By Sponsoring User",
+                "fields": [
+                    {
+                        "path": "order.user",
+                        "$ref": "$.display.definitions.orderUser"
+                    },
+                    {
+                        "path": "order.nonce",
+                        "$ref": "$.display.definitions.orderNonce"
+                    },
+                    {
+                        "path": "order.originChainId",
+                        "$ref": "$.display.definitions.orderOriginChainId"
+                    },
+                    {
+                        "path": "order.expires",
+                        "$ref": "$.display.definitions.orderExpires"
+                    },
+                    {
+                        "path": "order.fillDeadline",
+                        "$ref": "$.display.definitions.orderFillDeadline"
+                    },
+                    {
+                        "path": "order.inputOracle",
+                        "$ref": "$.display.definitions.orderInputOracle"
+                    },
+                    {
+                        "path": "order.inputs.[].[0]",
+                        "$ref": "$.display.definitions.orderInputTokenAddress"
+                    },
+                    {
+                        "path": "order.inputs.[].[1]",
+                        "$ref": "$.display.definitions.orderInputTokenAmount"
+                    },
+                    {
+                        "path": "order.outputs.[].oracle",
+                        "$ref": "$.display.definitions.orderOutputOracle"
+                    },
+                    {
+                        "path": "order.outputs.[].settler",
+                        "$ref": "$.display.definitions.orderOutputSettler"
+                    },
+                    {
+                        "path": "order.outputs.[].chainId",
+                        "$ref": "$.display.definitions.orderOutputChainId"
+                    },
+                    {
+                        "path": "order.outputs.[].token",
+                        "$ref": "$.display.definitions.orderOutputToken"
+                    },
+                    {
+                        "path": "order.outputs.[].amount",
+                        "$ref": "$.display.definitions.orderOutputAmount"
+                    },
+                    {
+                        "path": "order.outputs.[].recipient",
+                        "$ref": "$.display.definitions.orderOutputRecipient"
+                    },
+                    {
+                        "path": "order.outputs.[].callbackData",
+                        "$ref": "$.display.definitions.orderOutputCallbackData"
+                    },
+                    {
+                        "path": "order.outputs.[].context",
+                        "$ref": "$.display.definitions.orderOutputContext"
+                    },
+                    {
+                        "path": "sponsor",
+                        "label": "Sponsor",
+                        "format": "addressName",
+                        "params": {
+                            "types": [
+                                "eoa",
+                                "wallet"
+                            ],
+                            "sources": [
+                                "local",
+                                "ens"
+                            ]
+                        }
+                    },
+                    {
+                        "path": "signature",
+                        "label": "Signature",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "order.user",
+                    "order.originChainId",
+                    "order.inputs.[].[0]",
+                    "order.inputs.[].[1]",
+                    "order.outputs.[].chainId",
+                    "order.outputs.[].token",
+                    "order.outputs.[].amount",
+                    "order.outputs.[].recipient",
+                    "order.outputs.[].callbackData",
+                    "sponsor"
+                ],
+                "excluded": [
+                    "order.nonce",
+                    "order.expires",
+                    "order.fillDeadline",
+                    "order.inputOracle",
+                    "order.outputs.[].oracle",
+                    "order.outputs.[].settler",
+                    "order.outputs.[].context",
+                    "signature"
+                ]
+            },
+            "refund((address user,uint256 nonce,uint256 originChainId,uint32 expires, uint32 fillDeadline,address inputOracle,uint256[2][] inputs,(bytes32 oracle,bytes32 settler,uint256 chainId,bytes32 token,uint256 amount,bytes32 recipient,bytes callbackData, bytes context)[] outputs) order)": {
+                "$id": "refundOrder",
+                "intent": "Refund Intent Order",
+                "fields": [
+                    {
+                        "path": "order.user",
+                        "$ref": "$.display.definitions.orderUser"
+                    },
+                    {
+                        "path": "order.nonce",
+                        "$ref": "$.display.definitions.orderNonce"
+                    },
+                    {
+                        "path": "order.originChainId",
+                        "$ref": "$.display.definitions.orderOriginChainId"
+                    },
+                    {
+                        "path": "order.expires",
+                        "$ref": "$.display.definitions.orderExpires"
+                    },
+                    {
+                        "path": "order.fillDeadline",
+                        "$ref": "$.display.definitions.orderFillDeadline"
+                    },
+                    {
+                        "path": "order.inputOracle",
+                        "$ref": "$.display.definitions.orderInputOracle"
+                    },
+                    {
+                        "path": "order.inputs.[].[0]",
+                        "$ref": "$.display.definitions.orderInputTokenAddress"
+                    },
+                    {
+                        "path": "order.inputs.[].[1]",
+                        "$ref": "$.display.definitions.orderInputTokenAmount"
+                    },
+                    {
+                        "path": "order.outputs.[].oracle",
+                        "$ref": "$.display.definitions.orderOutputOracle"
+                    },
+                    {
+                        "path": "order.outputs.[].settler",
+                        "$ref": "$.display.definitions.orderOutputSettler"
+                    },
+                    {
+                        "path": "order.outputs.[].chainId",
+                        "$ref": "$.display.definitions.orderOutputChainId"
+                    },
+                    {
+                        "path": "order.outputs.[].token",
+                        "$ref": "$.display.definitions.orderOutputToken"
+                    },
+                    {
+                        "path": "order.outputs.[].amount",
+                        "$ref": "$.display.definitions.orderOutputAmount"
+                    },
+                    {
+                        "path": "order.outputs.[].recipient",
+                        "$ref": "$.display.definitions.orderOutputRecipient"
+                    },
+                    {
+                        "path": "order.outputs.[].callbackData",
+                        "$ref": "$.display.definitions.orderOutputCallbackData"
+                    },
+                    {
+                        "path": "order.outputs.[].context",
+                        "$ref": "$.display.definitions.orderOutputContext"
+                    }
+                ],
+                "required": [
+                    "order.user",
+                    "order.originChainId",
+                    "order.inputs.[].[0]",
+                    "order.inputs.[].[1]",
+                    "order.outputs.[].chainId",
+                    "order.outputs.[].token",
+                    "order.outputs.[].amount",
+                    "order.outputs.[].recipient",
+                    "order.outputs.[].callbackData"
+                ],
+                "excluded": [
+                    "order.nonce",
+                    "order.expires",
+                    "order.fillDeadline",
+                    "order.inputOracle",
+                    "order.outputs.[].oracle",
+                    "order.outputs.[].settler",
+                    "order.outputs.[].context"
+                ]
+            }
+        }
+    }
+}
