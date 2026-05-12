@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-vault-deployer-USDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deployVault — initial deposit 50 USDC",
+      "rawTx": "0x02f8d001208477359400848ee3266b83dd7bd994e4d85722db649d3890f9dba4510f1a16ad942fd980b86474d371820000000000000000000000000000000000000000000000000000000002faf08000000000000000000000000000000000000000000000000000000000000000190000000000000000000000000000000000000000000000000000000000000bb8c080a0e59f391a0909cdad08064bd1557bd742c578228927346385bf578666abea9176a0349e7556053013f1358856ba4c3eec95ba259bfa7bcd2f490c3909806e7d46b8",
+      "txHash": "0x64b42692560b05499ee32169863000a25c4430ac747b575a78e876c56478fa57",
+      "expected": {
+        "intent": "Deploy Vault",
+        "owner": "Tesseract Earn Oy",
+        "fields": [
+          { "label": "Vault share ticker", "value": "teUSDC" },
+          { "label": "Initial deposit", "value": "50 USDC" },
+          { "label": "Max management fee", "value": "0.25%" },
+          { "label": "Max performance fee", "value": "30%" }
+        ]
+      }
+    },
+    {
+      "description": "deployVaultWithPermit — initial deposit 10 USDC with EIP-2612 permit",
+      "rawTx": "0x02f901510180843b9aca0085012a05f200837a120094e4d85722db649d3890f9dba4510f1a16ad942fd980b8e4adf84895000000000000000000000000000000000000000000000000000000000098968000000000000000000000000000000000000000000000000000000000000000190000000000000000000000000000000000000000000000000000000000000bb80000000000000000000000000000000000000000000000000000000070dbd880000000000000000000000000000000000000000000000000000000000000001b11111111111111111111111111111111111111111111111111111111111111112222222222222222222222222222222222222222222222222222222222222222c080a0d5f9359bc2064681bf79d42924770013a4ec1c6e0ec3f83b1983d18c2fa805a3a05568c7947065c41c0aa798681d92f9c4f79cb8d7061f13090ea9b02e65f99082",
+      "expected": {
+        "intent": "Deploy Vault (Permit)",
+        "owner": "Tesseract Earn Oy",
+        "fields": [
+          { "label": "Vault share ticker", "value": "teUSDC" },
+          { "label": "Initial deposit", "value": "10 USDC" },
+          { "label": "Max management fee", "value": "0.25%" },
+          { "label": "Max performance fee", "value": "30%" },
+          { "label": "Permit deadline", "value": "2030-01-01 00:00:00Z" }
+        ]
+      }
+    }
+  ]
+}
