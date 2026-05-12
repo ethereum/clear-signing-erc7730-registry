@@ -1,0 +1,116 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Ekubo Orders",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xfF6cF0Ca6d7a30a60539AcD4bB20B3df84EA0644" },
+        { "chainId": 1, "address": "0x3325428adB409c239E88ca472F50b0efe00E98B4" },
+        { "chainId": 11155111, "address": "0xfF6cF0Ca6d7a30a60539AcD4bB20B3df84EA0644" },
+        { "chainId": 11155111, "address": "0x3325428adB409c239E88ca472F50b0efe00E98B4" },
+        { "chainId": 42161, "address": "0xfF6cF0Ca6d7a30a60539AcD4bB20B3df84EA0644" },
+        { "chainId": 42161, "address": "0x3325428adB409c239E88ca472F50b0efe00E98B4" },
+        { "chainId": 421614, "address": "0xfF6cF0Ca6d7a30a60539AcD4bB20B3df84EA0644" },
+        { "chainId": 421614, "address": "0x3325428adB409c239E88ca472F50b0efe00E98B4" },
+        { "chainId": 4326, "address": "0x3325428adB409c239E88ca472F50b0efe00E98B4" },
+        { "chainId": 46630, "address": "0xfF6cF0Ca6d7a30a60539AcD4bB20B3df84EA0644" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Ekubo Protocol",
+    "contractName": "Ekubo DCA Orders"
+  },
+  "display": {
+    "formats": {
+      "mintAndIncreaseSellAmount((address token0, address token1, bytes32 config) orderKey, uint112 amount, uint112 maxSaleRate)": {
+        "intent": "Create DCA order",
+        "fields": [
+          { "path": "orderKey.token0", "label": "Order token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "orderKey.token1", "label": "Order token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "amount", "label": "Sell amount", "format": "raw", "visible": "always" },
+          { "path": "maxSaleRate", "label": "Maximum sale rate", "format": "raw", "visible": "always" },
+          { "path": "orderKey.config", "label": "Order config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "increaseSellAmount(uint256 id, (address token0, address token1, bytes32 config) orderKey, uint128 amount, uint112 maxSaleRate)": {
+        "intent": "Increase DCA order",
+        "fields": [
+          { "path": "id", "label": "Order ID", "format": "raw", "visible": "always" },
+          { "path": "orderKey.token0", "label": "Order token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "orderKey.token1", "label": "Order token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "amount", "label": "Additional sell amount", "format": "raw", "visible": "always" },
+          { "path": "maxSaleRate", "label": "Maximum sale rate", "format": "raw", "visible": "always" },
+          { "path": "orderKey.config", "label": "Order config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "decreaseSaleRate(uint256 id, (address token0, address token1, bytes32 config) orderKey, uint112 saleRateDecrease)": {
+        "intent": "Reduce DCA order",
+        "fields": [
+          { "path": "id", "label": "Order ID", "format": "raw", "visible": "always" },
+          { "path": "orderKey.token0", "label": "Order token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "orderKey.token1", "label": "Order token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "saleRateDecrease", "label": "Sale rate decrease", "format": "raw", "visible": "always" },
+          { "path": "orderKey.config", "label": "Order config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "decreaseSaleRate(uint256 id, (address token0, address token1, bytes32 config) orderKey, uint112 saleRateDecrease, address recipient)": {
+        "intent": "Reduce DCA order",
+        "fields": [
+          { "path": "id", "label": "Order ID", "format": "raw", "visible": "always" },
+          { "path": "recipient", "label": "Refund recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "orderKey.token0", "label": "Order token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "orderKey.token1", "label": "Order token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "saleRateDecrease", "label": "Sale rate decrease", "format": "raw", "visible": "always" },
+          { "path": "orderKey.config", "label": "Order config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "collectProceeds(uint256 id, (address token0, address token1, bytes32 config) orderKey)": {
+        "intent": "Collect DCA proceeds",
+        "fields": [
+          { "path": "id", "label": "Order ID", "format": "raw", "visible": "always" },
+          { "path": "orderKey.token0", "label": "Order token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "orderKey.token1", "label": "Order token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "orderKey.config", "label": "Order config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "collectProceeds(uint256 id, (address token0, address token1, bytes32 config) orderKey, address recipient)": {
+        "intent": "Collect DCA proceeds",
+        "fields": [
+          { "path": "id", "label": "Order ID", "format": "raw", "visible": "always" },
+          { "path": "recipient", "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "orderKey.token0", "label": "Order token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "orderKey.token1", "label": "Order token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "orderKey.config", "label": "Order config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "executeVirtualOrdersAndGetCurrentOrderInfo(uint256 id, (address token0, address token1, bytes32 config) orderKey)": {
+        "intent": "Refresh DCA order state",
+        "fields": [
+          { "path": "id", "label": "Order ID", "format": "raw", "visible": "always" },
+          { "path": "orderKey.token0", "label": "Order token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "orderKey.token1", "label": "Order token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "orderKey.config", "label": "Order config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "burn(uint256 id)": {
+        "intent": "Burn order NFT",
+        "fields": [
+          { "path": "id", "label": "Order ID", "format": "raw", "visible": "always" }
+        ]
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Batch order actions",
+        "fields": [
+          { "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to" }, "visible": "always" }
+        ]
+      },
+      "refundNativeToken()": {
+        "intent": "Refund unused native token",
+        "fields": [
+          { "path": "@.from", "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa"] }, "visible": "always" }
+        ]
+      }
+    }
+  }
+}

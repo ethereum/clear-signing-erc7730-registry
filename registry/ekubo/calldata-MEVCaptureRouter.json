@@ -1,0 +1,166 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Ekubo MEV Capture Router",
+    "contract": {
+      "deployments": [
+        { "chainId": 42431, "address": "0xd26f20001a72a18C002b00e6710000d68700ce00" },
+        { "chainId": 4326, "address": "0xd26f20001a72a18C002b00e6710000d68700ce00" },
+        { "chainId": 46630, "address": "0xd26f20001a72a18C002b00e6710000d68700ce00" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Ekubo Protocol",
+    "contractName": "Ekubo MEV Capture Router"
+  },
+  "display": {
+    "formats": {
+      "swap((address token0, address token1, bytes32 config) poolKey, bool isToken1, int128 amount, uint96 sqrtRatioLimit, uint256 skipAhead, int256 calculatedAmountThreshold)": {
+        "intent": "Swap on Ekubo",
+        "fields": [
+          { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "isToken1", "label": "Specified token is token 1", "format": "raw", "visible": "always" },
+          { "path": "amount", "label": "Specified amount", "format": "raw", "visible": "always" },
+          { "path": "calculatedAmountThreshold", "label": "Calculated amount threshold", "format": "raw", "visible": "always" },
+          { "path": "sqrtRatioLimit", "label": "Price limit", "format": "raw", "visible": "optional" },
+          { "path": "skipAhead", "label": "Skip ahead", "format": "raw", "visible": "optional" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "swap((address token0, address token1, bytes32 config) poolKey, bool isToken1, int128 amount, uint96 sqrtRatioLimit, uint256 skipAhead, int256 calculatedAmountThreshold, address recipient)": {
+        "intent": "Swap on Ekubo",
+        "fields": [
+          { "path": "recipient", "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "isToken1", "label": "Specified token is token 1", "format": "raw", "visible": "always" },
+          { "path": "amount", "label": "Specified amount", "format": "raw", "visible": "always" },
+          { "path": "calculatedAmountThreshold", "label": "Calculated amount threshold", "format": "raw", "visible": "always" },
+          { "path": "sqrtRatioLimit", "label": "Price limit", "format": "raw", "visible": "optional" },
+          { "path": "skipAhead", "label": "Skip ahead", "format": "raw", "visible": "optional" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "swap((address token0, address token1, bytes32 config) poolKey, bytes32 params, int256 calculatedAmountThreshold)": {
+        "intent": "Swap on Ekubo",
+        "fields": [
+          { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "params", "label": "Packed swap params", "format": "raw", "visible": "always" },
+          { "path": "calculatedAmountThreshold", "label": "Calculated amount threshold", "format": "raw", "visible": "always" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "swap((address token0, address token1, bytes32 config) poolKey, bytes32 params, int256 calculatedAmountThreshold, address recipient)": {
+        "intent": "Swap on Ekubo",
+        "fields": [
+          { "path": "recipient", "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "params", "label": "Packed swap params", "format": "raw", "visible": "always" },
+          { "path": "calculatedAmountThreshold", "label": "Calculated amount threshold", "format": "raw", "visible": "always" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "swap(((address token0, address token1, bytes32 config) poolKey, uint96 sqrtRatioLimit, uint256 skipAhead) node, (address token, int128 amount) tokenAmount, int256 calculatedAmountThreshold)": {
+        "intent": "Swap route node on Ekubo",
+        "fields": [
+          { "path": "tokenAmount.amount", "label": "Specified amount", "format": "tokenAmount", "params": { "tokenPath": "tokenAmount.token" }, "visible": "always" },
+          { "path": "calculatedAmountThreshold", "label": "Calculated amount threshold", "format": "raw", "visible": "always" },
+          { "path": "node.poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "node.poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "node.sqrtRatioLimit", "label": "Price limit", "format": "raw", "visible": "optional" },
+          { "path": "node.skipAhead", "label": "Skip ahead", "format": "raw", "visible": "optional" },
+          { "path": "node.poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "swapAllowPartialFill((address token0, address token1, bytes32 config) poolKey, bool isToken1, int128 amount, uint96 sqrtRatioLimit, uint256 skipAhead)": {
+        "intent": "Swap on Ekubo with partial fill",
+        "fields": [
+          { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "isToken1", "label": "Specified token is token 1", "format": "raw", "visible": "always" },
+          { "path": "amount", "label": "Specified amount", "format": "raw", "visible": "always" },
+          { "path": "sqrtRatioLimit", "label": "Price limit", "format": "raw", "visible": "optional" },
+          { "path": "skipAhead", "label": "Skip ahead", "format": "raw", "visible": "optional" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "swapAllowPartialFill((address token0, address token1, bytes32 config) poolKey, bool isToken1, int128 amount, uint96 sqrtRatioLimit, uint256 skipAhead, address recipient)": {
+        "intent": "Swap on Ekubo with partial fill",
+        "fields": [
+          { "path": "recipient", "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "isToken1", "label": "Specified token is token 1", "format": "raw", "visible": "always" },
+          { "path": "amount", "label": "Specified amount", "format": "raw", "visible": "always" },
+          { "path": "sqrtRatioLimit", "label": "Price limit", "format": "raw", "visible": "optional" },
+          { "path": "skipAhead", "label": "Skip ahead", "format": "raw", "visible": "optional" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "swapAllowPartialFill((address token0, address token1, bytes32 config) poolKey, bytes32 params)": {
+        "intent": "Swap on Ekubo with partial fill",
+        "fields": [
+          { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "params", "label": "Packed swap params", "format": "raw", "visible": "always" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "swapAllowPartialFill((address token0, address token1, bytes32 config) poolKey, bytes32 params, address recipient)": {
+        "intent": "Swap on Ekubo with partial fill",
+        "fields": [
+          { "path": "recipient", "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] }, "visible": "always" },
+          { "path": "poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "params", "label": "Packed swap params", "format": "raw", "visible": "always" },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "swapAllowPartialFill(((address token0, address token1, bytes32 config) poolKey, uint96 sqrtRatioLimit, uint256 skipAhead) node, (address token, int128 amount) tokenAmount)": {
+        "intent": "Swap route node on Ekubo with partial fill",
+        "fields": [
+          { "path": "tokenAmount.amount", "label": "Specified amount", "format": "tokenAmount", "params": { "tokenPath": "tokenAmount.token" }, "visible": "always" },
+          { "path": "node.poolKey.token0", "label": "Pool token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "node.poolKey.token1", "label": "Pool token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "node.sqrtRatioLimit", "label": "Price limit", "format": "raw", "visible": "optional" },
+          { "path": "node.skipAhead", "label": "Skip ahead", "format": "raw", "visible": "optional" },
+          { "path": "node.poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "multihopSwap((((address token0, address token1, bytes32 config) poolKey, uint96 sqrtRatioLimit, uint256 skipAhead)[] route, (address token, int128 amount) tokenAmount) s, int256 calculatedAmountThreshold)": {
+        "intent": "Multi-hop swap on Ekubo",
+        "fields": [
+          { "path": "s.tokenAmount.amount", "label": "Specified amount", "format": "tokenAmount", "params": { "tokenPath": "s.tokenAmount.token" }, "visible": "always" },
+          { "path": "calculatedAmountThreshold", "label": "Calculated amount threshold", "format": "raw", "visible": "always" },
+          { "path": "s.route.[].poolKey.token0", "label": "Route token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "optional" },
+          { "path": "s.route.[].poolKey.token1", "label": "Route token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "optional" }
+        ]
+      },
+      "multiMultihopSwap((((address token0, address token1, bytes32 config) poolKey, uint96 sqrtRatioLimit, uint256 skipAhead)[] route, (address token, int128 amount) tokenAmount)[] swaps, int256 calculatedAmountThreshold)": {
+        "intent": "Batch multi-hop swaps on Ekubo",
+        "fields": [
+          { "path": "swaps.[].tokenAmount.amount", "label": "Specified amount", "format": "tokenAmount", "params": { "tokenPath": "swaps.[].tokenAmount.token" }, "visible": "always" },
+          { "path": "calculatedAmountThreshold", "label": "Calculated amount threshold", "format": "raw", "visible": "always" },
+          { "path": "swaps.[].route.[].poolKey.token0", "label": "Route token 0", "format": "addressName", "params": { "types": ["token"] }, "visible": "optional" },
+          { "path": "swaps.[].route.[].poolKey.token1", "label": "Route token 1", "format": "addressName", "params": { "types": ["token"] }, "visible": "optional" }
+        ]
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Batch router actions",
+        "fields": [
+          { "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to" }, "visible": "always" }
+        ]
+      },
+      "refundNativeToken()": {
+        "intent": "Refund unused native token",
+        "fields": [
+          { "path": "@.from", "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa"] }, "visible": "always" }
+        ]
+      }
+    }
+  }
+}
