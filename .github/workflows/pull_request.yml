@@ -56,6 +56,53 @@ jobs:
           CHANGED_FILES: ${{ steps.changed-descriptor-files.outputs.all_changed_files }}
         run: erc7730 lint $CHANGED_FILES --gha
 
+  validate_full_registry_on_spec_change:
+    name: 🛡️ full registry lint on spec change
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        timeout-minutes: 10
+        uses: actions/checkout@v6.0.2
+
+      - name: Check whether specs/ changed
+        timeout-minutes: 5
+        id: changed-spec-files
+        uses: tj-actions/changed-files@v47.0.5
+        with:
+          files: |
+            specs/**
+
+      - name: Setup python
+        timeout-minutes: 10
+        if: steps.changed-spec-files.outputs.any_changed == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install ERC-7730 library
+        timeout-minutes: 10
+        if: steps.changed-spec-files.outputs.any_changed == 'true'
+        run: pip install erc7730
+
+      - name: Lint full registry against changed specs
+        timeout-minutes: 120
+        if: steps.changed-spec-files.outputs.any_changed == 'true'
+        run: |
+          shopt -s globstar nullglob
+          FILES=(registry/**/eip712-*.json registry/**/calldata-*.json ercs/eip712-*.json ercs/calldata-*.json)
+          # Exclude anything under registry/**/tests/
+          FILTERED=()
+          for f in "${FILES[@]}"; do
+            case "$f" in
+              registry/*/tests/*) ;;
+              *) FILTERED+=("$f") ;;
+            esac
+          done
+          echo "Linting ${#FILTERED[@]} descriptor(s) against current specs/"
+          erc7730 lint "${FILTERED[@]}" --gha
+
   validate_schemas:
     name: 🔎 validate JSON schemas
     runs-on: ubuntu-latest
