@@ -1,0 +1,110 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "USDYInstantManager",
+    "contract": {
+      "deployments": [{ "chainId": 1, "address": "0xa42613C243b67BF6194Ac327795b926B4b491f15" }]
+    }
+  },
+  "metadata": {
+    "owner": "Ondo Finance",
+    "contractName": "USDY Instant Manager",
+    "info": { "url": "https://ondo.finance" },
+    "constants": {
+      "USDYaddress": "0x96F6eF951840721AdBF46Ac996b59E0235CB985C",
+      "rUSDYaddress": "0xaf37c1167910ebC994e266949387d2c7C326b879"
+    }
+  },
+  "display": {
+    "formats": {
+      "subscribe(address depositToken, uint256 depositAmount, uint256 minimumRwaReceived)": {
+        "$id": "subscribe",
+        "intent": "Subscribe to USDY",
+        "interpolatedIntent": "Subscribe with {depositAmount} for at least {minimumRwaReceived}+",
+        "fields": [
+          {
+            "path": "depositAmount",
+            "format": "tokenAmount",
+            "label": "Deposit Amount",
+            "params": { "tokenPath": "depositToken" },
+            "visible": "always"
+          },
+          {
+            "path": "minimumRwaReceived",
+            "format": "tokenAmount",
+            "label": "Min USDY Received",
+            "params": { "token": "$.metadata.constants.USDYaddress" },
+            "visible": "always"
+          },
+          { "path": "depositToken", "label": "Deposit Token", "visible": "never" }
+        ]
+      },
+      "redeem(uint256 rwaAmount, address receivingToken, uint256 minimumTokenReceived)": {
+        "$id": "redeem",
+        "intent": "Redeem USDY",
+        "interpolatedIntent": "Redeem {rwaAmount} for at least {minimumTokenReceived}+",
+        "fields": [
+          {
+            "path": "rwaAmount",
+            "format": "tokenAmount",
+            "label": "USDY Amount",
+            "params": { "token": "$.metadata.constants.USDYaddress" },
+            "visible": "always"
+          },
+          {
+            "path": "minimumTokenReceived",
+            "format": "tokenAmount",
+            "label": "Min Receive Amount",
+            "params": { "tokenPath": "receivingToken" },
+            "visible": "always"
+          },
+          { "path": "receivingToken", "label": "Receiving Token", "visible": "never" }
+        ]
+      },
+      "subscribeRebasingUSDY(address depositToken, uint256 depositAmount, uint256 minimumRusdyReceived)": {
+        "$id": "subscribeRebasingUSDY",
+        "intent": "Subscribe to rUSDY",
+        "interpolatedIntent": "Subscribe with {depositAmount} for at least {minimumRusdyReceived}+",
+        "fields": [
+          {
+            "path": "depositAmount",
+            "format": "tokenAmount",
+            "label": "Deposit Amount",
+            "params": { "tokenPath": "depositToken" },
+            "visible": "always"
+          },
+          {
+            "path": "minimumRusdyReceived",
+            "format": "tokenAmount",
+            "label": "Min rUSDY Received",
+            "params": { "token": "$.metadata.constants.rUSDYaddress" },
+            "visible": "always"
+          },
+          { "path": "depositToken", "label": "Deposit Token", "visible": "never" }
+        ]
+      },
+      "redeemRebasingUSDY(uint256 rusdyAmount, address receivingToken, uint256 minimumTokenReceived)": {
+        "$id": "redeemRebasingUSDY",
+        "intent": "Redeem rUSDY",
+        "interpolatedIntent": "Redeem {rusdyAmount} for at least {minimumTokenReceived}+",
+        "fields": [
+          {
+            "path": "rusdyAmount",
+            "format": "tokenAmount",
+            "label": "rUSDY Amount",
+            "params": { "token": "$.metadata.constants.rUSDYaddress" },
+            "visible": "always"
+          },
+          {
+            "path": "minimumTokenReceived",
+            "format": "tokenAmount",
+            "label": "Min Receive Amount",
+            "params": { "tokenPath": "receivingToken" },
+            "visible": "always"
+          },
+          { "path": "receivingToken", "label": "Receiving Token", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
