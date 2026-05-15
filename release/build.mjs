@@ -53,6 +53,10 @@ function gitInfo() {
 
   const commit = run("git rev-parse HEAD");
   const shortCommit = commit.slice(0, 7);
+  // Commit timestamp (ISO 8601). Using this instead of build wall-clock time
+  // means the same commit always produces the same dist/, and therefore the
+  // same CID — anyone can rebuild and verify.
+  const committedAt = run("git log -1 --format=%cI HEAD");
 
   let tag = null;
   try {
@@ -76,7 +80,7 @@ function gitInfo() {
     // not a git repo
   }
 
-  return { commit, shortCommit, tag, branch, dirty };
+  return { commit, shortCommit, committedAt, tag, branch, dirty };
 }
 
 function countDescriptors(registryDir) {
@@ -200,7 +204,21 @@ function bytesToHuman(bytes) {
   return `${n.toFixed(n >= 10 || i === 0 ? 0 : 1)} ${units[i]}`;
 }
 
-function build() {
+function build({ force = false } = {}) {
+  const git = gitInfo();
+
+  if (git.dirty && !force) {
+    console.error("✗ Working tree has uncommitted changes.");
+    console.error(
+      "  Release builds must come from a clean checkout — the manifest",
+    );
+    console.error(
+      "  embeds the commit, so uncommitted changes break verifiability.",
+    );
+    console.error("  Commit (or stash) your changes, or pass --force to override.");
+    process.exit(1);
+  }
+
   console.log("Building dist/...");
 
   fs.rmSync(DIST, { recursive: true, force: true });
@@ -229,12 +247,11 @@ function build() {
     path.join(DIST, "index.eip712.json"),
   );
 
-  const git = gitInfo();
   const counts = countDescriptors(path.join(DIST, "registry"));
   const manifest = {
     name: "ERC-7730 Clear Signing Registry",
     schemaVersion: "v2",
-    builtAt: new Date().toISOString(),
+    builtAt: git.committedAt,
     git,
     counts: {
       ...counts,
@@ -261,7 +278,8 @@ function build() {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  build();
+  const force = process.argv.includes("--force");
+  build({ force });
 }
 
 export { build };
