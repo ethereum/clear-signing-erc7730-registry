@@ -129,7 +129,7 @@ function renderIndexHtml(manifest) {
   const dirty = manifest.git.dirty
     ? ' <span style="color:#c94444">(uncommitted changes)</span>'
     : "";
-  const builtAt = escapeHtml(manifest.builtAt);
+  const committedAt = escapeHtml(manifest.git.committedAt);
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -156,8 +156,8 @@ function renderIndexHtml(manifest) {
   <h1>ERC-7730 Clear Signing Registry</h1>
   <p class="meta">
     A pinned snapshot of <a href="https://github.com/ethereum/clear-signing-erc7730-registry">github.com/ethereum/clear-signing-erc7730-registry</a>
-    at commit <a href="https://github.com/ethereum/clear-signing-erc7730-registry/commit/${fullCommit}"><code>${shortCommit}</code></a>${tag}${dirty}.
-    Built ${builtAt}.
+    at commit <a href="https://github.com/ethereum/clear-signing-erc7730-registry/commit/${fullCommit}"><code>${shortCommit}</code></a>${tag}${dirty},
+    committed ${committedAt}.
   </p>
 
   <h2>Stats</h2>
