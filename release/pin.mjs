@@ -7,7 +7,7 @@ import { loadEnv } from "./env.mjs";
 const HERE = import.meta.dirname;
 const DIST = path.join(HERE, "dist");
 
-function collectFiles(dir, prefix = "") {
+export function collectFiles(dir, prefix = "") {
   const files = [];
   const entries = fs
     .readdirSync(dir, { withFileTypes: true })
@@ -24,7 +24,7 @@ function collectFiles(dir, prefix = "") {
   return files;
 }
 
-async function computeLocalCid(files) {
+export async function computeLocalCid(files) {
   const blockstore = new MemoryBlockstore();
   let rootCid;
   for await (const entry of importer(files, blockstore, {

@@ -97,10 +97,24 @@ pnpm pin             # just pin (requires dist/)
 pnpm tx              # just compute the Safe transaction (requires dist/ + .cid)
 pnpm release         # build + pin + tx
 pnpm release:publish # post-on-chain: create GitHub release
+pnpm verify          # rebuild dist/ and compare its CID to what's on-chain (exit 0 = match)
 pnpm test            # unit tests for crypto/encoding helpers
 
 pnpm build --force   # bypass the dirty-checkout guard (testing only)
 ```
+
+## Verifying that on-chain == source
+
+Any third party can confirm that the contenthash currently set for `erc7730.eth` matches a specific commit of this repo:
+
+```bash
+git checkout <tag>
+cd release
+pnpm install
+pnpm verify
+```
+
+`pnpm verify` rebuilds `dist/` from the checked-out source, computes the CID, reads `Resolver.contenthash(namehash("erc7730.eth"))` from mainnet, and reports `MATCH` or `MISMATCH`. Exit code 0 = match, 1 = mismatch — suitable for CI.
 
 ## Verifying the CID independently
 
