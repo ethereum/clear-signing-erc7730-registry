@@ -1,18 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
-import { CID } from "multiformats/cid";
 import {
-  concat,
   createPublicClient,
   encodeFunctionData,
   hashTypedData,
   http as viemHttp,
   isAddressEqual,
-  keccak256,
   namehash,
-  numberToHex,
-  toBytes,
-  toHex,
 } from "viem";
 import { mainnet } from "viem/chains";
 import {
@@ -21,6 +15,12 @@ import {
   SAFE_ABI,
   SAFE_TX_TYPES,
 } from "./abi.mjs";
+import { loadEnv } from "./env.mjs";
+import {
+  calldataDigest,
+  cidToContenthash,
+  safeBatchChecksum,
+} from "./lib.mjs";
 
 const HERE = import.meta.dirname;
 const TX_DATA = path.join(HERE, "tx-data");
@@ -30,58 +30,6 @@ const SAFE_ADDRESS = "0x08f6323fA771067239c1fFD740C59e5679322496";
 const CHAIN_ID = 1;
 const ZERO_ADDR = "0x0000000000000000000000000000000000000000";
 const ENS_REGISTRY = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
-
-function loadEnv() {
-  const env = {};
-  const envPath = path.join(HERE, ".env");
-  if (fs.existsSync(envPath)) {
-    for (const line of fs.readFileSync(envPath, "utf-8").split("\n")) {
-      const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith("#")) continue;
-      const eqIdx = trimmed.indexOf("=");
-      if (eqIdx > 0) {
-        env[trimmed.slice(0, eqIdx).trim()] = trimmed.slice(eqIdx + 1).trim();
-      }
-    }
-  }
-  return { ...env, ...process.env };
-}
-
-// IPFS CIDv1 → EIP-1577 contenthash (0xe301 prefix is the IPFS codec).
-function cidToContenthash(cidString) {
-  const v1 = CID.parse(cidString).toV1();
-  return toHex(new Uint8Array([0xe3, 0x01, ...v1.bytes]));
-}
-
-// ERC-8213: keccak256( uint256(len(calldata)) ‖ calldata )
-function calldataDigest(calldataHex) {
-  const bytes = toBytes(calldataHex);
-  const lenWord = numberToHex(bytes.length, { size: 32 });
-  return keccak256(concat([toBytes(lenWord), bytes]));
-}
-
-// Safe TX Builder batch checksum (matches safe-react-apps tx-builder).
-const stringifyReplacer = (_, value) => (value === undefined ? null : value);
-
-function serializeJsonObject(json) {
-  if (Array.isArray(json)) {
-    return `[${json.map(serializeJsonObject).join(",")}]`;
-  }
-  if (typeof json === "object" && json !== null) {
-    const keys = Object.keys(json).sort();
-    let acc = `{${JSON.stringify(keys, stringifyReplacer)}`;
-    for (const k of keys) {
-      acc += `${serializeJsonObject(json[k])},`;
-    }
-    return `${acc}}`;
-  }
-  return JSON.stringify(json, stringifyReplacer);
-}
-
-function safeBatchChecksum(batchFile) {
-  const stripped = { ...batchFile, meta: { ...batchFile.meta, name: null } };
-  return keccak256(toBytes(serializeJsonObject(stripped)));
-}
 
 async function readEnsState(client, name) {
   const node = namehash(name);
@@ -277,23 +225,59 @@ async function tx() {
 
   const cdDigest = calldataDigest(calldata);
 
+  const safeTxArgs = [
+    ens.resolver,
+    0n,
+    calldata,
+    0,
+    0n,
+    0n,
+    0n,
+    ZERO_ADDR,
+    ZERO_ADDR,
+    BigInt(safeState.nonce),
+  ];
+
   const safeTxHash = hashTypedData({
     domain: { chainId: CHAIN_ID, verifyingContract: SAFE_ADDRESS },
     types: SAFE_TX_TYPES,
     primaryType: "SafeTx",
     message: {
-      to: ens.resolver,
-      value: 0n,
-      data: calldata,
-      operation: 0,
-      safeTxGas: 0n,
-      baseGas: 0n,
-      gasPrice: 0n,
-      gasToken: ZERO_ADDR,
-      refundReceiver: ZERO_ADDR,
-      nonce: BigInt(safeState.nonce),
+      to: safeTxArgs[0],
+      value: safeTxArgs[1],
+      data: safeTxArgs[2],
+      operation: safeTxArgs[3],
+      safeTxGas: safeTxArgs[4],
+      baseGas: safeTxArgs[5],
+      gasPrice: safeTxArgs[6],
+      gasToken: safeTxArgs[7],
+      refundReceiver: safeTxArgs[8],
+      nonce: safeTxArgs[9],
     },
   });
+
+  // Verify our locally-computed safeTxHash against what the Safe contract itself
+  // says. Catches any mismatch in SAFE_TX_TYPES (e.g. a Safe-version change),
+  // so signers can trust the hash we print will match what their hardware wallet shows.
+  console.log("\nVerifying safeTxHash against Safe.getTransactionHash()...");
+  const onChainSafeTxHash = await client.readContract({
+    address: SAFE_ADDRESS,
+    abi: SAFE_ABI,
+    functionName: "getTransactionHash",
+    args: safeTxArgs,
+  });
+  if (onChainSafeTxHash !== safeTxHash) {
+    console.error(
+      "\n  ✗ safeTxHash mismatch — the Safe contract disagrees with our local computation.",
+    );
+    console.error(`    local:    ${safeTxHash}`);
+    console.error(`    on-chain: ${onChainSafeTxHash}`);
+    console.error(
+      "    SAFE_TX_TYPES likely doesn't match this Safe's version. Investigate before signing.",
+    );
+    process.exit(1);
+  }
+  console.log(`  ✓ ${safeTxHash}`);
 
   const batchFile = buildSafeBatch({
     resolver: ens.resolver,

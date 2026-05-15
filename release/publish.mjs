@@ -2,16 +2,16 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { CID } from "multiformats/cid";
 import {
   createPublicClient,
   http as viemHttp,
   isAddressEqual,
   namehash,
-  toBytes,
 } from "viem";
 import { mainnet } from "viem/chains";
 import { ENS_REGISTRY_ABI, RESOLVER_ABI } from "./abi.mjs";
+import { loadEnv } from "./env.mjs";
+import { contenthashToCid } from "./lib.mjs";
 
 const HERE = import.meta.dirname;
 const ROOT = path.resolve(HERE, "..");
@@ -21,33 +21,6 @@ const ENS_NAME = "erc7730.eth";
 const SAFE_ADDRESS = "0x08f6323fA771067239c1fFD740C59e5679322496";
 const ENS_REGISTRY = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
 const GH_REPO = "ethereum/clear-signing-erc7730-registry";
-
-function loadEnv() {
-  const env = {};
-  const envPath = path.join(HERE, ".env");
-  if (fs.existsSync(envPath)) {
-    for (const line of fs.readFileSync(envPath, "utf-8").split("\n")) {
-      const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith("#")) continue;
-      const eqIdx = trimmed.indexOf("=");
-      if (eqIdx > 0) {
-        env[trimmed.slice(0, eqIdx).trim()] = trimmed.slice(eqIdx + 1).trim();
-      }
-    }
-  }
-  return { ...env, ...process.env };
-}
-
-function contenthashToCid(contenthashHex) {
-  if (!contenthashHex || contenthashHex === "0x") return null;
-  const bytes = toBytes(contenthashHex);
-  if (bytes.length < 2 || bytes[0] !== 0xe3 || bytes[1] !== 0x01) return null;
-  try {
-    return CID.decode(bytes.slice(2)).toString();
-  } catch {
-    return null;
-  }
-}
 
 function ensureGhCli() {
   try {
