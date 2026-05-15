@@ -109,7 +109,7 @@ async function pin() {
   }
 
   console.log("\nTo pin on your own Kubo node:");
-  console.log("  ipfs add -r release/dist/");
+  console.log("  ipfs add -r dist/");
   console.log(`  expected CID: ${localCid}`);
 
   fs.writeFileSync(path.join(HERE, ".cid"), `${localCid}\n`);
