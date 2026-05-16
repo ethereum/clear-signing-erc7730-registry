@@ -1,0 +1,111 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ALIA ScoreEngineV2BNBMirror Cross-Chain Score Attestation",
+    "eip712": {
+      "schemas": [
+        {
+          "types": {
+            "EIP712Domain": [
+              { "name": "name", "type": "string" },
+              { "name": "version", "type": "string" },
+              { "name": "chainId", "type": "uint256" },
+              { "name": "verifyingContract", "type": "address" }
+            ],
+            "ScoreAttestation": [
+              { "name": "asset", "type": "address" },
+              { "name": "score", "type": "uint256" },
+              { "name": "confidence", "type": "uint256" },
+              { "name": "sourceTimestamp", "type": "uint256" },
+              { "name": "sourceBlockNumber", "type": "uint256" },
+              { "name": "nonce", "type": "uint256" },
+              { "name": "sourceChainId", "type": "uint256" },
+              { "name": "sourceContract", "type": "address" }
+            ]
+          },
+          "primaryType": "ScoreAttestation"
+        }
+      ],
+      "deployments": [
+        {
+          "chainId": 97,
+          "address": "0x2Ed898038F6605879f746985741650eBf4220571"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "ALIA Quality Network",
+    "info": {
+      "legalName": "Avvatar Labs SAS",
+      "url": "https://alia.network",
+      "deploymentDate": "2026-05-15T11:15:00Z"
+    },
+    "constants": {
+      "source": "ScoreEngineV2 mainnet Base (chainId 8453, 0x295CCcDE8Fb06148d4FB6Bfc06B6c332E42aCb43)",
+      "thresholdScheme": "Threshold ECDSA secp256k1 — 3-of-5 ALIA validators sign each score attestation",
+      "freshnessGuard": "maxAttestationAge 1h (rejects stale attestations)",
+      "replayProtection": "nonce monotonic per asset + processedAttestations dedup map"
+    }
+  },
+  "display": {
+    "formats": {
+      "ScoreAttestation": {
+        "$id": "score_attestation",
+        "intent": "ALIA Score Cross-Chain Attestation (3-of-5 validators)",
+        "fields": [
+          {
+            "path": "asset",
+            "label": "Asset Scored",
+            "format": "addressName",
+            "params": {
+              "types": ["token", "contract"]
+            }
+          },
+          {
+            "path": "score",
+            "label": "ALIA Score (0-10000 bps)",
+            "format": "raw"
+          },
+          {
+            "path": "confidence",
+            "label": "Score Confidence (calibrated by Brier RL)",
+            "format": "raw"
+          },
+          {
+            "path": "sourceTimestamp",
+            "label": "Source Timestamp",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "sourceBlockNumber",
+            "label": "Source Block Number",
+            "format": "raw"
+          },
+          {
+            "path": "nonce",
+            "label": "Score Nonce (monotonic per asset)",
+            "format": "raw"
+          },
+          {
+            "path": "sourceChainId",
+            "label": "Source Chain ID",
+            "format": "raw"
+          },
+          {
+            "path": "sourceContract",
+            "label": "Source ScoreEngine Contract",
+            "format": "addressName",
+            "params": {
+              "types": ["contract"]
+            }
+          }
+        ],
+        "required": ["asset", "score", "confidence", "nonce", "sourceTimestamp", "sourceChainId", "sourceContract"]
+      }
+    }
+  }
+}

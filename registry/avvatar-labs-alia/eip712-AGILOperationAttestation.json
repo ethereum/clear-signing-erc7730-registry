@@ -1,0 +1,126 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ALIA AGIL Operation Attestation",
+    "eip712": {
+      "schemas": [
+        {
+          "types": {
+            "EIP712Domain": [
+              { "name": "name", "type": "string" },
+              { "name": "version", "type": "string" },
+              { "name": "chainId", "type": "uint256" },
+              { "name": "verifyingContract", "type": "address" }
+            ],
+            "AGILOperationAttestation": [
+              { "name": "opType", "type": "bytes32" },
+              { "name": "user", "type": "address" },
+              { "name": "asset", "type": "address" },
+              { "name": "amount", "type": "uint256" },
+              { "name": "mandateId", "type": "bytes32" },
+              { "name": "nonce", "type": "uint256" },
+              { "name": "expiry", "type": "uint256" },
+              { "name": "chainId", "type": "uint256" }
+            ]
+          },
+          "primaryType": "AGILOperationAttestation"
+        }
+      ],
+      "domain": {
+        "name": "ALIA-AGIL-Backend",
+        "version": "1"
+      },
+      "deployments": [
+        {
+          "chainId": 97,
+          "address": "0x5866B9dbE020c4A306FefC416C04D8E1Ef779A8A"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "ALIA Quality Network",
+    "info": {
+      "legalName": "Avvatar Labs SAS",
+      "url": "https://alia.network",
+      "deploymentDate": "2026-05-15T14:17:00Z"
+    },
+    "enums": {
+      "opType": {
+        "0x6850612400000000000000000000000000000000000000000000000000000000": "DEPOSIT_PILLAR_D",
+        "0x05ae06ce00000000000000000000000000000000000000000000000000000000": "DEPOSIT_YIELD_MODE",
+        "0xd294133300000000000000000000000000000000000000000000000000000000": "REBALANCE_YIELD"
+      }
+    },
+    "constants": {
+      "thresholdScheme": "3-of-5 ALIA AGIL operators (threshold ECDSA secp256k1)",
+      "attestationStructure": "EIP-712 typed multi-party threshold attestation. Backend signs off-chain via 3 of 5 registered operators; user submits attestation + 3 signatures on-chain; AGILSignatureVerifier validates threshold + nonce monotonicity + expiry + chainId before allowing operation"
+    }
+  },
+  "display": {
+    "formats": {
+      "AGILOperationAttestation": {
+        "$id": "agil_operation_attestation",
+        "intent": "Sign ALIA AGIL Operation Attestation (3-of-5 threshold)",
+        "fields": [
+          {
+            "path": "opType",
+            "label": "Operation Type",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.opType"
+            }
+          },
+          {
+            "path": "user",
+            "label": "User",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "wallet"]
+            }
+          },
+          {
+            "path": "asset",
+            "label": "Asset",
+            "format": "addressName",
+            "params": {
+              "types": ["token"]
+            }
+          },
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "asset"
+            }
+          },
+          {
+            "path": "mandateId",
+            "label": "Mandate ID",
+            "format": "raw"
+          },
+          {
+            "path": "nonce",
+            "label": "AGIL Nonce (monotonic per signer)",
+            "format": "raw"
+          },
+          {
+            "path": "expiry",
+            "label": "Expiry",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "chainId",
+            "label": "Chain ID (replay protection)",
+            "format": "raw"
+          }
+        ],
+        "required": ["opType", "user", "asset", "amount", "nonce", "expiry", "chainId"]
+      }
+    }
+  }
+}

@@ -1,0 +1,1318 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ALIA YieldBoostedMode (Pillar D V0)",
+    "contract": {
+      "abi": [
+        {
+          "type": "constructor",
+          "inputs": [
+            {
+              "name": "_allocator",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "_agilVerifier",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "acceptOwnership",
+          "inputs": [],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "agilVerifier",
+          "inputs": [],
+          "outputs": [
+            {
+              "name": "",
+              "type": "address",
+              "internalType": "contract AGILSignatureVerifier"
+            }
+          ],
+          "stateMutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "allocator",
+          "inputs": [],
+          "outputs": [
+            {
+              "name": "",
+              "type": "address",
+              "internalType": "contract QualityGatedAllocator"
+            }
+          ],
+          "stateMutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "convertToAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "convertToShares",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "currentAdapter",
+          "inputs": [
+            {
+              "name": "",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "stateMutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "mandateId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "depositDirect",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "mandateId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "agilAtt",
+              "type": "tuple",
+              "internalType": "struct AGILSignatureVerifier.AGILOperationAttestation",
+              "components": [
+                {
+                  "name": "opType",
+                  "type": "bytes32",
+                  "internalType": "bytes32"
+                },
+                {
+                  "name": "user",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "asset",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "amount",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "mandateId",
+                  "type": "bytes32",
+                  "internalType": "bytes32"
+                },
+                {
+                  "name": "nonce",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "expiry",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "chainId",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            },
+            {
+              "name": "agilSigs",
+              "type": "bytes[]",
+              "internalType": "bytes[]"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "modeName",
+          "inputs": [],
+          "outputs": [
+            {
+              "name": "",
+              "type": "string",
+              "internalType": "string"
+            }
+          ],
+          "stateMutability": "pure"
+        },
+        {
+          "type": "function",
+          "name": "modeVersion",
+          "inputs": [],
+          "outputs": [
+            {
+              "name": "",
+              "type": "string",
+              "internalType": "string"
+            }
+          ],
+          "stateMutability": "pure"
+        },
+        {
+          "type": "function",
+          "name": "owner",
+          "inputs": [],
+          "outputs": [
+            {
+              "name": "",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "stateMutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "pause",
+          "inputs": [],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "paused",
+          "inputs": [],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "pendingOwner",
+          "inputs": [],
+          "outputs": [
+            {
+              "name": "",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "stateMutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "pillarDRouter",
+          "inputs": [],
+          "outputs": [
+            {
+              "name": "",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "stateMutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "rebalance",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "newAdapter",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "agilAtt",
+              "type": "tuple",
+              "internalType": "struct AGILSignatureVerifier.AGILOperationAttestation",
+              "components": [
+                {
+                  "name": "opType",
+                  "type": "bytes32",
+                  "internalType": "bytes32"
+                },
+                {
+                  "name": "user",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "asset",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "amount",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "mandateId",
+                  "type": "bytes32",
+                  "internalType": "bytes32"
+                },
+                {
+                  "name": "nonce",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "expiry",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "chainId",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            },
+            {
+              "name": "agilSigs",
+              "type": "bytes[]",
+              "internalType": "bytes[]"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "redeem",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "redeemDirect",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "agilAtt",
+              "type": "tuple",
+              "internalType": "struct AGILSignatureVerifier.AGILOperationAttestation",
+              "components": [
+                {
+                  "name": "opType",
+                  "type": "bytes32",
+                  "internalType": "bytes32"
+                },
+                {
+                  "name": "user",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "asset",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "amount",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "mandateId",
+                  "type": "bytes32",
+                  "internalType": "bytes32"
+                },
+                {
+                  "name": "nonce",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "expiry",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "chainId",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            },
+            {
+              "name": "agilSigs",
+              "type": "bytes[]",
+              "internalType": "bytes[]"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "setAllocator",
+          "inputs": [
+            {
+              "name": "newAllocator",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "setPillarDRouter",
+          "inputs": [
+            {
+              "name": "_router",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "shareBalanceOf",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "user",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "totalAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "totalShares",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "transferOwnership",
+          "inputs": [
+            {
+              "name": "newOwner",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "unpause",
+          "inputs": [],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "event",
+          "name": "AllocatorUpdated",
+          "inputs": [
+            {
+              "name": "oldAllocator",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "newAllocator",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            }
+          ],
+          "anonymous": false
+        },
+        {
+          "type": "event",
+          "name": "CurrentAdapterSet",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "oldAdapter",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "newAdapter",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "timestamp",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+            }
+          ],
+          "anonymous": false
+        },
+        {
+          "type": "event",
+          "name": "Deposit",
+          "inputs": [
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "asset",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+            },
+            {
+              "name": "mandateId",
+              "type": "bytes32",
+              "indexed": false,
+              "internalType": "bytes32"
+            }
+          ],
+          "anonymous": false
+        },
+        {
+          "type": "event",
+          "name": "IPNotice",
+          "inputs": [
+            {
+              "name": "license",
+              "type": "string",
+              "indexed": false,
+              "internalType": "string"
+            },
+            {
+              "name": "trademark",
+              "type": "string",
+              "indexed": false,
+              "internalType": "string"
+            }
+          ],
+          "anonymous": false
+        },
+        {
+          "type": "event",
+          "name": "OwnershipTransferStarted",
+          "inputs": [
+            {
+              "name": "previousOwner",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "newOwner",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            }
+          ],
+          "anonymous": false
+        },
+        {
+          "type": "event",
+          "name": "OwnershipTransferred",
+          "inputs": [
+            {
+              "name": "previousOwner",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "newOwner",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            }
+          ],
+          "anonymous": false
+        },
+        {
+          "type": "event",
+          "name": "Paused",
+          "inputs": [
+            {
+              "name": "by",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "timestamp",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+            }
+          ],
+          "anonymous": false
+        },
+        {
+          "type": "event",
+          "name": "Rebalanced",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "fromAdapter",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "toAdapter",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "amountMoved",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+            },
+            {
+              "name": "timestamp",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+            }
+          ],
+          "anonymous": false
+        },
+        {
+          "type": "event",
+          "name": "Redeem",
+          "inputs": [
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "asset",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+            },
+            {
+              "name": "assets",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+            }
+          ],
+          "anonymous": false
+        },
+        {
+          "type": "event",
+          "name": "Unpaused",
+          "inputs": [
+            {
+              "name": "by",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+            },
+            {
+              "name": "timestamp",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+            }
+          ],
+          "anonymous": false
+        },
+        {
+          "type": "error",
+          "name": "AdapterMismatch",
+          "inputs": [
+            {
+              "name": "current",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "routed",
+              "type": "address",
+              "internalType": "address"
+            }
+          ]
+        },
+        {
+          "type": "error",
+          "name": "ApprovalFailed",
+          "inputs": []
+        },
+        {
+          "type": "error",
+          "name": "InsufficientShares",
+          "inputs": [
+            {
+              "name": "requested",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "available",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ]
+        },
+        {
+          "type": "error",
+          "name": "NoCurrentAdapter",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            }
+          ]
+        },
+        {
+          "type": "error",
+          "name": "NotOwner",
+          "inputs": []
+        },
+        {
+          "type": "error",
+          "name": "NotRouter",
+          "inputs": []
+        },
+        {
+          "type": "error",
+          "name": "TransferFailed",
+          "inputs": []
+        },
+        {
+          "type": "error",
+          "name": "ZeroAddress",
+          "inputs": []
+        },
+        {
+          "type": "error",
+          "name": "ZeroAmount",
+          "inputs": []
+        }
+      ],
+      "deployments": [
+        {
+          "chainId": 97,
+          "address": "0x8ffaf93a765cc8442c9c309CA8E9f061ea3FbEC6"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "ALIA Quality Network",
+    "info": {
+      "legalName": "Avvatar Labs SAS",
+      "url": "https://alia.network",
+      "deploymentDate": "2026-05-15T14:17:00Z"
+    },
+    "enums": {
+      "agilOpType": {
+        "0x6850612400000000000000000000000000000000000000000000000000000000": "DEPOSIT_PILLAR_D (3-of-5 ALIA operators)",
+        "0x05ae06ce00000000000000000000000000000000000000000000000000000000": "DEPOSIT_YIELD_MODE (3-of-5 ALIA operators)",
+        "0xd294133300000000000000000000000000000000000000000000000000000000": "REBALANCE_YIELD (3-of-5 ALIA operators)"
+      }
+    },
+    "constants": {
+      "agilVerifier": "0x5866B9dbE020c4A306FefC416C04D8E1Ef779A8A",
+      "agilThreshold": "3-of-5",
+      "modeRole": "Pillar D Mode 1 \u2014 Yield Boosted (quality-routed allocation across Aave V3 BNB / Morpho / Pendle / Venus / Kernel)",
+      "qualityGating": "QualityGatedAllocator: 4-layer gating (mandate + score Bronze/Silver/Gold + collateral + adapter approved)"
+    }
+  },
+  "display": {
+    "definitions": {
+      "agilOpTypeField": {
+        "label": "AGIL Operation Type",
+        "format": "enum",
+        "params": {
+          "$ref": "$.metadata.enums.agilOpType"
+        }
+      },
+      "agilExpiryField": {
+        "label": "Attestation Valid Until",
+        "format": "date",
+        "params": {
+          "encoding": "timestamp"
+        }
+      }
+    },
+    "formats": {
+      "deposit(address,uint256,address,bytes32)": {
+        "$id": "ybm_deposit_router",
+        "intent": "Deposit into Yield Boosted (via Pillar D Router)",
+        "fields": [
+          {
+            "path": "asset",
+            "label": "Asset",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
+          },
+          {
+            "path": "amount",
+            "label": "Amount to Deposit",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "asset"
+            }
+          },
+          {
+            "path": "receiver",
+            "label": "Shares Recipient (receiver)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "mandateId",
+            "label": "Mandate ID",
+            "format": "raw"
+          }
+        ],
+        "required": [
+          "asset",
+          "amount",
+          "recipient"
+        ]
+      },
+      "depositDirect(address,uint256,address,bytes32,(bytes32,address,address,uint256,bytes32,uint256,uint256,uint256),bytes[])": {
+        "$id": "ybm_deposit_direct_agil",
+        "intent": "Deposit Direct into Yield Boosted (AGIL bypass-router)",
+        "fields": [
+          {
+            "path": "asset",
+            "label": "Asset",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
+          },
+          {
+            "path": "amount",
+            "label": "Amount to Deposit",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "asset"
+            }
+          },
+          {
+            "path": "receiver",
+            "label": "Shares Recipient (receiver)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "mandateId",
+            "label": "Mandate ID",
+            "format": "raw"
+          },
+          {
+            "path": "agilAtt.opType",
+            "$ref": "$.display.definitions.agilOpTypeField"
+          },
+          {
+            "path": "agilAtt.user",
+            "label": "Attestation User",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "agilAtt.asset",
+            "label": "Attestation Asset",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
+          },
+          {
+            "path": "agilAtt.amount",
+            "label": "Attested Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "agilAtt.asset"
+            }
+          },
+          {
+            "path": "agilAtt.nonce",
+            "label": "AGIL Nonce",
+            "format": "raw"
+          },
+          {
+            "path": "agilAtt.expiry",
+            "$ref": "$.display.definitions.agilExpiryField"
+          },
+          {
+            "path": "agilAtt.chainId",
+            "label": "Attestation Chain ID",
+            "format": "raw"
+          }
+        ],
+        "required": [
+          "asset",
+          "amount",
+          "recipient",
+          "agilAtt.opType",
+          "agilAtt.amount",
+          "agilAtt.expiry"
+        ],
+        "excluded": [
+          "agilSigs"
+        ]
+      },
+      "redeem(address,uint256,address)": {
+        "$id": "ybm_redeem_router",
+        "intent": "Redeem from Yield Boosted (via Pillar D Router)",
+        "fields": [
+          {
+            "path": "asset",
+            "label": "Asset",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
+          },
+          {
+            "path": "shares",
+            "label": "Shares to Redeem",
+            "format": "raw"
+          },
+          {
+            "path": "receiver",
+            "label": "Asset Recipient (receiver)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          }
+        ],
+        "required": [
+          "asset",
+          "shares",
+          "recipient"
+        ]
+      },
+      "redeemDirect(address,uint256,address,(bytes32,address,address,uint256,bytes32,uint256,uint256,uint256),bytes[])": {
+        "$id": "ybm_redeem_direct_agil",
+        "intent": "Redeem Direct from Yield Boosted (AGIL bypass-router)",
+        "fields": [
+          {
+            "path": "asset",
+            "label": "Asset",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
+          },
+          {
+            "path": "shares",
+            "label": "Shares to Redeem",
+            "format": "raw"
+          },
+          {
+            "path": "receiver",
+            "label": "Asset Recipient (receiver)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "agilAtt.opType",
+            "$ref": "$.display.definitions.agilOpTypeField"
+          },
+          {
+            "path": "agilAtt.user",
+            "label": "Attestation User",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "agilAtt.nonce",
+            "label": "AGIL Nonce",
+            "format": "raw"
+          },
+          {
+            "path": "agilAtt.expiry",
+            "$ref": "$.display.definitions.agilExpiryField"
+          }
+        ],
+        "required": [
+          "asset",
+          "shares",
+          "recipient",
+          "agilAtt.opType",
+          "agilAtt.expiry"
+        ],
+        "excluded": [
+          "agilSigs"
+        ]
+      },
+      "rebalance(address,address,(bytes32,address,address,uint256,bytes32,uint256,uint256,uint256),bytes[])": {
+        "$id": "ybm_rebalance_agil",
+        "intent": "Rebalance Yield Boosted Adapter (AGIL-attested, owner-only)",
+        "fields": [
+          {
+            "path": "asset",
+            "label": "Asset",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
+          },
+          {
+            "path": "newAdapter",
+            "label": "New Allocation Adapter",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "agilAtt.opType",
+            "$ref": "$.display.definitions.agilOpTypeField"
+          },
+          {
+            "path": "agilAtt.user",
+            "label": "Attestation User (Owner)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "agilAtt.nonce",
+            "label": "AGIL Nonce",
+            "format": "raw"
+          },
+          {
+            "path": "agilAtt.expiry",
+            "$ref": "$.display.definitions.agilExpiryField"
+          }
+        ],
+        "required": [
+          "asset",
+          "newAdapter",
+          "agilAtt.opType",
+          "agilAtt.expiry"
+        ],
+        "excluded": [
+          "agilSigs"
+        ]
+      },
+      "pause()": {
+        "$id": "ybm_pause",
+        "intent": "Pause YieldBoostedMode (owner kill switch)",
+        "fields": [],
+        "required": []
+      },
+      "unpause()": {
+        "$id": "ybm_unpause",
+        "intent": "Unpause YieldBoostedMode (owner)",
+        "fields": [],
+        "required": []
+      }
+    }
+  }
+}
