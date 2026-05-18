@@ -741,7 +741,6 @@
   "metadata": {
     "owner": "ALIA Quality Network",
     "info": {
-      "legalName": "Avvatar Labs SAS",
       "url": "https://alia.network",
       "deploymentDate": "2026-05-15T14:17:00Z"
     },
@@ -766,43 +765,8 @@
     }
   },
   "display": {
-    "definitions": {
-      "agilOpTypeField": {
-        "label": "Op Type",
-        "format": "enum",
-        "params": {
-          "$ref": "$.metadata.enums.agilOpType"
-        }
-      },
-      "agilUserField": {
-        "label": "User",
-        "format": "addressName",
-        "params": {
-          "types": [
-            "eoa",
-            "wallet"
-          ]
-        }
-      },
-      "agilAssetField": {
-        "label": "Asset",
-        "format": "addressName",
-        "params": {
-          "types": [
-            "token"
-          ]
-        }
-      },
-      "agilExpiryField": {
-        "label": "Valid Until",
-        "format": "date",
-        "params": {
-          "encoding": "timestamp"
-        }
-      }
-    },
     "formats": {
-      "deposit(uint8,address,uint256,address,bytes32,(bytes32,address,address,uint256,bytes32,uint256,uint256,uint256),bytes[])": {
+      "deposit(uint8 mode, address asset, uint256 amount, address receiver, bytes32 mandateId, tuple agilAtt, bytes[] signatures)": {
         "$id": "pillar_d_deposit",
         "intent": "Deposit Pillar D (AGIL)",
         "fields": [
@@ -850,15 +814,32 @@
           },
           {
             "path": "agilAtt.opType",
-            "$ref": "$.display.definitions.agilOpTypeField"
+            "label": "Op Type",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.agilOpType"
+            }
           },
           {
             "path": "agilAtt.user",
-            "$ref": "$.display.definitions.agilUserField"
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
           },
           {
             "path": "agilAtt.asset",
-            "$ref": "$.display.definitions.agilAssetField"
+            "label": "Att. Asset",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
           },
           {
             "path": "agilAtt.amount",
@@ -880,7 +861,11 @@
           },
           {
             "path": "agilAtt.expiry",
-            "$ref": "$.display.definitions.agilExpiryField"
+            "label": "Expiry",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
           },
           {
             "path": "agilAtt.chainId",
@@ -889,7 +874,7 @@
           }
         ]
       },
-      "redeem(uint8,address,uint256,address)": {
+      "redeem(uint8 mode, address asset, uint256 shares, address receiver)": {
         "$id": "pillar_d_redeem",
         "intent": "Redeem Pillar D",
         "fields": [
@@ -939,7 +924,7 @@
         "intent": "Unpause Pillar D Router",
         "fields": []
       },
-      "activateMode(uint8)": {
+      "activateMode(uint8 mode)": {
         "$id": "pillar_d_activate_mode",
         "intent": "Activate Pillar D Mode",
         "fields": [
@@ -953,7 +938,7 @@
           }
         ]
       },
-      "deactivateMode(uint8)": {
+      "deactivateMode(uint8 mode)": {
         "$id": "pillar_d_deactivate_mode",
         "intent": "Deactivate Pillar D Mode",
         "fields": [

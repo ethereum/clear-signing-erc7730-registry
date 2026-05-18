@@ -960,7 +960,6 @@
   "metadata": {
     "owner": "ALIA Quality Network",
     "info": {
-      "legalName": "Avvatar Labs SAS",
       "url": "https://alia.network",
       "deploymentDate": "2026-05-15T14:17:00Z"
     },
@@ -974,29 +973,13 @@
     "constants": {
       "agilVerifier": "0x5866B9dbE020c4A306FefC416C04D8E1Ef779A8A",
       "agilThreshold": "3-of-5",
-      "modeRole": "Pillar D Mode 1 \u2014 Yield Boosted (quality-routed allocation across Aave V3 BNB / Morpho / Pendle / Venus / Kernel)",
+      "modeRole": "Pillar D Mode 1 — Yield Boosted (quality-routed allocation across Aave V3 BNB / Morpho / Pendle / Venus / Kernel)",
       "qualityGating": "QualityGatedAllocator: 4-layer gating (mandate + score Bronze/Silver/Gold + collateral + adapter approved)"
     }
   },
   "display": {
-    "definitions": {
-      "agilOpTypeField": {
-        "label": "Op Type",
-        "format": "enum",
-        "params": {
-          "$ref": "$.metadata.enums.agilOpType"
-        }
-      },
-      "agilExpiryField": {
-        "label": "Valid Until",
-        "format": "date",
-        "params": {
-          "encoding": "timestamp"
-        }
-      }
-    },
     "formats": {
-      "deposit(address,uint256,address,bytes32)": {
+      "deposit(address asset, uint256 amount, address receiver, bytes32 mandateId)": {
         "$id": "ybm_deposit_router",
         "intent": "Deposit (via Router)",
         "fields": [
@@ -1036,7 +1019,7 @@
           }
         ]
       },
-      "depositDirect(address,uint256,address,bytes32,(bytes32,address,address,uint256,bytes32,uint256,uint256,uint256),bytes[])": {
+      "depositDirect(address asset, uint256 amount, address receiver, bytes32 mandateId, tuple agilAtt, bytes[] signatures)": {
         "$id": "ybm_deposit_direct_agil",
         "intent": "Deposit Direct (AGIL)",
         "fields": [
@@ -1076,7 +1059,11 @@
           },
           {
             "path": "agilAtt.opType",
-            "$ref": "$.display.definitions.agilOpTypeField"
+            "label": "Op Type",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.agilOpType"
+            }
           },
           {
             "path": "agilAtt.user",
@@ -1114,7 +1101,11 @@
           },
           {
             "path": "agilAtt.expiry",
-            "$ref": "$.display.definitions.agilExpiryField"
+            "label": "Expiry",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
           },
           {
             "path": "agilAtt.chainId",
@@ -1123,7 +1114,7 @@
           }
         ]
       },
-      "redeem(address,uint256,address)": {
+      "redeem(address asset, uint256 shares, address receiver)": {
         "$id": "ybm_redeem_router",
         "intent": "Redeem (via Router)",
         "fields": [
@@ -1155,7 +1146,7 @@
           }
         ]
       },
-      "redeemDirect(address,uint256,address,(bytes32,address,address,uint256,bytes32,uint256,uint256,uint256),bytes[])": {
+      "redeemDirect(address asset, uint256 shares, address receiver, tuple agilAtt, bytes[] signatures)": {
         "$id": "ybm_redeem_direct_agil",
         "intent": "Redeem Direct (AGIL)",
         "fields": [
@@ -1187,7 +1178,11 @@
           },
           {
             "path": "agilAtt.opType",
-            "$ref": "$.display.definitions.agilOpTypeField"
+            "label": "Op Type",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.agilOpType"
+            }
           },
           {
             "path": "agilAtt.user",
@@ -1207,11 +1202,15 @@
           },
           {
             "path": "agilAtt.expiry",
-            "$ref": "$.display.definitions.agilExpiryField"
+            "label": "Expiry",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
           }
         ]
       },
-      "rebalance(address,address,(bytes32,address,address,uint256,bytes32,uint256,uint256,uint256),bytes[])": {
+      "rebalance(address asset, address newAdapter, tuple agilAtt, bytes[] signatures)": {
         "$id": "ybm_rebalance_agil",
         "intent": "Rebalance (AGIL)",
         "fields": [
@@ -1237,7 +1236,11 @@
           },
           {
             "path": "agilAtt.opType",
-            "$ref": "$.display.definitions.agilOpTypeField"
+            "label": "Op Type",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.agilOpType"
+            }
           },
           {
             "path": "agilAtt.user",
@@ -1257,7 +1260,11 @@
           },
           {
             "path": "agilAtt.expiry",
-            "$ref": "$.display.definitions.agilExpiryField"
+            "label": "Expiry",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
           }
         ]
       },
