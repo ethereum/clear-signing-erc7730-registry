@@ -18,13 +18,19 @@ runs:
   using: composite
   steps:
     - name: Checkout cs-test
-      uses: actions/checkout@v6.0.2
-      with:
-        # TODO: switch to the upstream llbartekll/clear-signing repo+ref once merged.
-        repository: manuelwedler/llbartekll-clear-signing
-        ref: cs-test-results-json
-        path: rust-test-runner
-        persist-credentials: false
+      shell: bash
+      # Plain git clone (not actions/checkout) — the cs-test-results-json branch
+      # has a leftover .claude/worktrees/ directory that looks like a submodule
+      # but isn't in .gitmodules, which makes actions/checkout's post-step
+      # `git submodule foreach` fail. We then nuke .claude/ so cargo doesn't
+      # see anything weird either.
+      # TODO: switch back to actions/checkout (and to upstream
+      # llbartekll/clear-signing) once that branch is cleaned up.
+      run: |
+        git clone --depth 1 --branch cs-test-results-json \
+          https://github.com/manuelwedler/llbartekll-clear-signing.git \
+          rust-test-runner
+        rm -rf rust-test-runner/.claude
 
     - name: Set up Rust
       uses: dtolnay/rust-toolchain@stable
