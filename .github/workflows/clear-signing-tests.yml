@@ -96,7 +96,7 @@ jobs:
             registry/**/calldata-*.json
             registry/**/eip712-*.json
           files_ignore: |
-            registry/**/shared-tests/**
+            registry/**/testsv2/**
 
       - name: Detect test files for changed descriptors
         id: detect
@@ -242,8 +242,8 @@ jobs:
               await github.rest.issues.createComment({ ...params, issue_number: context.issue.number });
             }
 
-  detect-shared-tests:
-    name: Detect shared-tests files
+  detect-testsv2:
+    name: Detect testsv2 files
     needs: check-permissions
     if: needs.check-permissions.outputs.can_run_tests == 'true'
     runs-on: ubuntu-latest
@@ -255,7 +255,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Get changed descriptors and shared-tests files
+      - name: Get changed descriptors and testsv2 files
         id: changed-files
         uses: tj-actions/changed-files@v47.0.5
         with:
@@ -265,7 +265,7 @@ jobs:
           files_ignore: |
             registry/**/tests/**
 
-      - name: Detect shared-tests files for changed descriptors
+      - name: Detect testsv2 files for changed descriptors
         id: detect
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
@@ -276,7 +276,7 @@ jobs:
 
           for file in $CHANGED_FILES; do
             # Map either a changed descriptor or a changed shared-test file to (descriptor, test_file)
-            if [[ "$file" == */shared-tests/*.tests.json ]]; then
+            if [[ "$file" == */testsv2/*.tests.json ]]; then
               test_file="$file"
               descriptor_name=$(basename "$file" .tests.json)
               entity_dir=$(dirname "$(dirname "$file")")
@@ -285,7 +285,7 @@ jobs:
               descriptor="$file"
               descriptor_name=$(basename "$file" .json)
               entity_dir=$(dirname "$file")
-              test_file="${entity_dir}/shared-tests/${descriptor_name}.tests.json"
+              test_file="${entity_dir}/testsv2/${descriptor_name}.tests.json"
             fi
 
             # Filter on descriptor prefix
@@ -316,13 +316,13 @@ jobs:
 
   sourcify-tests:
     name: Sourcify tests for ${{ matrix.test.entity }}/${{ matrix.test.descriptor_name }}
-    needs: [check-permissions, detect-shared-tests]
-    if: needs.detect-shared-tests.outputs.has_tests == 'true'
+    needs: [check-permissions, detect-testsv2]
+    if: needs.detect-testsv2.outputs.has_tests == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        test: ${{ fromJson(needs.detect-shared-tests.outputs.test_matrix) }}
+        test: ${{ fromJson(needs.detect-testsv2.outputs.test_matrix) }}
     steps:
       - name: Checkout registry
         uses: actions/checkout@v6.0.2
@@ -354,8 +354,8 @@ jobs:
 
   post-implementation-results:
     name: Post implementation results to PR
-    needs: [check-permissions, detect-shared-tests, sourcify-tests]
-    if: always() && needs.detect-shared-tests.outputs.has_tests == 'true'
+    needs: [check-permissions, detect-testsv2, sourcify-tests]
+    if: always() && needs.detect-testsv2.outputs.has_tests == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v8
@@ -429,9 +429,9 @@ jobs:
             }
 
   notify-missing-tests:
-    name: Notify missing shared-tests
-    needs: [check-permissions, detect-shared-tests]
-    if: needs.check-permissions.outputs.can_run_tests == 'true' && needs.detect-shared-tests.outputs.has_tests == 'false'
+    name: Notify missing testsv2
+    needs: [check-permissions, detect-testsv2]
+    if: needs.check-permissions.outputs.can_run_tests == 'true' && needs.detect-testsv2.outputs.has_tests == 'false'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6.0.2
@@ -447,14 +447,14 @@ jobs:
             registry/**/eip712-*.json
           files_ignore: |
             registry/**/tests/**
-            registry/**/shared-tests/**
+            registry/**/testsv2/**
 
       - name: Post comment
         if: steps.check.outputs.any_changed == 'true'
         uses: actions/github-script@v9.0.0
         with:
           script: |
-            const body = `## Clear Signing Tests\n\n> ℹ No test files found for the changed descriptors.\n\nCreate a test file at \`registry/<entity>/shared-tests/<descriptor-name>.tests.json\`\n\nSee [testing documentation](../blob/master/README.md#reference-test-cases) for details.`;
+            const body = `## Clear Signing Tests\n\n> ℹ No test files found for the changed descriptors.\n\nCreate a test file at \`registry/<entity>/testsv2/<descriptor-name>.tests.json\`\n\nSee [testing documentation](../blob/master/README.md#reference-test-cases) for details.`;
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number
