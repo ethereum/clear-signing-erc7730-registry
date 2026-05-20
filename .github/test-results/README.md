@@ -4,6 +4,8 @@ This folder defines the output contract between clear-signing test runners and t
 
 Each runner writes a single `results.json` per descriptor it tests. The workflow uploads it as an artifact, and `post-results` reads all of them to build the per-case × per-implementation table on the PR.
 
+Runners are expected to resolve ERC-7730 `includes` themselves — the CI workflow does not pre-flatten descriptors before invoking a runner.
+
 ## Shape
 
 ```json

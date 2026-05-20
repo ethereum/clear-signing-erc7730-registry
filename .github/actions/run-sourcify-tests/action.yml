@@ -1,0 +1,47 @@
+name: Run Sourcify clear-signing tests
+description: Clone and build @ethereum-sourcify/clear-signing-test-runner, then run it against a .tests.json fixture and produce a results.json conforming to the format in .github/test-results/.
+
+inputs:
+  test-file:
+    description: Absolute path to the .tests.json fixture.
+    required: true
+  output:
+    description: Absolute path where results.json should be written.
+    required: true
+outputs:
+  results-path:
+    description: Path to the produced results.json.
+    value: ${{ inputs.output }}
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout Sourcify test runner
+      uses: actions/checkout@v6.0.2
+      with:
+        repository: sourcifyeth/clear-signing-test-runner
+        ref: main
+        path: sourcify-test-runner
+        persist-credentials: false
+
+    - uses: actions/setup-node@v6
+      with:
+        node-version: '22'
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: sourcify-test-runner
+      run: npm ci
+
+    - name: Build
+      shell: bash
+      working-directory: sourcify-test-runner
+      run: npm run build
+
+    - name: Run tests
+      shell: bash
+      working-directory: sourcify-test-runner
+      env:
+        TEST_FILE: ${{ inputs.test-file }}
+        OUTPUT: ${{ inputs.output }}
+      run: node dist/cli.js "$TEST_FILE" --output "$OUTPUT" --verbose
