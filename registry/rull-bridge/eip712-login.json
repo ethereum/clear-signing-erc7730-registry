@@ -1,0 +1,68 @@
+{
+  "$schema": "https://eips.ethereum.org/assets/eip-7730/erc7730-v1.schema.json",
+  "context": {
+    "eip712": {
+      "schemas": [
+        {
+          "types": {
+            "EIP712Domain": [
+              { "name": "name", "type": "string" },
+              { "name": "version", "type": "string" },
+              { "name": "chainId", "type": "uint256" },
+              { "name": "verifyingContract", "type": "address" }
+            ],
+            "Login": [
+              { "name": "sessionId", "type": "bytes16" },
+              { "name": "nonce", "type": "bytes32" },
+              { "name": "issuedAt", "type": "uint256" },
+              { "name": "expiresAt", "type": "uint256" }
+            ]
+          },
+          "primaryType": "Login"
+        }
+      ],
+      "deployments": [
+        { "chainId": 1, "address": "0x0000000000000000000000000000000000000000" }
+      ],
+      "domain": {
+        "name": "RULL.bridge",
+        "version": "1"
+      }
+    }
+  },
+  "metadata": {
+    "owner": "RULL",
+    "info": {
+      "legalName": "RULL Bridge",
+      "url": "https://rull.com"
+    }
+  },
+  "display": {
+    "formats": {
+      "Login": {
+        "intent": "Sign in to RULL Bridge",
+        "fields": [
+          {
+            "path": "sessionId",
+            "label": "Session",
+            "format": "raw"
+          },
+          {
+            "path": "issuedAt",
+            "label": "Issued at",
+            "format": "date",
+            "params": { "encoding": "timestamp" }
+          },
+          {
+            "path": "expiresAt",
+            "label": "Expires at",
+            "format": "date",
+            "params": { "encoding": "timestamp" }
+          }
+        ],
+        "required": ["sessionId", "issuedAt", "expiresAt"],
+        "excluded": ["nonce"]
+      }
+    }
+  }
+}
