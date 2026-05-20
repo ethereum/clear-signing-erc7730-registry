@@ -26,41 +26,50 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       can_run_tests: ${{ steps.check.outputs.can_run_tests }}
-      is_fork: ${{ steps.check.outputs.is_fork }}
+      is_cross_repo: ${{ steps.check.outputs.is_cross_repo }}
     steps:
       - name: Check if tests can run
         id: check
         env:
-          IS_FORK: ${{ github.event.pull_request.head.repo.fork }}
+          # Cross-repo = PR head lives in a different repo than the base. That is the
+          # only case where the head SHA is untrusted code that could exfiltrate
+          # secrets if run unattended. Intra-repo PRs (including within a fork) are
+          # safe — the head is already part of the repo a maintainer controls.
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.event.pull_request.base.repo.full_name }}
           EVENT_ACTION: ${{ github.event.action }}
           LABEL_NAME: ${{ github.event.label.name }}
         run: |
-          echo "is_fork=$IS_FORK" >> $GITHUB_OUTPUT
+          IS_CROSS_REPO="false"
+          if [[ "$HEAD_REPO" != "$BASE_REPO" ]]; then
+            IS_CROSS_REPO="true"
+          fi
+          echo "is_cross_repo=$IS_CROSS_REPO" >> $GITHUB_OUTPUT
 
-          # Check if the run-tests label was just added
+          # Was the run-tests label just added?
           IS_LABELED="false"
           if [[ "$EVENT_ACTION" == "labeled" && "$LABEL_NAME" == "$RUN_TESTS_LABEL" ]]; then
             IS_LABELED="true"
           fi
 
           # Can run tests if:
-          # 1. Not a fork (internal PR), OR
-          # 2. Fork PR with run-tests label added by maintainer
-          if [[ "$IS_FORK" != "true" ]] || [[ "$IS_LABELED" == "true" ]]; then
+          # 1. Same-repo PR (head and base are the same repo — already trusted), OR
+          # 2. Cross-repo PR with run-tests label added by a maintainer
+          if [[ "$IS_CROSS_REPO" != "true" ]] || [[ "$IS_LABELED" == "true" ]]; then
             echo "can_run_tests=true" >> $GITHUB_OUTPUT
           else
             echo "can_run_tests=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Save PR metadata for fork notification
-        if: steps.check.outputs.is_fork == 'true' && steps.check.outputs.can_run_tests == 'false'
+      - name: Save PR metadata for cross-repo notification
+        if: steps.check.outputs.is_cross_repo == 'true' && steps.check.outputs.can_run_tests == 'false'
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           echo "{\"pr_number\": $PR_NUMBER, \"needs_notification\": true}" > pr-metadata.json
 
       - name: Upload PR metadata
-        if: steps.check.outputs.is_fork == 'true' && steps.check.outputs.can_run_tests == 'false'
+        if: steps.check.outputs.is_cross_repo == 'true' && steps.check.outputs.can_run_tests == 'false'
         uses: actions/upload-artifact@v7.0.1
         with:
           name: pr-metadata
