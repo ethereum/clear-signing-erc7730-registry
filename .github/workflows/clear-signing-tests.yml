@@ -429,9 +429,9 @@ jobs:
             }
 
   notify-missing-tests:
-    name: Notify missing tests
-    needs: [check-permissions, detect-tests]
-    if: needs.check-permissions.outputs.can_run_tests == 'true' && needs.detect-tests.outputs.has_tests == 'false'
+    name: Notify missing shared-tests
+    needs: [check-permissions, detect-shared-tests]
+    if: needs.check-permissions.outputs.can_run_tests == 'true' && needs.detect-shared-tests.outputs.has_tests == 'false'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6.0.2
@@ -445,14 +445,16 @@ jobs:
           files: |
             registry/**/calldata-*.json
             registry/**/eip712-*.json
-          files_ignore: registry/**/tests/**
+          files_ignore: |
+            registry/**/tests/**
+            registry/**/shared-tests/**
 
       - name: Post comment
         if: steps.check.outputs.any_changed == 'true'
         uses: actions/github-script@v9.0.0
         with:
           script: |
-            const body = `## Clear Signing Tests\n\n> ℹNo test files found for the changed descriptors.\n\nCreate a test file at \`registry/<entity>/tests/<descriptor-name>.tests.json\`\n\nSee [testing documentation](../blob/master/README.md#reference-test-cases) for details.`;
+            const body = `## Clear Signing Tests\n\n> ℹ No test files found for the changed descriptors.\n\nCreate a test file at \`registry/<entity>/shared-tests/<descriptor-name>.tests.json\`\n\nSee [testing documentation](../blob/master/README.md#reference-test-cases) for details.`;
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number
