@@ -371,6 +371,7 @@ jobs:
         with:
           path: artifacts
           pattern: results__*
+          merge-multiple: true
 
       - name: Post PR comment
         uses: actions/github-script@v9.0.0
@@ -381,31 +382,41 @@ jobs:
 
             const STATUS_ICONS = { pass: '✅', fail: '❌', error: '⚠️', skipped: '⏭️' };
             const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const artifactsRoot = path.join(process.env.GITHUB_WORKSPACE, 'artifacts');
 
             let body = '## Clear Signing Implementation Results\n\n';
 
-            let artifactDirs = [];
+            // Each artifact is uploaded as a single file named
+            // `<slug>__<entity>__<descriptor>.json`. With merge-multiple: true
+            // they all land flat in artifactsRoot, with no collisions.
+            let resultFiles = [];
             try {
-              artifactDirs = fs.readdirSync('artifacts').filter(d => d.startsWith('results__'));
-            } catch (e) {}
+              const entries = fs.readdirSync(artifactsRoot);
+              core.info(`Found ${entries.length} entries under ${artifactsRoot}: ${JSON.stringify(entries)}`);
+              resultFiles = entries.filter(f => f.endsWith('.json'));
+            } catch (e) {
+              core.warning(`Could not read ${artifactsRoot}: ${e.message}`);
+            }
+            core.info(`Matched ${resultFiles.length} result JSON files`);
 
-            if (artifactDirs.length === 0) {
+            if (resultFiles.length === 0) {
               body += '> No implementation test results found.\n';
             } else {
               const rows = new Map();
               const impls = new Set();
 
-              for (const dir of artifactDirs) {
-                const filePath = path.join('artifacts', dir, 'results.json');
-                if (!fs.existsSync(filePath)) continue;
+              for (const file of resultFiles) {
+                const filePath = path.join(artifactsRoot, file);
                 let data;
-                try { data = JSON.parse(fs.readFileSync(filePath, 'utf8')); } catch (e) { continue; }
-                const impl = data.implementation || dir;
+                try { data = JSON.parse(fs.readFileSync(filePath, 'utf8')); }
+                catch (e) { core.warning(`Could not parse ${file}: ${e.message}`); continue; }
+                const impl = data.implementation || file;
                 impls.add(impl);
-                // artifact name format: results__<slug>__<entity>__<descriptor>
-                const parts = dir.split('__');
-                const entity = parts[2];
-                const descriptor = parts[3];
+                // filename: <slug>__<entity>__<descriptor>.json
+                const base = file.replace(/\.json$/, '');
+                const parts = base.split('__');
+                const entity = parts[1];
+                const descriptor = parts[2];
                 for (const c of data.cases || []) {
                   const key = `${entity}|${descriptor}|${c.description}`;
                   if (!rows.has(key)) rows.set(key, { entity, descriptor, description: c.description, byImpl: {} });
