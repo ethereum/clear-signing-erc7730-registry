@@ -1,0 +1,282 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x0000000000000000000000000000000000000000" }
+      ],
+      "abi": [
+        {
+          "name": "deposit",
+          "type": "function",
+          "inputs": [
+            { "name": "assets", "type": "uint256" },
+            { "name": "receiver", "type": "address" },
+            { "name": "controller", "type": "address" }
+          ]
+        },
+        {
+          "name": "mint",
+          "type": "function",
+          "inputs": [
+            { "name": "shares", "type": "uint256" },
+            { "name": "receiver", "type": "address" },
+            { "name": "controller", "type": "address" }
+          ]
+        },
+        {
+          "name": "requestDeposit",
+          "type": "function",
+          "inputs": [
+            { "name": "assets", "type": "uint256" },
+            { "name": "controller", "type": "address" },
+            { "name": "owner", "type": "address" }
+          ]
+        },
+        {
+          "name": "redeem",
+          "type": "function",
+          "inputs": [
+            { "name": "shares", "type": "uint256" },
+            { "name": "receiver", "type": "address" },
+            { "name": "controller", "type": "address" }
+          ]
+        },
+        {
+          "name": "withdraw",
+          "type": "function",
+          "inputs": [
+            { "name": "assets", "type": "uint256" },
+            { "name": "receiver", "type": "address" },
+            { "name": "controller", "type": "address" }
+          ]
+        },
+        {
+          "name": "requestRedeem",
+          "type": "function",
+          "inputs": [
+            { "name": "shares", "type": "uint256" },
+            { "name": "controller", "type": "address" },
+            { "name": "owner", "type": "address" }
+          ]
+        },
+        {
+          "name": "setOperator",
+          "type": "function",
+          "inputs": [
+            { "name": "operator", "type": "address" },
+            { "name": "approved", "type": "bool" }
+          ],
+          "stateMutability": "nonpayable",
+          "outputs": [{ "name": "success", "type": "bool" }]
+        },
+        {
+          "name": "claimSharesAndRequestRedeem",
+          "type": "function",
+          "inputs": [
+            { "name": "sharesToRedeem", "type": "uint256" }
+          ]
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "constants": {
+      "underlyingToken": "0x0000000000000000000000000000000000000000",
+      "underlyingTicker": "TOKEN",
+      "vaultTicker": "VAULT"
+    }
+  },
+  "display": {
+    "formats": {
+      "deposit(uint256 assets, address receiver, address controller)": {
+        "intent": "Claim deposit",
+        "fields": [
+          {
+            "path": "assets",
+            "label": "Assets to claim",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" }
+          },
+          {
+            "label": "Receive shares",
+            "format": "raw",
+            "value": "$.metadata.constants.vaultTicker"
+          },
+          {
+            "path": "receiver",
+            "label": "Send shares to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          },
+          {
+            "path": "controller",
+            "label": "Controller",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          }
+        ],
+        "required": ["assets", "receiver", "controller"]
+      },
+      "mint(uint256 shares, address receiver, address controller)": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Claim deposit",
+            "format": "raw",
+            "value": "$.metadata.constants.underlyingTicker"
+          },
+          {
+            "path": "shares",
+            "label": "Shares to mint",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" }
+          },
+          {
+            "path": "receiver",
+            "label": "Send shares to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          },
+          {
+            "path": "controller",
+            "label": "Controller",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          }
+        ],
+        "required": ["shares", "receiver", "controller"]
+      },
+      "requestDeposit(uint256 assets, address controller, address owner)": {
+        "intent": "Request deposit",
+        "fields": [
+          {
+            "path": "assets",
+            "label": "Assets to deposit",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" }
+          },
+          {
+            "path": "controller",
+            "label": "Controller",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          },
+          {
+            "path": "owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          }
+        ],
+        "required": ["assets", "controller", "owner"]
+      },
+      "redeem(uint256 shares, address receiver, address controller)": {
+        "intent": "Claim redemption",
+        "fields": [
+          {
+            "path": "shares",
+            "label": "Shares to redeem",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" }
+          },
+          {
+            "path": "receiver",
+            "label": "Send assets to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          },
+          {
+            "path": "controller",
+            "label": "Controller",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          }
+        ],
+        "required": ["shares", "receiver", "controller"]
+      },
+      "withdraw(uint256 assets, address receiver, address controller)": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Claim withdrawal",
+            "format": "raw",
+            "value": "$.metadata.constants.underlyingTicker"
+          },
+          {
+            "path": "assets",
+            "label": "Assets to receive",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" }
+          },
+          {
+            "path": "receiver",
+            "label": "Send assets to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          },
+          {
+            "path": "controller",
+            "label": "Controller",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          }
+        ],
+        "required": ["assets", "receiver", "controller"]
+      },
+      "requestRedeem(uint256 shares, address controller, address owner)": {
+        "intent": "Request redemption",
+        "fields": [
+          {
+            "path": "shares",
+            "label": "Shares to redeem",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" }
+          },
+          {
+            "path": "controller",
+            "label": "Controller",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          },
+          {
+            "path": "owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          }
+        ],
+        "required": ["shares", "controller", "owner"]
+      },
+      "setOperator(address operator, bool approved)": {
+        "intent": "Set operator",
+        "fields": [
+          {
+            "path": "operator",
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          },
+          {
+            "path": "approved",
+            "label": "Approved",
+            "format": "raw"
+          }
+        ],
+        "required": ["operator", "approved"]
+      },
+      "claimSharesAndRequestRedeem(uint256 sharesToRedeem)": {
+        "intent": "Claim and request redeem",
+        "fields": [
+          {
+            "path": "sharesToRedeem",
+            "label": "Shares to redeem",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" }
+          }
+        ],
+        "required": ["sharesToRedeem"]
+      }
+    }
+  }
+}
