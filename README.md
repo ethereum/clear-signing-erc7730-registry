@@ -11,14 +11,15 @@ README.md                                    # top-level README file with submis
 specs/
   erc-7730.md                                # most advanced version of the spec but reference should be the ERC
   erc7730-v1.schema.json                     # the json schema of the latest version of the extension
-  erc7730-tests.schema.json                  # json schema for test files
+  erc7730-tests.schema.json                  # legacy json schema for test files (tests/)
+  erc7730-tests-v2.schema.json               # json schema for test files (testsv2/)
 registry/
   $entity_name/                              # official entity name submitting metadata information
     calldata-$contractName1.json             # metadata for contract $contractName1, including the contract version in name
     calldata-$contractName2.json
     eip712-$messageName.json                 # metadata for EIP712 message $messageName
     common-$sharedDefinition.json            # common definitions shared between descriptors (without prefix)
-    tests/
+    testsv2/
        calldata-$contractName1.tests.json    # test cases for calldata-$contractName1.json
        calldata-$contractName2.tests.json
        eip712-$messageName.tests.json        # test cases for eip712-$messageName.json
@@ -72,19 +73,35 @@ You can add reference test cases for your ERC-7730 descriptors. These test cases
 
 ### Test file format
 
-Test files should be placed in a `tests/` folder within your entity directory and named `<descriptor-name>.tests.json`. The test file name determines which descriptor it tests (e.g., `calldata-MyContract.tests.json` tests `calldata-MyContract.json`).
+Test files should be placed in a `testsv2/` folder within your entity directory and named `<descriptor-name>.tests.json`. The file declares the descriptor under test, an optional `dataProvider` block with mock token metadata and address-name lookups (so tests don't need network access), and an array of test cases.
 
 **Calldata test file example** (`calldata-MyContract.tests.json`):
 
 ```json
 {
-  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-MyContract.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" }
+    },
+    "addressNames": {
+      "0x1234567890123456789012345678901234567890": "Treasury"
+    }
+  },
   "tests": [
     {
-      "description": "Test approve function",
+      "description": "Approve 100 USDC for Treasury",
       "rawTx": "0x02f8b0...",
       "txHash": "0x1234...abcd",
-      "expectedTexts": ["Spender", "0x1234...", "Amount", "100 USDC"]
+      "expected": {
+        "intent": "Approve",
+        "owner": "MyProtocol",
+        "fields": {
+          "Spender": "Treasury",
+          "Amount": "100 USDC"
+        }
+      }
     }
   ]
 }
@@ -94,17 +111,25 @@ Test files should be placed in a `tests/` folder within your entity directory an
 
 ```json
 {
-  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-MyMessage.json",
   "tests": [
     {
-      "description": "Test permit signature",
+      "description": "Permit 100 USDC",
       "data": {
         "types": { ... },
         "primaryType": "Permit",
         "domain": { ... },
         "message": { ... }
       },
-      "expectedTexts": ["Spender", "0x1234...", "Amount", "100 USDC"]
+      "expected": {
+        "intent": "Permit",
+        "owner": "MyProtocol",
+        "fields": {
+          "Spender": "0x1234...",
+          "Amount": "100 USDC"
+        }
+      }
     }
   ]
 }
@@ -116,18 +141,18 @@ Test files should be placed in a `tests/` folder within your entity directory an
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `description` | No | Human-readable test description |
+| `description` | Yes | Human-readable test identifier — used to match runner results back to this case |
 | `rawTx` | Yes | The raw signed transaction (hex string, 0x-prefixed) |
 | `txHash` | No | Transaction hash for reference (e.g., link to Etherscan) |
-| `expectedTexts` | No | Array of expected text strings (labels and values) displayed during signing |
+| `expected` | Yes | Expected rendered output: `{ intent, owner, fields }`. Field values are strings, or nested `{ intent, owner, fields }` objects for calldata formatters |
 
 #### For EIP-712 tests (`eip712-*.tests.json`)
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `description` | No | Human-readable test description |
+| `description` | Yes | Human-readable test identifier |
 | `data` | Yes | Complete EIP-712 typed data object (with `types`, `primaryType`, `domain`, `message`) |
-| `expectedTexts` | No | Array of expected text strings (labels and values) displayed during signing |
+| `expected` | Yes | Expected rendered output: `{ intent, owner, fields }` |
 
 ### Best practices
 
