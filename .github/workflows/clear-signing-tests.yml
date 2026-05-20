@@ -361,9 +361,47 @@ jobs:
           entity: ${{ matrix.test.entity }}
           descriptor-name: ${{ matrix.test.descriptor_name }}
 
+  rust-tests:
+    name: Rust tests for ${{ matrix.test.entity }}/${{ matrix.test.descriptor_name }}
+    needs: [check-permissions, detect-testsv2]
+    if: needs.detect-testsv2.outputs.has_tests == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test: ${{ fromJson(needs.detect-testsv2.outputs.test_matrix) }}
+    steps:
+      - name: Checkout registry
+        uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: registry
+
+      - name: Checkout base scripts and actions
+        uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base-scripts
+          sparse-checkout: .github
+
+      - name: Run Rust clear-signing tests
+        uses: ./base-scripts/.github/actions/run-rust-tests
+        with:
+          test-file: ${{ github.workspace }}/registry/${{ matrix.test.test_file }}
+          output: ${{ github.workspace }}/results.json
+
+      - name: Upload results
+        if: always()
+        uses: ./base-scripts/.github/actions/upload-test-results
+        with:
+          results-path: ${{ github.workspace }}/results.json
+          implementation-slug: rust-clear-signing
+          entity: ${{ matrix.test.entity }}
+          descriptor-name: ${{ matrix.test.descriptor_name }}
+
   post-implementation-results:
     name: Post implementation results to PR
-    needs: [check-permissions, detect-testsv2, sourcify-tests]
+    needs: [check-permissions, detect-testsv2, sourcify-tests, rust-tests]
     if: always() && needs.detect-testsv2.outputs.has_tests == 'true'
     runs-on: ubuntu-latest
     steps:
