@@ -38,7 +38,7 @@ Runners are expected to resolve ERC-7730 `includes` themselves — the CI workfl
 }
 ```
 
-`rendered` mirrors the shape of `expected` in the source `.tests.json`. Field values are strings, or — for calldata-formatted fields — a nested object with the same shape as `rendered` itself (`intent`, `owner`, `fields`). See note below the table.
+`rendered` mirrors the shape of `expected` in the source `.tests.json`. The same shape applies whether the test case is calldata or EIP-712 — both produce `{intent, owner, fields}`. Field values are strings, or — for calldata-formatted fields — a nested object with the same shape as `rendered` itself (`intent`, `owner`, `fields`). See note below the table.
 
 ## Fields
 
