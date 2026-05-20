@@ -367,6 +367,12 @@ jobs:
     if: always() && needs.detect-testsv2.outputs.has_tests == 'true'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout registry (PR head)
+        uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: registry
+
       - uses: actions/download-artifact@v8
         with:
           path: artifacts
@@ -382,9 +388,9 @@ jobs:
 
             const STATUS_ICONS = { pass: '✅', fail: '❌', error: '⚠️', skipped: '⏭️' };
             const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const artifactsRoot = path.join(process.env.GITHUB_WORKSPACE, 'artifacts');
-
-            let body = '## Clear Signing Implementation Results\n\n';
+            const workspace = process.env.GITHUB_WORKSPACE;
+            const artifactsRoot = path.join(workspace, 'artifacts');
+            const registryRoot = path.join(workspace, 'registry');
 
             // Each artifact is uploaded as a single file named
             // `<slug>__<entity>__<descriptor>.json`. With merge-multiple: true
@@ -399,11 +405,34 @@ jobs:
             }
             core.info(`Matched ${resultFiles.length} result JSON files`);
 
+            let body = '## Clear Signing Implementation Results\n\n';
+
             if (resultFiles.length === 0) {
               body += '> No implementation test results found.\n';
             } else {
+              // rows: keyed by entity|descriptor|description
+              // each row stores per-impl status + rendered (for diff blocks) + message
               const rows = new Map();
               const impls = new Set();
+
+              // Cache test file lookups so we don't re-read the same file
+              const testFileCache = new Map();
+              const loadExpected = (entity, descriptor, description) => {
+                const key = `${entity}/${descriptor}`;
+                if (!testFileCache.has(key)) {
+                  const testPath = path.join(registryRoot, 'registry', entity, 'testsv2', `${descriptor}.tests.json`);
+                  try {
+                    testFileCache.set(key, JSON.parse(fs.readFileSync(testPath, 'utf8')));
+                  } catch (e) {
+                    core.warning(`Could not read ${testPath}: ${e.message}`);
+                    testFileCache.set(key, null);
+                  }
+                }
+                const doc = testFileCache.get(key);
+                if (!doc || !Array.isArray(doc.tests)) return null;
+                const t = doc.tests.find(t => t.description === description);
+                return t ? t.expected : null;
+              };
 
               for (const file of resultFiles) {
                 const filePath = path.join(artifactsRoot, file);
@@ -420,19 +449,55 @@ jobs:
                 for (const c of data.cases || []) {
                   const key = `${entity}|${descriptor}|${c.description}`;
                   if (!rows.has(key)) rows.set(key, { entity, descriptor, description: c.description, byImpl: {} });
-                  rows.get(key).byImpl[impl] = c.status;
+                  rows.get(key).byImpl[impl] = {
+                    status: c.status,
+                    rendered: c.rendered,
+                    message: c.message,
+                  };
                 }
               }
 
               const implList = [...impls].sort();
+
+              // --- Compact status table ---
               const header = ['Entity', 'Descriptor', 'Case', ...implList].join(' | ');
               const sep = ['---', '---', '---', ...implList.map(() => ':---:')].join(' | ');
               body += `| ${header} |\n| ${sep} |\n`;
               for (const r of rows.values()) {
-                const cells = implList.map(i => STATUS_ICONS[r.byImpl[i]] || '—');
+                const cells = implList.map(i => STATUS_ICONS[(r.byImpl[i] || {}).status] || '—');
                 body += `| ${r.entity} | ${r.descriptor} | ${r.description} | ${cells.join(' | ')} |\n`;
               }
               body += '\n✅ pass · ❌ fail · ⚠️ error · ⏭️ skipped · — not run\n';
+
+              // --- Details for non-pass cases ---
+              const details = [];
+              for (const r of rows.values()) {
+                for (const impl of implList) {
+                  const result = r.byImpl[impl];
+                  if (!result || result.status === 'pass') continue;
+                  const icon = STATUS_ICONS[result.status] || '?';
+                  const summary = `${icon} ${r.entity}/${r.descriptor} · ${r.description} · \`${impl}\``;
+                  let block = `<details>\n<summary>${summary}</summary>\n\n`;
+                  if (result.message) {
+                    block += `> ${result.message}\n\n`;
+                  }
+                  if (result.status === 'fail') {
+                    const expected = loadExpected(r.entity, r.descriptor, r.description);
+                    block += '**Expected:**\n\n```json\n';
+                    block += expected != null ? JSON.stringify(expected, null, 2) : '(could not load expected from test file)';
+                    block += '\n```\n\n';
+                    block += '**Got:**\n\n```json\n';
+                    block += result.rendered != null ? JSON.stringify(result.rendered, null, 2) : '(no rendered output)';
+                    block += '\n```\n';
+                  }
+                  block += '\n</details>\n';
+                  details.push(block);
+                }
+              }
+              if (details.length > 0) {
+                body += '\n### Details\n\n' + details.join('\n');
+              }
+
               body += `\n📋 [View test details](${runUrl})\n`;
             }
 
