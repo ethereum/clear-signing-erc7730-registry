@@ -444,9 +444,14 @@ jobs:
             core.info(`Matched ${resultFiles.length} result JSON files`);
 
             let body = '## Clear Signing Tests\n\n';
+            // If anything went wrong (no results, or any non-pass case) we set
+            // this and fail the job at the end — block PRs from being merged
+            // with failing or erroring cases.
+            let failureReason = null;
 
             if (resultFiles.length === 0) {
               body += '> No implementation test results found.\n';
+              failureReason = 'Expected runner results but none were uploaded.';
             } else {
               // rows: keyed by entity|descriptor|description
               // each row stores per-impl status + rendered (for diff blocks) + message
@@ -536,6 +541,18 @@ jobs:
                 body += '\n### Details\n\n' + details.join('\n');
               }
 
+              // Count non-pass (case, implementation) pairs.
+              let nonPass = 0;
+              for (const r of rows.values()) {
+                for (const impl of implList) {
+                  const result = r.byImpl[impl];
+                  if (result && result.status !== 'pass') nonPass++;
+                }
+              }
+              if (nonPass > 0) {
+                failureReason = `${nonPass} case/runner combination(s) did not pass.`;
+              }
+
               body += `\n📋 [View test details](${runUrl})\n`;
             }
 
@@ -549,6 +566,12 @@ jobs:
               await github.rest.issues.updateComment({ ...params, comment_id: existing.id });
             } else {
               await github.rest.issues.createComment({ ...params, issue_number: context.issue.number });
+            }
+
+            // Comment is posted first so reviewers can see the table even
+            // when the run is marked failed.
+            if (failureReason) {
+              core.setFailed(failureReason);
             }
 
   notify-missing-tests:
@@ -596,6 +619,8 @@ jobs:
               } else {
                 await github.rest.issues.createComment({ ...params, issue_number: context.issue.number });
               }
+              // Block the PR — descriptor changed without a matching testsv2 file.
+              core.setFailed('Missing testsv2 file(s) for changed descriptors.');
             } else if (existing) {
               // No descriptors changed and no testsv2 either — nothing to say. Clear any stale comment.
               await github.rest.issues.deleteComment({
