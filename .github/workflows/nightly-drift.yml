@@ -1,0 +1,90 @@
+name: 🌙 nightly selector drift
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every day at 03:00 UTC
+    - cron: "0 3 * * *"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  drift:
+    name: 🔬 check on-chain selectors
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+    steps:
+      - name: Skip when no Etherscan API key
+        if: ${{ env.ETHERSCAN_API_KEY == '' }}
+        run: |
+          echo "::notice::ETHERSCAN_API_KEY secret is not set on this repo; skipping drift check."
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+        id: gate
+
+      - name: Checkout
+        if: ${{ env.ETHERSCAN_API_KEY != '' }}
+        uses: actions/checkout@v6.0.2
+
+      - name: Setup Node
+        if: ${{ env.ETHERSCAN_API_KEY != '' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install JS deps
+        if: ${{ env.ETHERSCAN_API_KEY != '' }}
+        run: npm ci --no-audit --no-fund
+
+      - name: Run drift check across all calldata descriptors
+        if: ${{ env.ETHERSCAN_API_KEY != '' }}
+        id: drift
+        run: |
+          set +e
+          bash tools/scripts/run-drift-check-all.sh --all-chains | tee drift-report.md
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Upload drift report
+        if: ${{ env.ETHERSCAN_API_KEY != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: drift-report
+          path: drift-report.md
+          retention-days: 30
+
+      - name: Open or update sticky issue on drift
+        if: ${{ env.ETHERSCAN_API_KEY != '' && steps.drift.outputs.exit_code != '0' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="🌙 Nightly drift report"
+          BODY_FILE=drift-report.md
+          # Find an existing open issue with the same title authored by github-actions.
+          EXISTING=$(gh issue list \
+            --repo "$GITHUB_REPOSITORY" \
+            --state open \
+            --search "in:title \"$TITLE\"" \
+            --json number,title \
+            --jq ".[] | select(.title == \"$TITLE\") | .number" \
+            | head -n 1)
+          if [[ -n "$EXISTING" ]]; then
+            gh issue edit "$EXISTING" --repo "$GITHUB_REPOSITORY" --body-file "$BODY_FILE"
+            gh issue comment "$EXISTING" --repo "$GITHUB_REPOSITORY" --body "Refreshed at $(date -u +%FT%TZ) by workflow run ${{ github.run_id }}."
+          else
+            gh issue create \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "$TITLE" \
+              --body-file "$BODY_FILE" \
+              --label "drift,automated" || \
+            gh issue create \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "$TITLE" \
+              --body-file "$BODY_FILE"
+          fi
