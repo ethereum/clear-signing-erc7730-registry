@@ -3,7 +3,7 @@ name: Clear Signing Tests
 on:
   pull_request:
     paths:
-      - 'registry/**/*.json'
+      - "registry/**/*.json"
 
   pull_request_target:
     types: [labeled]
@@ -443,7 +443,7 @@ jobs:
             }
             core.info(`Matched ${resultFiles.length} result JSON files`);
 
-            let body = '## Clear Signing Implementation Results\n\n';
+            let body = '## Clear Signing Tests\n\n';
 
             if (resultFiles.length === 0) {
               body += '> No implementation test results found.\n';
@@ -542,7 +542,7 @@ jobs:
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number
             });
-            const existing = comments.find(c => c.user.type === 'Bot' && c.body.includes('Clear Signing Implementation Results'));
+            const existing = comments.find(c => c.user.type === 'Bot' && c.body.startsWith('## Clear Signing Tests'));
 
             const params = { owner: context.repo.owner, repo: context.repo.repo, body };
             if (existing) {
@@ -573,20 +573,32 @@ jobs:
             registry/**/testsv2/**
 
       - name: Post comment
-        if: steps.check.outputs.any_changed == 'true'
         uses: actions/github-script@v9.0.0
+        env:
+          ANY_CHANGED: ${{ steps.check.outputs.any_changed }}
         with:
           script: |
-            const body = `## Clear Signing Tests\n\n> ℹ No test files found for the changed descriptors.\n\nCreate a test file at \`registry/<entity>/testsv2/<descriptor-name>.tests.json\`\n\nSee [testing documentation](../blob/master/README.md#reference-test-cases) for details.`;
+            const anyChanged = process.env.ANY_CHANGED === 'true';
 
+            // Same comment as post-implementation-results — exactly one
+            // "## Clear Signing Tests" comment per PR, in either warning or
+            // results state.
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number
             });
-            const existing = comments.find(c => c.user.type === 'Bot' && c.body.includes('Clear Signing Tests'));
+            const existing = comments.find(c => c.user.type === 'Bot' && c.body.startsWith('## Clear Signing Tests'));
 
-            const params = { owner: context.repo.owner, repo: context.repo.repo, body };
-            if (existing) {
-              await github.rest.issues.updateComment({ ...params, comment_id: existing.id });
-            } else {
-              await github.rest.issues.createComment({ ...params, issue_number: context.issue.number });
+            if (anyChanged) {
+              const body = `## Clear Signing Tests\n\nNo testsv2 files found for the changed descriptors.\n\nCreate a test file at \`registry/<entity>/testsv2/<descriptor-name>.tests.json\`\n\nSee [testing documentation](../blob/master/README.md#reference-test-cases) for details.`;
+              const params = { owner: context.repo.owner, repo: context.repo.repo, body };
+              if (existing) {
+                await github.rest.issues.updateComment({ ...params, comment_id: existing.id });
+              } else {
+                await github.rest.issues.createComment({ ...params, issue_number: context.issue.number });
+              }
+            } else if (existing) {
+              // No descriptors changed and no testsv2 either — nothing to say. Clear any stale comment.
+              await github.rest.issues.deleteComment({
+                owner: context.repo.owner, repo: context.repo.repo, comment_id: existing.id
+              });
             }
