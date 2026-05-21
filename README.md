@@ -144,7 +144,7 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
 | `description` | Yes | Human-readable test identifier — used to match runner results back to this case |
 | `rawTx` | Yes | The raw signed transaction (hex string, 0x-prefixed) |
 | `txHash` | No | Transaction hash for reference (e.g., link to Etherscan) |
-| `expected` | Yes | Expected rendered output: `{ intent, owner, fields }`. Field values are strings, or nested `{ intent, owner, fields }` objects for calldata formatters |
+| `expected` | Yes | Expected rendered output: `{ intent, interpolatedIntent?, owner, fields }`. Field values are strings, or nested `{ intent, owner, fields }` objects for calldata formatters |
 
 #### For EIP-712 tests (`eip712-*.tests.json`)
 
@@ -152,7 +152,16 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
 |-------|----------|-------------|
 | `description` | Yes | Human-readable test identifier |
 | `data` | Yes | Complete EIP-712 typed data object (with `types`, `primaryType`, `domain`, `message`) |
-| `expected` | Yes | Expected rendered output: `{ intent, owner, fields }` |
+| `expected` | Yes | Expected rendered output: `{ intent, interpolatedIntent?, owner, fields }` |
+
+#### The `expected` block
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `intent` | Yes | The action label shown to the user (e.g. `"Approve"`, `"Swap"`). For descriptors with a templated intent, this is the un-interpolated literal form |
+| `interpolatedIntent` | No | The fully-rendered interpolatedIntent string after substituting template placeholders against the formatted fields (e.g. `"Swap 100 USDC for DAI"`). Omit when the descriptor has no interpolatedIntent |
+| `owner` | Yes | The descriptor owner shown to the user (e.g. `"Aave DAO"`) |
+| `fields` | Yes | Object mapping field labels to displayed values. Values are strings, or nested `{ intent, owner, fields }` objects for calldata-formatted fields |
 
 ### Best practices
 

@@ -18,6 +18,7 @@ Runners are expected to resolve ERC-7730 `includes` themselves — the CI workfl
       "status": "pass",
       "rendered": {
         "intent": "Execute call",
+        "interpolatedIntent": "Execute call on USDC",
         "owner": "Example Smart Account",
         "fields": {
           "Target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -50,7 +51,8 @@ Runners are expected to resolve ERC-7730 `includes` themselves — the CI workfl
 | `cases[].description`     | yes                 | string | Copied verbatim from the `description` field of the source test case — used to join back to the test file                                  |
 | `cases[].status`          | yes                 | enum   | One of `pass`, `fail`, `error`, `skipped` (see below)                                                                                      |
 | `cases[].rendered`        | conditional         | object | What the runner produced. Same shape as `expected` in the test file. Required on `pass` and `fail`; omitted on `error` and `skipped`       |
-| `cases[].rendered.intent` | yes (if `rendered`) | string | The transaction intent shown to the user                                                                                                   |
+| `cases[].rendered.intent` | yes (if `rendered`) | string | The transaction intent shown to the user. For descriptors with a templated intent this is the un-interpolated literal form (e.g. `"Swap"`) |
+| `cases[].rendered.interpolatedIntent` | optional | string | The fully-rendered interpolatedIntent string after substituting any template placeholders against the transaction data (e.g. `"Swap 100 USDC for DAI"`). Omit when the descriptor has no interpolatedIntent |
 | `cases[].rendered.owner`  | yes (if `rendered`) | string | The descriptor owner shown to the user                                                                                                     |
 | `cases[].rendered.fields` | yes (if `rendered`) | object | Field labels mapped to values. Values are strings, or — for calldata-formatted fields — a nested `rendered`-shaped object (see note below) |
 | `cases[].message`         | optional            | string | Human-readable note. Required on `error` and `skipped`; optional on `fail`                                                                 |
