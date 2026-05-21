@@ -1,0 +1,98 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "contract": {
+      "abi": [
+        {
+          "type": "function",
+          "name": "finalize",
+          "stateMutability": "nonpayable",
+          "inputs": [
+            {
+              "name": "intent",
+              "type": "tuple",
+              "components": [
+                { "name": "user", "type": "address" },
+                { "name": "token", "type": "address" },
+                { "name": "amount", "type": "uint256" },
+                { "name": "rulesHash", "type": "bytes32" },
+                { "name": "duration", "type": "uint64" },
+                { "name": "fine", "type": "uint256" },
+                { "name": "recipient", "type": "address" },
+                { "name": "nonce", "type": "uint256" },
+                { "name": "deadline", "type": "uint256" }
+              ]
+            },
+            { "name": "sig", "type": "bytes" }
+          ],
+          "outputs": [
+            { "name": "commitmentId", "type": "uint256" }
+          ]
+        }
+      ],
+      "deployments": [
+        { "chainId": 42161, "address": "0x17327adbb25bac68df778c9aace4d845eb130850" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "HyperDiscipline",
+    "info": {
+      "legalName": "HyperDiscipline",
+      "url": "https://hyperdiscipline.xyz"
+    }
+  },
+  "display": {
+    "formats": {
+      "finalize((address,address,uint256,bytes32,uint64,uint256,address,uint256,uint256),bytes)": {
+        "intent": "Open commitment",
+        "fields": [
+          {
+            "path": "intent.amount",
+            "label": "Stake amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "intent.token"
+            }
+          },
+          {
+            "path": "intent.fine",
+            "label": "Slash penalty",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "intent.token"
+            }
+          },
+          {
+            "path": "intent.duration",
+            "label": "Duration",
+            "format": "duration"
+          },
+          {
+            "path": "intent.recipient",
+            "label": "Slash recipient",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "contract"]
+            }
+          },
+          {
+            "path": "intent.deadline",
+            "label": "Valid until",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          }
+        ],
+        "excluded": [
+          "intent.user",
+          "intent.token",
+          "intent.rulesHash",
+          "intent.nonce",
+          "sig"
+        ]
+      }
+    }
+  }
+}

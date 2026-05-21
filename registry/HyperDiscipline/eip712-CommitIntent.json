@@ -1,0 +1,113 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "eip712": {
+      "domain": {
+        "name": "HyperDisciplineVault",
+        "version": "4",
+        "verifyingContract": "0x8bC22f59B2E734b18aeDe34C930a268fDDbebB03",
+        "chainId": 42161
+      },
+      "schemas": [
+        {
+          "primaryType": "CommitIntent",
+          "types": {
+            "CommitIntent": [
+              { "name": "user", "type": "address" },
+              { "name": "token", "type": "address" },
+              { "name": "amount", "type": "uint256" },
+              { "name": "rulesHash", "type": "bytes32" },
+              { "name": "duration", "type": "uint64" },
+              { "name": "fine", "type": "uint256" },
+              { "name": "recipient", "type": "address" },
+              { "name": "nonce", "type": "uint256" },
+              { "name": "deadline", "type": "uint256" }
+            ]
+          }
+        }
+      ],
+      "deployments": [
+        { "chainId": 42161, "address": "0x8bC22f59B2E734b18aeDe34C930a268fDDbebB03" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "HyperDiscipline",
+    "info": {
+      "legalName": "HyperDiscipline",
+      "url": "https://hyperdiscipline.xyz"
+    }
+  },
+  "display": {
+    "formats": {
+      "CommitIntent": {
+        "intent": "Open commitment",
+        "fields": [
+          {
+            "path": "user",
+            "label": "Trader",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa"]
+            }
+          },
+          {
+            "path": "amount",
+            "label": "Stake amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "token"
+            }
+          },
+          {
+            "path": "fine",
+            "label": "Slash penalty",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "token"
+            }
+          },
+          {
+            "path": "duration",
+            "label": "Duration",
+            "format": "duration"
+          },
+          {
+            "path": "recipient",
+            "label": "Slash recipient",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "contract"]
+            }
+          },
+          {
+            "path": "deadline",
+            "label": "Valid until",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "token",
+            "label": "Stake token",
+            "format": "addressName",
+            "params": {
+              "types": ["token"]
+            }
+          },
+          {
+            "path": "rulesHash",
+            "label": "Rules hash",
+            "format": "raw"
+          },
+          {
+            "path": "nonce",
+            "label": "Nonce",
+            "format": "raw"
+          }
+        ]
+      }
+    }
+  }
+}
