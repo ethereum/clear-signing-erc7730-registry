@@ -1,5 +1,5 @@
 name: Upload clear-signing test results
-description: Validate the basic structure of a results.json against the spec in .github/test-results/README.md, then upload it as an artifact with a consistent name. Shared by all runners that emit the unified results format.
+description: Validate the basic structure of a results.json against the spec in .github/test-runner-docs/README.md, then upload it as an artifact with a consistent name. Shared by all runners that emit the unified results format.
 
 inputs:
   results-path:
@@ -43,7 +43,7 @@ runs:
             (.status | IN("pass","fail","error","skipped"))
           ))
         ' "$RESULTS_PATH" > /dev/null; then
-          echo "::error file=$RESULTS_PATH::results.json failed structural validation against the spec in .github/test-results/README.md"
+          echo "::error file=$RESULTS_PATH::results.json failed structural validation against the spec in .github/test-runner-docs/README.md"
           exit 1
         fi
 
