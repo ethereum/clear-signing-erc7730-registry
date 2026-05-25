@@ -1,0 +1,81 @@
+{
+    "$schema": "https://eips.ethereum.org/assets/eip-7730/erc7730-v1.schema.json",
+    "context": {
+      "$id": "JAW Smart Account",
+      "contract": {
+        "abi": [
+          {
+            "type": "function",
+            "name": "execute",
+            "inputs": [{ "name": "target", "type": "address" }, { "name": "value", "type": "uint256" }, { "name": "data", "type": "bytes" }],
+            "outputs": [],
+            "stateMutability": "payable"
+          },
+          {
+            "type": "function",
+            "name": "executeBatch",
+            "inputs": [
+              {
+                "name": "calls",
+                "type": "tuple[]",
+                "components": [{ "name": "target", "type": "address" }, { "name": "value", "type": "uint256" }, { "name": "data", "type": "bytes" }]
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          },
+          {
+            "type": "function",
+            "name": "addOwnerAddress",
+            "inputs": [{ "name": "owner", "type": "address" }],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        ],
+        "deployments": [{ "chainId": 84532, "address": "0xbb4f7d5418Cd8DADB61bb95561179e517572cBCd" }],
+        "factory": {
+          "deployments": [{ "chainId": 84532, "address": "0x5803c076563C85799989d42Fc00292A8aE52fa9E" }],
+          "deployEvent": "event AccountCreated(address indexed account, bytes[] owners)"
+        }
+      }
+    },
+    "metadata": { "owner": "JAW", "info": { "legalName": "JustAName Ltd", "url": "https://jaw.id" } },
+    "display": {
+      "formats": {
+        "execute(address target,uint256 value,bytes data)": {
+          "$id": "execute-single",
+          "intent": "Execute Transaction",
+          "fields": [
+            { "path": "target", "label": "To", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] } },
+            { "path": "value", "label": "Value", "format": "amount" },
+            { "path": "data", "label": "Call", "format": "calldata", "params": { "calleePath": "target" } }
+          ],
+          "required": ["target", "value", "data"],
+          "excluded": ["data.[]"]
+        },
+        "executeBatch((address target,uint256 value,bytes data)[] calls)": {
+          "$id": "execute-batch",
+          "intent": "Execute Batch",
+          "fields": [
+            {
+              "path": "calls.[]",
+              "fields": [
+                { "path": "target", "label": "To", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] } },
+                { "path": "value", "label": "Value", "format": "amount" },
+                { "path": "data", "label": "Call", "format": "calldata", "params": { "calleePath": "target" } }
+              ]
+            }
+          ],
+          "required": ["calls"],
+          "excluded": ["calls.[].data.[]"]
+        },
+        "addOwnerAddress(address owner)": {
+          "$id": "add-owner",
+          "intent": "Add Account Owner",
+          "fields": [{ "path": "owner", "label": "New owner", "format": "addressName", "params": { "types": ["wallet", "eoa"] } }],
+          "required": ["owner"],
+          "excluded": []
+        }
+      }
+    }
+  }
