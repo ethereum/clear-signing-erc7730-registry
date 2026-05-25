@@ -1,0 +1,92 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 146,
+          "address": "0xb9B23b0555B8066F3d5954Ea6C679a02339F78dc"
+        },
+        {
+          "chainId": 56,
+          "address": "0x5f8D7B2009355a48ace2643d18E782F5c5818495"
+        },
+        {
+          "chainId": 43114,
+          "address": "0x83D889120aB0A0683bc59245E77A9D510D5aCDA0"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Flying Tulip",
+    "contractName": "MintAndRedeem dev",
+    "info": {
+      "url": "https://flyingtulip.com"
+    }
+  },
+  "display": {
+    "formats": {
+      "mint(address collateralToken, uint256 collateralAmount, uint256 txDeadline, uint256 minFtUSDOut)": {
+        "intent": "Buy ftUSD",
+        "fields": [
+          {
+            "path": "collateralAmount",
+            "label": "Pay",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "collateralToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "minFtUSDOut",
+            "label": "Minimum ftUSD",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "txDeadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Buy {minFtUSDOut}"
+      },
+      "redeem(address collateralToken, uint256 ftUSDAmount, uint256 txDeadline, uint256 minCollateralOut)": {
+        "intent": "Sell ftUSD",
+        "fields": [
+          {
+            "path": "ftUSDAmount",
+            "label": "ftUSD amount",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "minCollateralOut",
+            "label": "Minimum receive",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "collateralToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "txDeadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Sell {ftUSDAmount}"
+      }
+    }
+  }
+}
