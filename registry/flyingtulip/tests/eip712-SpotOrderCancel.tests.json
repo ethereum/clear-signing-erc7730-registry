@@ -1,0 +1,113 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "Cancel spot order",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "CancelOrder": [
+            {
+              "name": "orderId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "CancelOrder",
+        "domain": {
+          "name": "FT SessionManager",
+          "version": "1",
+          "chainId": 146,
+          "verifyingContract": "0x109AE72778a0260571b9767477204F1ce41FBdff"
+        },
+        "message": {
+          "orderId": "ft-spot-141"
+        }
+      },
+      "expectedTexts": [
+        "Cancel spot order",
+        "Order ID"
+      ]
+    },
+    {
+      "description": "Cancel TP/SL orders",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "TpslGroupCancel": [
+            {
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "name": "positionId",
+              "type": "string"
+            },
+            {
+              "name": "tpslGroupId",
+              "type": "string"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "TpslGroupCancel",
+        "domain": {
+          "name": "FT SessionManager",
+          "version": "1",
+          "chainId": 146,
+          "verifyingContract": "0x109AE72778a0260571b9767477204F1ce41FBdff"
+        },
+        "message": {
+          "user": "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+          "positionId": "position-141",
+          "tpslGroupId": "tpsl-7",
+          "deadline": "1775200000"
+        }
+      },
+      "expectedTexts": [
+        "Cancel TP/SL orders",
+        "User",
+        "Position ID",
+        "TP/SL group",
+        "Deadline"
+      ]
+    }
+  ]
+}

@@ -7,32 +7,108 @@
         "$id": "Permit2 Permit Single",
         "intent": "Authorize spending of token",
         "fields": [
-          { "path": "spender", "label": "Spender", "format": "raw", "visible": "always" },
+          {
+            "path": "spender",
+            "label": "Spender",
+            "format": "raw",
+            "visible": "always"
+          },
           {
             "path": "details.amount",
             "label": "Amount allowance",
             "format": "tokenAmount",
-            "params": { "tokenPath": "details.token" },
+            "params": {
+              "tokenPath": "details.token"
+            },
             "visible": "always"
           },
-          { "path": "details.expiration", "label": "Approval expires", "format": "date", "params": { "encoding": "timestamp" } },
-          { "label": "Sig Deadline", "path": "sigDeadline", "visible": "never" }
+          {
+            "path": "details.expiration",
+            "label": "Approval expires",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "label": "Sig Deadline",
+            "path": "sigDeadline",
+            "visible": "never"
+          }
         ]
       },
       "PermitBatch(PermitDetails[] details,address spender,uint256 sigDeadline)PermitDetails(address token,uint160 amount,uint48 expiration,uint48 nonce)": {
         "$id": "Permit2 Permit Batch",
         "intent": "Authorize spending of tokens",
         "fields": [
-          { "path": "spender", "label": "Spender", "format": "raw", "visible": "always" },
           {
-            "path": "details.[]",
-            "fields": [
-              { "path": "amount", "label": "Amount allowance", "format": "tokenAmount", "params": { "tokenPath": "token" } },
-              { "path": "expiration", "label": "Approval expires", "format": "date", "params": { "encoding": "timestamp" } }
-            ]
+            "path": "spender",
+            "label": "Spender",
+            "format": "raw",
+            "visible": "always"
           },
-          { "label": "Sig Deadline", "path": "sigDeadline", "visible": "never" }
+          {
+            "path": "details.[].amount",
+            "label": "Amount allowance",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "details.[].token"
+            }
+          },
+          {
+            "path": "details.[].expiration",
+            "label": "Approval expires",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "label": "Sig Deadline",
+            "path": "sigDeadline",
+            "visible": "never"
+          }
         ]
+      },
+      "PermitTransferFrom(TokenPermissions permitted,address spender,uint256 nonce,uint256 deadline)TokenPermissions(address token,uint256 amount)": {
+        "$id": "Permit2 Permit Transfer",
+        "intent": "Authorize token transfer",
+        "fields": [
+          {
+            "path": "spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "permitted.amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "permitted.token"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "deadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Transfer {permitted.amount}"
       }
     }
   }

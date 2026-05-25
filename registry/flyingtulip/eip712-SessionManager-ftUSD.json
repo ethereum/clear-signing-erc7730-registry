@@ -1,0 +1,132 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "eip712": {
+      "domain": {
+        "name": "ftUSD SessionManager",
+        "version": "1"
+      },
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x2DaF4B445E7d659100b22a15c3EeB10e64ac5dC9"
+        },
+        {
+          "chainId": 56,
+          "address": "0xC85CB743f72B3a9Bb594Faa7d46EE1EFC61b7A42"
+        },
+        {
+          "chainId": 146,
+          "address": "0x2DaF4B445E7d659100b22a15c3EeB10e64ac5dC9"
+        },
+        {
+          "chainId": 146,
+          "address": "0x52Ef449D44cC4205fa44bF644dEE15611FC30734"
+        },
+        {
+          "chainId": 43114,
+          "address": "0x176592C8Ed3F2D94cE4c3F1a4cfF7d068176AC54"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Flying Tulip",
+    "contractName": "ftUSD SessionManager",
+    "info": {
+      "url": "https://flyingtulip.com"
+    }
+  },
+  "display": {
+    "formats": {
+      "Session(address owner,address delegate,uint48 validAfter,uint48 validUntil,uint32 maxCalls,uint16 maxFeeBps,AssetLimit[] limits,bytes32 salt)AssetLimit(address token,uint256 limit)": {
+        "intent": "Create ftUSD session",
+        "fields": [
+          {
+            "path": "owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "delegate",
+            "label": "Delegate",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "validAfter",
+            "label": "Valid after",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "validUntil",
+            "label": "Valid until",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "maxCalls",
+            "label": "Max calls",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "maxFeeBps",
+            "label": "Max fee",
+            "format": "unit",
+            "params": {
+              "base": "bps",
+              "decimals": 0
+            },
+            "visible": "always"
+          },
+          {
+            "path": "limits.[].limit",
+            "label": "Token limit",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "limits.[].token",
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "salt",
+            "label": "Salt",
+            "visible": "never"
+          }
+        ],
+        "interpolatedIntent": "ftUSD session {delegate}"
+      }
+    }
+  }
+}

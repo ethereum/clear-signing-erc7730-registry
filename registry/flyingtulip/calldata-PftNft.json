@@ -1,0 +1,98 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0xa4215Daaf3745E14E96E169E0E7706c479Ce04F2"
+        },
+        {
+          "chainId": 146,
+          "address": "0xa4215Daaf3745E14E96E169E0E7706c479Ce04F2"
+        },
+        {
+          "chainId": 146,
+          "address": "0x1d8051c90076FaA5b683A3551Ee4369d00f99D67"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Flying Tulip",
+    "contractName": "pFT NFT",
+    "info": {
+      "url": "https://flyingtulip.com"
+    },
+    "enums": {
+      "rights": {
+        "True": "Grant all",
+        "False": "Deny all"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "approve(address to, uint256 tokenId)": {
+        "intent": "Approve FT PUT position",
+        "fields": [
+          {
+            "path": "to",
+            "label": "Operator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "tokenId",
+            "label": "Position",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Approve PUT {tokenId}"
+      },
+      "setApprovalForAll(address operator, bool approved)": {
+        "intent": "Manage FT PUT approvals",
+        "fields": [
+          {
+            "path": "operator",
+            "label": "Operator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "approved",
+            "label": "Access rights",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.rights"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Set operator {operator}"
+      }
+    }
+  }
+}

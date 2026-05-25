@@ -55,18 +55,46 @@ Confirm the contract is verified at [repo.sourcify.dev](https://repo.sourcify.de
 
 **4. Intent mutability**
 
-A function's displayed intent can diverge from its executed behavior over time — through proxy upgrades, admin-controlled state changes, or branches on mutable storage.
+A function's displayed intent can diverge from its executed behavior over time — through proxy upgrades, admin-controlled state changes, or branches on mutable storage. ERC-7730 v2 provides two on-chain precondition mechanisms for declaring the state that bounds a descriptor's intent claim:
 
-**If the descriptor includes an `intentMutability` section** (per the proposed extension in [ethereum/ERCs#1738](https://github.com/ethereum/ERCs/pull/1738)):
-- Verify each `(slot, expectedValue)` in `stateRefs` matches the current on-chain value (e.g., via `cast storage <address> <slot>` or an `eth_getStorageAt` RPC call).
-- Verify the list is **exhaustive**: enumerate every storage slot that is both (a) read by any function in the descriptor and (b) writeable by a non-user actor (owner, admin, governance, proxy upgrade authority, delegatecall target). Slither's `read-state-variables` and permission detectors are useful starting points. Any writeable-read slot not declared in the descriptor is a missed vector — open a PR adding it, or **do not sign**.
-- For `notes`-only declarations, confirm the prose accurately reflects the off-chain or compositional vectors.
+- `context.contract.proxy` — for standardised upgradeable proxies (EIP-1967, EIP-1822, EIP-2535). Declares the audited implementation addresses; for diamonds, the selector-to-facet routing.
+- `context.contract.stateRefs` — array of storage slot preconditions. Declares slot, expectedValue, optional mask. Covers admin-controlled parameters, state-dependent branches, custom proxy implementation slots, and similar mutable on-chain state.
 
-**If the descriptor does NOT include an `intentMutability` section** (the ERC-7730 update has not landed yet):
-- Enumerate the mutability vectors yourself using the same procedure as above.
-- Publish your findings at a durable URL (your own GitHub, IPFS, etc.) describing each function, the slots that affect its intent, and the impact when those slots change.
-- Include the audit URI in your attestation submission (in the PR description and, where the schema supports it, in the attestation envelope itself) so wallets and reviewers can discover it.
-- If any vector meaningfully affects the displayed intent, flag it in the PR and decide whether to sign.
+**The auditor's test: does the *displayed* intent depend on the vector?**
+
+The question to ask of each function in `display.formats` is *not* "does this contract use an oracle / timestamp / external call" but *does the rendered `intent` string or any formatted `fields` depend on a value influenced by that vector?* A function whose displayed intent is wholly parameterized by user inputs (amount, recipient, minOut, deadline) is not intent-mutable in a way the descriptor needs to express, even if the contract internally consults an oracle. A function that renders an oracle-sourced value as part of its intent is.
+
+**Verifying declared preconditions are accurate**
+
+For every `proxy` declaration:
+- Read the live implementation address from the standardised slot (EIP-1967/EIP-1822) or enumerate facets via the diamond loupe `facets()` call (EIP-2535).
+- Confirm every live implementation is listed in `expectedImplementations`.
+- For diamonds, confirm the live `selector → facet` mapping matches the declared `(address, selectors)` pairs — both that each facet is listed and that each selector routes to the declared facet.
+
+For every `stateRef`:
+- Read the live slot value (`cast storage <address> <slot>` or `eth_getStorageAt`).
+- Confirm it matches `expectedValue` under the comparison rule (masked if `mask` is present, exact otherwise).
+
+**Verifying preconditions are exhaustive**
+
+For each function in `display.formats`, enumerate the storage slots that the function reads (transitively) and that are writable by a non-user actor — owner, admin, governance, proxy upgrade authority, delegatecall target. Slither's `read-state-variables` and permission detectors are useful starting points. Any writeable-read slot whose value bounds the displayed intent and is not declared in `proxy` or `stateRefs` is a missed vector — open a PR adding it, or **do not sign**.
+
+**Vectors v2 cannot express — these require function omission**
+
+If a function's displayed intent depends on any of the following, the descriptor MUST omit that function from `display.formats`. A descriptor that formats such a function is malformed and you **MUST NOT** issue an attestation:
+
+- **Time-based branches.** `block.timestamp` or `block.number` thresholds that the descriptor would need to render or witness.
+- **Block-environment dependencies.** `block.basefee`, `block.coinbase`, `tx.origin`.
+- **Parameter-based hidden branches.** Magic input values or sentinel addresses that trigger non-displayed logic.
+- **Dynamic external call resolution.** Target contracts resolved at runtime — registry lookups, factory deployments, CREATE2 prediction, off-chain oracle endpoints.
+- **Off-chain dependencies.** Oracle endpoints, signing services, library linkage decided off-chain.
+- **Composition.** Function behavior modified by multicall, account-abstraction batch, hook, or similar wrapper.
+
+If you find such a vector for a function the descriptor formats, do not sign. Ask the submitter to omit the function from `display.formats` (wallets fall back to opaque signing for omitted selectors) and re-submit.
+
+**EIP-7702 delegated accounts**
+
+If the descriptor binds to a contract that an EIP-7702-delegated EOA might call, the EOA's delegation is off the execution path; review proceeds as normal. If the descriptor binds to a contract that is itself a 7702 delegate (smart-wallet-style use case), review it like any other contract — the descriptor describes the delegate's behavior; wallets resolve the descriptor at signing time by reading the EOA's delegation indicator.
 
 **5. Tester validation** *(dedicated Tester tool still in development)*
 
