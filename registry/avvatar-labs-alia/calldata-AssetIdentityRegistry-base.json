@@ -735,22 +735,27 @@
     }
   },
   "metadata": {
-    "owner": "Avvatar Labs SAS",
+    "owner": "ALIA Quality Network",
     "info": {
-      "legalName": "Avvatar Labs SAS",
       "url": "https://avvatar.io",
-      "deploymentDate": "2026-04-06"
+      "deploymentDate": "2026-04-06T10:46:58Z"
     }
   },
   "display": {
     "formats": {
-      "addCrossChainRecord(address,uint256,address)": {
+      "addCrossChainRecord(address _tokenAddress, uint256 _chainId, address _crossChainToken)": {
+        "$id": "asset_crosschain",
         "intent": "Add cross-chain record",
         "fields": [
           {
             "path": "_tokenAddress",
             "label": "Token",
-            "format": "addressName"
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
           },
           {
             "path": "_chainId",
@@ -760,17 +765,28 @@
           {
             "path": "_crossChainToken",
             "label": "Cross Chain Token",
-            "format": "addressName"
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
           }
         ]
       },
-      "registerAsset(address,uint8,uint8,string,string,string)": {
+      "registerAsset(address _tokenAddress, uint8 _assetClass, uint8 _backingType, string _legalIdentifier, string _jurisdiction, string _custodian)": {
+        "$id": "asset_register",
         "intent": "Register asset ERC-8240",
         "fields": [
           {
             "path": "_tokenAddress",
             "label": "Token",
-            "format": "addressName"
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
           },
           {
             "path": "_assetClass",
@@ -799,13 +815,19 @@
           }
         ]
       },
-      "revokeAsset(address,string)": {
+      "revokeAsset(address _tokenAddress, string _reason)": {
+        "$id": "asset_revoke",
         "intent": "Revoke asset",
         "fields": [
           {
             "path": "_tokenAddress",
             "label": "Token",
-            "format": "addressName"
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
           },
           {
             "path": "_reason",
@@ -814,13 +836,19 @@
           }
         ]
       },
-      "updateCustodian(address,string)": {
+      "updateCustodian(address _tokenAddress, string _newCustodian)": {
+        "$id": "asset_custodian",
         "intent": "Update asset custodian",
         "fields": [
           {
             "path": "_tokenAddress",
             "label": "Token",
-            "format": "addressName"
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
           },
           {
             "path": "_newCustodian",

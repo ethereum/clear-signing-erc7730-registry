@@ -1219,22 +1219,28 @@
     }
   },
   "metadata": {
-    "owner": "Avvatar Labs SAS",
+    "owner": "ALIA Quality Network",
     "info": {
-      "legalName": "Avvatar Labs SAS",
       "url": "https://avvatar.io",
-      "deploymentDate": "2026-04-06"
+      "deploymentDate": "2026-04-06T10:46:58Z"
     }
   },
   "display": {
     "formats": {
-      "recordDecision(address,string,address,uint256,bool,bytes32)": {
+      "recordDecision(address _agent, string _action, address _assetInvolved, uint256 _value, bool _success, bytes32 _txHash)": {
+        "$id": "agent_decision",
         "intent": "Record A2A decision",
         "fields": [
           {
             "path": "_agent",
             "label": "Agent",
-            "format": "addressName"
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
           },
           {
             "path": "_action",
@@ -1243,8 +1249,13 @@
           },
           {
             "path": "_assetInvolved",
-            "label": "Asset Involved",
-            "format": "addressName"
+            "label": "Asset",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
           },
           {
             "path": "_value",
@@ -1263,13 +1274,20 @@
           }
         ]
       },
-      "recordIncident(address,string)": {
+      "recordIncident(address _agent, string _description)": {
+        "$id": "agent_incident",
         "intent": "Record agent incident",
         "fields": [
           {
             "path": "_agent",
             "label": "Agent",
-            "format": "addressName"
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
           },
           {
             "path": "_description",
@@ -1278,18 +1296,31 @@
           }
         ]
       },
-      "registerAgent(address,address,uint8,string,string,string,string,uint256,uint256)": {
+      "registerAgent(address _agentWallet, address _ownerWallet, uint8 _agentType, string _name, string _version, string _manufacturer, string _serialNumber, uint256 _minColScore, uint256 _maxLTV)": {
+        "$id": "agent_register",
         "intent": "Register agent ERC-8240",
         "fields": [
           {
             "path": "_agentWallet",
             "label": "Agent Wallet",
-            "format": "addressName"
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
           },
           {
             "path": "_ownerWallet",
             "label": "Owner Wallet",
-            "format": "addressName"
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
           },
           {
             "path": "_agentType",
@@ -1313,28 +1344,35 @@
           },
           {
             "path": "_serialNumber",
-            "label": "Serial Number",
+            "label": "Serial",
             "format": "raw"
           },
           {
             "path": "_minColScore",
-            "label": "Min Col Score",
+            "label": "Min Score",
             "format": "raw"
           },
           {
             "path": "_maxLTV",
-            "label": "Max L T V",
+            "label": "Max LTV",
             "format": "raw"
           }
         ]
       },
-      "updateAgentStatus(address,uint8,string)": {
+      "updateAgentStatus(address _agent, uint8 _newStatus, string _reason)": {
+        "$id": "agent_status",
         "intent": "Update agent status",
         "fields": [
           {
             "path": "_agent",
             "label": "Agent",
-            "format": "addressName"
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
           },
           {
             "path": "_newStatus",
@@ -1348,17 +1386,24 @@
           }
         ]
       },
-      "updateFirmware(address,string)": {
+      "updateFirmware(address _agent, string _newVersion)": {
+        "$id": "agent_firmware",
         "intent": "Update agent firmware",
         "fields": [
           {
             "path": "_agent",
             "label": "Agent",
-            "format": "addressName"
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
           },
           {
             "path": "_newVersion",
-            "label": "New Version",
+            "label": "New version",
             "format": "raw"
           }
         ]
