@@ -1,0 +1,65 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "OUSGInstantManager",
+    "contract": {
+      "deployments": [{ "chainId": 1, "address": "0x93358db73B6cd4b98D89c8F5f230E81a95c2643a" }]
+    }
+  },
+  "metadata": {
+    "owner": "Ondo Finance",
+    "contractName": "OUSG Instant Manager",
+    "info": { "url": "https://ondo.finance" },
+    "constants": {
+      "OUSGaddress": "0x1B19C19393e2d034D8Ff31ff34c81252FcBbee92"
+    }
+  },
+  "display": {
+    "formats": {
+      "subscribe(address depositToken, uint256 depositAmount, uint256 minimumRwaReceived)": {
+        "$id": "subscribe",
+        "intent": "Subscribe to OUSG",
+        "interpolatedIntent": "Subscribe with {depositAmount} for at least {minimumRwaReceived}+",
+        "fields": [
+          {
+            "path": "depositAmount",
+            "format": "tokenAmount",
+            "label": "Deposit Amount",
+            "params": { "tokenPath": "depositToken" },
+            "visible": "always"
+          },
+          {
+            "path": "minimumRwaReceived",
+            "format": "tokenAmount",
+            "label": "Min OUSG Received",
+            "params": { "token": "$.metadata.constants.OUSGaddress" },
+            "visible": "always"
+          },
+          { "path": "depositToken", "label": "Deposit Token", "visible": "never" }
+        ]
+      },
+      "redeem(uint256 rwaAmount, address receivingToken, uint256 minimumTokenReceived)": {
+        "$id": "redeem",
+        "intent": "Redeem OUSG",
+        "interpolatedIntent": "Redeem {rwaAmount} for at least {minimumTokenReceived}+",
+        "fields": [
+          {
+            "path": "rwaAmount",
+            "format": "tokenAmount",
+            "label": "OUSG Amount",
+            "params": { "token": "$.metadata.constants.OUSGaddress" },
+            "visible": "always"
+          },
+          {
+            "path": "minimumTokenReceived",
+            "format": "tokenAmount",
+            "label": "Min Receive Amount",
+            "params": { "tokenPath": "receivingToken" },
+            "visible": "always"
+          },
+          { "path": "receivingToken", "label": "Receiving Token", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
