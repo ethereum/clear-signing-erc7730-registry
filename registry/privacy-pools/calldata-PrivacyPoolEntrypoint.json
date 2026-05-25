@@ -1,0 +1,87 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x6818809EefCe719E480a7526D76bD3e561526b46"
+        },
+        {
+          "chainId": 10,
+          "address": "0x44192215FEd782896BE2CE24E0Bfbf0BF825d15E"
+        },
+        {
+          "chainId": 56,
+          "address": "0x44192215FEd782896BE2CE24E0Bfbf0BF825d15E"
+        },
+        {
+          "chainId": 42161,
+          "address": "0x44192215FEd782896BE2CE24E0Bfbf0BF825d15E"
+        },
+        {
+          "chainId": 11155111,
+          "address": "0x34A2068192b1297f2a7f85D7D8CdE66F8F0921cB"
+        },
+        {
+          "chainId": 11155420,
+          "address": "0x54aCA0D27500669FA37867233e05423701f11ba1"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Privacy Pools",
+    "contractName": "Privacy Pool Entrypoint",
+    "info": {
+      "url": "https://0xbow.io"
+    }
+  },
+  "display": {
+    "formats": {
+      "deposit(uint256 _precommitment)": {
+        "intent": "Deposit native asset",
+        "interpolatedIntent": "Deposit native",
+        "fields": [
+          {
+            "path": "@.value",
+            "label": "Amount",
+            "format": "amount",
+            "visible": "always"
+          },
+          {
+            "path": "_precommitment",
+            "label": "Precommitment",
+            "visible": "never"
+          }
+        ]
+      },
+      "deposit(address _asset, uint256 _value, uint256 _precommitment)": {
+        "intent": "Deposit token",
+        "interpolatedIntent": "Deposit {_value}",
+        "fields": [
+          {
+            "path": "_value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "_asset"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "_asset",
+            "label": "Asset",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "_precommitment",
+            "label": "Precommitment",
+            "visible": "never"
+          }
+        ]
+      }
+    }
+  }
+}
