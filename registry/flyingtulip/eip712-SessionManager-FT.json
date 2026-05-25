@@ -1,0 +1,120 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "eip712": {
+      "domain": {
+        "name": "FT SessionManager",
+        "version": "1"
+      },
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0xF9f3ddF2E96Cabef94e2634c326DC6dde99360f8"
+        },
+        {
+          "chainId": 146,
+          "address": "0x109AE72778a0260571b9767477204F1ce41FBdff"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Flying Tulip",
+    "contractName": "FT SessionManager",
+    "info": {
+      "url": "https://flyingtulip.com"
+    }
+  },
+  "display": {
+    "formats": {
+      "Session(address owner,address delegate,uint48 validAfter,uint48 validUntil,uint32 maxCalls,uint16 maxFeeBps,AssetLimit[] limits,bytes32 salt)AssetLimit(address token,uint256 limit)": {
+        "intent": "Create session",
+        "fields": [
+          {
+            "path": "owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "delegate",
+            "label": "Delegate",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "validAfter",
+            "label": "Valid after",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "validUntil",
+            "label": "Valid until",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "maxCalls",
+            "label": "Max calls",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "maxFeeBps",
+            "label": "Max fee",
+            "format": "unit",
+            "params": {
+              "base": "bps",
+              "decimals": 0
+            },
+            "visible": "always"
+          },
+          {
+            "path": "limits.[].limit",
+            "label": "Token limit",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "limits.[].token",
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "salt",
+            "label": "Salt",
+            "visible": "never"
+          }
+        ],
+        "interpolatedIntent": "FT session {delegate}"
+      }
+    }
+  }
+}
