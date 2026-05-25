@@ -1,0 +1,91 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "GMTokenManager",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x2c158BC456e027b2AfFCCadF1BDBD9f5fC4c5C8c" },
+        { "chainId": 56, "address": "0x91f8Aff3738825e8eB16FC6f6b1A7A4647bDB299" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Ondo Finance", "contractName": "GM Token Manager", "info": { "url": "https://ondo.finance" } },
+  "display": {
+    "formats": {
+      "mintWithAttestation((uint256 chainId, uint256 attestationId, bytes32 userId, address asset, uint256 price, uint256 quantity, uint256 expiration, uint8 side, bytes32 additionalData) quote, bytes signature, address depositToken, uint256 depositTokenAmount)": {
+        "$id": "mintWithAttestation",
+        "intent": "Mint GM Token",
+        "interpolatedIntent": "Mint {quote.quantity} using {depositTokenAmount}",
+        "fields": [
+          { "path": "quote.asset", "format": "addressName", "label": "GM Token", "params": { "types": ["token"] }, "visible": "always" },
+          {
+            "path": "quote.quantity",
+            "format": "tokenAmount",
+            "label": "GM Token Amount",
+            "params": { "tokenPath": "quote.asset" },
+            "visible": "always"
+          },
+          {
+            "path": "depositTokenAmount",
+            "format": "tokenAmount",
+            "label": "Deposit Amount",
+            "params": { "tokenPath": "depositToken" },
+            "visible": "always"
+          },
+          { "path": "quote.price", "label": "Quote Price", "visible": "never" },
+          {
+            "path": "quote.expiration",
+            "format": "date",
+            "label": "Quote Expires",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "quote.chainId", "label": "Chain ID", "visible": "never" },
+          { "path": "quote.attestationId", "label": "Attestation ID", "visible": "never" },
+          { "path": "quote.userId", "label": "User ID", "visible": "never" },
+          { "path": "quote.side", "label": "Side", "visible": "never" },
+          { "path": "quote.additionalData", "label": "Additional Data", "visible": "never" },
+          { "path": "signature", "label": "Signature", "visible": "never" },
+          { "path": "depositToken", "label": "Deposit Token", "visible": "never" }
+        ]
+      },
+      "redeemWithAttestation((uint256 chainId, uint256 attestationId, bytes32 userId, address asset, uint256 price, uint256 quantity, uint256 expiration, uint8 side, bytes32 additionalData) quote, bytes signature, address receiveToken, uint256 minimumReceiveAmount)": {
+        "$id": "redeemWithAttestation",
+        "intent": "Redeem GM Token",
+        "interpolatedIntent": "Redeem {quote.quantity} for {minimumReceiveAmount}+",
+        "fields": [
+          { "path": "quote.asset", "format": "addressName", "label": "GM Token", "params": { "types": ["token"] }, "visible": "always" },
+          {
+            "path": "quote.quantity",
+            "format": "tokenAmount",
+            "label": "GM Token Amount",
+            "params": { "tokenPath": "quote.asset" },
+            "visible": "always"
+          },
+          {
+            "path": "minimumReceiveAmount",
+            "format": "tokenAmount",
+            "label": "Min Receive Amount",
+            "params": { "tokenPath": "receiveToken" },
+            "visible": "always"
+          },
+          { "path": "quote.price", "label": "Quote Price", "visible": "never" },
+          {
+            "path": "quote.expiration",
+            "format": "date",
+            "label": "Quote Expires",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "quote.chainId", "label": "Chain ID", "visible": "never" },
+          { "path": "quote.attestationId", "label": "Attestation ID", "visible": "never" },
+          { "path": "quote.userId", "label": "User ID", "visible": "never" },
+          { "path": "quote.side", "label": "Side", "visible": "never" },
+          { "path": "quote.additionalData", "label": "Additional Data", "visible": "never" },
+          { "path": "signature", "label": "Signature", "visible": "never" },
+          { "path": "receiveToken", "label": "Receive Token", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
