@@ -1,0 +1,110 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "eip712": {
+      "domain": {
+        "name": "LeverageRfqEngine",
+        "version": "1"
+      },
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x8263a07504d93cB95e0a74f3627bb15faaf140e2"
+        },
+        {
+          "chainId": 146,
+          "address": "0x8263a07504d93cB95e0a74f3627bb15faaf140e2"
+        },
+        {
+          "chainId": 146,
+          "address": "0x8f143D84Ebf0751E56437A62BAB0528d1c8657BF"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Flying Tulip",
+    "contractName": "LeverageRfqEngine",
+    "info": {
+      "url": "https://flyingtulip.com"
+    },
+    "enums": {
+      "actions": {
+        "0": "Open",
+        "1": "Close",
+        "2": "Swap"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "LeveragedOrder(uint8 action,address user,address sellToken,address buyToken,uint256 sellAmount,uint256 buyAmount,uint32 validTo,uint256 feeAmount)": {
+        "intent": "Sign spot order",
+        "fields": [
+          {
+            "path": "action",
+            "label": "Action",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.actions"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "sellAmount",
+            "label": "Sell",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "sellToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "buyAmount",
+            "label": "Minimum buy",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "buyToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "feeAmount",
+            "label": "Fee",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "sellToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "user",
+            "label": "User",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "validTo",
+            "label": "Valid until",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Spot sell {sellAmount}"
+      }
+    }
+  }
+}
