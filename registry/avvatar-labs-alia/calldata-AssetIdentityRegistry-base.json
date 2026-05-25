@@ -1,0 +1,834 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ALIA Asset Identity Registry Base",
+    "contract": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_auditorRegistry",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "constructor"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum AssetIdentityRegistry.AssetClass",
+              "name": "assetClass",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum AssetIdentityRegistry.BackingType",
+              "name": "backingType",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "legalIdentifier",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "jurisdiction",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "registeredBy",
+              "type": "address"
+            }
+          ],
+          "name": "AssetRegistered",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "reason",
+              "type": "string"
+            }
+          ],
+          "name": "AssetRevoked",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "crossChainTokenAddress",
+              "type": "address"
+            }
+          ],
+          "name": "CrossChainRecordAdded",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "legalIdentifier",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "existingToken",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "reason",
+              "type": "string"
+            }
+          ],
+          "name": "DuplicateDetected",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "field",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "updatedBy",
+              "type": "address"
+            }
+          ],
+          "name": "IdentityUpdated",
+          "type": "event"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_chainId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "_crossChainToken",
+              "type": "address"
+            }
+          ],
+          "name": "addCrossChainRecord",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "assetList",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "auditorRegistry",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "crossChainRecords",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "bool",
+              "name": "isActive",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "getAllAssets",
+          "outputs": [
+            {
+              "internalType": "address[]",
+              "name": "",
+              "type": "address[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "getAssetCount",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "enum AssetIdentityRegistry.AssetClass",
+              "name": "_class",
+              "type": "uint8"
+            }
+          ],
+          "name": "getAssetsByClass",
+          "outputs": [
+            {
+              "internalType": "address[]",
+              "name": "",
+              "type": "address[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "_jurisdiction",
+              "type": "string"
+            }
+          ],
+          "name": "getAssetsByJurisdiction",
+          "outputs": [
+            {
+              "internalType": "address[]",
+              "name": "",
+              "type": "address[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_tokenAddress",
+              "type": "address"
+            }
+          ],
+          "name": "getCrossChainRecords",
+          "outputs": [
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "chainId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "tokenAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isActive",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct AssetIdentityRegistry.CrossChainRecord[]",
+              "name": "",
+              "type": "tuple[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_tokenAddress",
+              "type": "address"
+            }
+          ],
+          "name": "getIdentity",
+          "outputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "tokenAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "enum AssetIdentityRegistry.AssetClass",
+                  "name": "assetClass",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum AssetIdentityRegistry.BackingType",
+                  "name": "backingType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "string",
+                  "name": "legalIdentifier",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "jurisdiction",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "custodian",
+                  "type": "string"
+                },
+                {
+                  "internalType": "address",
+                  "name": "registeredBy",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "registeredAt",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "updatedAt",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isActive",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isDuplicate",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct AssetIdentityRegistry.AssetIdentity",
+              "name": "",
+              "type": "tuple"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "_legalIdentifier",
+              "type": "string"
+            }
+          ],
+          "name": "getTokensByIdentifier",
+          "outputs": [
+            {
+              "internalType": "address[]",
+              "name": "",
+              "type": "address[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "",
+              "type": "string"
+            }
+          ],
+          "name": "identifierExists",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "identifierToTokens",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "name": "identities",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "enum AssetIdentityRegistry.AssetClass",
+              "name": "assetClass",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum AssetIdentityRegistry.BackingType",
+              "name": "backingType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "string",
+              "name": "legalIdentifier",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "jurisdiction",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "custodian",
+              "type": "string"
+            },
+            {
+              "internalType": "address",
+              "name": "registeredBy",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "registeredAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "updatedAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "isActive",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "isDuplicate",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_tokenAddress",
+              "type": "address"
+            }
+          ],
+          "name": "isAuthentic",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "authentic",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "active",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "duplicate",
+              "type": "bool"
+            },
+            {
+              "internalType": "string",
+              "name": "legalIdentifier",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "custodian",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "name": "isRegistered",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "owner",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "enum AssetIdentityRegistry.AssetClass",
+              "name": "_assetClass",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum AssetIdentityRegistry.BackingType",
+              "name": "_backingType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "string",
+              "name": "_legalIdentifier",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "_jurisdiction",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "_custodian",
+              "type": "string"
+            }
+          ],
+          "name": "registerAsset",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "_reason",
+              "type": "string"
+            }
+          ],
+          "name": "revokeAsset",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_auditorRegistry",
+              "type": "address"
+            }
+          ],
+          "name": "setAuditorRegistry",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "transferOwnership",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "_newCustodian",
+              "type": "string"
+            }
+          ],
+          "name": "updateCustodian",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ],
+      "deployments": [
+        {
+          "chainId": 8453,
+          "address": "0xfC9cA736d384D482af5d23CC7616765C66244D29"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Avvatar Labs SAS",
+    "info": {
+      "legalName": "Avvatar Labs SAS",
+      "url": "https://avvatar.io",
+      "deploymentDate": "2026-04-06"
+    }
+  },
+  "display": {
+    "formats": {
+      "addCrossChainRecord(address,uint256,address)": {
+        "intent": "Add cross-chain record",
+        "fields": [
+          {
+            "path": "_tokenAddress",
+            "label": "Token",
+            "format": "addressName"
+          },
+          {
+            "path": "_chainId",
+            "label": "Chain ID",
+            "format": "raw"
+          },
+          {
+            "path": "_crossChainToken",
+            "label": "Cross Chain Token",
+            "format": "addressName"
+          }
+        ]
+      },
+      "registerAsset(address,uint8,uint8,string,string,string)": {
+        "intent": "Register asset ERC-8240",
+        "fields": [
+          {
+            "path": "_tokenAddress",
+            "label": "Token",
+            "format": "addressName"
+          },
+          {
+            "path": "_assetClass",
+            "label": "Asset class",
+            "format": "raw"
+          },
+          {
+            "path": "_backingType",
+            "label": "Backing",
+            "format": "raw"
+          },
+          {
+            "path": "_legalIdentifier",
+            "label": "Legal ID",
+            "format": "raw"
+          },
+          {
+            "path": "_jurisdiction",
+            "label": "Jurisdiction",
+            "format": "raw"
+          },
+          {
+            "path": "_custodian",
+            "label": "Custodian",
+            "format": "raw"
+          }
+        ]
+      },
+      "revokeAsset(address,string)": {
+        "intent": "Revoke asset",
+        "fields": [
+          {
+            "path": "_tokenAddress",
+            "label": "Token",
+            "format": "addressName"
+          },
+          {
+            "path": "_reason",
+            "label": "Reason",
+            "format": "raw"
+          }
+        ]
+      },
+      "updateCustodian(address,string)": {
+        "intent": "Update asset custodian",
+        "fields": [
+          {
+            "path": "_tokenAddress",
+            "label": "Token",
+            "format": "addressName"
+          },
+          {
+            "path": "_newCustodian",
+            "label": "Custodian",
+            "format": "raw"
+          }
+        ]
+      }
+    }
+  }
+}
