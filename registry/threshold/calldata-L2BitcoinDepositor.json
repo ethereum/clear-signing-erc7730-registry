@@ -1,0 +1,106 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Threshold L2 Bitcoin Depositor",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 8453,
+          "address": "0xa2A81d9445b4F898b028c96D164bcd6c8C8C512E"
+        },
+        {
+          "chainId": 42161,
+          "address": "0x1C8d7b744b474c080faADd5BF9AD965Be4258F9e"
+        },
+        {
+          "chainId": 84532,
+          "address": "0xDEbD9aA9BC4845c7Cd2d9a997F82A2Daea540bD5"
+        },
+        {
+          "chainId": 421614,
+          "address": "0xB2fEC598a9374078Bb639f3d70555fc4389b7a78"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Threshold Network",
+    "info": { "url": "https://threshold.network/" },
+    "contractName": "L2BitcoinDepositor"
+  },
+  "display": {
+    "formats": {
+      "initializeDeposit((bytes4 version, bytes inputVector, bytes outputVector, bytes4 locktime) fundingTx, (uint32 fundingOutputIndex, bytes8 blindingFactor, bytes20 walletPubKeyHash, bytes20 refundPubKeyHash, bytes4 refundLocktime, address vault) reveal, address l2DepositOwner)": {
+        "$id": "initializeDeposit",
+        "intent": "Initialize L2 tBTC deposit",
+        "fields": [
+          {
+            "path": "l2DepositOwner",
+            "label": "L2 deposit owner",
+            "format": "addressName",
+            "params": {
+              "types": ["wallet", "eoa", "contract"],
+              "sources": ["local", "ens"]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "reveal.fundingOutputIndex",
+            "label": "Funding output",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "reveal.walletPubKeyHash",
+            "label": "Wallet pubkey hash",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "reveal.refundPubKeyHash",
+            "label": "Refund pubkey hash",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "reveal.refundLocktime",
+            "label": "Refund locktime",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "reveal.vault",
+            "label": "Vault",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "fundingTx.inputVector",
+            "label": "Bitcoin inputs",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "fundingTx.version",
+            "label": "Bitcoin tx version",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "fundingTx.outputVector",
+            "label": "Bitcoin outputs",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "fundingTx.locktime",
+            "label": "Bitcoin locktime",
+            "format": "raw",
+            "visible": "optional"
+          }
+        ]
+      }
+    }
+  }
+}

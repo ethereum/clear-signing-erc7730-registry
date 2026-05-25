@@ -63,6 +63,23 @@ erc7730 format
 erc7730 generate --address 0xContractAddress --chain-id 1 --owner "Entity Name" --url "https://entity.url"
 ```
 
+### Optional: using uv instead of pip
+
+If you have [uv](https://docs.astral.sh/uv/) installed, you can skip the install step and run `erc7730` ad-hoc with `uvx`:
+
+```bash
+# Run any erc7730 command without installing it first
+uvx erc7730 lint registry/**/eip712-*.json registry/**/calldata-*.json
+uvx erc7730 format
+```
+
+Or install it as a persistent uv-managed tool:
+
+```bash
+uv tool install erc7730
+erc7730 lint registry/
+```
+
 For more information about the ERC-7730 tools, visit the [erc7730 package on PyPI](https://pypi.org/project/erc7730/).
 
 ## Reference test cases
