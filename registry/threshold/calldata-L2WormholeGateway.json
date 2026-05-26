@@ -1,0 +1,114 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Threshold L2 Wormhole Gateway",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 8453,
+          "address": "0x09959798B95d00a3183d20FaC298E4594E599eab"
+        },
+        {
+          "chainId": 42161,
+          "address": "0x1293a54e160D1cd7075487898d65266081A15458"
+        },
+        {
+          "chainId": 10,
+          "address": "0x1293a54e160D1cd7075487898d65266081A15458"
+        },
+        {
+          "chainId": 137,
+          "address": "0x09959798B95d00a3183d20FaC298E4594E599eab"
+        },
+        {
+          "chainId": 84532,
+          "address": "0xc3D46e0266d95215589DE639cC4E93b79f88fc6C"
+        },
+        {
+          "chainId": 421614,
+          "address": "0xc3D46e0266d95215589DE639cC4E93b79f88fc6C"
+        },
+        {
+          "chainId": 11155420,
+          "address": "0x5FB63D9e076a314023F2D1aB5dBFd7045C281EbA"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Threshold Network",
+    "info": { "url": "https://threshold.network/" },
+    "contractName": "L2WormholeGateway",
+    "enums": {
+      "wormholeChain": {
+        "2": "Ethereum",
+        "5": "Polygon",
+        "21": "Sui",
+        "23": "Arbitrum",
+        "24": "Optimism",
+        "30": "Base"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "sendTbtc(uint256 amount, uint16 recipientChain, bytes32 recipient, uint256 arbiterFee, uint32 nonce)": {
+        "$id": "sendTbtc",
+        "intent": "Bridge tBTC",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "unit",
+            "params": { "base": "tBTC", "decimals": 18, "prefix": false },
+            "visible": "always"
+          },
+          {
+            "path": "recipientChain",
+            "label": "Destination chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.wormholeChain" },
+            "visible": "always"
+          },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "arbiterFee",
+            "label": "Arbiter fee",
+            "format": "unit",
+            "params": { "base": "tBTC", "decimals": 18, "prefix": false },
+            "visible": "always"
+          },
+          {
+            "path": "nonce",
+            "label": "Nonce",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Wormhole message fee",
+            "format": "amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "receiveTbtc(bytes encodedVm)": {
+        "$id": "receiveTbtc",
+        "intent": "Claim bridged tBTC",
+        "fields": [
+          {
+            "path": "encodedVm",
+            "label": "Wormhole message",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
