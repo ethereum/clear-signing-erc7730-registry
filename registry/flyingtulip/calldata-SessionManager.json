@@ -1,0 +1,348 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x2DaF4B445E7d659100b22a15c3EeB10e64ac5dC9"
+        },
+        {
+          "chainId": 1,
+          "address": "0xF9f3ddF2E96Cabef94e2634c326DC6dde99360f8"
+        },
+        {
+          "chainId": 56,
+          "address": "0xC85CB743f72B3a9Bb594Faa7d46EE1EFC61b7A42"
+        },
+        {
+          "chainId": 146,
+          "address": "0x2DaF4B445E7d659100b22a15c3EeB10e64ac5dC9"
+        },
+        {
+          "chainId": 146,
+          "address": "0x109AE72778a0260571b9767477204F1ce41FBdff"
+        },
+        {
+          "chainId": 146,
+          "address": "0x52Ef449D44cC4205fa44bF644dEE15611FC30734"
+        },
+        {
+          "chainId": 43114,
+          "address": "0x176592C8Ed3F2D94cE4c3F1a4cfF7d068176AC54"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Flying Tulip",
+    "contractName": "SessionManager",
+    "info": {
+      "url": "https://flyingtulip.com"
+    }
+  },
+  "display": {
+    "formats": {
+      "createSession(address delegate, uint48 validAfter, uint48 validUntil, uint32 maxCalls, uint16 maxFeeBps, (address token, uint256 limit)[] limits, bytes32 salt)": {
+        "intent": "Create session",
+        "fields": [
+          {
+            "path": "delegate",
+            "label": "Delegate",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "validAfter",
+            "label": "Valid after",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "validUntil",
+            "label": "Valid until",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "maxCalls",
+            "label": "Max calls",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "maxFeeBps",
+            "label": "Max fee",
+            "format": "unit",
+            "params": {
+              "base": "bps",
+              "decimals": 0
+            },
+            "visible": "always"
+          },
+          {
+            "path": "limits.[].limit",
+            "label": "Token limit",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "limits.[].token",
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "limits.[]",
+            "label": "Limits",
+            "visible": "never"
+          },
+          {
+            "path": "salt",
+            "label": "Salt",
+            "visible": "never"
+          }
+        ],
+        "interpolatedIntent": "Session {delegate}"
+      },
+      "acceptOwnership()": {
+        "intent": "Manage session manager",
+        "fields": [],
+        "interpolatedIntent": "Accept ownership"
+      },
+      "createSessionBySig(address owner_, address delegate, uint48 validAfter, uint48 validUntil, uint32 maxCalls, uint16 maxFeeBps, (address token, uint256 limit)[] limits, bytes32 salt, bytes ownerSignature)": {
+        "intent": "Create session by signature",
+        "fields": [
+          {
+            "path": "owner_",
+            "label": "Owner",
+            "visible": "never"
+          },
+          {
+            "path": "delegate",
+            "label": "Delegate",
+            "visible": "never"
+          },
+          {
+            "path": "validAfter",
+            "label": "Valid after",
+            "visible": "never"
+          },
+          {
+            "path": "validUntil",
+            "label": "Valid until",
+            "visible": "never"
+          },
+          {
+            "path": "maxCalls",
+            "label": "Max calls",
+            "visible": "never"
+          },
+          {
+            "path": "maxFeeBps",
+            "label": "Max fee",
+            "visible": "never"
+          },
+          {
+            "path": "limits.[]",
+            "label": "Limits",
+            "visible": "never"
+          },
+          {
+            "path": "salt",
+            "label": "Salt",
+            "visible": "never"
+          },
+          {
+            "path": "ownerSignature",
+            "label": "Owner signature",
+            "visible": "never"
+          }
+        ],
+        "interpolatedIntent": "Sig session {delegate}"
+      },
+      "invalidateNonceBySig(bytes32 sessionId, uint256 nonce, uint256 deadline, address executor, bytes delegateSignature)": {
+        "intent": "Invalidate session nonce",
+        "fields": [
+          {
+            "path": "sessionId",
+            "label": "Session ID",
+            "visible": "never"
+          },
+          {
+            "path": "nonce",
+            "label": "Nonce",
+            "visible": "never"
+          },
+          {
+            "path": "deadline",
+            "label": "Deadline",
+            "visible": "never"
+          },
+          {
+            "path": "executor",
+            "label": "Executor",
+            "visible": "never"
+          },
+          {
+            "path": "delegateSignature",
+            "label": "Delegate signature",
+            "visible": "never"
+          }
+        ],
+        "interpolatedIntent": "Invalidate {nonce}"
+      },
+      "renounceOwnership()": {
+        "intent": "Manage session manager",
+        "fields": [],
+        "interpolatedIntent": "Renounce ownership"
+      },
+      "revokeSession(bytes32 sessionId)": {
+        "intent": "Revoke session",
+        "fields": [
+          {
+            "path": "sessionId",
+            "label": "Session ID",
+            "visible": "never"
+          }
+        ],
+        "interpolatedIntent": "Revoke {sessionId}"
+      },
+      "revokeSessionBySig(bytes32 sessionId, uint256 deadline, bytes ownerSignature)": {
+        "intent": "Revoke session by signature",
+        "fields": [
+          {
+            "path": "sessionId",
+            "label": "Session ID",
+            "visible": "never"
+          },
+          {
+            "path": "deadline",
+            "label": "Deadline",
+            "visible": "never"
+          },
+          {
+            "path": "ownerSignature",
+            "label": "Owner signature",
+            "visible": "never"
+          }
+        ],
+        "interpolatedIntent": "Revoke sig {sessionId}"
+      },
+      "setAllowedTarget(address target, bool allowed)": {
+        "intent": "Manage session manager",
+        "fields": [
+          {
+            "path": "target",
+            "label": "Target",
+            "visible": "never"
+          },
+          {
+            "path": "allowed",
+            "label": "Allowed",
+            "visible": "never"
+          }
+        ],
+        "interpolatedIntent": "Allow {target}"
+      },
+      "setAllowedTargets(address[] targets, bool allowed)": {
+        "intent": "Manage session manager",
+        "fields": [
+          {
+            "path": "targets.[]",
+            "label": "Targets",
+            "visible": "never"
+          },
+          {
+            "path": "allowed",
+            "label": "Allowed",
+            "visible": "never"
+          }
+        ],
+        "interpolatedIntent": "Allow targets {allowed}"
+      },
+      "transferOwnership(address newOwner)": {
+        "intent": "Manage session manager",
+        "fields": [
+          {
+            "path": "newOwner",
+            "label": "New owner",
+            "visible": "never"
+          }
+        ],
+        "interpolatedIntent": "Transfer to {newOwner}"
+      },
+      "validateAndConsume(address spendToken, uint256 spendAmount, (bytes32 sessionId, bytes32 dataHash, uint256 nonce, uint256 deadline, address executor, uint256 feeAmount) call, bytes delegateSignature, address executor)": {
+        "intent": "Validate session call",
+        "fields": [
+          {
+            "path": "spendToken",
+            "label": "Spend token",
+            "visible": "never"
+          },
+          {
+            "path": "spendAmount",
+            "label": "Spend amount",
+            "visible": "never"
+          },
+          {
+            "path": "call.sessionId",
+            "label": "Session ID",
+            "visible": "never"
+          },
+          {
+            "path": "call.dataHash",
+            "label": "Data hash",
+            "visible": "never"
+          },
+          {
+            "path": "call.nonce",
+            "label": "Nonce",
+            "visible": "never"
+          },
+          {
+            "path": "call.deadline",
+            "label": "Deadline",
+            "visible": "never"
+          },
+          {
+            "path": "call.executor",
+            "label": "Call executor",
+            "visible": "never"
+          },
+          {
+            "path": "call.feeAmount",
+            "label": "Fee amount",
+            "visible": "never"
+          },
+          {
+            "path": "delegateSignature",
+            "label": "Delegate signature",
+            "visible": "never"
+          },
+          {
+            "path": "executor",
+            "label": "Executor",
+            "visible": "never"
+          }
+        ],
+        "interpolatedIntent": "Validate {spendAmount}"
+      }
+    }
+  }
+}
