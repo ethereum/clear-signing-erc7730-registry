@@ -1,0 +1,91 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "MetaAggregationRouterV2",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 56, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 42161, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 137, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 10, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 43114, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 8453, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 59144, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 146, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 80094, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 2020, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 130, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 999, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 9745, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 42793, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 143, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 4326, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" },
+        { "chainId": 4153, "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "KyberSwap",
+    "info": { "url": "https://kyberswap.com/" },
+    "constants": { "addressAsEth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" },
+    "contractName": "MetaAggregationRouterV2"
+  },
+  "display": {
+    "definitions": {
+      "sendAmount": {
+        "label": "Amount to Send",
+        "format": "tokenAmount",
+        "params": { "nativeCurrencyAddress": "$.metadata.constants.addressAsEth" }
+      },
+      "minReceiveAmount": {
+        "label": "Minimum to Receive",
+        "format": "tokenAmount",
+        "params": { "nativeCurrencyAddress": "$.metadata.constants.addressAsEth" }
+      },
+      "beneficiary": {
+        "label": "Beneficiary",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      }
+    },
+    "formats": {
+      "swap((address callTarget, address approveTarget, bytes targetData, (address srcToken, address dstToken, address[] srcReceivers, uint256[] srcAmounts, address[] feeReceivers, uint256[] feeAmounts, address dstReceiver, uint256 amount, uint256 minReturnAmount, uint256 flags, bytes permit) desc, bytes clientData) execution)": {
+        "$id": "swap",
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {execution.desc.amount} for at least {execution.desc.minReturnAmount} to recipient {execution.desc.dstReceiver}",
+        "fields": [
+          {
+            "path": "execution.desc.amount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "execution.desc.srcToken" },
+            "visible": "always"
+          },
+          {
+            "path": "execution.desc.minReturnAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "execution.desc.dstToken" },
+            "visible": "always"
+          },
+          {
+            "path": "execution.desc.dstReceiver",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "label": "Call Target", "path": "execution.callTarget", "visible": "never" },
+          { "label": "Approve Target", "path": "execution.approveTarget", "visible": "never" },
+          { "label": "Target Data", "path": "execution.targetData", "visible": "never" },
+          { "label": "Source Receivers", "path": "execution.desc.srcReceivers", "visible": "never" },
+          { "label": "Source Amounts", "path": "execution.desc.srcAmounts", "visible": "never" },
+          { "label": "Fee Receivers", "path": "execution.desc.feeReceivers", "visible": "never" },
+          { "label": "Fee Amounts", "path": "execution.desc.feeAmounts", "visible": "never" },
+          { "label": "Flags", "path": "execution.desc.flags", "visible": "never" },
+          { "label": "Permit", "path": "execution.desc.permit", "visible": "never" },
+          { "label": "Client Data", "path": "execution.clientData", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
