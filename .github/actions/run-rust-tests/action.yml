@@ -19,17 +19,12 @@ runs:
   steps:
     - name: Checkout cs-test
       shell: bash
-      # Plain git clone (not actions/checkout) — the cs-test-results-json branch
-      # has a leftover .claude/worktrees/ directory that looks like a submodule
-      # but isn't in .gitmodules, which makes actions/checkout's post-step
-      # `git submodule foreach` fail. We then nuke .claude/ so cargo doesn't
-      # see anything weird either.
-      # TODO: switch back to actions/checkout (and to upstream
-      # llbartekll/clear-signing) once that branch is cleaned up.
+      # Plain git clone (not actions/checkout) — the repo has `.claude/worktrees/`
+      # directories tracked as gitlinks (mode 160000) but no `.gitmodules` to map
+      # them, so actions/checkout's post-step `git submodule foreach` aborts. We
+      # then nuke .claude/ so nothing downstream sees the dangling gitlinks.
       run: |
-        git clone --depth 1 --branch cs-test-results-json \
-          https://github.com/manuelwedler/llbartekll-clear-signing.git \
-          rust-test-runner
+        git clone --depth 1 https://github.com/llbartekll/clear-signing.git rust-test-runner
         rm -rf rust-test-runner/.claude
 
     - name: Set up Rust
