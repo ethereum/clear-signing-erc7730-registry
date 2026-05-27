@@ -73,7 +73,7 @@ You can add reference test cases for your ERC-7730 descriptors. These test cases
 
 ### Test file format
 
-Test files should be placed in a `testsv2/` folder within your entity directory and named `<descriptor-name>.tests.json`. The file declares the descriptor under test, an optional `dataProvider` block with mock token metadata and address-name lookups (so tests don't need network access), and an array of test cases.
+Test files should be placed in a `testsv2/` folder within your entity directory and named `<descriptor-name>.tests.json` — one fixture file per descriptor. The file declares the descriptor under test, an optional `dataProvider` block with mock token metadata and address-name lookups (so tests don't need network access), and an array of test cases. Each test case's `description` must be unique within the file; runners use it as the join key to match rendered output back to its expected block.
 
 **Calldata test file example** (`calldata-MyContract.tests.json`):
 
@@ -141,7 +141,7 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `description` | Yes | Human-readable test identifier — used to match runner results back to this case |
+| `description` | Yes | Human-readable test identifier — used to match runner results back to this case. **Must be unique within the test file.** |
 | `rawTx` | Yes | The raw signed transaction (hex string, 0x-prefixed) |
 | `txHash` | No | Transaction hash for reference (e.g., link to Etherscan) |
 | `expected` | Yes | Expected rendered output: `{ intent, interpolatedIntent?, owner, fields }`. Field values are strings, or nested `{ intent, owner, fields }` objects for calldata formatters |
@@ -150,7 +150,7 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `description` | Yes | Human-readable test identifier |
+| `description` | Yes | Human-readable test identifier — used to match runner results back to this case. **Must be unique within the test file.** |
 | `data` | Yes | Complete EIP-712 typed data object (with `types`, `primaryType`, `domain`, `message`) |
 | `expected` | Yes | Expected rendered output: `{ intent, interpolatedIntent?, owner, fields }` |
 
