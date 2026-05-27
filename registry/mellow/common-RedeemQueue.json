@@ -1,0 +1,57 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "metadata": {
+    "owner": "Mellow Protocol",
+    "contractName": "Redeem Queue",
+    "info": {
+      "url": "https://mellow.finance/"
+    }
+  },
+  "display": {
+    "formats": {
+      "redeem(uint256 shares)": {
+        "intent": "Request redeem",
+        "interpolatedIntent": "Request redeem of {shares}",
+        "fields": [
+          {
+            "label": "Vault",
+            "format": "raw",
+            "value": "$.metadata.constants.vaultName"
+          },
+          {
+            "path": "shares",
+            "label": "Shares to redeem",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.vaultShareToken" },
+            "visible": "always"
+          }
+        ]
+      },
+      "claim(address receiver, uint32[] timestamps)": {
+        "intent": "Claim redeemed assets",
+        "interpolatedIntent": "Claim redeemed assets to {receiver}",
+        "fields": [
+          {
+            "label": "Vault",
+            "format": "raw",
+            "value": "$.metadata.constants.vaultName"
+          },
+          {
+            "path": "receiver",
+            "label": "Send assets to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "timestamps.[]",
+            "label": "Redeem request from",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "metadata": {
+    "owner": "Mellow Protocol",
+    "contractName": "Deposit Queue",
+    "info": {
+      "url": "https://mellow.finance/"
+    }
+  },
+  "display": {
+    "formats": {
+      "deposit(uint224 assets, address referral, bytes32[] merkleProof)": {
+        "intent": "Request deposit",
+        "interpolatedIntent": "Request deposit of {assets}",
+        "fields": [
+          {
+            "label": "Vault",
+            "format": "raw",
+            "value": "$.metadata.constants.vaultName"
+          },
+          {
+            "path": "assets",
+            "label": "Deposit amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken",
+              "nativeCurrencyAddress": ["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "referral",
+            "label": "Referral",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "path": "merkleProof.[]",
+            "label": "Merkle proof",
+            "format": "raw",
+            "visible": "never"
+          }
+        ]
+      },
+      "cancelDepositRequest()": {
+        "intent": "Cancel pending deposit request",
+        "fields": [
+          {
+            "label": "Vault",
+            "format": "raw",
+            "value": "$.metadata.constants.vaultName"
+          }
+        ]
+      },
+      "claim(address account)": {
+        "intent": "Claim deposited shares",
+        "interpolatedIntent": "Claim deposited shares to {account}",
+        "fields": [
+          {
+            "label": "Vault",
+            "format": "raw",
+            "value": "$.metadata.constants.vaultName"
+          },
+          {
+            "path": "account",
+            "label": "Mint shares to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
