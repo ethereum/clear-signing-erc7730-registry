@@ -87,6 +87,9 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
     },
     "addressNames": {
       "0x1234567890123456789012345678901234567890": "Treasury"
+    },
+    "ensNames": {
+      "0xabcdef0123456789abcdef0123456789abcdef01": "alice.eth"
     }
   },
   "tests": [

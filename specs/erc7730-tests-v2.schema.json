@@ -35,7 +35,12 @@
         },
         "addressNames": {
           "type": "object",
-          "description": "Address → display name map (ENS names end in `.eth`; others are local names).",
+          "description": "Address → local display name map (contact labels, contract names). Keep ENS reverse-resolutions in `ensNames` instead so descriptor fields specifying `sources: [\"local\"]` only match local labels.",
+          "additionalProperties": { "type": "string" }
+        },
+        "ensNames": {
+          "type": "object",
+          "description": "Address → ENS reverse-resolution map (entries end in `.eth`). Kept separate from `addressNames` so descriptor fields specifying `sources: [\"ens\"]` are evaluated against ENS-sourced names only.",
           "additionalProperties": { "type": "string" }
         },
         "nftCollectionNames": {
