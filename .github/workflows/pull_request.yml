@@ -24,12 +24,12 @@ jobs:
     steps:
       - name: Checkout
         timeout-minutes: 10
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Get all changed descriptor files
         timeout-minutes: 5
         id: changed-descriptor-files
-        uses: tj-actions/changed-files@v47.0.5
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
         with:
           files: |
             registry/**/eip712-*.json
@@ -42,7 +42,7 @@ jobs:
       - name: Setup python
         timeout-minutes: 10
         if: steps.changed-descriptor-files.outputs.any_changed == 'true'
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.12"
           cache: "pip"
@@ -66,12 +66,12 @@ jobs:
     steps:
       - name: Checkout
         timeout-minutes: 10
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Get all changed JSON files
         timeout-minutes: 5
         id: changed-json-files
-        uses: tj-actions/changed-files@v47.0.5
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
         with:
           files: |
             registry/**/*.json
@@ -80,7 +80,7 @@ jobs:
       - name: Setup python
         timeout-minutes: 10
         if: steps.changed-json-files.outputs.any_changed == 'true'
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.12"
           cache: "pip"
