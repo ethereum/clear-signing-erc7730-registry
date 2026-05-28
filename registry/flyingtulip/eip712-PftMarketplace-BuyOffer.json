@@ -1,0 +1,85 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "eip712": {
+      "deployments": [
+        {
+          "chainId": 146,
+          "address": "0x9bB958D459a97e3E37E11BeCf842E728167d9114"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Flying Tulip",
+    "contractName": "pFT Marketplace",
+    "info": {
+      "url": "https://flyingtulip.com"
+    }
+  },
+  "display": {
+    "formats": {
+      "BuyOffer(address buyer,address denominationToken,uint96 minAmountRemaining,uint96 minFt,uint96 minStrike,address paymentToken,uint96 price,uint256 nonce,uint40 deadline)": {
+        "intent": "Make FT PUT offer",
+        "fields": [
+          {
+            "path": "price",
+            "label": "Offer price",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "paymentToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "buyer",
+            "label": "Buyer",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "minAmountRemaining",
+            "label": "Minimum collateral",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "denominationToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "minFt",
+            "label": "Minimum FT",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "minStrike",
+            "label": "Minimum strike",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "deadline",
+            "label": "Offer expires",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "PUT offer {price}"
+      }
+    }
+  }
+}
