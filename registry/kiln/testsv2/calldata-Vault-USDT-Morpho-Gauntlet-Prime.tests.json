@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-Vault-USDT-Morpho-Gauntlet-Prime.json",
+  "dataProvider": {
+    "tokens": {
+      "0xdAC17F958D2ee523a2206206994597C13D831ec7": {
+        "decimals": 6,
+        "name": "Tether USD",
+        "symbol": "USDT"
+      },
+      "0xfb477d921b18C0fe6A4bD031f6f40006831E4C2b": {
+        "symbol": "kmgpUSDT",
+        "decimals": 6,
+        "name": "Kiln Morpho Gauntlet Prime USDT Vault"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit - chain 1",
+      "rawTx": "0x02f869012f0f840cf931ef830c580794fb477d921b18c0fe6a4bd031f6f40006831e4c2b80b8446e553f6500000000000000000000000000000000000000000000000000000000000fc044000000000000000000000000ef6648842f74612e3566f52a361c4fba8aa30ccec0",
+      "txHash": "0x2dd4488595feff4bc8a4a53656771b8308e0e13e1c63ce665e505f9de6592aa4",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Kiln",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "1.03226 USDT"
+          },
+          {
+            "label": "Share ticker",
+            "value": "kmgpUSDT"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xEF6648842F74612e3566F52a361C4fbA8aA30CCe"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88e0181ab8403868eb0840ac9d7408313cc2094fb477d921b18c0fe6a4bd031f6f40006831e4c2b80b864ba08765200000000000000000000000000000000000000000000000000000000000f42410000000000000000000000004179b87f8fae24ed5a4bce952b794426d68f44060000000000000000000000004179b87f8fae24ed5a4bce952b794426d68f4406c0",
+      "txHash": "0xd8a83eb243dacf6b0bc56bb1ba52b12653346cb9c55060d41642e93e0024af91",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Kiln",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "1.000001 kmgpUSDT"
+          },
+          {
+            "label": "To",
+            "value": "0x4179b87f8faE24ED5A4bCe952b794426D68f4406"
+          },
+          {
+            "label": "Owner",
+            "value": "0x4179b87f8faE24ED5A4bCe952b794426D68f4406"
+          }
+        ]
+      }
+    }
+  ]
+}
