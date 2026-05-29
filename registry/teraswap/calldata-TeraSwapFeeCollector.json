@@ -1,0 +1,134 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "TeraSwapFeeCollector",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x47f24068932Ac49bcbeD3aD105af57C6ECDF7459"
+        }
+      ],
+      "abi": [
+        {
+          "type": "function",
+          "name": "swapTokenWithFee",
+          "stateMutability": "nonpayable",
+          "inputs": [
+            { "name": "token", "type": "address" },
+            { "name": "totalAmount", "type": "uint256" },
+            { "name": "router", "type": "address" },
+            { "name": "routerData", "type": "bytes" },
+            { "name": "tokenOut", "type": "address" },
+            { "name": "minimumOutput", "type": "uint256" }
+          ],
+          "outputs": []
+        },
+        {
+          "type": "function",
+          "name": "swapETHWithFee",
+          "stateMutability": "payable",
+          "inputs": [
+            { "name": "router", "type": "address" },
+            { "name": "routerData", "type": "bytes" },
+            { "name": "tokenOut", "type": "address" },
+            { "name": "minimumOutput", "type": "uint256" }
+          ],
+          "outputs": []
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "TeraSwap",
+    "contractName": "TeraSwapFeeCollector",
+    "info": {
+      "url": "https://teraswap.app"
+    }
+  },
+  "display": {
+    "formats": {
+      "swapTokenWithFee(address token,uint256 totalAmount,address router,bytes routerData,address tokenOut,uint256 minimumOutput)": {
+        "intent": "Swap tokens via TeraSwap",
+        "fields": [
+          {
+            "path": "token",
+            "label": "Input Token",
+            "format": "addressName",
+            "params": { "types": ["token"] }
+          },
+          {
+            "path": "totalAmount",
+            "label": "Amount In",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token" }
+          },
+          {
+            "path": "tokenOut",
+            "label": "Output Token",
+            "format": "addressName",
+            "params": { "types": ["token"] }
+          },
+          {
+            "path": "minimumOutput",
+            "label": "Minimum Output",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenOut" }
+          },
+          {
+            "path": "router",
+            "label": "Router",
+            "format": "addressName",
+            "params": { "types": ["contract"] }
+          },
+          {
+            "path": "routerData",
+            "label": "Router Data",
+            "format": "raw",
+            "visible": "never"
+          }
+        ]
+      },
+      "swapETHWithFee(address router,bytes routerData,address tokenOut,uint256 minimumOutput)": {
+        "intent": "Swap ETH via TeraSwap",
+        "fields": [
+          {
+            "path": "@.value",
+            "label": "ETH Amount",
+            "format": "tokenAmount",
+            "params": {
+              "nativeCurrencyAddress": [
+                "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+                "0x0000000000000000000000000000000000000000"
+              ]
+            }
+          },
+          {
+            "path": "tokenOut",
+            "label": "Output Token",
+            "format": "addressName",
+            "params": { "types": ["token"] }
+          },
+          {
+            "path": "minimumOutput",
+            "label": "Minimum Output",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenOut" }
+          },
+          {
+            "path": "router",
+            "label": "Router",
+            "format": "addressName",
+            "params": { "types": ["contract"] }
+          },
+          {
+            "path": "routerData",
+            "label": "Router Data",
+            "format": "raw",
+            "visible": "never"
+          }
+        ]
+      }
+    }
+  }
+}
