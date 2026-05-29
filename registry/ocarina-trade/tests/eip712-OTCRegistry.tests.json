@@ -1,0 +1,169 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "Authorize publishing an OTCRegistry offer",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "OrderRegistration": [
+            { "name": "orderHash", "type": "bytes32" },
+            { "name": "seaportSignature", "type": "bytes" },
+            { "name": "memo", "type": "string" }
+          ]
+        },
+        "primaryType": "OrderRegistration",
+        "domain": {
+          "name": "OTCRegistry",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x07C00000057b66A84004adD3B0f9164E744354CB"
+        },
+        "message": {
+          "orderHash": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "seaportSignature": "0x1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+          "memo": "Test OTCRegistry offer"
+        }
+      },
+      "expectedTexts": [
+        "Authorize offer",
+        "Order hash",
+        "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "Memo",
+        "Test OTCRegistry offer"
+      ]
+    },
+    {
+      "description": "Authorize a USDC support tip",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "TipAuthorization": [
+            { "name": "orderHash", "type": "bytes32" },
+            { "name": "fulfiller", "type": "address" },
+            { "name": "tips", "type": "TipItem[]" },
+            { "name": "deadline", "type": "uint256" }
+          ],
+          "TipItem": [
+            { "name": "itemType", "type": "uint8" },
+            { "name": "token", "type": "address" },
+            { "name": "identifier", "type": "uint256" },
+            { "name": "amount", "type": "uint256" },
+            { "name": "recipient", "type": "address" }
+          ]
+        },
+        "primaryType": "TipAuthorization",
+        "domain": {
+          "name": "OTCRegistry",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x07C00000057b66A84004adD3B0f9164E744354CB"
+        },
+        "message": {
+          "orderHash": "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "fulfiller": "0x2222222222222222222222222222222222222222",
+          "tips": [
+            {
+              "itemType": 1,
+              "token": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "identifier": 0,
+              "amount": "1000000",
+              "recipient": "0x9a659894e5D115846767dB0e1685744c452E7a6e"
+            }
+          ],
+          "deadline": 1790000600
+        }
+      },
+      "expectedTexts": [
+        "Authorize tip",
+        "Tip amount",
+        "1 USDC",
+        "Tip to",
+        "0x9a659894e5D115846767dB0e1685744c452E7a6e",
+        "Tip from",
+        "0x2222222222222222222222222222222222222222",
+        "Expires",
+        "2026-09-21 02:23:20 PM UTC"
+      ]
+    },
+    {
+      "description": "Authorize multiple support tips with native ETH and USDC",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "TipAuthorization": [
+            { "name": "orderHash", "type": "bytes32" },
+            { "name": "fulfiller", "type": "address" },
+            { "name": "tips", "type": "TipItem[]" },
+            { "name": "deadline", "type": "uint256" }
+          ],
+          "TipItem": [
+            { "name": "itemType", "type": "uint8" },
+            { "name": "token", "type": "address" },
+            { "name": "identifier", "type": "uint256" },
+            { "name": "amount", "type": "uint256" },
+            { "name": "recipient", "type": "address" }
+          ]
+        },
+        "primaryType": "TipAuthorization",
+        "domain": {
+          "name": "OTCRegistry",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x07C00000057b66A84004adD3B0f9164E744354CB"
+        },
+        "message": {
+          "orderHash": "0xcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "fulfiller": "0x2222222222222222222222222222222222222222",
+          "tips": [
+            {
+              "itemType": 0,
+              "token": "0x0000000000000000000000000000000000000000",
+              "identifier": 0,
+              "amount": "10000000000000000",
+              "recipient": "0x9a659894e5D115846767dB0e1685744c452E7a6e"
+            },
+            {
+              "itemType": 1,
+              "token": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "identifier": 0,
+              "amount": "2000000",
+              "recipient": "0x7777777777777777777777777777777777777777"
+            }
+          ],
+          "deadline": 1790000600
+        }
+      },
+      "expectedTexts": [
+        "Authorize tip",
+        "Tip amount",
+        "0.01 ETH",
+        "Tip to",
+        "0x9a659894e5D115846767dB0e1685744c452E7a6e",
+        "Tip amount",
+        "2 USDC",
+        "Tip to",
+        "0x7777777777777777777777777777777777777777",
+        "Tip from",
+        "0x2222222222222222222222222222222222222222",
+        "Expires",
+        "2026-09-21 02:23:20 PM UTC"
+      ]
+    }
+  ]
+}
