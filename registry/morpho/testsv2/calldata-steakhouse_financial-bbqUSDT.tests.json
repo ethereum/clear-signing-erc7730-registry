@@ -1,0 +1,115 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-bbqUSDT.json",
+  "dataProvider": {
+    "tokens": {
+      "0xdAC17F958D2ee523a2206206994597C13D831ec7": {
+        "decimals": 6,
+        "name": "Tether USD",
+        "symbol": "USDT"
+      },
+      "0xA0804346780b4c2e3bE118ac957D1DB82F9d7484": {
+        "symbol": "bbqUSDT",
+        "decimals": 18,
+        "name": "Smokehouse USDT"
+      }
+    },
+    "ensNames": {
+      "0xb0DebcB643eE79f19Ef659Bd01D0FAC12d058604": "vijaypushkin.eth"
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit - chain 1",
+      "rawTx": "0x02f871015b8401f2f66084056365008311803b94a0804346780b4c2e3be118ac957d1db82f9d748480b8486e553f650000000000000000000000000000000000000000000000000000000011d67727000000000000000000000000781ee986573a2d5951fbad81cce1f0d0662a97741115098fc0",
+      "txHash": "0xac0505ddaecebc038e40040631df48cc18fb94bd09893073190e37b09cc12325",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Steakhouse Financial",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "299.267879 USDT"
+          },
+          {
+            "label": "Share ticker",
+            "value": "bbqUSDT"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x781EE986573A2D5951fBaD81cCE1F0d0662A9774"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint - chain 1",
+      "rawTx": "0xf86b82037f840f37c86e8316e36094a0804346780b4c2e3be118ac957d1db82f9d748480b84494bf804d000000000000000000000000000000000000000000000000000000e8990a4600000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x93aeb1c21f54ffe7d570c968a33e8d3e4a6fe90baac6a608d6c13f0c88b32566",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Steakhouse Financial",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDT"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000999 bbqUSDT"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw - chain 1",
+      "rawTx": "0x02f88e0181dc8477359400847bfec2ba8314215294a0804346780b4c2e3be118ac957d1db82f9d748480b864b460af9400000000000000000000000000000000000000000000000000000000000f4240000000000000000000000000b0debcb643ee79f19ef659bd01d0fac12d058604000000000000000000000000b0debcb643ee79f19ef659bd01d0fac12d058604c0",
+      "txHash": "0xfcdc8d83302aaa3aae9789179f2004e9c3956fabc017b859febb4f3b035d918a",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Steakhouse Financial",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "1 USDT"
+          },
+          {
+            "label": "To",
+            "value": "vijaypushkin.eth"
+          },
+          {
+            "label": "Owner",
+            "value": "vijaypushkin.eth"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88f0182010a8404b571c0840a977ca0831358ae94a0804346780b4c2e3be118ac957d1db82f9d748480b864ba08765200000000000000000000000000000000000000000000000075ac55952b3200ca000000000000000000000000b0debcb643ee79f19ef659bd01d0fac12d058604000000000000000000000000b0debcb643ee79f19ef659bd01d0fac12d058604c0",
+      "txHash": "0x11878d6dc04bdaf704e355d0eace5bf2eff13fc7438ea32988ed5f0561aefbfb",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Steakhouse Financial",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "8.479246297594986698 bbqUSDT"
+          },
+          {
+            "label": "To",
+            "value": "vijaypushkin.eth"
+          },
+          {
+            "label": "Owner",
+            "value": "vijaypushkin.eth"
+          }
+        ]
+      }
+    }
+  ]
+}

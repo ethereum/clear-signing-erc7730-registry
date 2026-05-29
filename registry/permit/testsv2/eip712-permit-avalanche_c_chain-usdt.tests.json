@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-permit-avalanche_c_chain-usdt.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "Tether USD",
+          "version": "1",
+          "chainId": 43114,
+          "verifyingContract": "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7"
+        },
+        "message": {
+          "owner": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "spender": "0x1111111254EEB25477B68fb85Ed929f73A960582",
+          "value": "2500000000",
+          "nonce": "3",
+          "deadline": "1798761600"
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of tokens",
+        "owner": "USDT",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x1111111254EEB25477B68fb85Ed929f73A960582"
+          },
+          {
+            "label": "Max spending amount",
+            "value": "2500 USDt"
+          },
+          {
+            "label": "Valid until",
+            "value": "2027-01-01 00:00:00Z"
+          }
+        ]
+      }
+    }
+  ],
+  "dataProvider": {
+    "tokens": {
+      "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7": {
+        "symbol": "USDt",
+        "decimals": 6,
+        "name": "TetherToken"
+      }
+    }
+  }
+}
