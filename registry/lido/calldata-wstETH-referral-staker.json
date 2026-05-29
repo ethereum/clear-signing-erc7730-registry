@@ -1,49 +1,19 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "wstETH-referral-staker",
-    "contract": {
-      "deployments": [{ "chainId": 1, "address": "0xa88f0329C2c4ce51ba3fc619BBf44efE7120Dd0d" }],
-      "abi": [
-        {
-          "inputs": [{ "internalType": "contract IWstETH", "name": "_wstETH", "type": "address" }],
-          "stateMutability": "nonpayable",
-          "type": "constructor"
-        },
-        { "inputs": [], "name": "EthTransferNotAllowed", "type": "error" },
-        {
-          "inputs": [],
-          "name": "stETH",
-          "outputs": [{ "internalType": "contract IStETH", "name": "", "type": "address" }],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [{ "internalType": "address", "name": "_referral", "type": "address" }],
-          "name": "stakeETH",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [],
-          "name": "wstETH",
-          "outputs": [{ "internalType": "contract IWstETH", "name": "", "type": "address" }],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        { "stateMutability": "payable", "type": "receive" }
-      ]
-    }
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xa88f0329C2c4ce51ba3fc619BBf44efE7120Dd0d" }] }
   },
-  "metadata": { "owner": "Lido DAO", "info": { "legalName": "Lido DAO", "url": "https://lido.fi" } },
+  "metadata": { "owner": "Lido DAO", "info": { "url": "https://lido.fi" }, "contractName": "wstETH-referral-staker" },
   "display": {
     "formats": {
-      "stakeETH(address)": {
+      "stakeETH(address _referral)": {
         "intent": "Stake ETH",
-        "fields": [{ "label": "Amount to stake", "format": "amount", "path": "@.value" }],
-        "required": [],
-        "excluded": ["#._referral"]
+        "interpolatedIntent": "Stake {@.value} ETH",
+        "fields": [
+          { "label": "Amount to stake", "format": "amount", "path": "@.value" },
+          { "label": "Referral", "path": "#._referral", "visible": "never" }
+        ]
       }
     }
   }

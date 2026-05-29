@@ -1,0 +1,67 @@
+---
+description: Migrate ERC-7730 files from v1 to v2 schema format
+globs: registry/**/*.json
+alwaysApply: false
+---
+
+# Migrate ERC-7730 v1 → v2
+
+When the user wants to migrate descriptor files from v1 to the new v2 schema version, use this tool.
+
+## Command
+
+```bash
+node tools/scripts/migrate-v1-to-v2.js [options]
+```
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--dry-run` | Preview changes without modifying files |
+| `--verbose` | Show detailed transformation output |
+| `--file <path>` | Migrate a single file instead of all |
+| `--skip-lint` | Skip linting validation after migration |
+
+## Examples
+
+Preview all migrations:
+
+```bash
+node tools/scripts/migrate-v1-to-v2.js --dry-run --verbose
+```
+
+Migrate a single file:
+
+```bash
+node tools/scripts/migrate-v1-to-v2.js --file registry/ethena/calldata-ethena.json
+```
+
+Migrate a single file without linting:
+
+```bash
+node tools/scripts/migrate-v1-to-v2.js --file registry/ethena/calldata-ethena.json --skip-lint
+```
+
+Full migration of all registry files:
+
+```bash
+node tools/scripts/migrate-v1-to-v2.js
+```
+
+## Transformations Applied
+
+1. **Schema reference** - Updated to `erc7730-v2.schema.json`
+2. **Contract name** - `metadata.contractName` added from `context.$id`
+3. **Removed fields**:
+   - `metadata.info.legalName`
+   - `context.contract.addressMatcher`
+   - `context.contract.abi` (replaced by human-readable format keys)
+   - `context.eip712.schemas` (replaced by encodeType format keys)
+   - `context.eip712.domain.chainId` / `context.eip712.domain.verifyingContract` (redundant when `deployments` exists)
+   - `display.formats.*.screens`
+4. **Format keys** - Transformed to human-readable ABI / encodeType format
+5. **Visibility modifiers**:
+   - `required` array → `visible: "always"` on fields
+   - `excluded` array → `visible: "never"` on fields
+6. **Null cleanup** - All null values removed

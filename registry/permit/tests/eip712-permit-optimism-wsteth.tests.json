@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Permit": [
+            { "name": "owner", "type": "address" },
+            { "name": "spender", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "Wrapped stETH",
+          "version": "1",
+          "chainId": 10,
+          "verifyingContract": "0x9cfB13E6c11054ac9fcB92BA89644F30775436e4"
+        },
+        "message": {
+          "owner": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "spender": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+          "value": "500000000000000000",
+          "nonce": "12",
+          "deadline": "1779494400"
+        }
+      },
+      "expectedTexts": [
+        "Spender",
+        "0x000000000022D473 030F116dDEE9F6B43a C78BA3",
+        "Max spending amount",
+        "0.5 axl-wstETH",
+        "Valid until",
+        "2026-05-23 12:00:00 AM UTC"
+      ]
+    }
+  ]
+}

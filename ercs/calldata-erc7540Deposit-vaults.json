@@ -1,0 +1,102 @@
+{
+  "$schema": "../specs/erc7730-v2.schema.json",
+  "context": { "contract": {} },
+  "metadata": { "constants": { "underlyingToken": "0x0" } },
+  "display": {
+    "formats": {
+      "deposit(uint256 assets, address receiver, address controller)": {
+        "intent": "Claim deposit",
+        "fields": [
+          {
+            "path": "assets",
+            "label": "Amount of assets to finalize deposit for",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
+          },
+          { "label": "Receive shares", "format": "raw", "value": "$.metadata.constants.vaultTicker" },
+          {
+            "path": "receiver",
+            "label": "Send shares to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "controller",
+            "label": "Controller of the request",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "mint(uint256 shares, address receiver, address controller)": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Claim deposit", "format": "raw", "value": "$.metadata.constants.underlyingTicker" },
+          {
+            "path": "shares",
+            "label": "Amount of shares to mint",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "Send shares to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "controller",
+            "label": "Controller of the request",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "requestDeposit(uint256 assets, address controller, address owner)": {
+        "intent": "Request deposit",
+        "fields": [
+          {
+            "path": "assets",
+            "label": "Amount of assets to request deposit for",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
+          },
+          {
+            "path": "controller",
+            "label": "Controller of the request",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "owner",
+            "label": "Owner of the shares",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "setOperator(address operator, bool approved)": {
+        "intent": "Set operator",
+        "fields": [
+          {
+            "path": "operator",
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          { "path": "approved", "label": "Approved", "format": "raw", "visible": "always" }
+        ]
+      }
+    }
+  }
+}

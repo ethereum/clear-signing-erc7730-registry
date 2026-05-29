@@ -1,0 +1,106 @@
+---
+description: Validate ERC-7730 calldata descriptor function signatures against on-chain contract ABIs
+globs: registry/**/calldata-*.json
+alwaysApply: false
+---
+
+# Check Contract Functions
+
+When the user wants to validate that a calldata descriptor's function signatures match the on-chain contract ABI, use this tool. It resolves proxies, fetches implementation ABIs, and reports mismatches with suggested fixes.
+
+## Command
+
+```bash
+node tools/scripts/check-contract-functions.js <descriptor.json> [options]
+```
+
+or:
+
+```bash
+node tools/scripts/check-contract-functions.js --file <descriptor.json> [options]
+```
+
+## Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--file <path>` | - | Descriptor path (alternative to positional argument) |
+| `--chain <id>` | `1` | Validate one chain |
+| `--all-chains` | false | Validate all deployment chains supported by configured explorers |
+| `--verbose` | false | Show debug output |
+
+## Examples
+
+Single file, default chain (Ethereum mainnet):
+
+```bash
+source .env && node tools/scripts/check-contract-functions.js \
+  --file registry/midas/calldata-MinterVault.json
+```
+
+Explicit chain:
+
+```bash
+source .env && node tools/scripts/check-contract-functions.js \
+  --file registry/midas/calldata-MinterVault.json \
+  --chain 1
+```
+
+All supported deployment chains:
+
+```bash
+source .env && node tools/scripts/check-contract-functions.js \
+  --file registry/midas/calldata-MinterVault.json \
+  --all-chains
+```
+
+## What It Checks
+
+For each function key in `display.formats`:
+
+1. Computes the selector from the key signature
+2. Resolves each deployment address to its implementation when it is a proxy (via Etherscan `getsourcecode`)
+3. Fetches the ABI for the implementation address
+4. Verifies that every descriptor selector exists in that ABI
+
+Both v1-style (`transfer(address,uint256)`) and v2 human-readable style (`transfer(address to, uint256 amount)`) keys are accepted.
+
+## Proxy Behavior
+
+For each deployment address:
+- If `Proxy=1` and `Implementation` is set, checks the implementation ABI
+- If not a proxy, checks the deployment address ABI directly
+
+## Report Output
+
+Per chain, output is grouped into:
+- **Fully matching implementation addresses** (compact list)
+- **Mismatching implementation details** (full details for problematic ones)
+
+For each mismatch: descriptor key, computed selector, and closest on-chain ABI suggestion with its selector.
+
+## Prerequisites
+
+- Environment variable: `ETHERSCAN_API_KEY` (required)
+
+```bash
+source .env
+```
+
+## Supported Chains
+
+Ethereum (1), Optimism (10), BSC (56), Polygon (137), Base (8453), Arbitrum (42161), Avalanche (43114)
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | All implementation addresses include all descriptor selectors |
+| `1` | Runtime/config/API error |
+| `2` | Validation completed but one or more selector mismatches found |
+
+## Notes
+
+- Only for **calldata** descriptors (`calldata-*`). EIP-712 descriptors are rejected.
+- Matching is selector-based, not strict text-format-based.
+- "Closest on-chain ABI" suggestions are heuristic guidance.

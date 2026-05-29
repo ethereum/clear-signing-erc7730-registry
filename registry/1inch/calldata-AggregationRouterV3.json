@@ -1,9 +1,8 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "AggregationRouterV3",
     "contract": {
-      "abi": "https://api.etherscan.io/api?module=contract&action=getabi&address=0x11111112542d85b3ef69ae05771c2dccff4faa26",
       "deployments": [
         { "chainId": 1, "address": "0x11111112542D85B3EF69AE05771c2dCCff4fAa26" },
         { "chainId": 56, "address": "0x11111112542D85B3EF69AE05771c2dCCff4fAa26" },
@@ -12,12 +11,13 @@
     }
   },
   "metadata": {
-    "owner": "1inch",
-    "info": { "url": "https://1inch.io/", "legalName": "1inch Network", "deploymentDate": "2021-03-14T20:28:50Z" },
+    "owner": "1inch Network",
+    "info": { "url": "https://1inch.io/", "deploymentDate": "2021-03-14T20:28:50Z" },
     "constants": {
       "addressAsEth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
       "addressAsNull": "0x0000000000000000000000000000000000000000"
-    }
+    },
+    "contractName": "AggregationRouterV3"
   },
   "display": {
     "definitions": {
@@ -39,39 +39,46 @@
         "$id": "swap",
         "intent": "Swap",
         "fields": [
-          { "path": "desc.amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "desc.srcToken" } },
+          {
+            "path": "desc.amount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "desc.srcToken" },
+            "visible": "always"
+          },
           {
             "path": "desc.minReturnAmount",
             "$ref": "$.display.definitions.minReceiveAmount",
-            "params": { "tokenPath": "desc.dstToken" }
+            "params": { "tokenPath": "desc.dstToken" },
+            "visible": "always"
           },
-          { "path": "desc.dstReceiver", "$ref": "$.display.definitions.beneficiary" }
-        ],
-        "required": ["desc.amount", "desc.minReturnAmount", "desc.dstReceiver"],
-        "excluded": ["caller", "desc.srcReceiver", "desc.flags", "desc.permit", "data"]
+          { "path": "desc.dstReceiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          { "label": "Caller", "path": "caller", "visible": "never" },
+          { "label": "Desc Src Receiver", "path": "desc.srcReceiver", "visible": "never" },
+          { "label": "Desc Flags", "path": "desc.flags", "visible": "never" },
+          { "label": "Desc Permit", "path": "desc.permit", "visible": "never" },
+          { "label": "Data", "path": "data", "visible": "never" }
+        ]
       },
       "unoswap(address srcToken, uint256 amount, uint256 minReturn, bytes32[] pools)": {
         "$id": "unoswap",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "@.from", "$ref": "$.display.definitions.beneficiary" }
-        ],
-        "required": ["amount", "minReturn", "@.from"],
-        "excluded": ["pools"]
+          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" }, "visible": "always" },
+          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount", "visible": "always" },
+          { "path": "@.from", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          { "label": "Pools", "path": "pools", "visible": "never" }
+        ]
       },
       "unoswapWithPermit(address srcToken, uint256 amount, uint256 minReturn, bytes32[] pools, bytes permit)": {
         "$id": "unoswapWithPermit",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "@.from", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amount", "minReturn", "@.from", "pools"],
-        "excluded": ["permit"]
+          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" }, "visible": "always" },
+          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount", "visible": "always" },
+          { "path": "@.from", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool" },
+          { "label": "Permit", "path": "permit", "visible": "never" }
+        ]
       }
     }
   }

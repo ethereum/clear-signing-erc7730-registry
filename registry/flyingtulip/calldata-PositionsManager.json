@@ -1,0 +1,156 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0xbe4050a73a7Fb384c65E885a15C33461A4B20055"
+        },
+        {
+          "chainId": 146,
+          "address": "0xbe4050a73a7Fb384c65E885a15C33461A4B20055"
+        },
+        {
+          "chainId": 146,
+          "address": "0x82fFB119eeEd117BAe7A2Cf38CE52eAbA3871821"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Flying Tulip",
+    "contractName": "PositionsManager",
+    "info": {
+      "url": "https://flyingtulip.com"
+    }
+  },
+  "display": {
+    "formats": {
+      "deposit(address asset, uint256 amt)": {
+        "intent": "Deposit collateral",
+        "fields": [
+          {
+            "path": "amt",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "asset"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Deposit {amt}"
+      },
+      "withdraw(address asset, uint256 amt)": {
+        "intent": "Withdraw collateral",
+        "fields": [
+          {
+            "path": "amt",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "asset"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Withdraw {amt}"
+      },
+      "borrow(address asset, uint256 amt)": {
+        "intent": "Borrow asset",
+        "fields": [
+          {
+            "path": "amt",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "asset"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Borrow {amt}"
+      },
+      "repay(address asset, uint256 amt)": {
+        "intent": "Repay debt",
+        "fields": [
+          {
+            "path": "amt",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "asset"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Repay {amt}"
+      },
+      "approveBorrow(address delegate, address asset, uint256 borrowAllowance_)": {
+        "intent": "Approve borrowing",
+        "fields": [
+          {
+            "path": "delegate",
+            "label": "Delegate",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "borrowAllowance_",
+            "label": "Allowance",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "asset",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Borrow OK {delegate}"
+      },
+      "approveEngine(address engine, address asset, uint256 debitAllowance)": {
+        "intent": "Approve engine debit",
+        "fields": [
+          {
+            "path": "engine",
+            "label": "Engine",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "debitAllowance",
+            "label": "Allowance",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "asset",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Engine OK {engine}"
+      }
+    }
+  }
+}

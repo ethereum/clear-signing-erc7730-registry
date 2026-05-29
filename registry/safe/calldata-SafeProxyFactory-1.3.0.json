@@ -1,10 +1,9 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "includes": "common-SafeProxyFactory.json",
   "context": {
     "$id": "SafeProxyFactory",
     "contract": {
-      "abi": "https://api.etherscan.io/api?module=contract&action=getabi&address=0xa6b71e26c5e0845f74c812102ca7114b6a896ab2",
       "deployments": [
         { "chainId": 1, "address": "0xa6b71e26c5e0845f74c812102ca7114b6a896ab2" },
         { "chainId": 10, "address": "0xa6b71e26c5e0845f74c812102ca7114b6a896ab2" },
@@ -28,10 +27,13 @@
       "createProxyWithCallback(address _singleton, bytes initializer, uint256 saltNonce, address callback)": {
         "$id": "createProxyWithCallback",
         "intent": "Create Safe",
-        "fields": [{ "path": "initializer", "format": "calldata", "label": "Account setup", "params": { "calleePath": "_singleton" } }],
-        "required": ["data"],
-        "excluded": ["saltNonce", "callback"]
+        "fields": [
+          { "path": "initializer", "format": "calldata", "label": "Account setup", "params": { "calleePath": "_singleton" } },
+          { "label": "Salt Nonce", "path": "saltNonce", "visible": "never" },
+          { "label": "Callback", "path": "callback", "visible": "never" }
+        ]
       }
     }
-  }
+  },
+  "metadata": { "contractName": "SafeProxyFactory" }
 }

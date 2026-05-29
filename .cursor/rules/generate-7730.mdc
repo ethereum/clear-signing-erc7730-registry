@@ -1,0 +1,156 @@
+---
+description: Generate ERC-7730 descriptor files from contract addresses, ABIs, or Solidity source code using an LLM
+globs: registry/**/*.json
+alwaysApply: false
+---
+
+# Generate ERC-7730 Descriptors
+
+When the user wants to generate new ERC-7730 clear signing descriptor files for a protocol or contract, use this tool. It produces calldata descriptors (`calldata-*.json`) and EIP-712 descriptors (`eip712-*.json`) using an LLM.
+
+## Command
+
+```bash
+node tools/scripts/generate-7730.js [options]
+```
+
+At least one of `--address`, `--abi`, or `--source` is required.
+
+## Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--address <addr>` | - | On-chain contract address (auto-downloads ABI + source) |
+| `--abi <path>` | - | Path to local ABI JSON file |
+| `--source <path>` | - | Path to folder with Solidity source files |
+| `--output <path>` | - | Destination folder for generated files |
+| `--chain <id>` | `1` | Chain ID for on-chain lookups |
+| `--name <name>` | - | Protocol / owner name for `metadata.owner` |
+| `--contract-name <name>` | inferred | Contract name for `metadata.contractName` and filenames |
+| `--url <url>` | - | Protocol website URL for `metadata.info.url` |
+| `--include-admin` | `false` | Include admin/governance functions in output |
+| `--dry-run` | `false` | Preview without writing files |
+| `--verbose` | `false` | Show detailed output |
+| `--log <path>` | - | Enable verbose logging to file |
+| `-l` | - | Enable verbose logging to `tools/scripts/logs/` |
+| `--backend <name>` | `openai` | LLM backend: `openai`, `anthropic`, `cursor` |
+| `--model <model>` | backend-specific | Model name |
+| `--api-key <key>` | env var | API key (overrides env var for the selected backend) |
+| `--api-url <url>` | backend-specific | Custom API base URL |
+| `--rpc-url <url>` | public RPC | JSON-RPC endpoint for proxy detection |
+| `--schema-path <path>` | `../../specs/erc7730-v2.schema.json` | Relative schema path in output |
+
+## Backends
+
+| Backend | Default model | API key env var |
+|---------|---------------|-----------------|
+| `openai` | `gpt-4o` | `OPENAI_API_KEY` |
+| `anthropic` | `claude-sonnet-4-20250514` | `ANTHROPIC_API_KEY` |
+| `cursor` | `opus-4.6` | - (uses Cursor subscription) |
+
+## Examples
+
+Generate from an on-chain address (recommended):
+
+```bash
+source .env && node tools/scripts/generate-7730.js \
+  --address 0xdAC17F958D2ee523a2206206994597C13D831ec7 \
+  --output registry/tether \
+  --name "Tether"
+```
+
+Generate on a non-mainnet chain:
+
+```bash
+source .env && node tools/scripts/generate-7730.js \
+  --address 0x794a61358D6845594F94dc1DB02A252b5b4814aD \
+  --chain 137 \
+  --output registry/aave \
+  --name "Aave"
+```
+
+Generate from a local ABI file:
+
+```bash
+source .env && node tools/scripts/generate-7730.js \
+  --abi path/to/abi.json \
+  --address 0x1234567890abcdef1234567890abcdef12345678 \
+  --output registry/myprotocol \
+  --name "My Protocol" \
+  --url "https://myprotocol.xyz"
+```
+
+Include admin functions:
+
+```bash
+source .env && node tools/scripts/generate-7730.js \
+  --address 0x1234... \
+  --output registry/myprotocol \
+  --include-admin
+```
+
+Preview without writing (dry run):
+
+```bash
+source .env && node tools/scripts/generate-7730.js \
+  --address 0x1234... \
+  --output registry/myprotocol \
+  --dry-run --verbose
+```
+
+Use Cursor backend (no API key needed):
+
+```bash
+node tools/scripts/generate-7730.js \
+  --address 0x1234... \
+  --output registry/myprotocol \
+  --backend cursor
+```
+
+## Pipeline
+
+1. **Resolve inputs**: Downloads ABI + source from Sourcify/Etherscan (or reads local files)
+2. **Detect proxies**: Resolves proxy contracts to implementation address
+3. **Build context**: Assembles ERC-7730 spec, v2 schema, contract ABI, source code, and examples
+4. **Generate calldata descriptor**: Sends context + calldata prompt to LLM
+5. **Generate EIP-712 descriptors**: If source code is available, scans for typed messages
+6. **Write output**: Saves generated JSON files to the output directory
+
+## Prerequisites
+
+- Node.js v18+
+- Dependencies: `npm install` (installs `@langchain/langgraph`, `@langchain/openai`, `@langchain/anthropic`, `@langchain/core`, `zod`)
+- Environment variable: `ETHERSCAN_API_KEY` (for downloading source code from Etherscan)
+- For `openai` backend: `OPENAI_API_KEY`
+- For `anthropic` backend: `ANTHROPIC_API_KEY`
+- For `cursor` backend: no API key needed
+
+```bash
+source .env
+```
+
+## Output
+
+```
+registry/myprotocol/
+├── calldata-MyContract.json          # Calldata descriptor
+├── eip712-Permit.json                # EIP-712 descriptor (if applicable)
+└── eip712-TransferWithAuth.json      # Additional EIP-712 descriptors
+```
+
+## Post-generation Workflow
+
+1. **Review** the generated files for accuracy
+2. **Fill in TODOs** (deployment addresses if not provided)
+3. **Lint**: `source .env && source tools/linter/.venv/bin/activate && erc7730 lint registry/myprotocol/`
+4. **Generate tests**: `source .env && node tools/scripts/generate-tests.js registry/myprotocol/calldata-MyContract.json`
+5. **Run tester** (automatic with test generation if `GATING_TOKEN` is set)
+
+## Prompts
+
+LLM prompts are stored in `tools/scripts/prompts/` for easy editing:
+
+| File | Purpose |
+|------|---------|
+| `prompts/system-calldata.md` | Instructions for generating calldata descriptors |
+| `prompts/system-eip712.md` | Instructions for generating EIP-712 descriptors |

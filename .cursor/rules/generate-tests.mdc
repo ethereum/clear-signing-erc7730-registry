@@ -1,0 +1,131 @@
+---
+description: Generate test files for ERC-7730 descriptors from real blockchain transactions
+globs: registry/**/*.json
+alwaysApply: false
+---
+
+# Generate ERC-7730 Tests
+
+When the user wants to generate test files for a descriptor, use this tool. It fetches real transactions from block explorers, generates EIP-712 message samples, runs the clear signing tester, and refines expectedTexts from actual device screen output.
+
+## Command
+
+```bash
+node tools/scripts/generate-tests.js <erc7730-file> [options]
+```
+
+## Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--dry-run` | false | Preview without writing files |
+| `--verbose` | false | Show detailed output |
+| `--depth <n>` | 100 | Maximum transactions to search |
+| `--max-tests <n>` | 3 | Maximum tests to generate per function |
+| `--chain <id>` | all | Only process specific chain ID |
+| `--no-test` | false | Skip running the clear signing tester |
+| `--force-test` | false | Force running tester on existing tests, including 100% coverage cases |
+| `--device <device>` | flex | Tester device: `flex`, `stax`, `nanosp`, `nanox` |
+| `--test-log-level <lvl>` | info | Tester log level: `none`, `error`, `warn`, `info`, `debug` |
+| `--no-refine` | false | Skip refining expectedTexts from tester screen output |
+| `--openai-url <url>` | api.openai.com | Custom OpenAI API URL (e.g., Azure endpoint) |
+| `--openai-key <key>` | `OPENAI_API_KEY` env | OpenAI API key |
+| `--openai-model <model>` | gpt-5 | Model to use for EIP-712 generation |
+| `--azure` | false | Use Azure OpenAI API format (api-key header) |
+| `--local-api` | false | Auto-start a local Flask API server (patched `erc7730`) |
+| `--local-api-port <port>` | 5000 | Port for local API server started by `--local-api` |
+
+## Examples
+
+Preview test generation:
+
+```bash
+source .env && node tools/scripts/generate-tests.js registry/ethena/calldata-ethena.json --dry-run --verbose
+```
+
+Generate with limited scope:
+
+```bash
+source .env && node tools/scripts/generate-tests.js registry/1inch/calldata-router.json --depth 50 --max-tests 2
+```
+
+Generate for specific chain only:
+
+```bash
+source .env && node tools/scripts/generate-tests.js registry/uniswap/calldata-permit2.json --chain 1
+```
+
+Generate without tester or refinement:
+
+```bash
+source .env && node tools/scripts/generate-tests.js registry/ethena/calldata-ethena.json --no-test
+```
+
+Force running tester on existing tests:
+
+```bash
+source .env && node tools/scripts/generate-tests.js registry/ethena/calldata-ethena.json --force-test
+```
+
+Use local API server:
+
+```bash
+source .env && node tools/scripts/generate-tests.js registry/ethena/calldata-ethena.json --local-api
+```
+
+## Pipeline
+
+By default the script runs a full pipeline:
+
+1. **Fetch transactions** from Etherscan for each deployment address
+2. **Build unsigned raw tx** from Ledger explorer API (no API key needed) with RLP encoding
+3. **Write test file** with initial expectedTexts based on descriptor field labels
+4. **Run clear signing tester** on Ledger device emulator (Speculos)
+5. **Refine expectedTexts** from actual device screen output (label + shortened value)
+
+Steps 4-5 require `GATING_TOKEN` and tester setup (`cd tools/tester && ./setup.sh`).
+
+## Raw Transaction Construction
+
+For calldata tests, the script builds unsigned raw transactions by:
+1. Fetching tx details from Ledger explorer API (`explorers.api.vault.ledger.com`)
+2. RLP-encoding the unsigned transaction (supports legacy, EIP-2930, EIP-1559)
+3. Falling back to Etherscan `eth_getRawTransactionByHash` if Ledger explorer is unavailable
+
+Ledger explorer supports: Ethereum (eth), BSC (bnb), Polygon (matic), Avalanche (avax).
+
+## expectedTexts Refinement
+
+After the tester runs, the script parses device screen output to produce refined expectedTexts:
+- `"Interaction with {owner}"` — verifies contract identity
+- `"Label shortvalue"` — field label + shortened value (e.g., `"Amount 65500.97"`, `"Receiver 0xAE040071"`)
+- `"Max fees"` — verifies fee display
+
+Values are shortened to avoid device line-break fragility.
+
+## Prerequisites
+
+- Environment variable: `ETHERSCAN_API_KEY` (required for tx listing)
+- Optional: `GATING_TOKEN` for tester + refinement
+- Optional: `OPENAI_API_KEY` for EIP-712 generation
+- Optional: `npm install js-sha3` for accurate function selectors
+
+```bash
+source .env
+```
+
+## Output
+
+Creates `tests/<filename>.tests.json` in a `tests/` subdirectory next to the input file:
+
+```
+registry/
+├── ethena/
+│   ├── calldata-ethena.json          # Input descriptor
+│   └── tests/
+│       └── calldata-ethena.tests.json # Generated test file
+```
+
+## Supported Chains (Etherscan tx listing)
+
+Ethereum (1), BSC (56), Polygon (137), Arbitrum (42161), Optimism (10), Base (8453), Avalanche (43114)

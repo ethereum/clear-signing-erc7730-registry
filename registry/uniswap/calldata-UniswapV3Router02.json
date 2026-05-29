@@ -1,19 +1,17 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "Uniswap v3 Router 2",
-    "contract": {
-      "deployments": [{ "chainId": 1, "address": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45" }],
-      "abi": "https://github.com/LedgerHQ/ledger-asset-dapps/blob/211e75ed27de3894f592ca73710fa0b72c3ceeae/ethereum/uniswap/abis/0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45.abi.json"
-    }
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45" }] }
   },
   "metadata": {
-    "owner": "Uniswap",
-    "info": { "legalName": "Uniswap Labs", "deploymentDate": "2021-12-14T00:00:00Z", "url": "https://uniswap.org/" }
+    "owner": "Uniswap Labs",
+    "info": { "deploymentDate": "2021-12-14T00:00:00Z", "url": "https://uniswap.org/" },
+    "contractName": "Uniswap v3 Router 2"
   },
   "display": {
     "formats": {
-      "0xb858183f": {
+      "exactInput((bytes path, address recipient, uint256 amountIn, uint256 amountOutMinimum) params)": {
         "$id": "exactInput",
         "intent": "Swap",
         "fields": [
@@ -21,76 +19,93 @@
             "path": "params.amountIn",
             "label": "Amount to Send",
             "format": "tokenAmount",
-            "params": { "tokenPath": "params.path.[0:20]" }
+            "params": { "tokenPath": "params.path.[0:20]" },
+            "visible": "always"
           },
           {
             "path": "params.amountOutMinimum",
-            "label": "Minimum amount to Receive",
+            "label": "Minimum to Receive",
             "format": "tokenAmount",
-            "params": { "tokenPath": "params.path.[-20:]" }
+            "params": { "tokenPath": "params.path.[-20:]" },
+            "visible": "always"
           },
           {
             "path": "params.recipient",
             "label": "Beneficiary",
             "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
           }
-        ],
-        "required": ["params.amountIn", "params.amountOutMinimum", "params.recipient"]
+        ]
       },
-      "0x04e45aaf": {
+      "exactInputSingle((address tokenIn, address tokenOut, uint24 fee, address recipient, uint256 amountIn, uint256 amountOutMinimum, uint160 sqrtPriceLimitX96) params)": {
         "$id": "exactInputSingle",
         "intent": "swap",
         "fields": [
-          { "path": "params.amountIn", "label": "Send", "format": "tokenAmount", "params": { "tokenPath": "params.tokenIn" } },
+          {
+            "path": "params.amountIn",
+            "label": "Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.tokenIn" },
+            "visible": "always"
+          },
           {
             "path": "params.amountOutMinimum",
-            "label": "Receive Minimum",
+            "label": "Minimum to Receive",
             "format": "tokenAmount",
-            "params": { "tokenPath": "params.tokenOut" }
+            "params": { "tokenPath": "params.tokenOut" },
+            "visible": "always"
           },
-          { "path": "params.fee", "label": "Uniswap fee", "format": "unit", "params": { "decimals": 4, "base": "%", "prefix": false } },
+          {
+            "path": "params.fee",
+            "label": "Uniswap fee",
+            "format": "unit",
+            "params": { "decimals": 4, "base": "%", "prefix": false },
+            "visible": "always"
+          },
           {
             "path": "params.recipient",
             "label": "Beneficiary",
             "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
           }
-        ],
-        "required": ["params.amountIn", "params.amountOutMinimum", "params.fee", "params.recipient"]
+        ]
       },
-      "0x09b81346": {
+      "exactOutput((bytes path, address recipient, uint256 amountOut, uint256 amountInMaximum) params)": {
         "$id": "exactOutput",
         "intent": "Swap",
         "fields": [
           {
             "path": "params.amountInMaximum",
-            "label": "Maximum Amount to Send",
+            "label": "Maximum Amount In",
             "format": "tokenAmount",
-            "params": { "tokenPath": "params.path.[-20:]" }
+            "params": { "tokenPath": "params.path.[-20:]" },
+            "visible": "always"
           },
           {
             "path": "params.amountOut",
             "label": "Amount to Receive",
             "format": "tokenAmount",
-            "params": { "tokenPath": "params.path.[0:20]" }
+            "params": { "tokenPath": "params.path.[0:20]" },
+            "visible": "always"
           },
           {
             "path": "params.recipient",
             "label": "Beneficiary",
             "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
           }
-        ],
-        "required": ["params.amountInMaximum", "params.amountOut", "params.recipient"]
+        ]
       },
-      "0x5023b4df": {
+      "exactOutputSingle((address tokenIn, address tokenOut, uint24 fee, address recipient, uint256 amountOut, uint256 amountInMaximum, uint160 sqrtPriceLimitX96) params)": {
         "$id": "exactOutputSingle",
         "intent": "Swap",
         "fields": [
           {
             "path": "params.amountInMaximum",
-            "label": "Maximum Amount to Send",
+            "label": "Maximum Amount In",
             "format": "tokenAmount",
             "params": { "tokenPath": "params.tokenIn" }
           },
@@ -109,17 +124,12 @@
           }
         ]
       },
-      "0x472b43f3": {
+      "swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to)": {
         "$id": "swapExactTokensForTokens",
         "intent": "Swap",
         "fields": [
           { "path": "amountIn", "label": "Amount to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
-          {
-            "path": "amountOutMin",
-            "label": "Minimum amount to Receive",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "path.[-1]" }
-          },
+          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
           {
             "path": "to",
             "label": "Recipient",
@@ -128,17 +138,21 @@
           }
         ]
       },
-      "0x42712a67": {
+      "swapTokensForExactTokens(uint256 amountOut, uint256 amountInMax, address[] path, address to)": {
         "$id": "swapTokensForExactTokens",
         "intent": "Swap",
         "fields": [
           { "path": "amountOut", "label": "Amount to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
-          { "path": "amountInMax", "label": "Maximum Amount to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
+          { "path": "amountInMax", "label": "Maximum to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
           {
             "path": "to",
             "label": "Recipient",
             "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+            "params": {
+              "types": ["eoa", "contract"],
+              "sources": ["local", "ens"],
+              "senderAddress": ["0x0000000000000000000000000000000000000001"]
+            }
           }
         ]
       }

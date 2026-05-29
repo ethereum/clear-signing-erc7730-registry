@@ -1,102 +1,26 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "DepositContract",
     "contract": {
       "deployments": [
         { "chainId": 1, "address": "0x00000000219ab540356cBB839Cbe05303d7705Fa" },
         { "chainId": 560048, "address": "0x00000000219ab540356cBB839Cbe05303d7705Fa" }
-      ],
-      "abi": [
-        {
-          "type": "function",
-          "name": "deposit",
-          "inputs": [
-            { "name": "pubkey", "type": "bytes", "internalType": "bytes", "components": null, "indexed": null, "unit": null },
-            {
-              "name": "withdrawal_credentials",
-              "type": "bytes",
-              "internalType": "bytes",
-              "components": null,
-              "indexed": null,
-              "unit": null
-            },
-            { "name": "signature", "type": "bytes", "internalType": "bytes", "components": null, "indexed": null, "unit": null },
-            {
-              "name": "deposit_data_root",
-              "type": "bytes32",
-              "internalType": "bytes32",
-              "components": null,
-              "indexed": null,
-              "unit": null
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "payable",
-          "constant": null,
-          "payable": null,
-          "gas": null,
-          "signature": null
-        },
-        {
-          "type": "function",
-          "name": "get_deposit_count",
-          "inputs": [],
-          "outputs": [{ "name": "", "type": "bytes", "internalType": "bytes", "components": null, "indexed": null, "unit": null }],
-          "stateMutability": "view",
-          "constant": null,
-          "payable": null,
-          "gas": null,
-          "signature": null
-        },
-        {
-          "type": "function",
-          "name": "get_deposit_root",
-          "inputs": [],
-          "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32", "components": null, "indexed": null, "unit": null }],
-          "stateMutability": "view",
-          "constant": null,
-          "payable": null,
-          "gas": null,
-          "signature": null
-        },
-        {
-          "type": "function",
-          "name": "supportsInterface",
-          "inputs": [{ "name": "interfaceId", "type": "bytes4", "internalType": "bytes4", "components": null, "indexed": null, "unit": null }],
-          "outputs": [{ "name": "", "type": "bool", "internalType": "bool", "components": null, "indexed": null, "unit": null }],
-          "stateMutability": "pure",
-          "constant": null,
-          "payable": null,
-          "gas": null,
-          "signature": null
-        }
-      ],
-      "addressMatcher": null,
-      "factory": null
+      ]
     }
   },
-  "metadata": { "owner": "Ethereum", "info": { "legalName": "Ethereum Foundation", "url": "https://ethereum.foundation" } },
+  "metadata": { "owner": "Ethereum Foundation", "info": { "url": "https://ethereum.foundation" }, "contractName": "DepositContract" },
   "display": {
     "formats": {
-      "deposit(bytes,bytes,bytes,bytes32)": {
-        "$id": null,
+      "deposit(bytes pubkey, bytes withdrawal_credentials, bytes signature, bytes32 deposit_data_root)": {
         "intent": "Stake ETH",
-        "screens": null,
         "fields": [
-          { "$id": null, "label": "Validator public key", "format": "raw", "params": null, "path": "#.pubkey", "value": null },
-          {
-            "$id": null,
-            "label": "Withdraw credentials",
-            "format": "raw",
-            "params": null,
-            "path": "#.withdrawal_credentials",
-            "value": null
-          },
-          { "$id": null, "label": "Amount to deposit", "format": "amount", "params": null, "path": "@.value", "value": null }
-        ],
-        "required": ["#.pubkey", "#.withdrawal_credentials", "@.value"],
-        "excluded": ["#.signature", "#.deposit_data_root"]
+          { "label": "Validator public key", "format": "raw", "path": "#.pubkey", "visible": "always" },
+          { "label": "Withdraw credentials", "format": "raw", "path": "#.withdrawal_credentials", "visible": "always" },
+          { "label": "Amount to deposit", "format": "amount", "path": "@.value", "visible": "always" },
+          { "label": "Signature", "path": "#.signature", "visible": "never" },
+          { "label": "Deposit Data Root", "path": "#.deposit_data_root", "visible": "never" }
+        ]
       }
     }
   }

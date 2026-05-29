@@ -1,41 +1,23 @@
 {
-  "$schema": "../specs/erc7730-v1.schema.json",
-  "context": {
-    "eip712": {
-      "schemas": [
-        {
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "Permit": [
-              { "name": "owner", "type": "address" },
-              { "name": "spender", "type": "address" },
-              { "name": "value", "type": "uint256" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" }
-            ]
-          },
-          "primaryType": "Permit"
-        }
-      ]
-    }
-  },
+  "$schema": "../specs/erc7730-v2.schema.json",
+  "context": { "eip712": {} },
   "display": {
     "formats": {
-      "Permit": {
+      "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)": {
         "intent": "Authorize spending of tokens",
         "fields": [
-          { "path": "spender", "label": "Spender", "format": "raw" },
-          { "path": "value", "label": "Max spending amount", "format": "tokenAmount", "params": { "tokenPath": "@.to" } },
-          { "path": "deadline", "label": "Valid until", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["spender", "value"],
-        "excluded": ["owner", "nonce"],
-        "screens": {}
+          { "path": "spender", "label": "Spender", "format": "raw", "visible": "always" },
+          {
+            "path": "value",
+            "label": "Max spending amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          { "path": "deadline", "label": "Valid until", "format": "date", "params": { "encoding": "timestamp" } },
+          { "label": "Owner", "path": "owner", "visible": "never" },
+          { "label": "Nonce", "path": "nonce", "visible": "never" }
+        ]
       }
     }
   }

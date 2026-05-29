@@ -1,0 +1,40 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x6566194141eefa99Af43Bb5Aa71460Ca2Dc90245" },
+        { "chainId": 8453, "address": "0x6BFd8137e702540E7A42B74178A4a49Ba43920C4" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Morpho DAO", "info": { "url": "https://morpho.org" } },
+  "display": {
+    "formats": {
+      "multicall((address to, bytes data, uint256 value, bool skipRevert, bytes32 callbackHash)[] bundle)": {
+        "intent": "Bundler3 Multicall",
+        "fields": [
+          {
+            "path": "#.bundle.[].data",
+            "label": "Action",
+            "format": "calldata",
+            "params": { "calleePath": "#.bundle.[].to", "amountPath": "#.bundle.[].value" },
+            "visible": "always"
+          }
+        ]
+      },
+      "reenter((address to, bytes data, uint256 value, bool skipRevert, bytes32 callbackHash)[] bundle)": {
+        "intent": "Reenter Bundler3",
+        "fields": [
+          {
+            "path": "#.bundle.[].data",
+            "label": "Action",
+            "format": "calldata",
+            "params": { "calleePath": "#.bundle.[].to", "amountPath": "#.bundle.[].value" },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

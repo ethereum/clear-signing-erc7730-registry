@@ -6,7 +6,7 @@ on:
       - master
       - demo
     paths-ignore:
-      - 'developer-preview/**'
+      - "developer-preview/**"
 
 permissions:
   id-token: write
@@ -15,49 +15,41 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  ETHERSCAN_API_HOST: proxyetherscan-ci.api.live.ledger.com
+#env:
+#  ETHERSCAN_API_HOST: <set this secret to define a custom Etherscan API host>
+#  ETHERSCAN_API_KEY: <set this secret to inject Etherscan API key>
 
 jobs:
   validate_descriptors:
     name: 🔎 validate descriptors
-    runs-on: public-ledgerhq-shared-small
+    runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-
       - name: Checkout
         timeout-minutes: 10
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
 
       - name: Setup python
         timeout-minutes: 10
         uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
-          cache: 'pip'
-
-      - name: Login to Ledger JFrog
-        timeout-minutes: 10
-        uses: LedgerHQ/actions-security/actions/jfrog-login@actions/jfrog-login-1
-
-      - name: Setup pip
-        timeout-minutes: 10
-        run: jf pipc --global --repo-resolve=virtual-pypi-prod-green
+          python-version: "3.12"
+          cache: "pip"
 
       - name: Install ERC-7730 library
         timeout-minutes: 10
-        run: jf pip install erc7730
+        run: pip install erc7730
 
       - name: Validate ERC-7730 descriptors
         timeout-minutes: 10
         run: erc7730 lint registry --gha
 
+  # TODO: To be removed once the registry ownership is transferred
   update_cal:
     name: 🔁 trigger updates
-    runs-on: public-ledgerhq-shared-small
+    runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-
       - name: Trigger update on LedgerHQ/crypto-assets
         if: ${{ !cancelled() }}
         timeout-minutes: 60

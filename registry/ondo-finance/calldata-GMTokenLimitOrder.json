@@ -1,0 +1,172 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "GMTokenLimitOrder",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xf0Bc39Fc911F6437C84d16188dD8294F7110f451" },
+        { "chainId": 56, "address": "0x96b525B1a93f31E65F4aAf18C53842eD28525D48" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Ondo Finance",
+    "contractName": "GM Token Limit Order",
+    "info": { "url": "https://ondo.finance" }
+  },
+  "display": {
+    "formats": {
+      "createBuyOrderExactIn(address gmToken, address quoteToken, uint256 quoteAmount, uint256 limitPrice, uint256 expiry)": {
+        "$id": "createBuyOrderExactIn",
+        "intent": "Limit Buy GM Token",
+        "interpolatedIntent": "Buy {gmToken} for up to {quoteAmount} at max {limitPrice}",
+        "fields": [
+          {
+            "path": "gmToken",
+            "format": "addressName",
+            "label": "GM Token",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "quoteAmount",
+            "format": "tokenAmount",
+            "label": "Spend Amount",
+            "params": { "tokenPath": "quoteToken" },
+            "visible": "always"
+          },
+          {
+            "path": "limitPrice",
+            "format": "unit",
+            "label": "Max Price",
+            "params": { "base": "USD", "decimals": 18 },
+            "visible": "always"
+          },
+          {
+            "path": "expiry",
+            "format": "date",
+            "label": "Order Expires",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "quoteToken", "label": "Quote Token", "visible": "never" }
+        ]
+      },
+      "createBuyOrderExactOut(address gmToken, address quoteToken, uint256 gmAmount, uint256 limitPrice, uint256 expiry)": {
+        "$id": "createBuyOrderExactOut",
+        "intent": "Limit Buy GM Token",
+        "interpolatedIntent": "Buy {gmAmount} with {quoteToken} at max {limitPrice}",
+        "fields": [
+          {
+            "path": "gmAmount",
+            "format": "tokenAmount",
+            "label": "GM Amount to Buy",
+            "params": { "tokenPath": "gmToken" },
+            "visible": "always"
+          },
+          {
+            "path": "quoteToken",
+            "format": "addressName",
+            "label": "Quote Token",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "limitPrice",
+            "format": "unit",
+            "label": "Max Price",
+            "params": { "base": "USD", "decimals": 18 },
+            "visible": "always"
+          },
+          {
+            "path": "expiry",
+            "format": "date",
+            "label": "Order Expires",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "gmToken", "label": "GM Token", "visible": "never" }
+        ]
+      },
+      "createSellOrderExactIn(address gmToken, address quoteToken, uint256 gmAmount, uint256 limitPrice, uint256 expiry)": {
+        "$id": "createSellOrderExactIn",
+        "intent": "Limit Sell GM Token",
+        "interpolatedIntent": "Sell {gmAmount} for {quoteToken} at min {limitPrice}",
+        "fields": [
+          {
+            "path": "gmAmount",
+            "format": "tokenAmount",
+            "label": "GM Amount to Sell",
+            "params": { "tokenPath": "gmToken" },
+            "visible": "always"
+          },
+          {
+            "path": "quoteToken",
+            "format": "addressName",
+            "label": "Receive Token",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "limitPrice",
+            "format": "unit",
+            "label": "Min Price",
+            "params": { "base": "USD", "decimals": 18 },
+            "visible": "always"
+          },
+          {
+            "path": "expiry",
+            "format": "date",
+            "label": "Order Expires",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "gmToken", "label": "GM Token", "visible": "never" }
+        ]
+      },
+      "createSellOrderExactOut(address gmToken, address quoteToken, uint256 quoteAmount, uint256 limitPrice, uint256 expiry)": {
+        "$id": "createSellOrderExactOut",
+        "intent": "Limit Sell GM Token",
+        "interpolatedIntent": "Sell {gmToken} to receive {quoteAmount} at min {limitPrice}",
+        "fields": [
+          {
+            "path": "gmToken",
+            "format": "addressName",
+            "label": "GM Token",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "quoteAmount",
+            "format": "tokenAmount",
+            "label": "Receive Amount",
+            "params": { "tokenPath": "quoteToken" },
+            "visible": "always"
+          },
+          {
+            "path": "limitPrice",
+            "format": "unit",
+            "label": "Min Price",
+            "params": { "base": "USD", "decimals": 18 },
+            "visible": "always"
+          },
+          {
+            "path": "expiry",
+            "format": "date",
+            "label": "Order Expires",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "quoteToken", "label": "Quote Token", "visible": "never" }
+        ]
+      },
+      "cancelOrder(uint256 orderId)": {
+        "$id": "cancelOrder",
+        "intent": "Cancel Limit Order",
+        "fields": [
+          { "path": "orderId", "format": "raw", "label": "Order ID", "visible": "always" }
+        ]
+      }
+    }
+  }
+}

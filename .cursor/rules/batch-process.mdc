@@ -1,0 +1,136 @@
+---
+description: Batch process ERC-7730 folders - migrate schemas, generate tests, create PRs
+globs: registry/**
+alwaysApply: false
+---
+
+# Batch Process ERC-7730 Registry Folder
+
+When the user wants to process, migrate, or update an entire registry folder, use this tool. It orchestrates schema migration, test generation, and PR creation in one run.
+
+## Command
+
+```bash
+node tools/scripts/batch-process.js <folder-name> [options]
+```
+
+## Batch Processor Options
+
+| Option | Description |
+|--------|-------------|
+| `--dry-run` | Preview changes without modifying files |
+| `--verbose` | Show detailed output for each operation |
+| `--skip-tests` | Skip test file generation |
+| `--skip-migration` | Skip v1 to v2 schema migration |
+| `--pr` | Create a branch and PR with changes |
+| `--pr-draft` | Create the PR in draft mode |
+| `--pr-strict` | Prevent PR creation if any step fails |
+| `--pr-title <title>` | Custom PR title |
+| `--pr-branch <name>` | Custom branch name |
+| `--pr-base <ref>` | Base branch for PR (default: `master`). Used for stacked PRs |
+| `--test-first` | Generate tests on v1 first, then migrate (legacy order) |
+| `--include-external-deps` | Include migrated external deps in PR (default: revert them) |
+| `--local-api` | Auto-start local Flask API server for tester calls |
+| `--local-api-port <port>` | Port for local API server (default: `5000`) |
+| `--file-delay <ms>` | Delay between files in ms to avoid API rate limits (default: `2000`) |
+
+## Cascaded Test Generation Options
+
+These options are passed through to `generate-tests.js`:
+
+| Option | Description |
+|--------|-------------|
+| `--depth <n>` | Max transactions to search (default: `100`) |
+| `--max-tests <n>` | Max tests to generate per function (default: `3`) |
+| `--chain <id>` | Only process a specific chain ID |
+| `--openai-url <url>` | Custom OpenAI API URL (e.g., Azure endpoint) |
+| `--openai-key <key>` | OpenAI API key (overrides `OPENAI_API_KEY`) |
+| `--openai-model <model>` | Model to use (default: `gpt-5`) |
+| `--azure` | Use Azure OpenAI request format |
+| `--no-test` | Skip running the clear signing tester |
+| `--force-test` | Run tester even when test file already exists |
+| `--device <device>` | Tester device: `flex`, `stax`, `nanosp`, `nanox` |
+| `--test-log-level <lvl>` | Tester log level: `none`, `error`, `warn`, `info`, `debug` |
+| `--no-refine` | Skip refining `expectedTexts` from tester output |
+
+## Examples
+
+Preview what will happen:
+
+```bash
+node tools/scripts/batch-process.js 1inch --dry-run --verbose
+```
+
+Full processing with PR:
+
+```bash
+source .env && node tools/scripts/batch-process.js uniswap --pr
+```
+
+Migrate only (no tests):
+
+```bash
+node tools/scripts/batch-process.js aave --skip-tests
+```
+
+Generate tests only (no migration):
+
+```bash
+source .env && node tools/scripts/batch-process.js protocol --skip-migration
+```
+
+Force-run tester with local API (no PR):
+
+```bash
+source .env && node tools/scripts/batch-process.js circle --local-api --force-test
+```
+
+Migrate-first (default) — works even when ercs/ are v1 on master:
+
+```bash
+source .env && node tools/scripts/batch-process.js kiln --compact -l --pr --pr-draft
+```
+
+Test-first — use after ercs/ PR merges, or for dApps without external deps:
+
+```bash
+source .env && node tools/scripts/batch-process.js swell --test-first --compact -l --pr --pr-draft
+```
+
+Stacked PR before ercs/ PR merges:
+
+```bash
+source .env && node tools/scripts/batch-process.js kiln --pr --pr-draft --pr-base migrate-v1-to-v2/ercs
+```
+
+## Workflow
+
+The script uses phased execution with two ordering modes:
+
+### Migrate-first (default)
+
+Best for dApps with external deps (e.g. `ercs/` includes). Tests run against a fully v2-consistent disk.
+
+1. **Phase 1: Migration** — Migrate all files (target + transitive deps) to v2
+2. **Phase 2: Test Generation** — Generate tests on leaf target files (v2-on-v2)
+3. **Cleanup** — Revert external dep migrations unless `--include-external-deps` is set
+
+### Test-first (`--test-first`)
+
+Use when external deps are already v2 on master, or when there are no external deps. Matches the original flow.
+
+1. **Phase 1: Test Generation** — Generate tests on v1 leaf files (tester + refinement)
+2. **Phase 2: Migration** — Migrate all files to v2 (may patch test expectedTexts)
+3. **Phase 3: V2 Sanity Tests** — Verify migrated descriptors pass with patched tests
+4. **Cleanup** — Revert external dep migrations unless `--include-external-deps` is set
+
+### PR Creation (with `--pr`)
+
+Creates a clean branch from `<remote>/<base>` (default: `master`), commits only the files modified by batch-process, and opens a PR. Use `--pr-base` to target a different base branch for stacked PRs.
+
+## Prerequisites
+
+- Node.js v16+
+- Environment variables for test generation: `source .env`
+- Optional: `erc7730` Python CLI for linting
+- Optional: `gh` CLI for PR creation

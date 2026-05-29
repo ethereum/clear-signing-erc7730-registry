@@ -1,0 +1,49 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "USDC receive authorization on Arbitrum",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "ReceiveWithAuthorization": [
+            { "name": "from", "type": "address" },
+            { "name": "to", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "validAfter", "type": "uint256" },
+            { "name": "validBefore", "type": "uint256" },
+            { "name": "nonce", "type": "bytes32" }
+          ]
+        },
+        "primaryType": "ReceiveWithAuthorization",
+        "domain": { "name": "USD Coin", "version": "2", "chainId": 42161, "verifyingContract": "0xaf88d065e77c8cc2239327c5edb3a432268e5831" },
+        "message": {
+          "from": "0x9d7ae84c1e55c0f2dfd6909a88ba93f48617e750",
+          "to": "0xa95d9c1f655341597c94393fddc30cf3c08e4fce",
+          "value": "8080000",
+          "validAfter": "1772641538",
+          "validBefore": "1772645198",
+          "nonce": "0x433e3aad3b685127a168b6faca79fbddc1cb3f8d019325500b3c71baebb6e5ca"
+        }
+      },
+      "expectedTexts": [
+        "Authorize USDC transfer",
+        "From",
+        "0x9d7ae84c1e55c0f2dfd6909a88ba93f48617e750",
+        "To",
+        "0xa95d9c1f655341597c94393fddc30cf3c08e4fce",
+        "Amount",
+        "8.08 USDC",
+        "Valid after",
+        "2026-03-04",
+        "Valid before",
+        "2026-03-04"
+      ]
+    }
+  ]
+}

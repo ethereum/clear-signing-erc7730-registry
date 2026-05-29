@@ -1,55 +1,9 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "includes": "uniswap-common-eip712.json",
-  "context": {
-    "eip712": {
-      "schemas": [
-        {
-          "types": {
-            "DutchOutput": [
-              { "name": "token", "type": "address" },
-              { "name": "startAmount", "type": "uint256" },
-              { "name": "endAmount", "type": "uint256" },
-              { "name": "recipient", "type": "address" }
-            ],
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "OrderInfo": [
-              { "name": "reactor", "type": "address" },
-              { "name": "swapper", "type": "address" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" },
-              { "name": "additionalValidationContract", "type": "address" },
-              { "name": "additionalValidationData", "type": "bytes" }
-            ],
-            "PermitWitnessTransferFrom": [
-              { "name": "permitted", "type": "TokenPermissions" },
-              { "name": "spender", "type": "address" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" },
-              { "name": "witness", "type": "V2DutchOrder" }
-            ],
-            "TokenPermissions": [{ "name": "token", "type": "address" }, { "name": "amount", "type": "uint256" }],
-            "V2DutchOrder": [
-              { "name": "info", "type": "OrderInfo" },
-              { "name": "cosigner", "type": "address" },
-              { "name": "baseInputToken", "type": "address" },
-              { "name": "baseInputStartAmount", "type": "uint256" },
-              { "name": "baseInputEndAmount", "type": "uint256" },
-              { "name": "baseOutputs", "type": "DutchOutput[]" }
-            ]
-          },
-          "primaryType": "PermitWitnessTransferFrom"
-        }
-      ]
-    }
-  },
   "display": {
     "formats": {
-      "PermitWitnessTransferFrom": {
+      "PermitWitnessTransferFrom(TokenPermissions permitted,address spender,uint256 nonce,uint256 deadline,V2DutchOrder witness)DutchOutput(address token,uint256 startAmount,uint256 endAmount,address recipient)OrderInfo(address reactor,address swapper,uint256 nonce,uint256 deadline,address additionalValidationContract,bytes additionalValidationData)TokenPermissions(address token,uint256 amount)V2DutchOrder(OrderInfo info,address cosigner,address baseInputToken,uint256 baseInputStartAmount,uint256 baseInputEndAmount,DutchOutput[] baseOutputs)": {
         "intent": "UniswapX V2 Dutch Order",
         "fields": [
           { "path": "spender", "label": "Approve to spender", "format": "raw" },
@@ -72,9 +26,13 @@
               { "path": "recipient", "label": "On Address", "format": "raw" }
             ]
           },
-          { "path": "deadline", "label": "Approval expire", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "excluded": ["nonce", "witness.info", "witness.cosigner", "witness.baseInputEndAmount", "witness.baseOutputs.[].startAmount"]
+          { "path": "deadline", "label": "Approval expire", "format": "date", "params": { "encoding": "timestamp" } },
+          { "label": "Nonce", "path": "nonce", "visible": "never" },
+          { "label": "Witness Info", "path": "witness.info", "visible": "never" },
+          { "label": "Witness Cosigner", "path": "witness.cosigner", "visible": "never" },
+          { "label": "Witness Base Input End Amount", "path": "witness.baseInputEndAmount", "visible": "never" },
+          { "label": "Witness Base Outputs Start Amount", "path": "witness.baseOutputs.[].startAmount", "visible": "never" }
+        ]
       }
     }
   }

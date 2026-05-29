@@ -1,84 +1,42 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "sAVAX",
-    "contract": {
-      "deployments": [{ "chainId": 43114, "address": "0x2b2c81e08f1af8835a78bb2a90ae924ace0ea4be" }],
-      "abi": [
-        {
-          "inputs": [],
-          "name": "submit",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [{ "internalType": "uint256", "name": "shareAmount", "type": "uint256" }],
-          "name": "requestUnlock",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        { "inputs": [], "name": "redeem", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
-        {
-          "inputs": [{ "internalType": "uint256", "name": "unlockIndex", "type": "uint256" }],
-          "name": "redeem",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        { "inputs": [], "name": "redeemOverdueShares", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
-        {
-          "inputs": [{ "internalType": "uint256", "name": "unlockIndex", "type": "uint256" }],
-          "name": "redeemOverdueShares",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        }
-      ],
-      "addressMatcher": null,
-      "factory": null
-    }
+    "contract": { "deployments": [{ "chainId": 43114, "address": "0x2b2c81e08f1af8835a78bb2a90ae924ace0ea4be" }] }
   },
   "metadata": {
     "owner": "BENQI",
-    "info": { "legalName": "BENQI", "url": "https://benqi.fi" },
-    "constants": { "sAVAXaddress": "0x2b2c81e08f1af8835a78bb2a90ae924ace0ea4be" }
+    "info": { "url": "https://benqi.fi" },
+    "constants": { "sAVAXaddress": "0x2b2c81e08f1af8835a78bb2a90ae924ace0ea4be" },
+    "contractName": "sAVAX"
   },
   "display": {
     "formats": {
       "submit()": {
         "intent": "Stake AVAX",
-        "fields": [{ "label": "Amount to stake", "format": "amount", "path": "@.value", "params": null }],
-        "required": ["@.value"],
-        "excluded": []
+        "fields": [{ "label": "Amount to stake", "format": "amount", "path": "@.value", "visible": "always" }]
       },
-      "requestUnlock(uint256)": {
-        "intent": "Request unstaking sAVAX",
+      "requestUnlock(uint256 shareAmount)": {
+        "intent": "Request unstaking",
         "fields": [
           {
             "label": "sAVAX amount",
             "format": "tokenAmount",
             "path": "#.shareAmount",
-            "params": { "token": "$.metadata.constants.sAVAXaddress" }
+            "params": { "token": "$.metadata.constants.sAVAXaddress" },
+            "visible": "always"
           }
-        ],
-        "required": ["#.shareAmount"],
-        "excluded": []
+        ]
       },
-      "redeem()": { "intent": "Claim unstaked AVAX", "fields": [], "required": [], "excluded": [] },
-      "redeem(uint256)": {
+      "redeem()": { "intent": "Claim unstaked AVAX", "fields": [] },
+      "redeem(uint256 unlockIndex)": {
         "intent": "Claim unstaked AVAX",
-        "fields": [{ "label": "Unlock index", "format": "raw", "path": "#.unlockIndex", "params": null }],
-        "required": ["#.unlockIndex"],
-        "excluded": []
+        "fields": [{ "label": "Unlock index", "format": "raw", "path": "#.unlockIndex", "visible": "always" }]
       },
-      "redeemOverdueShares()": { "intent": "Cancel overdue unlock request", "fields": [], "required": [], "excluded": [] },
-      "redeemOverdueShares(uint256)": {
-        "intent": "Cancel overdue unlock request",
-        "fields": [{ "label": "Unlock index", "format": "raw", "path": "#.unlockIndex", "params": null }],
-        "required": ["#.unlockIndex"],
-        "excluded": []
+      "redeemOverdueShares()": { "intent": "Redeem Overdue", "fields": [] },
+      "redeemOverdueShares(uint256 unlockIndex)": {
+        "intent": "Redeem sAVAX",
+        "fields": [{ "label": "Unlock index", "format": "raw", "path": "#.unlockIndex", "visible": "always" }]
       }
     }
   }
