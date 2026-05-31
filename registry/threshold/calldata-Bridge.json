@@ -1,0 +1,199 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Threshold tBTC Bridge",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x5e4861a80B55f035D899f66772117F00FA0E8e7B"
+        },
+        {
+          "chainId": 11155111,
+          "address": "0x9b1a7fE5a16A15F2f9475C5B231750598b113403"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Threshold Network",
+    "info": { "url": "https://threshold.network/" },
+    "contractName": "tBTC Bridge"
+  },
+  "display": {
+    "formats": {
+      "revealDeposit((bytes4 version, bytes inputVector, bytes outputVector, bytes4 locktime) fundingTx, (uint32 fundingOutputIndex, bytes8 blindingFactor, bytes20 walletPubKeyHash, bytes20 refundPubKeyHash, bytes4 refundLocktime, address vault) reveal)": {
+        "$id": "revealDeposit",
+        "intent": "Reveal tBTC deposit",
+        "fields": [
+          {
+            "path": "reveal.fundingOutputIndex",
+            "label": "Funding output",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "reveal.walletPubKeyHash",
+            "label": "Wallet pubkey hash",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "reveal.refundPubKeyHash",
+            "label": "Refund pubkey hash",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "reveal.refundLocktime",
+            "label": "Refund locktime",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "reveal.vault",
+            "label": "Vault",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "fundingTx.version",
+            "label": "Bitcoin tx version",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "fundingTx.inputVector",
+            "label": "Bitcoin inputs",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "fundingTx.outputVector",
+            "label": "Bitcoin outputs",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "fundingTx.locktime",
+            "label": "Bitcoin locktime",
+            "format": "raw",
+            "visible": "optional"
+          }
+        ]
+      },
+      "revealDepositWithExtraData((bytes4 version, bytes inputVector, bytes outputVector, bytes4 locktime) fundingTx, (uint32 fundingOutputIndex, bytes8 blindingFactor, bytes20 walletPubKeyHash, bytes20 refundPubKeyHash, bytes4 refundLocktime, address vault) reveal, bytes32 extraData)": {
+        "$id": "revealDepositWithExtraData",
+        "intent": "Reveal cross-chain deposit",
+        "fields": [
+          {
+            "path": "reveal.fundingOutputIndex",
+            "label": "Funding output",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "reveal.walletPubKeyHash",
+            "label": "Wallet pubkey hash",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "reveal.refundPubKeyHash",
+            "label": "Refund pubkey hash",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "reveal.refundLocktime",
+            "label": "Refund locktime",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "reveal.vault",
+            "label": "Vault",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "extraData",
+            "label": "Deposit owner data",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "fundingTx.version",
+            "label": "Bitcoin tx version",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "fundingTx.inputVector",
+            "label": "Bitcoin inputs",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "fundingTx.outputVector",
+            "label": "Bitcoin outputs",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "fundingTx.locktime",
+            "label": "Bitcoin locktime",
+            "format": "raw",
+            "visible": "optional"
+          }
+        ]
+      },
+      "requestRedemption(bytes20 walletPubKeyHash, (bytes32 txHash, uint32 txOutputIndex, uint64 txOutputValue) mainUtxo, bytes redeemerOutputScript, uint64 amount)": {
+        "$id": "requestRedemption",
+        "intent": "Request tBTC redemption",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "unit",
+            "params": { "base": "BTC", "decimals": 8, "prefix": false },
+            "visible": "always"
+          },
+          {
+            "path": "walletPubKeyHash",
+            "label": "Wallet pubkey hash",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "redeemerOutputScript",
+            "label": "BTC output script",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "mainUtxo.txHash",
+            "label": "Main UTXO tx",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "mainUtxo.txOutputIndex",
+            "label": "Main UTXO index",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "mainUtxo.txOutputValue",
+            "label": "Main UTXO value",
+            "format": "unit",
+            "params": { "base": "BTC", "decimals": 8, "prefix": false },
+            "visible": "optional"
+          }
+        ]
+      }
+    }
+  }
+}

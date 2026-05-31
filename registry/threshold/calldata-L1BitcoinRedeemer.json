@@ -1,0 +1,64 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Threshold L1 Bitcoin Redeemer",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x5D4d83aaB53B7E7cA915AEB2d4d3f4e03823DbDe"
+        },
+        {
+          "chainId": 11155111,
+          "address": "0xe8312BD306512c5CAD4D650df373D5597B1C697A"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Threshold Network",
+    "info": { "url": "https://threshold.network/" },
+    "contractName": "L1BitcoinRedeemer"
+  },
+  "display": {
+    "formats": {
+      "requestRedemption(bytes20 walletPubKeyHash, (bytes32 txHash, uint32 txOutputIndex, uint64 txOutputValue) mainUtxo, bytes encodedVm)": {
+        "$id": "requestRedemption",
+        "intent": "Request cross-chain redemption",
+        "fields": [
+          {
+            "path": "walletPubKeyHash",
+            "label": "Wallet pubkey hash",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "encodedVm",
+            "label": "Wormhole message",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "mainUtxo.txHash",
+            "label": "Main UTXO tx",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "mainUtxo.txOutputIndex",
+            "label": "Main UTXO index",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "mainUtxo.txOutputValue",
+            "label": "Main UTXO value",
+            "format": "unit",
+            "params": { "base": "BTC", "decimals": 8, "prefix": false },
+            "visible": "optional"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # ERC-7730 (Clear Signing Metadata) Registry
 
-The objective of ERC-7730 is to establish a standardized method for clear signing contracts and messages on EVM chains, by offering metadata formatting that complements ABIs and message types. To learn more about the ERC-7730 standard, visit [Ledger Developer Portal](https://developers.ledger.com/docs/clear-signing/erc7730).
+The objective of ERC-7730 is to establish a standardized method for clear signing contracts and messages on EVM chains, by offering metadata formatting that complements ABIs and message types. To learn more about the ERC-7730 standard, available tooling and adoption, visit [Clearsigning.org](https://clearsigning.org).
 
 This repository maintains records of past and current metadata files in the `registry` directory.
 
@@ -32,16 +32,15 @@ ercs/
 
 ## Submission Process
 
-- Submit the files through a pull request to this registry repository, following the requirements below.
-- After your PR is accepted, the submitted files are automatically imported in the Ledger Cryptoassets list, which allows users to clear sign.
+- Submit the files through a pull request to this registry repository.
+- See https://ethereum.org/developers/tutorials/clear-signing.
 
 ## Pull Request content requirements
 
-- The PR is submitted by a user whose email matches the entity's name.
 - Each PR modifies **only one entity**, meaning it affects only one sub-folder within the top-level `registry` directory.
 - Each entity folder includes **at least one file that is compatible with ERC-7730**, located at the root of the entity's folder.
 - All ERC-7730 compatible files are prefixed with either `calldata` for smart contracts or `eip712` for EIP-712 messages.
-- All ERC-7730 compatible files are correctly validated against the schema file located at `specs/erc7730-v1.schema.json`.
+- All ERC-7730 compatible files are correctly validated against the schema file located at `specs/erc7730-v2.schema.json`.
 - Do not use the `calldata` or `eip712` prefixes for common files which are included by the ERC-7730 files and placed at the top level of the entity folder.
 
 ## How to validate
@@ -63,6 +62,23 @@ erc7730 format
 
 # Generate a new descriptor from Etherscan
 erc7730 generate --address 0xContractAddress --chain-id 1 --owner "Entity Name" --url "https://entity.url"
+```
+
+### Optional: using uv instead of pip
+
+If you have [uv](https://docs.astral.sh/uv/) installed, you can skip the install step and run `erc7730` ad-hoc with `uvx`:
+
+```bash
+# Run any erc7730 command without installing it first
+uvx erc7730 lint registry/**/eip712-*.json registry/**/calldata-*.json
+uvx erc7730 format
+```
+
+Or install it as a persistent uv-managed tool:
+
+```bash
+uv tool install erc7730
+erc7730 lint registry/
 ```
 
 For more information about the ERC-7730 tools, visit the [erc7730 package on PyPI](https://pypi.org/project/erc7730/).

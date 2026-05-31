@@ -1,0 +1,70 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Threshold L2 Bitcoin Redeemer",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 8453,
+          "address": "0xe931F1Ac6B00400E1dAD153E184afeE164d2D88B"
+        },
+        {
+          "chainId": 42161,
+          "address": "0xd7Cd996a47b3293d4FEc2dBcF49692370334d9b7"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Threshold Network",
+    "info": { "url": "https://threshold.network/" },
+    "contractName": "L2BitcoinRedeemer",
+    "enums": {
+      "wormholeChain": {
+        "2": "Ethereum"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "requestRedemption(uint256 amount, uint16 recipientChain, bytes redeemerOutputScript, uint32 nonce)": {
+        "$id": "requestRedemption",
+        "intent": "Redeem L2 tBTC to Bitcoin",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "unit",
+            "params": { "base": "tBTC", "decimals": 18, "prefix": false },
+            "visible": "always"
+          },
+          {
+            "path": "recipientChain",
+            "label": "Recipient chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.wormholeChain" },
+            "visible": "always"
+          },
+          {
+            "path": "redeemerOutputScript",
+            "label": "BTC output script",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "nonce",
+            "label": "Nonce",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Wormhole message fee",
+            "format": "amount",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
