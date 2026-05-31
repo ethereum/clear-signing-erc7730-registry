@@ -1,0 +1,37 @@
+name: Run Rust (llbartekll/clear-signing) clear-signing tests
+description: Install llbartekll/clear-signing's cs-test binary via cargo, run it against a .tests.json fixture, and produce a results.json conforming to the format in .github/test-runner-docs/.
+
+inputs:
+  test-file:
+    description: Absolute path to the .tests.json fixture.
+    required: true
+  output:
+    description: Absolute path where results.json should be written.
+    required: true
+
+outputs:
+  results-path:
+    description: Path to the produced results.json.
+    value: ${{ inputs.output }}
+
+runs:
+  using: composite
+  steps:
+    - uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+
+    - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+
+    - name: Install cs-test
+      shell: bash
+      # Pin to a specific commit on llbartekll/clear-signing main rather than
+      # tracking the moving branch HEAD — keeps CI runs deterministic.
+      run: |
+        cargo install --git https://github.com/llbartekll/clear-signing \
+          --rev f865c5b708031451d9581cfd75ac2ff2dae6d5d4 --locked cs-test
+
+    - name: Run tests
+      shell: bash
+      env:
+        TEST_FILE: ${{ inputs.test-file }}
+        OUTPUT: ${{ inputs.output }}
+      run: cs-test run "$TEST_FILE" --output "$OUTPUT"

@@ -3,7 +3,7 @@ name: Clear Signing Tests
 on:
   pull_request:
     paths:
-      - 'registry/**/*.json'
+      - "registry/**/*.json"
 
   pull_request_target:
     types: [labeled]
@@ -18,8 +18,6 @@ permissions:
 
 env:
   FORCE_COLOR: "1"
-  DMK_REPO: "LedgerHQ/device-sdk-ts"
-  DMK_REF: "develop"
   RUN_TESTS_LABEL: "run-tests"
 
 jobs:
@@ -28,42 +26,51 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       can_run_tests: ${{ steps.check.outputs.can_run_tests }}
-      is_fork: ${{ steps.check.outputs.is_fork }}
+      is_cross_repo: ${{ steps.check.outputs.is_cross_repo }}
     steps:
       - name: Check if tests can run
         id: check
         env:
-          IS_FORK: ${{ github.event.pull_request.head.repo.fork }}
+          # Cross-repo = PR head lives in a different repo than the base. That is the
+          # only case where the head SHA is untrusted code that could exfiltrate
+          # secrets if run unattended. Intra-repo PRs (including within a fork) are
+          # safe — the head is already part of the repo a maintainer controls.
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.event.pull_request.base.repo.full_name }}
           EVENT_ACTION: ${{ github.event.action }}
           LABEL_NAME: ${{ github.event.label.name }}
         run: |
-          echo "is_fork=$IS_FORK" >> $GITHUB_OUTPUT
+          IS_CROSS_REPO="false"
+          if [[ "$HEAD_REPO" != "$BASE_REPO" ]]; then
+            IS_CROSS_REPO="true"
+          fi
+          echo "is_cross_repo=$IS_CROSS_REPO" >> $GITHUB_OUTPUT
 
-          # Check if the run-tests label was just added
+          # Was the run-tests label just added?
           IS_LABELED="false"
           if [[ "$EVENT_ACTION" == "labeled" && "$LABEL_NAME" == "$RUN_TESTS_LABEL" ]]; then
             IS_LABELED="true"
           fi
 
           # Can run tests if:
-          # 1. Not a fork (internal PR), OR
-          # 2. Fork PR with run-tests label added by maintainer
-          if [[ "$IS_FORK" != "true" ]] || [[ "$IS_LABELED" == "true" ]]; then
+          # 1. Same-repo PR (head and base are the same repo — already trusted), OR
+          # 2. Cross-repo PR with run-tests label added by a maintainer
+          if [[ "$IS_CROSS_REPO" != "true" ]] || [[ "$IS_LABELED" == "true" ]]; then
             echo "can_run_tests=true" >> $GITHUB_OUTPUT
           else
             echo "can_run_tests=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Save PR metadata for fork notification
-        if: steps.check.outputs.is_fork == 'true' && steps.check.outputs.can_run_tests == 'false'
+      - name: Save PR metadata for cross-repo notification
+        if: steps.check.outputs.is_cross_repo == 'true' && steps.check.outputs.can_run_tests == 'false'
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           echo "{\"pr_number\": $PR_NUMBER, \"needs_notification\": true}" > pr-metadata.json
 
       - name: Upload PR metadata
-        if: steps.check.outputs.is_fork == 'true' && steps.check.outputs.can_run_tests == 'false'
-        uses: actions/upload-artifact@v7.0.1
+        if: steps.check.outputs.is_cross_repo == 'true' && steps.check.outputs.can_run_tests == 'false'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: pr-metadata
           path: pr-metadata.json
@@ -78,28 +85,27 @@ jobs:
       has_tests: ${{ steps.detect.outputs.has_tests }}
       test_matrix: ${{ steps.detect.outputs.test_matrix }}
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           # For pull_request_target, checkout the PR head
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Checkout base scripts
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ github.event.pull_request.base.sha }}
           path: base-scripts
           sparse-checkout: .github/scripts
 
-      - name: Get changed descriptor files
+      - name: Get changed descriptors and test files
         id: changed-files
-        uses: tj-actions/changed-files@v47.0.5
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
         with:
           files: |
             registry/**/calldata-*.json
             registry/**/eip712-*.json
           files_ignore: |
-            registry/**/tests/**
-            registry/**/*.tests.json
+            registry/**/testsv2/**
 
       - name: Detect test files for changed descriptors
         id: detect
@@ -108,22 +114,38 @@ jobs:
         run: |
           TEST_ENTRIES=()
           HAS_TESTS="false"
+          declare -A SEEN
 
           for file in $CHANGED_FILES; do
-            descriptor_name=$(basename "$file" .json)
-            descriptor_dir=$(dirname "$file")
-            test_file="${descriptor_dir}/tests/${descriptor_name}.tests.json"
+            # Map either a changed descriptor or a changed test file to (descriptor, test_file)
+            if [[ "$file" == */tests/*.tests.json ]]; then
+              test_file="$file"
+              descriptor_name=$(basename "$file" .tests.json)
+              entity_dir=$(dirname "$(dirname "$file")")
+              descriptor="${entity_dir}/${descriptor_name}.json"
+            else
+              descriptor="$file"
+              descriptor_name=$(basename "$file" .json)
+              entity_dir=$(dirname "$file")
+              test_file="${entity_dir}/tests/${descriptor_name}.tests.json"
+            fi
 
-            # Infer test type from filename
+            # Infer test type from descriptor name
+            test_type=""
             [[ "$descriptor_name" == calldata-* ]] && test_type="calldata"
             [[ "$descriptor_name" == eip712-* ]] && test_type="eip712"
             [[ -z "$test_type" ]] && continue
 
-            if [ -f "$test_file" ]; then
-              HAS_TESTS="true"
-              entity=$(echo "$descriptor_dir" | sed 's|registry/||' | cut -d'/' -f1)
-              TEST_ENTRIES+=("{\"descriptor\":\"$file\",\"test_file\":\"$test_file\",\"test_type\":\"$test_type\",\"entity\":\"$entity\",\"descriptor_name\":\"$descriptor_name\"}")
-            fi
+            # Dedupe (PR may change both descriptor and test file)
+            [[ -n "${SEEN[$descriptor]:-}" ]] && continue
+            SEEN[$descriptor]=1
+
+            # Skip if either file is missing on disk
+            [[ -f "$descriptor" && -f "$test_file" ]] || continue
+
+            HAS_TESTS="true"
+            entity=$(echo "$entity_dir" | sed 's|registry/||' | cut -d'/' -f1)
+            TEST_ENTRIES+=("{\"descriptor\":\"$descriptor\",\"test_file\":\"$test_file\",\"test_type\":\"$test_type\",\"entity\":\"$entity\",\"descriptor_name\":\"$descriptor_name\"}")
           done
 
           if [ "$HAS_TESTS" == "true" ]; then
@@ -146,144 +168,31 @@ jobs:
         device: [flex]
     steps:
       - name: Checkout registry
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           path: registry
 
-      - name: Checkout base scripts
-        uses: actions/checkout@v6.0.2
+      - name: Checkout base scripts and actions
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ github.event.pull_request.base.sha }}
           path: base-scripts
-          sparse-checkout: .github/scripts
+          sparse-checkout: .github
 
-      - name: Checkout device-management-kit
-        uses: actions/checkout@v6.0.2
+      - name: Run Ledger clear-signing tests
+        uses: ./base-scripts/.github/actions/run-ledger-tests
         with:
-          repository: ${{ env.DMK_REPO }}
-          ref: ${{ env.DMK_REF }}
-          path: dmk
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-
-      - uses: pnpm/action-setup@v5
-        with:
-          version: 9
-
-      - name: Install and build
-        working-directory: dmk
-        run: |
-          pnpm install
-          pnpm build:libs
-
-      - name: Generate token for coin-apps
-        id: generate-token
-        uses: actions/create-github-app-token@v3
-        with:
-          app-id: ${{ secrets.GH_BOT_APP_ID }}
-          private-key: ${{ secrets.GH_BOT_PRIVATE_KEY }}
-          owner: LedgerHQ
-          repositories: coin-apps
-
-      - name: Checkout coin-apps
-        uses: actions/checkout@v6.0.2
-        with:
-          repository: LedgerHQ/coin-apps
-          ref: master
-          token: ${{ steps.generate-token.outputs.token }}
-          path: coin-apps
-          sparse-checkout: ${{ matrix.device }}/*/Ethereum/*.elf
-          sparse-checkout-cone-mode: false
-
-      - name: Pull Speculos Docker image
-        run: docker pull ghcr.io/ledgerhq/speculos
-
-      - name: Prepare test inputs
-        env:
-          TEST_FILE: ${{ matrix.test.test_file }}
-        run: |
-          mkdir -p test-inputs screenshots
-          jq '.tests' "registry/$TEST_FILE" > test-inputs/tests.json
-
-      - name: Resolve descriptor includes
-        env:
-          DESCRIPTOR: ${{ matrix.test.descriptor }}
-          WORKSPACE: ${{ github.workspace }}
-        run: |
-          node "$WORKSPACE/base-scripts/.github/scripts/resolve-erc7730-includes.js" \
-            "$WORKSPACE/registry/$DESCRIPTOR" \
-            "$WORKSPACE/test-inputs/resolved-descriptor.json"
-
-      - name: Run clear signing tests
-        id: run-tests
-        working-directory: dmk
-        env:
-          FORCE_COLOR: "0"
-          GATING_TOKEN: ${{ secrets.GATING_TOKEN }}
-          COIN_APPS_PATH: "${{ github.workspace }}/coin-apps"
-          WORKSPACE: ${{ github.workspace }}
-          TEST_TYPE: ${{ matrix.test.test_type }}
-          DEVICE: ${{ matrix.device }}
-        run: |
-          CMD=$([[ "$TEST_TYPE" == "calldata" ]] && echo "raw-file" || echo "typed-data-file")
-
-          set +e
-          pnpm cs-tester cli $CMD "$WORKSPACE/test-inputs/tests.json" \
-            --device "$DEVICE" \
-            --erc7730-files "$WORKSPACE/test-inputs/resolved-descriptor.json" \
-            --screenshot-folder-path "$WORKSPACE/screenshots" \
-            --log-level info 2>&1 | tee test-output.log
-          EXIT_CODE=${PIPESTATUS[0]}
-          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
-
-      - name: Write job summary
-        if: always()
-        working-directory: dmk
-        env:
-          ENTITY: ${{ matrix.test.entity }}
-          DESCRIPTOR_NAME: ${{ matrix.test.descriptor_name }}
-          DEVICE: ${{ matrix.device }}
-          EXIT_CODE: ${{ steps.run-tests.outputs.exit_code }}
-        run: |
-          echo "## $ENTITY / $DESCRIPTOR_NAME ($DEVICE)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          if [ "$EXIT_CODE" == "0" ]; then
-            echo "✅ **All tests passed (clear signed)**" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "⚠️ **Exit code: $EXIT_CODE**" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Test Output (last 30 lines)" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          tail -30 test-output.log >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "No output available"
-          echo '```' >> $GITHUB_STEP_SUMMARY
-
-      - name: Upload screenshots
-        if: always()
-        env:
-          EXIT_CODE: ${{ steps.run-tests.outputs.exit_code }}
-        run: |
-          # Save exit code for PR comment
-          echo "$EXIT_CODE" > screenshots/exit_code.txt
-      - uses: actions/upload-artifact@v7.0.1
-        if: always()
-        with:
-          name: screenshots-${{ matrix.device }}-${{ matrix.test.entity }}-${{ matrix.test.descriptor_name }}
-          path: screenshots/
-          retention-days: 30
-
-      - name: Upload logs
-        if: always()
-        uses: actions/upload-artifact@v7.0.1
-        with:
-          name: logs-${{ matrix.device }}-${{ matrix.test.entity }}-${{ matrix.test.descriptor_name }}
-          path: dmk/test-output.log
-          retention-days: 7
+          registry-path: ${{ github.workspace }}/registry
+          descriptor: ${{ matrix.test.descriptor }}
+          test-file: ${{ matrix.test.test_file }}
+          test-type: ${{ matrix.test.test_type }}
+          device: ${{ matrix.device }}
+          entity: ${{ matrix.test.entity }}
+          descriptor-name: ${{ matrix.test.descriptor_name }}
+          gh-bot-app-id: ${{ secrets.GH_BOT_APP_ID }}
+          gh-bot-private-key: ${{ secrets.GH_BOT_PRIVATE_KEY }}
+          gating-token: ${{ secrets.GATING_TOKEN }}
 
   post-results:
     name: Post results to PR
@@ -291,12 +200,12 @@ jobs:
     if: always() && needs.detect-tests.outputs.has_tests == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           path: artifacts
 
       - name: Post PR comment
-        uses: actions/github-script@v9.0.0
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             const fs = require('fs');
@@ -342,40 +251,379 @@ jobs:
               await github.rest.issues.createComment({ ...params, issue_number: context.issue.number });
             }
 
-  notify-missing-tests:
-    name: Notify missing tests
-    needs: [check-permissions, detect-tests]
-    if: needs.check-permissions.outputs.can_run_tests == 'true' && needs.detect-tests.outputs.has_tests == 'false'
+  detect-testsv2:
+    name: Detect testsv2 files
+    needs: check-permissions
+    if: needs.check-permissions.outputs.can_run_tests == 'true'
     runs-on: ubuntu-latest
+    outputs:
+      has_tests: ${{ steps.detect.outputs.has_tests }}
+      test_matrix: ${{ steps.detect.outputs.test_matrix }}
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Check for changed descriptors
-        id: check
-        uses: tj-actions/changed-files@v47.0.5
+      - name: Get changed descriptors and testsv2 files
+        id: changed-files
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
         with:
           files: |
             registry/**/calldata-*.json
             registry/**/eip712-*.json
-          files_ignore: registry/**/tests/**
+          files_ignore: |
+            registry/**/tests/**
 
-      - name: Post comment
-        if: steps.check.outputs.any_changed == 'true'
-        uses: actions/github-script@v9.0.0
+      - name: Detect testsv2 files for changed descriptors
+        id: detect
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        run: |
+          TEST_ENTRIES=()
+          HAS_TESTS="false"
+          declare -A SEEN
+
+          for file in $CHANGED_FILES; do
+            # Map either a changed descriptor or a changed shared-test file to (descriptor, test_file)
+            if [[ "$file" == */testsv2/*.tests.json ]]; then
+              test_file="$file"
+              descriptor_name=$(basename "$file" .tests.json)
+              entity_dir=$(dirname "$(dirname "$file")")
+              descriptor="${entity_dir}/${descriptor_name}.json"
+            else
+              descriptor="$file"
+              descriptor_name=$(basename "$file" .json)
+              entity_dir=$(dirname "$file")
+              test_file="${entity_dir}/testsv2/${descriptor_name}.tests.json"
+            fi
+
+            # Filter on descriptor prefix
+            case "$descriptor_name" in
+              calldata-*|eip712-*) ;;
+              *) continue ;;
+            esac
+
+            # Dedupe (PR may change both descriptor and test file)
+            [[ -n "${SEEN[$descriptor]:-}" ]] && continue
+            SEEN[$descriptor]=1
+
+            # Skip if either file is missing on disk
+            [[ -f "$descriptor" && -f "$test_file" ]] || continue
+
+            HAS_TESTS="true"
+            entity=$(echo "$entity_dir" | sed 's|registry/||' | cut -d'/' -f1)
+            TEST_ENTRIES+=("{\"descriptor\":\"$descriptor\",\"test_file\":\"$test_file\",\"entity\":\"$entity\",\"descriptor_name\":\"$descriptor_name\"}")
+          done
+
+          if [ "$HAS_TESTS" == "true" ]; then
+            MATRIX_JSON=$(printf '%s\n' "${TEST_ENTRIES[@]}" | jq -sc '.')
+            echo "test_matrix=$MATRIX_JSON" >> $GITHUB_OUTPUT
+          else
+            echo "test_matrix=[]" >> $GITHUB_OUTPUT
+          fi
+          echo "has_tests=$HAS_TESTS" >> $GITHUB_OUTPUT
+
+  sourcify-tests:
+    name: Sourcify tests for ${{ matrix.test.entity }}/${{ matrix.test.descriptor_name }}
+    needs: [check-permissions, detect-testsv2]
+    if: needs.detect-testsv2.outputs.has_tests == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test: ${{ fromJson(needs.detect-testsv2.outputs.test_matrix) }}
+    steps:
+      - name: Checkout registry
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: registry
+
+      - name: Checkout base scripts and actions
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base-scripts
+          sparse-checkout: .github
+
+      - name: Run Sourcify clear-signing tests
+        uses: ./base-scripts/.github/actions/run-sourcify-tests
+        with:
+          test-file: ${{ github.workspace }}/registry/${{ matrix.test.test_file }}
+          output: ${{ github.workspace }}/results.json
+
+      - name: Upload results
+        if: always()
+        uses: ./base-scripts/.github/actions/upload-test-results
+        with:
+          results-path: ${{ github.workspace }}/results.json
+          implementation-slug: sourcify-ts-clear-signing
+          entity: ${{ matrix.test.entity }}
+          descriptor-name: ${{ matrix.test.descriptor_name }}
+
+  rust-tests:
+    name: Rust tests for ${{ matrix.test.entity }}/${{ matrix.test.descriptor_name }}
+    needs: [check-permissions, detect-testsv2]
+    if: needs.detect-testsv2.outputs.has_tests == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test: ${{ fromJson(needs.detect-testsv2.outputs.test_matrix) }}
+    steps:
+      - name: Checkout registry
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: registry
+
+      - name: Checkout base scripts and actions
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base-scripts
+          sparse-checkout: .github
+
+      - name: Run Rust clear-signing tests
+        uses: ./base-scripts/.github/actions/run-rust-tests
+        with:
+          test-file: ${{ github.workspace }}/registry/${{ matrix.test.test_file }}
+          output: ${{ github.workspace }}/results.json
+
+      - name: Upload results
+        if: always()
+        uses: ./base-scripts/.github/actions/upload-test-results
+        with:
+          results-path: ${{ github.workspace }}/results.json
+          implementation-slug: rust-clear-signing
+          entity: ${{ matrix.test.entity }}
+          descriptor-name: ${{ matrix.test.descriptor_name }}
+
+  post-implementation-results:
+    name: Post implementation results to PR
+    needs: [check-permissions, detect-testsv2, sourcify-tests, rust-tests]
+    if: always() && needs.detect-testsv2.outputs.has_tests == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout registry (PR head)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: registry
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          path: artifacts
+          pattern: results__*
+          merge-multiple: true
+
+      - name: Post PR comment
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
-            const body = `## Clear Signing Tests\n\n> ℹNo test files found for the changed descriptors.\n\nCreate a test file at \`registry/<entity>/tests/<descriptor-name>.tests.json\`\n\nSee [testing documentation](../blob/master/README.md#reference-test-cases) for details.`;
+            const fs = require('fs');
+            const path = require('path');
+
+            const STATUS_ICONS = { pass: '✅', fail: '❌', error: '⚠️', skipped: '⏭️' };
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const workspace = process.env.GITHUB_WORKSPACE;
+            const artifactsRoot = path.join(workspace, 'artifacts');
+            const registryRoot = path.join(workspace, 'registry');
+
+            // Each artifact is uploaded as a single file named
+            // `<slug>__<entity>__<descriptor>.json`. With merge-multiple: true
+            // they all land flat in artifactsRoot, with no collisions.
+            let resultFiles = [];
+            try {
+              const entries = fs.readdirSync(artifactsRoot);
+              core.info(`Found ${entries.length} entries under ${artifactsRoot}: ${JSON.stringify(entries)}`);
+              resultFiles = entries.filter(f => f.endsWith('.json'));
+            } catch (e) {
+              core.warning(`Could not read ${artifactsRoot}: ${e.message}`);
+            }
+            core.info(`Matched ${resultFiles.length} result JSON files`);
+
+            let body = '## Clear Signing Tests\n\n';
+            // If anything went wrong (no results, or any non-pass case) we set
+            // this and fail the job at the end — block PRs from being merged
+            // with failing or erroring cases.
+            let failureReason = null;
+
+            if (resultFiles.length === 0) {
+              body += '> No implementation test results found.\n';
+              failureReason = 'Expected runner results but none were uploaded.';
+            } else {
+              // rows: keyed by entity|descriptor|description
+              // each row stores per-impl status + rendered (for diff blocks) + message
+              const rows = new Map();
+              const impls = new Set();
+
+              // Cache test file lookups so we don't re-read the same file
+              const testFileCache = new Map();
+              const loadExpected = (entity, descriptor, description) => {
+                const key = `${entity}/${descriptor}`;
+                if (!testFileCache.has(key)) {
+                  const testPath = path.join(registryRoot, 'registry', entity, 'testsv2', `${descriptor}.tests.json`);
+                  try {
+                    testFileCache.set(key, JSON.parse(fs.readFileSync(testPath, 'utf8')));
+                  } catch (e) {
+                    core.warning(`Could not read ${testPath}: ${e.message}`);
+                    testFileCache.set(key, null);
+                  }
+                }
+                const doc = testFileCache.get(key);
+                if (!doc || !Array.isArray(doc.tests)) return null;
+                const t = doc.tests.find(t => t.description === description);
+                return t ? t.expected : null;
+              };
+
+              for (const file of resultFiles) {
+                const filePath = path.join(artifactsRoot, file);
+                let data;
+                try { data = JSON.parse(fs.readFileSync(filePath, 'utf8')); }
+                catch (e) { core.warning(`Could not parse ${file}: ${e.message}`); continue; }
+                const impl = data.implementation || file;
+                impls.add(impl);
+                // filename: <slug>__<entity>__<descriptor>.json
+                const base = file.replace(/\.json$/, '');
+                const parts = base.split('__');
+                const entity = parts[1];
+                const descriptor = parts[2];
+                for (const c of data.cases || []) {
+                  const key = `${entity}|${descriptor}|${c.description}`;
+                  if (!rows.has(key)) rows.set(key, { entity, descriptor, description: c.description, byImpl: {} });
+                  rows.get(key).byImpl[impl] = {
+                    status: c.status,
+                    rendered: c.rendered,
+                    message: c.message,
+                  };
+                }
+              }
+
+              const implList = [...impls].sort();
+
+              // --- Compact status table ---
+              const header = ['Entity', 'Descriptor', 'Case', ...implList].join(' | ');
+              const sep = ['---', '---', '---', ...implList.map(() => ':---:')].join(' | ');
+              body += `| ${header} |\n| ${sep} |\n`;
+              for (const r of rows.values()) {
+                const cells = implList.map(i => STATUS_ICONS[(r.byImpl[i] || {}).status] || '—');
+                body += `| ${r.entity} | ${r.descriptor} | ${r.description} | ${cells.join(' | ')} |\n`;
+              }
+              body += '\n✅ pass · ❌ fail · ⚠️ error · ⏭️ skipped · — not run\n';
+
+              // --- Details for non-pass cases ---
+              const details = [];
+              for (const r of rows.values()) {
+                for (const impl of implList) {
+                  const result = r.byImpl[impl];
+                  if (!result || result.status === 'pass') continue;
+                  const icon = STATUS_ICONS[result.status] || '?';
+                  const summary = `${icon} ${r.entity}/${r.descriptor} · ${r.description} · \`${impl}\``;
+                  let block = `<details>\n<summary>${summary}</summary>\n\n`;
+                  if (result.message) {
+                    block += `> ${result.message}\n\n`;
+                  }
+                  if (result.status === 'fail') {
+                    const expected = loadExpected(r.entity, r.descriptor, r.description);
+                    block += '**Expected:**\n\n```json\n';
+                    block += expected != null ? JSON.stringify(expected, null, 2) : '(could not load expected from test file)';
+                    block += '\n```\n\n';
+                    block += '**Got:**\n\n```json\n';
+                    block += result.rendered != null ? JSON.stringify(result.rendered, null, 2) : '(no rendered output)';
+                    block += '\n```\n';
+                  }
+                  block += '\n</details>\n';
+                  details.push(block);
+                }
+              }
+              if (details.length > 0) {
+                body += '\n### Details\n\n' + details.join('\n');
+              }
+
+              // Count non-pass (case, implementation) pairs.
+              let nonPass = 0;
+              for (const r of rows.values()) {
+                for (const impl of implList) {
+                  const result = r.byImpl[impl];
+                  if (result && result.status !== 'pass') nonPass++;
+                }
+              }
+              if (nonPass > 0) {
+                failureReason = `${nonPass} case/runner combination(s) did not pass.`;
+              }
+
+              body += `\n📋 [View test details](${runUrl})\n`;
+            }
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number
             });
-            const existing = comments.find(c => c.user.type === 'Bot' && c.body.includes('Clear Signing Tests'));
+            const existing = comments.find(c => c.user.type === 'Bot' && c.body.startsWith('## Clear Signing Tests'));
 
             const params = { owner: context.repo.owner, repo: context.repo.repo, body };
             if (existing) {
               await github.rest.issues.updateComment({ ...params, comment_id: existing.id });
             } else {
               await github.rest.issues.createComment({ ...params, issue_number: context.issue.number });
+            }
+
+            // Comment is posted first so reviewers can see the table even
+            // when the run is marked failed.
+            if (failureReason) {
+              core.setFailed(failureReason);
+            }
+
+  notify-missing-tests:
+    name: Notify missing testsv2
+    needs: [check-permissions, detect-testsv2]
+    if: needs.check-permissions.outputs.can_run_tests == 'true' && needs.detect-testsv2.outputs.has_tests == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Check for changed descriptors
+        id: check
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
+        with:
+          files: |
+            registry/**/calldata-*.json
+            registry/**/eip712-*.json
+          files_ignore: |
+            registry/**/tests/**
+            registry/**/testsv2/**
+
+      - name: Post comment
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          ANY_CHANGED: ${{ steps.check.outputs.any_changed }}
+        with:
+          script: |
+            const anyChanged = process.env.ANY_CHANGED === 'true';
+
+            // Same comment as post-implementation-results — exactly one
+            // "## Clear Signing Tests" comment per PR, in either warning or
+            // results state.
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number
+            });
+            const existing = comments.find(c => c.user.type === 'Bot' && c.body.startsWith('## Clear Signing Tests'));
+
+            if (anyChanged) {
+              const body = `## Clear Signing Tests\n\nNo testsv2 files found for the changed descriptors.\n\nCreate a test file at \`registry/<entity>/testsv2/<descriptor-name>.tests.json\`\n\nSee [testing documentation](../blob/master/README.md#reference-test-cases) for details.`;
+              const params = { owner: context.repo.owner, repo: context.repo.repo, body };
+              if (existing) {
+                await github.rest.issues.updateComment({ ...params, comment_id: existing.id });
+              } else {
+                await github.rest.issues.createComment({ ...params, issue_number: context.issue.number });
+              }
+              // Block the PR — descriptor changed without a matching testsv2 file.
+              core.setFailed('Missing testsv2 file(s) for changed descriptors.');
+            } else if (existing) {
+              // No descriptors changed and no testsv2 either — nothing to say. Clear any stale comment.
+              await github.rest.issues.deleteComment({
+                owner: context.repo.owner, repo: context.repo.repo, comment_id: existing.id
+              });
             }

@@ -1,0 +1,182 @@
+name: Run Ledger clear-signing tests
+description: Execute clear-signing tests against the Ledger Speculos emulator using cs-tester from device-sdk-ts.
+
+inputs:
+  registry-path:
+    description: Absolute path to the registry checkout (contains the descriptor and tests files).
+    required: true
+  descriptor:
+    description: Path to the descriptor JSON file, relative to registry-path.
+    required: true
+  test-file:
+    description: Path to the .tests.json file, relative to registry-path.
+    required: true
+  test-type:
+    description: Test type — "calldata" or "eip712".
+    required: true
+  device:
+    description: Device target (e.g. flex).
+    required: true
+  entity:
+    description: Entity name, used for artifact naming.
+    required: true
+  descriptor-name:
+    description: Descriptor base name, used for artifact naming.
+    required: true
+  gh-bot-app-id:
+    description: GitHub App ID for accessing the private coin-apps repository.
+    required: true
+  gh-bot-private-key:
+    description: GitHub App private key.
+    required: true
+  gating-token:
+    description: Gating token for cs-tester.
+    required: true
+
+outputs:
+  exit-code:
+    description: Exit code of the cs-tester run (0 = all tests passed / clear signed).
+    value: ${{ steps.run-tests.outputs.exit_code }}
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout device-management-kit
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        repository: LedgerHQ/device-sdk-ts
+        ref: 2e35ed527c1a9aee852809a39ed2eaf76a415af1 # develop @ 2026-05-28
+        path: dmk
+
+    - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+      with:
+        node-version: '20'
+
+    - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+      with:
+        version: 9
+
+    - name: Install and build
+      shell: bash
+      working-directory: dmk
+      run: |
+        pnpm install
+        pnpm build:libs
+
+    - name: Generate token for coin-apps
+      id: generate-token
+      uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+      with:
+        app-id: ${{ inputs.gh-bot-app-id }}
+        private-key: ${{ inputs.gh-bot-private-key }}
+        owner: LedgerHQ
+        repositories: coin-apps
+
+    - name: Checkout coin-apps
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        repository: LedgerHQ/coin-apps
+        # TODO: pin to a specific commit SHA (coin-apps is private — pin
+        # using a SHA resolved with the CI bot's token).
+        ref: master
+        token: ${{ steps.generate-token.outputs.token }}
+        path: coin-apps
+        sparse-checkout: ${{ inputs.device }}/*/Ethereum/*.elf
+        sparse-checkout-cone-mode: false
+
+    - name: Pull Speculos Docker image
+      shell: bash
+      run: docker pull ghcr.io/ledgerhq/speculos@sha256:9b414c3bcaecb7638224156d36a702d66af812a0aa59ca203ce7b34cf4d590ca
+
+    - name: Prepare test inputs
+      shell: bash
+      env:
+        REGISTRY_PATH: ${{ inputs.registry-path }}
+        TEST_FILE: ${{ inputs.test-file }}
+      run: |
+        mkdir -p test-inputs screenshots
+        jq '.tests' "$REGISTRY_PATH/$TEST_FILE" > test-inputs/tests.json
+
+    - name: Resolve descriptor includes
+      shell: bash
+      env:
+        REGISTRY_PATH: ${{ inputs.registry-path }}
+        DESCRIPTOR: ${{ inputs.descriptor }}
+        WORKSPACE: ${{ github.workspace }}
+        ACTION_PATH: ${{ github.action_path }}
+      run: |
+        node "$ACTION_PATH/../../scripts/resolve-erc7730-includes.js" \
+          "$REGISTRY_PATH/$DESCRIPTOR" \
+          "$WORKSPACE/test-inputs/resolved-descriptor.json"
+
+    - name: Run clear signing tests
+      id: run-tests
+      shell: bash
+      working-directory: dmk
+      env:
+        FORCE_COLOR: "0"
+        GATING_TOKEN: ${{ inputs.gating-token }}
+        COIN_APPS_PATH: ${{ github.workspace }}/coin-apps
+        WORKSPACE: ${{ github.workspace }}
+        TEST_TYPE: ${{ inputs.test-type }}
+        DEVICE: ${{ inputs.device }}
+      run: |
+        CMD=$([[ "$TEST_TYPE" == "calldata" ]] && echo "raw-file" || echo "typed-data-file")
+
+        set +e
+        pnpm cs-tester cli $CMD "$WORKSPACE/test-inputs/tests.json" \
+          --device "$DEVICE" \
+          --erc7730-files "$WORKSPACE/test-inputs/resolved-descriptor.json" \
+          --screenshot-folder-path "$WORKSPACE/screenshots" \
+          --log-level info 2>&1 | tee test-output.log
+        EXIT_CODE=${PIPESTATUS[0]}
+        echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+
+    - name: Write job summary
+      if: always()
+      shell: bash
+      working-directory: dmk
+      env:
+        ENTITY: ${{ inputs.entity }}
+        DESCRIPTOR_NAME: ${{ inputs.descriptor-name }}
+        DEVICE: ${{ inputs.device }}
+        EXIT_CODE: ${{ steps.run-tests.outputs.exit_code }}
+      run: |
+        echo "## $ENTITY / $DESCRIPTOR_NAME ($DEVICE)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        if [ "$EXIT_CODE" == "0" ]; then
+          echo "✅ **All tests passed (clear signed)**" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ **Exit code: $EXIT_CODE**" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Test Output (last 30 lines)" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        tail -30 test-output.log >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "No output available"
+        echo '```' >> $GITHUB_STEP_SUMMARY
+
+    - name: Save exit code for PR comment
+      if: always()
+      shell: bash
+      env:
+        EXIT_CODE: ${{ steps.run-tests.outputs.exit_code }}
+      run: |
+        echo "$EXIT_CODE" > screenshots/exit_code.txt
+
+    - name: Upload screenshots
+      if: always()
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: screenshots-${{ inputs.device }}-${{ inputs.entity }}-${{ inputs.descriptor-name }}
+        path: screenshots/
+        retention-days: 30
+
+    - name: Upload logs
+      if: always()
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: logs-${{ inputs.device }}-${{ inputs.entity }}-${{ inputs.descriptor-name }}
+        path: dmk/test-output.log
+        retention-days: 7
