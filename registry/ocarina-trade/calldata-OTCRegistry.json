@@ -1,0 +1,203 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "OTCRegistry",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x07C0000007b4B558e2fCd47F47A573413B0Caf7C" },
+        { "chainId": 11155111, "address": "0xfc9E05BF732FB5Aeee7e270928F349Ed3FA3cc0D" },
+        { "chainId": 8453, "address": "0x07C00000057b66A84004adD3B0f9164E744354CB" },
+        { "chainId": 137, "address": "0x07C000000e10b73C0506f36BA75E50a5D3147061" },
+        { "chainId": 57073, "address": "0x07C00000025CF03243E6fde1BE86af60D12fbF8f" }
+      ],
+      "abi": [
+        {
+          "type": "function",
+          "name": "registerOrder",
+          "stateMutability": "nonpayable",
+          "inputs": [
+            {
+              "name": "reg",
+              "type": "tuple",
+              "internalType": "struct OrderRegistration",
+              "components": [
+                {
+                  "name": "components",
+                  "type": "tuple",
+                  "internalType": "struct OrderComponents",
+                  "components": [
+                    { "name": "offerer", "type": "address" },
+                    { "name": "zone", "type": "address" },
+                    {
+                      "name": "offer",
+                      "type": "tuple[]",
+                      "components": [
+                        { "name": "itemType", "type": "uint8" },
+                        { "name": "token", "type": "address" },
+                        { "name": "identifierOrCriteria", "type": "uint256" },
+                        { "name": "startAmount", "type": "uint256" },
+                        { "name": "endAmount", "type": "uint256" }
+                      ]
+                    },
+                    {
+                      "name": "consideration",
+                      "type": "tuple[]",
+                      "components": [
+                        { "name": "itemType", "type": "uint8" },
+                        { "name": "token", "type": "address" },
+                        { "name": "identifierOrCriteria", "type": "uint256" },
+                        { "name": "startAmount", "type": "uint256" },
+                        { "name": "endAmount", "type": "uint256" },
+                        { "name": "recipient", "type": "address" }
+                      ]
+                    },
+                    { "name": "orderType", "type": "uint8" },
+                    { "name": "startTime", "type": "uint256" },
+                    { "name": "endTime", "type": "uint256" },
+                    { "name": "zoneHash", "type": "bytes32" },
+                    { "name": "salt", "type": "uint256" },
+                    { "name": "conduitKey", "type": "bytes32" },
+                    { "name": "counter", "type": "uint256" }
+                  ]
+                },
+                { "name": "seaportSignature", "type": "bytes" },
+                { "name": "signature", "type": "bytes" },
+                { "name": "memo", "type": "string" }
+              ]
+            }
+          ],
+          "outputs": []
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Ocarina",
+    "contractName": "OTCRegistry",
+    "info": { "url": "https://ocarina.trade/" },
+    "constants": { "nativeAssetAddress": "0x0000000000000000000000000000000000000000" }
+  },
+  "display": {
+    "formats": {
+      "registerOrder(((address offerer,address zone,(uint8 itemType,address token,uint256 identifierOrCriteria,uint256 startAmount,uint256 endAmount)[] offer,(uint8 itemType,address token,uint256 identifierOrCriteria,uint256 startAmount,uint256 endAmount,address recipient)[] consideration,uint8 orderType,uint256 startTime,uint256 endTime,bytes32 zoneHash,uint256 salt,bytes32 conduitKey,uint256 counter) components,bytes seaportSignature,bytes signature,string memo) reg)": {
+        "intent": "Publish offer",
+        "fields": [
+          {
+            "path": "#.reg.components.offerer",
+            "label": "Maker",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.reg.components.zoneHash.[-20:]",
+            "label": "Taker",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "#.reg.components.offer.[]", "label": "Offer items", "visible": "never" },
+          {
+            "label": "Offer items",
+            "iteration": "bundled",
+            "fields": [
+              { "path": "#.reg.components.offer.[].itemType", "label": "Offer type", "visible": { "mustBe": ["1", "2", "3", "4", "5"] } },
+              {
+                "path": "#.reg.components.offer.[].token",
+                "label": "Offer token",
+                "format": "addressName",
+                "separator": "Offer item {index}",
+                "params": { "types": ["token", "collection", "contract"] },
+                "visible": "always"
+              },
+              {
+                "path": "#.reg.components.offer.[].identifierOrCriteria",
+                "label": "Offer ID/criteria",
+                "format": "raw",
+                "visible": "always"
+              },
+              {
+                "path": "#.reg.components.offer.[].startAmount",
+                "label": "Offer amount",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "#.reg.components.offer.[].token", "nativeCurrencyAddress": "$.metadata.constants.nativeAssetAddress" },
+                "visible": "always"
+              },
+              { "path": "#.reg.components.offer.[].endAmount", "label": "Offer end amount", "visible": "never" }
+            ]
+          },
+          { "path": "#.reg.components.consideration.[]", "label": "Consideration items", "visible": "never" },
+          {
+            "label": "Receive items",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "#.reg.components.consideration.[].itemType",
+                "label": "Receive type",
+                "visible": { "mustBe": ["0", "1", "2", "3", "4", "5"] }
+              },
+              {
+                "path": "#.reg.components.consideration.[].token",
+                "label": "Receive token",
+                "format": "addressName",
+                "separator": "Receive item {index}",
+                "params": { "types": ["token", "collection", "contract"] },
+                "visible": "always"
+              },
+              {
+                "path": "#.reg.components.consideration.[].identifierOrCriteria",
+                "label": "Receive ID/criteria",
+                "format": "raw",
+                "visible": "always"
+              },
+              {
+                "path": "#.reg.components.consideration.[].startAmount",
+                "label": "Receive amount",
+                "format": "tokenAmount",
+                "params": {
+                  "tokenPath": "#.reg.components.consideration.[].token",
+                  "nativeCurrencyAddress": "$.metadata.constants.nativeAssetAddress"
+                },
+                "visible": "always"
+              },
+              { "path": "#.reg.components.consideration.[].recipient", "label": "Receive recipient", "visible": "never" },
+              { "path": "#.reg.components.consideration.[].endAmount", "label": "Receive end amount", "visible": "never" }
+            ]
+          },
+          { "path": "#.reg.components.orderType", "label": "Order type", "visible": { "mustBe": ["2"] } },
+          { "path": "#.reg.components.startTime", "label": "Valid from", "visible": "never" },
+          {
+            "path": "#.reg.components.endTime",
+            "label": "Expires",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "#.reg.memo", "label": "Memo", "format": "raw", "visible": { "ifNotIn": [""] } },
+          {
+            "path": "#.reg.components.zone",
+            "label": "Registry",
+            "visible": {
+              "mustBe": [
+                "0x07C0000007b4B558e2fCd47F47A573413B0Caf7C",
+                "0xfc9E05BF732FB5Aeee7e270928F349Ed3FA3cc0D",
+                "0x07C00000057b66A84004adD3B0f9164E744354CB",
+                "0x07C000000e10b73C0506f36BA75E50a5D3147061",
+                "0x07C00000025CF03243E6fde1BE86af60D12fbF8f"
+              ]
+            }
+          },
+          {
+            "path": "#.reg.components.conduitKey",
+            "label": "Conduit key",
+            "visible": { "mustBe": ["0x0000000000000000000000000000000000000000000000000000000000000000"] }
+          },
+          { "path": "#.reg.components.salt", "label": "Salt", "visible": "never" },
+          { "path": "#.reg.components.counter", "label": "Seaport counter", "visible": "never" },
+          { "path": "#.reg.seaportSignature", "label": "Seaport signature", "visible": "never" },
+          { "path": "#.reg.signature", "label": "Reg signature", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
