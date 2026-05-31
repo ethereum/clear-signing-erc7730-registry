@@ -2,52 +2,40 @@
   "$schema": "../../../specs/erc7730-tests.schema.json",
   "tests": [
     {
-      "description": "Authorize publishing an OTCRegistry offer",
+      "description": "Authorize a real mainnet Ocarina offer registration",
       "data": {
         "types": {
-          "EIP712Domain": [
-            { "name": "name", "type": "string" },
-            { "name": "version", "type": "string" },
-            { "name": "chainId", "type": "uint256" },
-            { "name": "verifyingContract", "type": "address" }
-          ],
           "OrderRegistration": [
             { "name": "orderHash", "type": "bytes32" },
             { "name": "seaportSignature", "type": "bytes" },
             { "name": "memo", "type": "string" }
-          ]
-        },
-        "primaryType": "OrderRegistration",
-        "domain": {
-          "name": "OTCRegistry",
-          "version": "1",
-          "chainId": 8453,
-          "verifyingContract": "0x07C00000057b66A84004adD3B0f9164E744354CB"
-        },
-        "message": {
-          "orderHash": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "seaportSignature": "0x1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
-          "memo": "Test OTCRegistry offer"
-        }
-      },
-      "expectedTexts": [
-        "Authorize offer",
-        "Order hash",
-        "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "Memo",
-        "Test OTCRegistry offer"
-      ]
-    },
-    {
-      "description": "Authorize a USDC support tip",
-      "data": {
-        "types": {
+          ],
           "EIP712Domain": [
             { "name": "name", "type": "string" },
             { "name": "version", "type": "string" },
             { "name": "chainId", "type": "uint256" },
             { "name": "verifyingContract", "type": "address" }
-          ],
+          ]
+        },
+        "domain": {
+          "name": "OTCRegistry",
+          "version": "1",
+          "chainId": "0x1",
+          "verifyingContract": "0x07c0000007b4b558e2fcd47f47a573413b0caf7c"
+        },
+        "primaryType": "OrderRegistration",
+        "message": {
+          "orderHash": "0xf75521532f2e847360ad8aef8ad399d789f3c2355b380a43ed0d298b49d4b198",
+          "seaportSignature": "0x1eb115c809a09b20482c50d0d45e6fdb44ec68c5d43a3a8d99d457786e1cf198f86113f3d027c027407a15bfe245a5259ff6b5eb1e474abe4b790bf8a593a40a",
+          "memo": "Test"
+        }
+      },
+      "expectedTexts": ["Authorize offer", "Order hash", "0xf75521532f2e847360ad8aef8ad399d789f3c2355b380a43ed0d298b49d4b198", "Memo", "Test"]
+    },
+    {
+      "description": "Authorize a real mainnet Ocarina support tip",
+      "data": {
+        "types": {
           "TipAuthorization": [
             { "name": "orderHash", "type": "bytes32" },
             { "name": "fulfiller", "type": "address" },
@@ -60,28 +48,34 @@
             { "name": "identifier", "type": "uint256" },
             { "name": "amount", "type": "uint256" },
             { "name": "recipient", "type": "address" }
+          ],
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
           ]
         },
-        "primaryType": "TipAuthorization",
         "domain": {
           "name": "OTCRegistry",
           "version": "1",
-          "chainId": 8453,
-          "verifyingContract": "0x07C00000057b66A84004adD3B0f9164E744354CB"
+          "chainId": "0x1",
+          "verifyingContract": "0x07c0000007b4b558e2fcd47f47a573413b0caf7c"
         },
+        "primaryType": "TipAuthorization",
         "message": {
-          "orderHash": "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-          "fulfiller": "0x2222222222222222222222222222222222222222",
+          "orderHash": "0xf75521532f2e847360ad8aef8ad399d789f3c2355b380a43ed0d298b49d4b198",
+          "fulfiller": "0xe72651bbc594eea65852959c9a0c8d2e7ae8a46e",
           "tips": [
             {
-              "itemType": 1,
-              "token": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-              "identifier": 0,
+              "itemType": "1",
+              "token": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "identifier": "0",
               "amount": "1000000",
-              "recipient": "0x9a659894e5D115846767dB0e1685744c452E7a6e"
+              "recipient": "0x9a659894e5d115846767db0e1685744c452e7a6e"
             }
           ],
-          "deadline": 1790000600
+          "deadline": "1780190501"
         }
       },
       "expectedTexts": [
@@ -89,11 +83,11 @@
         "Tip amount",
         "1 USDC",
         "Tip to",
-        "0x9a659894e5D115846767dB0e1685744c452E7a6e",
+        "0x9a659894e5d115846767db0e1685744c452e7a6e",
         "Tip from",
-        "0x2222222222222222222222222222222222222222",
+        "0xe72651bbc594eea65852959c9a0c8d2e7ae8a46e",
         "Expires",
-        "2026-09-21 02:23:20 PM UTC"
+        "2026-05-31 01:21:41 AM UTC"
       ]
     },
     {
