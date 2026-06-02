@@ -23,11 +23,13 @@ runs:
 
     - name: Install cs-test
       shell: bash
-      # Pin to a specific commit on llbartekll/clear-signing main rather than
-      # tracking the moving branch HEAD — keeps CI runs deterministic.
+      # Pinned to a specific commit on the fork carrying the array-shape
+      # expected.fields support — keeps CI runs deterministic.
+      # TODO: switch back to upstream llbartekll/clear-signing once it
+      # adopts the array shape (see fork branch `array-shape-expected-fields`).
       run: |
-        cargo install --git https://github.com/llbartekll/clear-signing \
-          --rev f865c5b708031451d9581cfd75ac2ff2dae6d5d4 --locked cs-test
+        cargo install --git https://github.com/manuelwedler/llbartekll-clear-signing \
+          --rev 2da7eafb21dd7a75ddfe4501361756da3a24751c --locked cs-test
 
     - name: Run tests
       shell: bash
