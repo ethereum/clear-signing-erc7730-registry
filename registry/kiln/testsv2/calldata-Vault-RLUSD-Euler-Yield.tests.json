@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-Vault-RLUSD-Euler-Yield.json",
+  "dataProvider": {
+    "tokens": {
+      "0x8292Bb45bf1Ee4d140127049757C2E0fF06317eD": {
+        "symbol": "RLUSD",
+        "decimals": 18,
+        "name": "RLUSD"
+      },
+      "0x11AEE91ED1e5a40443dd0ed21f7CF4d3fD4E0826": {
+        "symbol": "kEulerRLUSD",
+        "decimals": 18,
+        "name": "Kiln Euler RLUSD Vault"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit - chain 1",
+      "rawTx": "0x02f86d01308439f8b2c08439f8b2c0830c85da9411aee91ed1e5a40443dd0ed21f7cf4d3fd4e082680b8446e553f650000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000004d98bae1f73284c093d610f0597411bfa114c48dc0",
+      "txHash": "0x3345db379cc1db2727dc1f03821107df21c5dd8d8b22c7ba11a6174a1e390889",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Kiln",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "1 RLUSD"
+          },
+          {
+            "label": "Share ticker",
+            "value": "kEulerRLUSD"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x4d98BaE1F73284c093d610F0597411Bfa114C48D"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88d01618412afa1608412afa1608308fa7d9411aee91ed1e5a40443dd0ed21f7cf4d3fd4e082680b864ba0876520000000000000000000000000000000000000000000000000ddc9361b61ad9010000000000000000000000004d98bae1f73284c093d610f0597411bfa114c48d0000000000000000000000004d98bae1f73284c093d610f0597411bfa114c48dc0",
+      "txHash": "0xeaf3eacf42e5975c63842fc7400305687cba5d6aa1dbe58cd140366ce39749e0",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Kiln",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "0.998835265245731073 kEulerRLUSD"
+          },
+          {
+            "label": "To",
+            "value": "0x4d98BaE1F73284c093d610F0597411Bfa114C48D"
+          },
+          {
+            "label": "Owner",
+            "value": "0x4d98BaE1F73284c093d610F0597411Bfa114C48D"
+          }
+        ]
+      }
+    }
+  ]
+}

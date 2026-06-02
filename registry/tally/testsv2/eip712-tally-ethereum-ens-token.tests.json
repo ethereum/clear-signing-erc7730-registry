@@ -1,0 +1,75 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-tally-ethereum-ens-token.json",
+  "tests": [
+    {
+      "description": "ENS token",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Delegation": [
+            {
+              "name": "delegatee",
+              "type": "address"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "expiry",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Delegation",
+        "domain": {
+          "name": "Ethereum Name Service",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xC18360217D8F7Ab5e7c516566761Ea12Ce7f9D72"
+        },
+        "message": {
+          "delegatee": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "nonce": 42,
+          "expiry": 1798761600
+        }
+      },
+      "expected": {
+        "intent": "ENS token",
+        "owner": "Ethereum Name Service",
+        "fields": [
+          {
+            "label": "Delegatee",
+            "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+          },
+          {
+            "label": "Nonce",
+            "value": "42"
+          },
+          {
+            "label": "Expiry",
+            "value": "1798761600"
+          }
+        ]
+      }
+    }
+  ]
+}
