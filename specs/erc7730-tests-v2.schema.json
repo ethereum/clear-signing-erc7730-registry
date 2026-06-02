@@ -143,13 +143,25 @@
       "additionalProperties": false
     },
     "fields": {
-      "type": "object",
-      "description": "Field labels mapped to values. Values are strings, or — for calldata-formatted fields — nested objects with the same shape as `renderedOutput` (`intent`, `owner`, `fields`). Nesting is recursive. Group fields are flattened to top-level entries; they are never represented as nested objects.",
-      "additionalProperties": {
-        "oneOf": [
-          { "type": "string" },
-          { "$ref": "#/definitions/renderedOutput" }
-        ]
+      "type": "array",
+      "description": "Ordered list of rendered fields. Each entry is `{label, value}` — labels are not unique because array-iteration paths can produce fields with the same label. Entry order must match the order in the descriptor. `value` is the formatted string, or a nested object with the same shape as `renderedOutput` (`intent`, `owner`, `fields`) for calldata-formatted fields. Nesting is recursive.",
+      "items": {
+        "type": "object",
+        "required": ["label", "value"],
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "The field label as declared in the descriptor (e.g. 'Spender', 'Amount')."
+          },
+          "value": {
+            "description": "The rendered value, either a string or a nested `renderedOutput` for calldata-formatted fields.",
+            "oneOf": [
+              { "type": "string" },
+              { "$ref": "#/definitions/renderedOutput" }
+            ]
+          }
+        },
+        "additionalProperties": false
       }
     }
   }

@@ -116,10 +116,10 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
       "expected": {
         "intent": "Approve",
         "owner": "MyProtocol",
-        "fields": {
-          "Spender": "Treasury",
-          "Amount": "100 USDC"
-        }
+        "fields": [
+          { "label": "Spender", "value": "Treasury" },
+          { "label": "Amount", "value": "100 USDC" }
+        ]
       }
     }
   ]
@@ -144,10 +144,10 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
       "expected": {
         "intent": "Permit",
         "owner": "MyProtocol",
-        "fields": {
-          "Spender": "0x1234...",
-          "Amount": "100 USDC"
-        }
+        "fields": [
+          { "label": "Spender", "value": "0x1234..." },
+          { "label": "Amount", "value": "100 USDC" }
+        ]
       }
     }
   ]
@@ -180,7 +180,7 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
 | `intent` | Yes | The action label shown to the user (e.g. `"Approve"`, `"Swap"`). For descriptors with a templated intent, this is the un-interpolated literal form |
 | `interpolatedIntent` | No | The fully-rendered interpolatedIntent string after substituting template placeholders against the formatted fields (e.g. `"Swap 100 USDC for DAI"`). Omit when the descriptor has no interpolatedIntent |
 | `owner` | Yes | The descriptor owner shown to the user (e.g. `"Aave DAO"`) |
-| `fields` | Yes | Object mapping field labels to displayed values. Values are strings, or nested `{ intent, owner, fields }` objects for calldata-formatted fields |
+| `fields` | Yes | Ordered array of `{ label, value }` entries — one entry per displayed field. `value` is the formatted string, or a nested `{ intent, owner, fields }` object for calldata-formatted fields |
 
 ### Best practices
 
