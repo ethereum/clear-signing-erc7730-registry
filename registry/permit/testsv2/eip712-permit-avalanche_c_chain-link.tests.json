@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-permit-avalanche_c_chain-link.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "ChainLink Token",
+          "version": "1",
+          "chainId": 43114,
+          "verifyingContract": "0x5947BB275c521040051D82396192181b413227A3"
+        },
+        "message": {
+          "owner": "0xF977814e90dA44bFA03b6295A0616a897441aceC",
+          "spender": "0x60aE616a2155Ee3d9A68541Ba4544862310933d4",
+          "value": "150000000000000000000",
+          "nonce": "12",
+          "deadline": 1776816000
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of tokens",
+        "owner": "Chainlink Token (bridged)",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x60aE616a2155Ee3d9A68541Ba4544862310933d4"
+          },
+          {
+            "label": "Max spending amount",
+            "value": "150 LINK.e"
+          },
+          {
+            "label": "Valid until",
+            "value": "2026-04-22 00:00:00Z"
+          }
+        ]
+      }
+    }
+  ],
+  "dataProvider": {
+    "tokens": {
+      "0x5947BB275c521040051D82396192181b413227A3": {
+        "symbol": "LINK.e",
+        "decimals": 18,
+        "name": "Chainlink Token"
+      }
+    }
+  }
+}

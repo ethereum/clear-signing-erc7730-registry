@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-b_protocol-reUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": {
+        "decimals": 6,
+        "name": "USD Coin",
+        "symbol": "USDC"
+      },
+      "0x0F359FD18BDa75e9c49bC027E7da59a4b01BF32a": {
+        "symbol": "reUSDC",
+        "decimals": 18,
+        "name": "Relend USDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Mint - chain 1",
+      "rawTx": "0xf86b82029d84025275d58316e360940f359fd18bda75e9c49bc027e7da59a4b01bf32a80b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca000000000000000000000000000000000000000000000000000000000000000001018080",
+      "txHash": "0xf97c0e344a4f62e5dafeb2f70e9d65b9655c95c261d93944cd5cce5bf10d68b3",
+      "expected": {
+        "intent": "Mint",
+        "owner": "B.Protocol",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 reUSDC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x0000000000000000000000000000000000000001"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88d013c847735940084888ec3388329908e940f359fd18bda75e9c49bc027e7da59a4b01bf32a80b864ba08765200000000000000000000000000000000000000000000040629730d501e9955a50000000000000000000000001fc0ad1335de20be79621556e74479398d0ffdc70000000000000000000000001fc0ad1335de20be79621556e74479398d0ffdc7c0",
+      "txHash": "0xa2acf4597c37717ddf34cd78280724ac88ed95c07202b58c6d9c02878a30b951",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "B.Protocol",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "19003.133141536476845477 reUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x1fc0aD1335DE20bE79621556e74479398D0FFdC7"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1fc0aD1335DE20bE79621556e74479398D0FFdC7"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-leadblock-USDC-RWA.json",
+  "dataProvider": {
+    "tokens": {
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": {
+        "decimals": 6,
+        "name": "USD Coin",
+        "symbol": "USDC"
+      },
+      "0x4cA0E178c94f039d7F202E09d8d1a655Ed3fb6b6": {
+        "symbol": "USDC RWA",
+        "decimals": 18,
+        "name": "LeadBlock USDC RWA"
+      }
+    },
+    "ensNames": {
+      "0x8379bD16381620914d8fA3d535F6Ca9eF23ece53": "kugusha.eth"
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit - chain 1",
+      "rawTx": "0x02f86d010c8405f5e10084354fb9c6830959a9944ca0e178c94f039d7f202e09d8d1a655ed3fb6b680b8446e553f650000000000000000000000000000000000000000000000000000000005f5e10000000000000000000000000079609ec8264bc4d1476d24bd23b8d9ddd5cce1f5c0",
+      "txHash": "0x2f11a61dfcaf440e5b6b7f92a7530677766ae9d2e091ef71819ec7049ed5ba23",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "LeadBlock",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "100 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "USDC RWA"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x79609Ec8264Bc4d1476d24bD23B8D9ddD5cCE1f5"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint - chain 1",
+      "rawTx": "0xf86b8201de840e73c36e83124f80944ca0e178c94f039d7f202e09d8d1a655ed3fb6b680b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0xc11a51bddb224d826f0f9c1b1ac198d2eb55d5deebfdb62caf23e2baf811a1c7",
+      "expected": {
+        "intent": "Mint",
+        "owner": "LeadBlock",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 USDC RWA"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw - chain 1",
+      "rawTx": "0x02f88f0181e5844dca629885034b89c8e48307d516944ca0e178c94f039d7f202e09d8d1a655ed3fb6b680b864b460af940000000000000000000000000000000000000000000000000000000002fb3f7b0000000000000000000000008379bd16381620914d8fa3d535f6ca9ef23ece530000000000000000000000008379bd16381620914d8fa3d535f6ca9ef23ece53c0",
+      "txHash": "0x6582a51fdf0d20abc20e386520d3a69cc88e3649d174177549cebe7b2bf36ada",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "LeadBlock",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "50.020219 USDC"
+          },
+          {
+            "label": "To",
+            "value": "kugusha.eth"
+          },
+          {
+            "label": "Owner",
+            "value": "kugusha.eth"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88f010885016b969d0085016b969d008308c174944ca0e178c94f039d7f202e09d8d1a655ed3fb6b680b864ba0876520000000000000000000000000000000000000000000068f8f1a5fa6cadd2b1840000000000000000000000005c45e68b45943dce5886032cf7b04b123df2a3d00000000000000000000000005c45e68b45943dce5886032cf7b04b123df2a3d0c0",
+      "txHash": "0xf1b87439fda0cc9c2550b0540de152bbad690e58af13308d2591a9c28ef29a44",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "LeadBlock",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "495718.319347602048594308 USDC RWA"
+          },
+          {
+            "label": "To",
+            "value": "0x5C45e68B45943DCE5886032CF7b04b123DF2a3d0"
+          },
+          {
+            "label": "Owner",
+            "value": "0x5C45e68B45943DCE5886032CF7b04b123DF2a3d0"
+          }
+        ]
+      }
+    }
+  ]
+}
