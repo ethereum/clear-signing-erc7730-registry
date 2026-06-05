@@ -1,54 +1,15 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "Hyperliquid - CctpExtension",
-    "contract": {
-      "deployments": [{ "chainId": 42161, "address": "0xA95d9c1F655341597C94393fDdc30cf3c08E4fcE" }],
-      "abi": [
-        {
-          "inputs": [
-            {
-              "components": [
-                { "internalType": "uint256", "name": "amount", "type": "uint256" },
-                { "internalType": "uint256", "name": "authValidAfter", "type": "uint256" },
-                { "internalType": "uint256", "name": "authValidBefore", "type": "uint256" },
-                { "internalType": "bytes32", "name": "authNonce", "type": "bytes32" },
-                { "internalType": "uint8", "name": "v", "type": "uint8" },
-                { "internalType": "bytes32", "name": "r", "type": "bytes32" },
-                { "internalType": "bytes32", "name": "s", "type": "bytes32" }
-              ],
-              "internalType": "struct ICctpExtension.ReceiveWithAuthorizationData",
-              "name": "_receiveWithAuthorizationData",
-              "type": "tuple"
-            },
-            {
-              "components": [
-                { "internalType": "uint256", "name": "amount", "type": "uint256" },
-                { "internalType": "uint32", "name": "destinationDomain", "type": "uint32" },
-                { "internalType": "bytes32", "name": "mintRecipient", "type": "bytes32" },
-                { "internalType": "bytes32", "name": "destinationCaller", "type": "bytes32" },
-                { "internalType": "uint256", "name": "maxFee", "type": "uint256" },
-                { "internalType": "uint32", "name": "minFinalityThreshold", "type": "uint32" },
-                { "internalType": "bytes", "name": "hookData", "type": "bytes" }
-              ],
-              "internalType": "struct ICctpExtension.DepositForBurnWithHookData",
-              "name": "_depositForBurnData",
-              "type": "tuple"
-            }
-          ],
-          "name": "batchDepositForBurnWithAuth",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        }
-      ]
-    }
+    "contract": { "deployments": [{ "chainId": 42161, "address": "0xA95d9c1F655341597C94393fDdc30cf3c08E4fcE" }] }
   },
   "metadata": {
-    "owner": "Circle",
-    "info": { "legalName": "Circle Internet Financial", "url": "https://www.circle.com/" },
+    "owner": "Circle Internet Financial",
+    "info": { "url": "https://www.circle.com/" },
     "constants": { "usdcToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831" },
-    "enums": { "cctpDomains": { "19": "HyperEVM" }, "destinationDex": { "0": "Perp", "255": "Spot" } }
+    "enums": { "cctpDomains": { "19": "HyperEVM" }, "destinationDex": { "0": "Perp", "255": "Spot" } },
+    "contractName": "Hyperliquid - CctpExtension"
   },
   "display": {
     "formats": {
@@ -59,13 +20,15 @@
             "path": "_depositForBurnData.amount",
             "label": "Amount",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.usdcToken" }
+            "params": { "token": "$.metadata.constants.usdcToken" },
+            "visible": "always"
           },
           {
             "path": "_depositForBurnData.destinationDomain",
             "label": "Destination chain",
             "format": "enum",
-            "params": { "$ref": "$.metadata.enums.cctpDomains" }
+            "params": { "$ref": "$.metadata.enums.cctpDomains" },
+            "visible": "always"
           },
           {
             "path": "_depositForBurnData.mintRecipient.[-20:]",
@@ -83,7 +46,8 @@
             "path": "_depositForBurnData.maxFee",
             "label": "Max fee",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.usdcToken" }
+            "params": { "token": "$.metadata.constants.usdcToken" },
+            "visible": "always"
           },
           {
             "path": "_depositForBurnData.hookData.[32:52]",
@@ -96,18 +60,14 @@
             "label": "Destination DEX",
             "format": "enum",
             "params": { "$ref": "$.metadata.enums.destinationDex" }
+          },
+          { "label": "Receive With Authorization Data", "path": "_receiveWithAuthorizationData", "visible": "never" },
+          {
+            "label": "Deposit For Burn Data Min Finality Threshold",
+            "path": "_depositForBurnData.minFinalityThreshold",
+            "visible": "never"
           }
-        ],
-        "required": [
-          "_depositForBurnData.amount",
-          "_depositForBurnData.destinationDomain",
-          "_depositForBurnData.mintRecipient",
-          "_depositForBurnData.destinationCaller",
-          "_depositForBurnData.maxFee",
-          "_depositForBurnData.minFinalityThreshold",
-          "_depositForBurnData.hookData"
-        ],
-        "excluded": ["_receiveWithAuthorizationData", "_depositForBurnData.minFinalityThreshold"]
+        ]
       }
     }
   }

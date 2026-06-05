@@ -1,403 +1,9 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "includes": "common-AggregationRouterV6.json",
   "context": {
     "$id": "AggregationRouterV6",
     "contract": {
-      "abi": [
-        {
-          "inputs": [
-            { "internalType": "uint96", "name": "series", "type": "uint96" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" }
-          ],
-          "name": "advanceEpoch",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "MakerTraits", "name": "makerTraits", "type": "uint256" },
-            { "internalType": "bytes32", "name": "orderHash", "type": "bytes32" }
-          ],
-          "name": "cancelOrder",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "MakerTraits[]", "name": "makerTraits", "type": "uint256[]" },
-            { "internalType": "bytes32[]", "name": "orderHashes", "type": "bytes32[]" }
-          ],
-          "name": "cancelOrders",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "contract IClipperExchange", "name": "clipperExchange", "type": "address" },
-            { "internalType": "Address", "name": "srcToken", "type": "uint256" },
-            { "internalType": "contract IERC20", "name": "dstToken", "type": "address" },
-            { "internalType": "uint256", "name": "inputAmount", "type": "uint256" },
-            { "internalType": "uint256", "name": "outputAmount", "type": "uint256" },
-            { "internalType": "uint256", "name": "goodUntil", "type": "uint256" },
-            { "internalType": "bytes32", "name": "r", "type": "bytes32" },
-            { "internalType": "bytes32", "name": "vs", "type": "bytes32" }
-          ],
-          "name": "clipperSwap",
-          "outputs": [{ "internalType": "uint256", "name": "returnAmount", "type": "uint256" }],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "contract IClipperExchange", "name": "clipperExchange", "type": "address" },
-            { "internalType": "address payable", "name": "recipient", "type": "address" },
-            { "internalType": "Address", "name": "srcToken", "type": "uint256" },
-            { "internalType": "contract IERC20", "name": "dstToken", "type": "address" },
-            { "internalType": "uint256", "name": "inputAmount", "type": "uint256" },
-            { "internalType": "uint256", "name": "outputAmount", "type": "uint256" },
-            { "internalType": "uint256", "name": "goodUntil", "type": "uint256" },
-            { "internalType": "bytes32", "name": "r", "type": "bytes32" },
-            { "internalType": "bytes32", "name": "vs", "type": "bytes32" }
-          ],
-          "name": "clipperSwapTo",
-          "outputs": [{ "internalType": "uint256", "name": "returnAmount", "type": "uint256" }],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "uint256", "name": "minReturn", "type": "uint256" },
-            { "internalType": "Address", "name": "dex", "type": "uint256" }
-          ],
-          "name": "ethUnoswap",
-          "outputs": [{ "internalType": "uint256", "name": "returnAmount", "type": "uint256" }],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "uint256", "name": "minReturn", "type": "uint256" },
-            { "internalType": "Address", "name": "dex", "type": "uint256" },
-            { "internalType": "Address", "name": "dex2", "type": "uint256" }
-          ],
-          "name": "ethUnoswap2",
-          "outputs": [{ "internalType": "uint256", "name": "returnAmount", "type": "uint256" }],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "uint256", "name": "minReturn", "type": "uint256" },
-            { "internalType": "Address", "name": "dex", "type": "uint256" },
-            { "internalType": "Address", "name": "dex2", "type": "uint256" },
-            { "internalType": "Address", "name": "dex3", "type": "uint256" }
-          ],
-          "name": "ethUnoswap3",
-          "outputs": [{ "internalType": "uint256", "name": "returnAmount", "type": "uint256" }],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "Address", "name": "to", "type": "uint256" },
-            { "internalType": "uint256", "name": "minReturn", "type": "uint256" },
-            { "internalType": "Address", "name": "dex", "type": "uint256" }
-          ],
-          "name": "ethUnoswapTo",
-          "outputs": [{ "internalType": "uint256", "name": "returnAmount", "type": "uint256" }],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "Address", "name": "to", "type": "uint256" },
-            { "internalType": "uint256", "name": "minReturn", "type": "uint256" },
-            { "internalType": "Address", "name": "dex", "type": "uint256" },
-            { "internalType": "Address", "name": "dex2", "type": "uint256" }
-          ],
-          "name": "ethUnoswapTo2",
-          "outputs": [{ "internalType": "uint256", "name": "returnAmount", "type": "uint256" }],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "Address", "name": "to", "type": "uint256" },
-            { "internalType": "uint256", "name": "minReturn", "type": "uint256" },
-            { "internalType": "Address", "name": "dex", "type": "uint256" },
-            { "internalType": "Address", "name": "dex2", "type": "uint256" },
-            { "internalType": "Address", "name": "dex3", "type": "uint256" }
-          ],
-          "name": "ethUnoswapTo3",
-          "outputs": [{ "internalType": "uint256", "name": "returnAmount", "type": "uint256" }],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            {
-              "components": [
-                { "internalType": "uint256", "name": "salt", "type": "uint256" },
-                { "internalType": "Address", "name": "maker", "type": "uint256" },
-                { "internalType": "Address", "name": "receiver", "type": "uint256" },
-                { "internalType": "Address", "name": "makerAsset", "type": "uint256" },
-                { "internalType": "Address", "name": "takerAsset", "type": "uint256" },
-                { "internalType": "uint256", "name": "makingAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "takingAmount", "type": "uint256" },
-                { "internalType": "MakerTraits", "name": "makerTraits", "type": "uint256" }
-              ],
-              "internalType": "struct IOrderMixin.Order",
-              "name": "order",
-              "type": "tuple"
-            },
-            { "internalType": "bytes", "name": "signature", "type": "bytes" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" },
-            { "internalType": "TakerTraits", "name": "takerTraits", "type": "uint256" }
-          ],
-          "name": "fillContractOrder",
-          "outputs": [
-            { "internalType": "uint256", "name": "", "type": "uint256" },
-            { "internalType": "uint256", "name": "", "type": "uint256" },
-            { "internalType": "bytes32", "name": "", "type": "bytes32" }
-          ],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            {
-              "components": [
-                { "internalType": "uint256", "name": "salt", "type": "uint256" },
-                { "internalType": "Address", "name": "maker", "type": "uint256" },
-                { "internalType": "Address", "name": "receiver", "type": "uint256" },
-                { "internalType": "Address", "name": "makerAsset", "type": "uint256" },
-                { "internalType": "Address", "name": "takerAsset", "type": "uint256" },
-                { "internalType": "uint256", "name": "makingAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "takingAmount", "type": "uint256" },
-                { "internalType": "MakerTraits", "name": "makerTraits", "type": "uint256" }
-              ],
-              "internalType": "struct IOrderMixin.Order",
-              "name": "order",
-              "type": "tuple"
-            },
-            { "internalType": "bytes", "name": "signature", "type": "bytes" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" },
-            { "internalType": "TakerTraits", "name": "takerTraits", "type": "uint256" },
-            { "internalType": "bytes", "name": "args", "type": "bytes" }
-          ],
-          "name": "fillContractOrderArgs",
-          "outputs": [
-            { "internalType": "uint256", "name": "", "type": "uint256" },
-            { "internalType": "uint256", "name": "", "type": "uint256" },
-            { "internalType": "bytes32", "name": "", "type": "bytes32" }
-          ],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            {
-              "components": [
-                { "internalType": "uint256", "name": "salt", "type": "uint256" },
-                { "internalType": "Address", "name": "maker", "type": "uint256" },
-                { "internalType": "Address", "name": "receiver", "type": "uint256" },
-                { "internalType": "Address", "name": "makerAsset", "type": "uint256" },
-                { "internalType": "Address", "name": "takerAsset", "type": "uint256" },
-                { "internalType": "uint256", "name": "makingAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "takingAmount", "type": "uint256" },
-                { "internalType": "MakerTraits", "name": "makerTraits", "type": "uint256" }
-              ],
-              "internalType": "struct IOrderMixin.Order",
-              "name": "order",
-              "type": "tuple"
-            },
-            { "internalType": "bytes32", "name": "r", "type": "bytes32" },
-            { "internalType": "bytes32", "name": "vs", "type": "bytes32" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" },
-            { "internalType": "TakerTraits", "name": "takerTraits", "type": "uint256" }
-          ],
-          "name": "fillOrder",
-          "outputs": [
-            { "internalType": "uint256", "name": "", "type": "uint256" },
-            { "internalType": "uint256", "name": "", "type": "uint256" },
-            { "internalType": "bytes32", "name": "", "type": "bytes32" }
-          ],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            {
-              "components": [
-                { "internalType": "uint256", "name": "salt", "type": "uint256" },
-                { "internalType": "Address", "name": "maker", "type": "uint256" },
-                { "internalType": "Address", "name": "receiver", "type": "uint256" },
-                { "internalType": "Address", "name": "makerAsset", "type": "uint256" },
-                { "internalType": "Address", "name": "takerAsset", "type": "uint256" },
-                { "internalType": "uint256", "name": "makingAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "takingAmount", "type": "uint256" },
-                { "internalType": "MakerTraits", "name": "makerTraits", "type": "uint256" }
-              ],
-              "internalType": "struct IOrderMixin.Order",
-              "name": "order",
-              "type": "tuple"
-            },
-            { "internalType": "bytes32", "name": "r", "type": "bytes32" },
-            { "internalType": "bytes32", "name": "vs", "type": "bytes32" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" },
-            { "internalType": "TakerTraits", "name": "takerTraits", "type": "uint256" },
-            { "internalType": "bytes", "name": "args", "type": "bytes" }
-          ],
-          "name": "fillOrderArgs",
-          "outputs": [
-            { "internalType": "uint256", "name": "", "type": "uint256" },
-            { "internalType": "uint256", "name": "", "type": "uint256" },
-            { "internalType": "bytes32", "name": "", "type": "bytes32" }
-          ],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [{ "internalType": "uint96", "name": "series", "type": "uint96" }],
-          "name": "increaseEpoch",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "bytes", "name": "permit", "type": "bytes" },
-            { "internalType": "bytes", "name": "action", "type": "bytes" }
-          ],
-          "name": "permitAndCall",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "contract IAggregationExecutor", "name": "executor", "type": "address" },
-            {
-              "components": [
-                { "internalType": "contract IERC20", "name": "srcToken", "type": "address" },
-                { "internalType": "contract IERC20", "name": "dstToken", "type": "address" },
-                { "internalType": "address payable", "name": "srcReceiver", "type": "address" },
-                { "internalType": "address payable", "name": "dstReceiver", "type": "address" },
-                { "internalType": "uint256", "name": "amount", "type": "uint256" },
-                { "internalType": "uint256", "name": "minReturnAmount", "type": "uint256" },
-                { "internalType": "uint256", "name": "flags", "type": "uint256" }
-              ],
-              "internalType": "struct GenericRouter.SwapDescription",
-              "name": "desc",
-              "type": "tuple"
-            },
-            { "internalType": "bytes", "name": "data", "type": "bytes" }
-          ],
-          "name": "swap",
-          "outputs": [
-            { "internalType": "uint256", "name": "returnAmount", "type": "uint256" },
-            { "internalType": "uint256", "name": "spentAmount", "type": "uint256" }
-          ],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "int256", "name": "amount0Delta", "type": "int256" },
-            { "internalType": "int256", "name": "amount1Delta", "type": "int256" },
-            { "internalType": "bytes", "name": "", "type": "bytes" }
-          ],
-          "name": "uniswapV3SwapCallback",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "Address", "name": "token", "type": "uint256" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" },
-            { "internalType": "uint256", "name": "minReturn", "type": "uint256" },
-            { "internalType": "Address", "name": "dex", "type": "uint256" }
-          ],
-          "name": "unoswap",
-          "outputs": [{ "internalType": "uint256", "name": "returnAmount", "type": "uint256" }],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "Address", "name": "token", "type": "uint256" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" },
-            { "internalType": "uint256", "name": "minReturn", "type": "uint256" },
-            { "internalType": "Address", "name": "dex", "type": "uint256" },
-            { "internalType": "Address", "name": "dex2", "type": "uint256" }
-          ],
-          "name": "unoswap2",
-          "outputs": [{ "internalType": "uint256", "name": "returnAmount", "type": "uint256" }],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "Address", "name": "token", "type": "uint256" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" },
-            { "internalType": "uint256", "name": "minReturn", "type": "uint256" },
-            { "internalType": "Address", "name": "dex", "type": "uint256" },
-            { "internalType": "Address", "name": "dex2", "type": "uint256" },
-            { "internalType": "Address", "name": "dex3", "type": "uint256" }
-          ],
-          "name": "unoswap3",
-          "outputs": [{ "internalType": "uint256", "name": "returnAmount", "type": "uint256" }],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "Address", "name": "to", "type": "uint256" },
-            { "internalType": "Address", "name": "token", "type": "uint256" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" },
-            { "internalType": "uint256", "name": "minReturn", "type": "uint256" },
-            { "internalType": "Address", "name": "dex", "type": "uint256" }
-          ],
-          "name": "unoswapTo",
-          "outputs": [{ "internalType": "uint256", "name": "returnAmount", "type": "uint256" }],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "Address", "name": "to", "type": "uint256" },
-            { "internalType": "Address", "name": "token", "type": "uint256" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" },
-            { "internalType": "uint256", "name": "minReturn", "type": "uint256" },
-            { "internalType": "Address", "name": "dex", "type": "uint256" },
-            { "internalType": "Address", "name": "dex2", "type": "uint256" }
-          ],
-          "name": "unoswapTo2",
-          "outputs": [{ "internalType": "uint256", "name": "returnAmount", "type": "uint256" }],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "Address", "name": "to", "type": "uint256" },
-            { "internalType": "Address", "name": "token", "type": "uint256" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" },
-            { "internalType": "uint256", "name": "minReturn", "type": "uint256" },
-            { "internalType": "Address", "name": "dex", "type": "uint256" },
-            { "internalType": "Address", "name": "dex2", "type": "uint256" },
-            { "internalType": "Address", "name": "dex3", "type": "uint256" }
-          ],
-          "name": "unoswapTo3",
-          "outputs": [{ "internalType": "uint256", "name": "returnAmount", "type": "uint256" }],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        }
-      ],
       "deployments": [
         { "chainId": 1, "address": "0x111111125421cA6dc452d289314280a0f8842A65" },
         { "chainId": 10, "address": "0x111111125421cA6dc452d289314280a0f8842A65" },
@@ -421,26 +27,49 @@
         "$id": "clipperSwap",
         "intent": "Swap",
         "fields": [
-          { "path": "inputAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken.[-20:]" } },
-          { "path": "outputAmount", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "dstToken" } },
-          { "path": "@.from", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "goodUntil.[-4:]", "$ref": "$.display.definitions.expirationTime" }
-        ],
-        "required": ["srcToken", "dstToken", "inputAmount", "outputAmount", "@.from", "goodUntil"],
-        "excluded": ["clipperExchange", "r", "vs"]
+          {
+            "path": "inputAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "srcToken.[-20:]" },
+            "visible": "always"
+          },
+          {
+            "path": "outputAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "dstToken" },
+            "visible": "always"
+          },
+          { "path": "@.from", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          { "path": "goodUntil.[-4:]", "$ref": "$.display.definitions.expirationTime" },
+          { "label": "Clipper Exchange", "path": "clipperExchange", "visible": "never" },
+          { "label": "R", "path": "r", "visible": "never" },
+          { "label": "Vs", "path": "vs", "visible": "never" }
+        ]
       },
       "clipperSwapTo(address clipperExchange, address recipient, uint256 srcToken, address dstToken, uint256 inputAmount, uint256 outputAmount, uint256 goodUntil, bytes32 r, bytes32 vs)": {
         "$id": "clipperSwapTo",
         "intent": "Swap",
         "fields": [
-          { "path": "inputAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken.[-20:]" } },
-          { "path": "outputAmount", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "dstToken" } },
-          { "path": "recipient", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "goodUntil.[-4:]", "$ref": "$.display.definitions.expirationTime" }
-        ],
-        "required": ["srcToken", "dstToken", "inputAmount", "outputAmount", "recipient", "goodUntil"],
-        "excluded": ["clipperExchange", "r", "vs"]
+          {
+            "path": "inputAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "srcToken.[-20:]" },
+            "visible": "always"
+          },
+          {
+            "path": "outputAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "dstToken" },
+            "visible": "always"
+          },
+          { "path": "recipient", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          { "path": "goodUntil.[-4:]", "$ref": "$.display.definitions.expirationTime" },
+          { "label": "Clipper Exchange", "path": "clipperExchange", "visible": "never" },
+          { "label": "R", "path": "r", "visible": "never" },
+          { "label": "Vs", "path": "vs", "visible": "never" }
+        ]
       }
     }
-  }
+  },
+  "metadata": { "contractName": "AggregationRouterV6" }
 }

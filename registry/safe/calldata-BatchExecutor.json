@@ -1,37 +1,8 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "BatchExecutor",
     "contract": {
-      "abi": [
-        { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
-        {
-          "inputs": [
-            { "internalType": "uint256", "name": "callIndex", "type": "uint256" },
-            { "internalType": "bytes", "name": "errorData", "type": "bytes" }
-          ],
-          "name": "BatchExecutionFailed",
-          "type": "error"
-        },
-        {
-          "inputs": [
-            {
-              "components": [
-                { "internalType": "address", "name": "to", "type": "address" },
-                { "internalType": "uint256", "name": "value", "type": "uint256" },
-                { "internalType": "bytes", "name": "data", "type": "bytes" }
-              ],
-              "internalType": "struct Call[]",
-              "name": "calls",
-              "type": "tuple[]"
-            }
-          ],
-          "name": "batchExecute",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        }
-      ],
       "deployments": [
         { "chainId": 1, "address": "0x2cc8475177918e8C4d840150b68815A4b6f0f5f3" },
         { "chainId": 10, "address": "0xD0eFB07126e865AC95B60381b468081Ef648ec5f" },
@@ -42,10 +13,10 @@
       ]
     }
   },
-  "metadata": { "owner": "Ledger", "info": { "url": "https://www.ledger.com", "legalName": "Ledger Multisig" } },
+  "metadata": { "owner": "Ledger Multisig", "info": { "url": "https://www.ledger.com" }, "contractName": "BatchExecutor" },
   "display": {
     "formats": {
-      "0x1a833ee3": {
+      "batchExecute((address to, uint256 value, bytes data)[] calls)": {
         "$id": "batchExecute",
         "intent": "Batch transactions",
         "fields": [
@@ -55,8 +26,7 @@
             "format": "calldata",
             "params": { "calleePath": "calls.[].to", "amountPath": "calls.[].value" }
           }
-        ],
-        "required": ["calls"]
+        ]
       }
     }
   }

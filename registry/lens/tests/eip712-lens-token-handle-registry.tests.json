@@ -1,0 +1,55 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "unlink_with_sig",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "unlink_with_sig": [
+            { "name": "handle_id", "type": "uint256" },
+            { "name": "profile_id", "type": "uint256" },
+            { "name": "signatureDeadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "unlink_with_sig",
+        "domain": { "name": "Example", "version": "1", "chainId": 137, "verifyingContract": "0xd4f2f33680fccb36748fa9831851643781608844" },
+        "message": { "handle_id": "1000000000000000000", "profile_id": "1000000000000000000", "signatureDeadline": "1000000000000000000" }
+      },
+      "expectedTexts": ["handle_id", "100000000000000000 0", "profile_id", "100000000000000000 0", "signatureDeadline", "100000000000000000 0"]
+    },
+    {
+      "description": "unlink",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "unlink": [
+            { "name": "handleId", "type": "uint256" },
+            { "name": "profileId", "type": "uint256" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "unlink",
+        "domain": {
+          "name": "Lens Protocol Profiles",
+          "version": "2",
+          "chainId": 137,
+          "verifyingContract": "0xD4F2F33680FCCb36748FA9831851643781608844"
+        },
+        "message": { "handleId": "904217", "profileId": "129381", "nonce": "12", "deadline": "1777449600" }
+      },
+      "expectedTexts": ["handleId", "904217", "profileId", "129381", "nonce", "12"]
+    }
+  ]
+}

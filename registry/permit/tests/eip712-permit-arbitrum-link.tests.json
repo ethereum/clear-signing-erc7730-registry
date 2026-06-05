@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Permit": [
+            { "name": "owner", "type": "address" },
+            { "name": "spender", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "ChainLink Token",
+          "version": "1",
+          "chainId": 42161,
+          "verifyingContract": "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4"
+        },
+        "message": {
+          "owner": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+          "spender": "0x1111111254EEB25477B68fb85Ed929f73A960582",
+          "value": "25000000000000000000",
+          "nonce": "12",
+          "deadline": "1782777600"
+        }
+      },
+      "expectedTexts": [
+        "Spender",
+        "0x1111111254EEB25477 B68fb85Ed929f73A960 582",
+        "Max spending amount",
+        "25 LINK",
+        "Valid until",
+        "2026-06-30 12:00:00 AM UTC"
+      ]
+    }
+  ]
+}

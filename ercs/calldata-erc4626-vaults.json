@@ -1,31 +1,6 @@
 {
-  "$schema": "../specs/erc7730-v1.schema.json",
-  "context": {
-    "contract": {
-      "abi": [
-        {
-          "inputs": [{ "name": "assets", "type": "uint256" }, { "name": "receiver", "type": "address" }],
-          "name": "deposit",
-          "type": "function"
-        },
-        {
-          "inputs": [{ "name": "shares", "type": "uint256" }, { "name": "receiver", "type": "address" }],
-          "name": "mint",
-          "type": "function"
-        },
-        {
-          "inputs": [{ "name": "assets", "type": "uint256" }, { "name": "receiver", "type": "address" }, { "name": "owner", "type": "address" }],
-          "name": "withdraw",
-          "type": "function"
-        },
-        {
-          "inputs": [{ "name": "shares", "type": "uint256" }, { "name": "receiver", "type": "address" }, { "name": "owner", "type": "address" }],
-          "name": "redeem",
-          "type": "function"
-        }
-      ]
-    }
-  },
+  "$schema": "../specs/erc7730-v2.schema.json",
+  "context": { "contract": {} },
   "metadata": { "constants": { "underlyingToken": "0x0" } },
   "display": {
     "formats": {
@@ -36,44 +11,90 @@
             "path": "assets",
             "label": "Deposit asset",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.underlyingToken" }
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
           },
           { "label": "Share ticker", "format": "raw", "value": "$.metadata.constants.vaultTicker" },
-          { "path": "receiver", "label": "Send shares to", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
-        ],
-        "required": ["assets", "receiver"]
+          {
+            "path": "receiver",
+            "label": "Send shares to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
       },
       "mint(uint256 shares, address receiver)": {
         "intent": "Mint",
         "fields": [
           { "label": "Deposit asset", "format": "raw", "value": "$.metadata.constants.underlyingTicker" },
-          { "path": "shares", "label": "Minted shares", "format": "tokenAmount", "params": { "tokenPath": "@.to" } },
-          { "path": "receiver", "label": "Mint shares to", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
-        ],
-        "required": ["shares", "receiver"]
+          {
+            "path": "shares",
+            "label": "Minted shares",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "Mint shares to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
       },
-      "withdraw(uint256 assets,address receiver,address owner)": {
+      "withdraw(uint256 assets, address receiver, address owner)": {
         "intent": "Withdraw",
         "fields": [
           {
             "path": "assets",
             "label": "Withdraw exactly",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.underlyingToken" }
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
           },
-          { "path": "receiver", "label": "To", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
-          { "path": "owner", "label": "Owner", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
-        ],
-        "required": ["assets", "receiver", "owner"]
+          {
+            "path": "receiver",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
       },
-      "redeem(uint256 shares,address receiver,address owner)": {
+      "redeem(uint256 shares, address receiver, address owner)": {
         "intent": "Redeem",
         "fields": [
-          { "path": "shares", "label": "Shares to redeem", "format": "tokenAmount", "params": { "tokenPath": "@.to" } },
-          { "path": "receiver", "label": "To", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
-          { "path": "owner", "label": "Owner", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
-        ],
-        "required": ["shares", "receiver", "owner"]
+          {
+            "path": "shares",
+            "label": "Shares to redeem",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
       }
     }
   }

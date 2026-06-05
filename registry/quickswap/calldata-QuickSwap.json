@@ -1,184 +1,402 @@
 {
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "QuickSwap",
-    "contract": {
-      "deployments": [{ "chainId": 137, "address": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff" }],
-      "abi": "https://github.com/LedgerHQ/ledger-asset-dapps/blob/211e75ed27de3894f592ca73710fa0b72c3ceeae/polygon/quickswap/abis/0xa5e0829caced8ffdd4de3c43696c57f7d7a678ff.abi.json"
-    }
+    "contract": { "deployments": [{ "chainId": 137, "address": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff" }] }
   },
   "metadata": {
     "owner": "QuickSwap",
-    "info": { "legalName": "QuickSwap", "deploymentDate": "2020-09-25T10:52:01Z", "url": "https://quickswap.exchange" }
+    "info": { "deploymentDate": "2020-09-25T10:52:01Z", "url": "https://quickswap.exchange" },
+    "contractName": "QuickSwap"
   },
   "display": {
     "formats": {
-      "0x38ed1739": {
+      "swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)": {
         "$id": "swapExactTokensForTokens",
         "intent": "Swap",
         "fields": [
-          { "path": "amountIn", "label": "Amount to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
-          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          {
+            "path": "amountIn",
+            "label": "Amount to Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "path.[0]" },
+            "visible": "always"
+          },
+          {
+            "path": "amountOutMin",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "path.[-1]" },
+            "visible": "always"
+          },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountIn", "amountOutMin", "to"]
+        ]
       },
-      "0x18cbafe5": {
+      "swapExactTokensForETH(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)": {
         "$id": "swapExactTokensForETH",
         "intent": "Swap",
         "fields": [
-          { "path": "amountIn", "label": "Amount to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
-          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "amount" },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          {
+            "path": "amountIn",
+            "label": "Amount to Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "path.[0]" },
+            "visible": "always"
+          },
+          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "amount", "visible": "always" },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountIn", "amountOutMin", "to"]
+        ]
       },
-      "0x7ff36ab5": {
+      "swapExactETHForTokens(uint256 amountOutMin, address[] path, address to, uint256 deadline)": {
         "$id": "swapExactETHForTokens",
         "intent": "Swap",
         "fields": [
           { "path": "@.value", "label": "Amount to Send", "format": "amount" },
-          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          {
+            "path": "amountOutMin",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "path.[-1]" },
+            "visible": "always"
+          },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountOutMin", "to"]
+        ]
       },
-      "0x8803dbee": {
+      "swapTokensForExactTokens(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline)": {
         "$id": "swapTokensForExactTokens",
         "intent": "Swap",
         "fields": [
-          { "path": "amountOut", "label": "Amount to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
-          { "path": "amountInMax", "label": "Maximum to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          {
+            "path": "amountOut",
+            "label": "Amount to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "path.[-1]" },
+            "visible": "always"
+          },
+          {
+            "path": "amountInMax",
+            "label": "Maximum to Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "path.[0]" },
+            "visible": "always"
+          },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountOut", "amountInMax", "to"]
+        ]
       },
-      "0x5c11d795": {
+      "swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)": {
         "$id": "swapExactTokensForTokensSupportingFeeOnTransferTokens",
         "intent": "Swap",
         "fields": [
-          { "path": "amountIn", "label": "Amount to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
-          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          {
+            "path": "amountIn",
+            "label": "Amount to Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "path.[0]" },
+            "visible": "always"
+          },
+          {
+            "path": "amountOutMin",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "path.[-1]" },
+            "visible": "always"
+          },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountIn", "amountOutMin", "to"]
+        ]
       },
-      "0x4a25d94a": {
+      "swapTokensForExactETH(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline)": {
         "$id": "swapTokensForExactETH",
         "intent": "Swap",
         "fields": [
-          { "path": "amountOut", "label": "Amount to Receive", "format": "amount" },
-          { "path": "amountInMax", "label": "Maximum to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          { "path": "amountOut", "label": "Amount to Receive", "format": "amount", "visible": "always" },
+          {
+            "path": "amountInMax",
+            "label": "Maximum to Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "path.[0]" },
+            "visible": "always"
+          },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountOut", "amountInMax", "to"]
+        ]
       },
-      "0xb6f9de95": {
+      "swapExactETHForTokensSupportingFeeOnTransferTokens(uint256 amountOutMin, address[] path, address to, uint256 deadline)": {
         "$id": "swapExactETHForTokensSupportingFeeOnTransferTokens",
         "intent": "Swap",
         "fields": [
           { "path": "@.value", "label": "Amount to Send", "format": "amount" },
-          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          {
+            "path": "amountOutMin",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "path.[-1]" },
+            "visible": "always"
+          },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountOutMin", "to"]
+        ]
       },
-      "0xe8e33700": {
+      "addLiquidity(address tokenA, address tokenB, uint256 amountADesired, uint256 amountBDesired, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline)": {
         "$id": "addLiquidity",
         "intent": "Add Liquidity",
         "fields": [
-          { "path": "amountADesired", "label": "Desired amount", "format": "tokenAmount", "params": { "tokenPath": "tokenA" } },
-          { "path": "amountAMin", "label": "Minimum amount", "format": "tokenAmount", "params": { "tokenPath": "tokenA" } },
-          { "path": "amountBDesired", "label": "Desired amount", "format": "tokenAmount", "params": { "tokenPath": "tokenB" } },
-          { "path": "amountBMin", "label": "Minimum amount", "format": "tokenAmount", "params": { "tokenPath": "tokenB" } },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          {
+            "path": "amountADesired",
+            "label": "Desired amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenA" },
+            "visible": "always"
+          },
+          {
+            "path": "amountAMin",
+            "label": "Minimum amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenA" },
+            "visible": "always"
+          },
+          {
+            "path": "amountBDesired",
+            "label": "Desired amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenB" },
+            "visible": "always"
+          },
+          {
+            "path": "amountBMin",
+            "label": "Minimum amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenB" },
+            "visible": "always"
+          },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountADesired", "amountAMin", "amountBDesired", "amountBMin", "to"]
+        ]
       },
-      "0xf305d719": {
+      "addLiquidityETH(address token, uint256 amountTokenDesired, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline)": {
         "$id": "addLiquidityETH",
         "intent": "Add Liquidity",
         "fields": [
-          { "path": "amountTokenDesired", "label": "Desired amount", "format": "tokenAmount", "params": { "tokenPath": "token" } },
-          { "path": "amountTokenMin", "label": "Minimum amount", "format": "tokenAmount", "params": { "tokenPath": "token" } },
-          { "path": "amountETHMin", "label": "Minimum amount", "format": "amount" },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          {
+            "path": "amountTokenDesired",
+            "label": "Desired amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token" },
+            "visible": "always"
+          },
+          {
+            "path": "amountTokenMin",
+            "label": "Minimum amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token" },
+            "visible": "always"
+          },
+          { "path": "amountETHMin", "label": "Minimum amount", "format": "amount", "visible": "always" },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountTokenDesired", "amountTokenMin", "amountETHMin", "to"]
+        ]
       },
-      "0xbaa2abde": {
+      "removeLiquidity(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline)": {
         "$id": "removeLiquidity",
         "intent": "Remove Liquidity",
         "fields": [
-          { "path": "amountAMin", "label": "Minimum amount", "format": "tokenAmount", "params": { "tokenPath": "tokenA" } },
-          { "path": "amountBMin", "label": "Minimum amount", "format": "tokenAmount", "params": { "tokenPath": "tokenB" } },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          {
+            "path": "amountAMin",
+            "label": "Minimum amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenA" },
+            "visible": "always"
+          },
+          {
+            "path": "amountBMin",
+            "label": "Minimum amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenB" },
+            "visible": "always"
+          },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountAMin", "amountBMin", "to"]
+        ]
       },
-      "0x02751cec": {
+      "removeLiquidityETH(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline)": {
         "$id": "removeLiquidityETH",
         "intent": "Remove Liquidity",
         "fields": [
-          { "path": "amountTokenMin", "label": "Minimum amount", "format": "tokenAmount", "params": { "tokenPath": "token" } },
-          { "path": "amountETHMin", "label": "Minimum amount", "format": "amount" },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          {
+            "path": "amountTokenMin",
+            "label": "Minimum amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token" },
+            "visible": "always"
+          },
+          { "path": "amountETHMin", "label": "Minimum amount", "format": "amount", "visible": "always" },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountTokenMin", "amountETHMin", "to"]
+        ]
       },
-      "0x2195995c": {
+      "removeLiquidityWithPermit(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s)": {
         "$id": "removeLiquidityWithPermit",
         "intent": "Remove Liquidity",
         "fields": [
-          { "path": "amountAMin", "label": "Minimum amount", "format": "tokenAmount", "params": { "tokenPath": "tokenA" } },
-          { "path": "amountBMin", "label": "Minimum amount", "format": "tokenAmount", "params": { "tokenPath": "tokenB" } },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          {
+            "path": "amountAMin",
+            "label": "Minimum amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenA" },
+            "visible": "always"
+          },
+          {
+            "path": "amountBMin",
+            "label": "Minimum amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenB" },
+            "visible": "always"
+          },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountAMin", "amountBMin", "to"]
+        ]
       },
-      "0xded9382a": {
+      "removeLiquidityETHWithPermit(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s)": {
         "$id": "removeLiquidityETHWithPermit",
         "intent": "Remove Liquidity",
         "fields": [
-          { "path": "amountTokenMin", "label": "Minimum amount", "format": "tokenAmount", "params": { "tokenPath": "token" } },
-          { "path": "amountETHMin", "label": "Minimum amount", "format": "amount" },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          {
+            "path": "amountTokenMin",
+            "label": "Minimum amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token" },
+            "visible": "always"
+          },
+          { "path": "amountETHMin", "label": "Minimum amount", "format": "amount", "visible": "always" },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountTokenMin", "amountETHMin", "to"]
+        ]
       },
-      "0xaf2979eb": {
+      "removeLiquidityETHSupportingFeeOnTransferTokens(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline)": {
         "$id": "removeLiquidityETHSupportingFeeOnTransferTokens",
         "intent": "Remove Liquidity",
         "fields": [
-          { "path": "amountTokenMin", "label": "Minimum amount", "format": "tokenAmount", "params": { "tokenPath": "token" } },
-          { "path": "amountETHMin", "label": "Minimum amount", "format": "amount" },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          {
+            "path": "amountTokenMin",
+            "label": "Minimum amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token" },
+            "visible": "always"
+          },
+          { "path": "amountETHMin", "label": "Minimum amount", "format": "amount", "visible": "always" },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountTokenMin", "amountETHMin", "to"]
+        ]
       },
-      "0x5b0d5984": {
+      "removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s)": {
         "$id": "removeLiquidityETHWithPermitSupportingFeeOnTransferTokens",
         "intent": "Remove Liquidity",
         "fields": [
-          { "path": "amountTokenMin", "label": "Minimum amount", "format": "tokenAmount", "params": { "tokenPath": "token" } },
-          { "path": "amountETHMin", "label": "Minimum amount", "format": "amount" },
-          { "path": "to", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          {
+            "path": "amountTokenMin",
+            "label": "Minimum amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token" },
+            "visible": "always"
+          },
+          { "path": "amountETHMin", "label": "Minimum amount", "format": "amount", "visible": "always" },
+          {
+            "path": "to",
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
-        ],
-        "required": ["amountTokenMin", "amountETHMin", "to"]
+        ]
       }
     }
   }

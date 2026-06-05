@@ -1,9 +1,8 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "AggregationRouterV5",
     "contract": {
-      "abi": "https://api.etherscan.io/api?module=contract&action=getabi&address=0x1111111254eeb25477b68fb85ed929f73a960582",
       "deployments": [
         { "chainId": 1, "address": "0x1111111254EEB25477B68fb85Ed929f73A960582" },
         { "chainId": 10, "address": "0x1111111254EEB25477B68fb85Ed929f73A960582" },
@@ -16,12 +15,13 @@
     }
   },
   "metadata": {
-    "owner": "1inch",
-    "info": { "url": "https://1inch.io/", "legalName": "1inch Network", "deploymentDate": "2022-11-04T06:04:59Z" },
+    "owner": "1inch Network",
+    "info": { "url": "https://1inch.io/", "deploymentDate": "2022-11-04T06:04:59Z" },
     "constants": {
       "addressAsEth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
       "addressAsNull": "0x0000000000000000000000000000000000000000"
-    }
+    },
+    "contractName": "AggregationRouterV5"
   },
   "display": {
     "definitions": {
@@ -44,124 +44,157 @@
         "$id": "swap",
         "intent": "Swap",
         "fields": [
-          { "path": "desc.amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "desc.srcToken" } },
+          {
+            "path": "desc.amount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "desc.srcToken" },
+            "visible": "always"
+          },
           {
             "path": "desc.minReturnAmount",
             "$ref": "$.display.definitions.minReceiveAmount",
-            "params": { "tokenPath": "desc.dstToken" }
+            "params": { "tokenPath": "desc.dstToken" },
+            "visible": "always"
           },
-          { "path": "desc.dstReceiver", "$ref": "$.display.definitions.beneficiary" }
-        ],
-        "required": ["desc.amount", "desc.minReturnAmount", "desc.dstReceiver"],
-        "excluded": ["executor", "desc.srcReceiver", "desc.flags", "permit", "data"]
+          { "path": "desc.dstReceiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          { "label": "Executor", "path": "executor", "visible": "never" },
+          { "label": "Desc Src Receiver", "path": "desc.srcReceiver", "visible": "never" },
+          { "label": "Desc Flags", "path": "desc.flags", "visible": "never" },
+          { "label": "Permit", "path": "permit", "visible": "never" },
+          { "label": "Data", "path": "data", "visible": "never" }
+        ]
       },
       "unoswap(address srcToken, uint256 amount, uint256 minReturn, uint256[] pools)": {
         "$id": "unoswap",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "@.from", "$ref": "$.display.definitions.beneficiary" },
+          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" }, "visible": "always" },
+          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount", "visible": "always" },
+          { "path": "@.from", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
           { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amount", "minReturn", "@.from", "pools"],
-        "excluded": []
+        ]
       },
       "unoswapTo(address recipient, address srcToken, uint256 amount, uint256 minReturn, uint256[] pools)": {
         "$id": "unoswapTo",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "recipient", "$ref": "$.display.definitions.beneficiary" },
+          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" }, "visible": "always" },
+          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount", "visible": "always" },
+          { "path": "recipient", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
           { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amount", "minReturn", "recipient", "pools"],
-        "excluded": []
+        ]
       },
       "unoswapToWithPermit(address recipient, address srcToken, uint256 amount, uint256 minReturn, uint256[] pools, bytes permit)": {
         "$id": "unoswapToWithPermit",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "recipient", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amount", "minReturn", "recipient", "pools"],
-        "excluded": ["permit"]
+          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" }, "visible": "always" },
+          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount", "visible": "always" },
+          { "path": "recipient", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool" },
+          { "label": "Permit", "path": "permit", "visible": "never" }
+        ]
       },
       "uniswapV3Swap(uint256 amount, uint256 minReturn, uint256[] pools)": {
         "$id": "uniswapV3Swap",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount" },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "@.from", "$ref": "$.display.definitions.beneficiary" },
+          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "visible": "always" },
+          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount", "visible": "always" },
+          { "path": "@.from", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
           { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amount", "minReturn", "@.from", "pools"],
-        "excluded": []
+        ]
       },
       "uniswapV3SwapTo(address recipient, uint256 amount, uint256 minReturn, uint256[] pools)": {
         "$id": "uniswapV3SwapTo",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount" },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "recipient", "$ref": "$.display.definitions.beneficiary" },
+          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "visible": "always" },
+          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount", "visible": "always" },
+          { "path": "recipient", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
           { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amount", "minReturn", "recipient", "pools"],
-        "excluded": []
+        ]
       },
       "uniswapV3SwapToWithPermit(address recipient, address srcToken, uint256 amount, uint256 minReturn, uint256[] pools, bytes permit)": {
         "$id": "uniswapV3SwapToWithPermit",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount" },
-          { "path": "recipient", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool" }
-        ],
-        "required": ["amount", "minReturn", "recipient", "pools"],
-        "excluded": ["permit"]
+          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" }, "visible": "always" },
+          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount", "visible": "always" },
+          { "path": "recipient", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          { "path": "pools.[-1]", "$ref": "$.display.definitions.lastPool" },
+          { "label": "Permit", "path": "permit", "visible": "never" }
+        ]
       },
       "clipperSwap(address clipperExchange, address srcToken, address dstToken, uint256 inputAmount, uint256 outputAmount, uint256 goodUntil, bytes32 r, bytes32 vs)": {
         "$id": "clipperSwap",
         "intent": "Swap",
         "fields": [
-          { "path": "inputAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" } },
-          { "path": "outputAmount", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "dstToken" } },
-          { "path": "@.from", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "goodUntil.[-4:]", "$ref": "$.display.definitions.expirationTime" }
-        ],
-        "required": ["inputAmount", "outputAmount", "@.from", "goodUntil"],
-        "excluded": ["clipperExchange", "r", "vs"]
+          {
+            "path": "inputAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "srcToken" },
+            "visible": "always"
+          },
+          {
+            "path": "outputAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "dstToken" },
+            "visible": "always"
+          },
+          { "path": "@.from", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          { "path": "goodUntil.[-4:]", "$ref": "$.display.definitions.expirationTime" },
+          { "label": "Clipper Exchange", "path": "clipperExchange", "visible": "never" },
+          { "label": "R", "path": "r", "visible": "never" },
+          { "label": "Vs", "path": "vs", "visible": "never" }
+        ]
       },
       "clipperSwapTo(address clipperExchange, address recipient, address srcToken, address dstToken, uint256 inputAmount, uint256 outputAmount, uint256 goodUntil, bytes32 r, bytes32 vs)": {
         "$id": "clipperSwapTo",
         "intent": "Swap",
         "fields": [
-          { "path": "inputAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" } },
-          { "path": "outputAmount", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "dstToken" } },
-          { "path": "recipient", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "goodUntil.[-4:]", "$ref": "$.display.definitions.expirationTime" }
-        ],
-        "required": ["inputAmount", "outputAmount", "recipient", "goodUntil"],
-        "excluded": ["clipperExchange", "r", "vs"]
+          {
+            "path": "inputAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "srcToken" },
+            "visible": "always"
+          },
+          {
+            "path": "outputAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "dstToken" },
+            "visible": "always"
+          },
+          { "path": "recipient", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          { "path": "goodUntil.[-4:]", "$ref": "$.display.definitions.expirationTime" },
+          { "label": "Clipper Exchange", "path": "clipperExchange", "visible": "never" },
+          { "label": "R", "path": "r", "visible": "never" },
+          { "label": "Vs", "path": "vs", "visible": "never" }
+        ]
       },
       "clipperSwapToWithPermit(address clipperExchange, address recipient, address srcToken, address dstToken, uint256 inputAmount, uint256 outputAmount, uint256 goodUntil, bytes32 r, bytes32 vs, bytes permit)": {
         "$id": "clipperSwapToWithPermit",
         "intent": "Swap",
         "fields": [
-          { "path": "inputAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" } },
-          { "path": "outputAmount", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "dstToken" } },
-          { "path": "recipient", "$ref": "$.display.definitions.beneficiary" },
-          { "path": "goodUntil.[-4:]", "$ref": "$.display.definitions.expirationTime" }
-        ],
-        "required": ["inputAmount", "outputAmount", "recipient", "goodUntil"],
-        "excluded": ["clipperExchange", "r", "vs", "permit"]
+          {
+            "path": "inputAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "srcToken" },
+            "visible": "always"
+          },
+          {
+            "path": "outputAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "dstToken" },
+            "visible": "always"
+          },
+          { "path": "recipient", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          { "path": "goodUntil.[-4:]", "$ref": "$.display.definitions.expirationTime" },
+          { "label": "Clipper Exchange", "path": "clipperExchange", "visible": "never" },
+          { "label": "R", "path": "r", "visible": "never" },
+          { "label": "Vs", "path": "vs", "visible": "never" },
+          { "label": "Permit", "path": "permit", "visible": "never" }
+        ]
       }
     }
   }

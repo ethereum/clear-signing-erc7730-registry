@@ -5,12 +5,16 @@ on:
     paths-ignore:
       - "developer-preview/**"
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  ETHERSCAN_API_HOST: proxyetherscan-ci.api.live.ledger.com
+#env:
+#  ETHERSCAN_API_HOST: <set this secret to define a custom Etherscan API host>
+#  ETHERSCAN_API_KEY: <set this secret to inject Etherscan API key>
 
 jobs:
   validate_descriptors:
@@ -20,12 +24,12 @@ jobs:
     steps:
       - name: Checkout
         timeout-minutes: 10
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
 
       - name: Get all changed descriptor files
         timeout-minutes: 5
         id: changed-descriptor-files
-        uses: tj-actions/changed-files@v47
+        uses: tj-actions/changed-files@v47.0.5
         with:
           files: |
             registry/**/eip712-*.json
@@ -46,8 +50,88 @@ jobs:
         run: pip install erc7730
 
       - name: Validate ERC-7730 descriptors changed in pull request
-        timeout-minutes: 10
+        timeout-minutes: 120
         if: steps.changed-descriptor-files.outputs.any_changed == 'true'
         env:
           CHANGED_FILES: ${{ steps.changed-descriptor-files.outputs.all_changed_files }}
         run: erc7730 lint $CHANGED_FILES --gha
+
+  validate_schemas:
+    name: 🔎 validate JSON schemas
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        timeout-minutes: 10
+        uses: actions/checkout@v6.0.2
+
+      - name: Get all changed JSON files
+        timeout-minutes: 5
+        id: changed-json-files
+        uses: tj-actions/changed-files@v47.0.5
+        with:
+          files: |
+            registry/**/*.json
+            ercs/**/*.json
+          files_ignore: registry/**/tests/**
+
+      - name: Setup python
+        timeout-minutes: 10
+        if: steps.changed-json-files.outputs.any_changed == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install check-jsonschema
+        timeout-minutes: 10
+        if: steps.changed-json-files.outputs.any_changed == 'true'
+        run: pip install check-jsonschema
+
+      - name: Validate changed files against JSON schemas
+        timeout-minutes: 60
+        if: steps.changed-json-files.outputs.any_changed == 'true'
+        env:
+          CHANGED_FILES: ${{ steps.changed-json-files.outputs.all_changed_files }}
+        run: |
+          DEFAULT_SCHEMA="specs/erc7730-v2.schema.json"
+          FAILED=0
+
+          for file in $CHANGED_FILES; do
+            # Extract $schema value from the JSON file
+            SCHEMA_REF=$(python3 -c '
+          import json, sys
+          try:
+              with open(sys.argv[1]) as f:
+                  data = json.load(f)
+              print(data.get("$schema", ""))
+          except Exception:
+              print("")
+          ' "$file")
+
+            # Resolve schema path
+            if [ -z "$SCHEMA_REF" ]; then
+              SCHEMA_PATH="$DEFAULT_SCHEMA"
+            elif echo "$SCHEMA_REF" | grep -qE '^https?://'; then
+              SCHEMA_PATH="$DEFAULT_SCHEMA"
+            else
+              FILE_DIR=$(dirname "$file")
+              RESOLVED=$(cd "$FILE_DIR" && realpath -m "$SCHEMA_REF" 2>/dev/null || echo "")
+              if [ -n "$RESOLVED" ] && [ -f "$RESOLVED" ]; then
+                SCHEMA_PATH="$RESOLVED"
+              else
+                SCHEMA_PATH="$DEFAULT_SCHEMA"
+              fi
+            fi
+
+            echo "::group::Validating $file against $SCHEMA_PATH"
+            if ! check-jsonschema --schemafile "$SCHEMA_PATH" "$file"; then
+              FAILED=1
+            fi
+            echo "::endgroup::"
+          done
+
+          if [ "$FAILED" -ne 0 ]; then
+            echo "::error::One or more files failed JSON schema validation"
+            exit 1
+          fi

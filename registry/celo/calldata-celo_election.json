@@ -1,966 +1,116 @@
 {
-  "$schema": "https://github.com/LedgerHQ/clear-signing-erc7730-registry/blob/master/specs/erc7730-v1.schema.json",
+  "$schema": "https://github.com/LedgerHQ/clear-signing-erc7730-registry/blob/master/specs/erc7730-v2.schema.json",
   "context": {
     "$id": "Celo Election",
     "contract": {
-      "abi": [
-        {
-          "inputs": [{ "internalType": "bool", "name": "test", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "constructor"
-        },
-        {
-          "constant": false,
-          "inputs": [{ "internalType": "address", "name": "group", "type": "address" }],
-          "name": "activate",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [
-            { "internalType": "address", "name": "group", "type": "address" },
-            { "internalType": "address", "name": "account", "type": "address" }
-          ],
-          "name": "activateForAccount",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-          "name": "allowedToVoteOverMaxNumberOfGroups",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-          "name": "cachedVotesByAccount",
-          "outputs": [{ "internalType": "uint256", "name": "totalVotes", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            { "internalType": "address", "name": "group", "type": "address" },
-            { "internalType": "uint256", "name": "value", "type": "uint256" }
-          ],
-          "name": "canReceiveVotes",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            { "internalType": "address", "name": "sender", "type": "address" },
-            { "internalType": "bytes", "name": "blsKey", "type": "bytes" },
-            { "internalType": "bytes", "name": "blsPop", "type": "bytes" }
-          ],
-          "name": "checkProofOfPossession",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [
-            { "internalType": "address", "name": "group", "type": "address" },
-            { "internalType": "uint256", "name": "value", "type": "uint256" },
-            { "internalType": "address", "name": "lesser", "type": "address" },
-            { "internalType": "address", "name": "greater", "type": "address" }
-          ],
-          "name": "distributeEpochRewards",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            { "internalType": "uint256", "name": "minElectableValidators", "type": "uint256" },
-            { "internalType": "uint256", "name": "maxElectableValidators", "type": "uint256" }
-          ],
-          "name": "electNValidatorAccounts",
-          "outputs": [{ "internalType": "address[]", "name": "", "type": "address[]" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            { "internalType": "uint256", "name": "minElectableValidators", "type": "uint256" },
-            { "internalType": "uint256", "name": "maxElectableValidators", "type": "uint256" }
-          ],
-          "name": "electNValidatorSigners",
-          "outputs": [{ "internalType": "address[]", "name": "", "type": "address[]" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "electValidatorAccounts",
-          "outputs": [{ "internalType": "address[]", "name": "", "type": "address[]" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "electValidatorSigners",
-          "outputs": [{ "internalType": "address[]", "name": "", "type": "address[]" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "electabilityThreshold",
-          "outputs": [{ "internalType": "uint256", "name": "value", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "electableValidators",
-          "outputs": [
-            { "internalType": "uint256", "name": "min", "type": "uint256" },
-            { "internalType": "uint256", "name": "max", "type": "uint256" }
-          ],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [
-            { "internalType": "address", "name": "account", "type": "address" },
-            { "internalType": "uint256", "name": "value", "type": "uint256" },
-            { "internalType": "address[]", "name": "lessers", "type": "address[]" },
-            { "internalType": "address[]", "name": "greaters", "type": "address[]" },
-            { "internalType": "uint256[]", "name": "indices", "type": "uint256[]" }
-          ],
-          "name": "forceDecrementVotes",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            { "internalType": "uint256", "name": "aNumerator", "type": "uint256" },
-            { "internalType": "uint256", "name": "aDenominator", "type": "uint256" },
-            { "internalType": "uint256", "name": "bNumerator", "type": "uint256" },
-            { "internalType": "uint256", "name": "bDenominator", "type": "uint256" },
-            { "internalType": "uint256", "name": "exponent", "type": "uint256" },
-            { "internalType": "uint256", "name": "_decimals", "type": "uint256" }
-          ],
-          "name": "fractionMulExp",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }, { "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "address", "name": "group", "type": "address" }],
-          "name": "getActiveVoteUnitsForGroup",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            { "internalType": "address", "name": "group", "type": "address" },
-            { "internalType": "address", "name": "account", "type": "address" }
-          ],
-          "name": "getActiveVoteUnitsForGroupByAccount",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "getActiveVotes",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "address", "name": "group", "type": "address" }],
-          "name": "getActiveVotesForGroup",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            { "internalType": "address", "name": "group", "type": "address" },
-            { "internalType": "address", "name": "account", "type": "address" }
-          ],
-          "name": "getActiveVotesForGroupByAccount",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "bytes", "name": "header", "type": "bytes" }],
-          "name": "getBlockNumberFromHeader",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "getBlockedByContract",
-          "outputs": [{ "internalType": "address", "name": "blockedBy", "type": "address" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "getCurrentValidatorSigners",
-          "outputs": [{ "internalType": "address[]", "name": "", "type": "address[]" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "getElectabilityThreshold",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "getElectableValidators",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }, { "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "getEligibleValidatorGroups",
-          "outputs": [{ "internalType": "address[]", "name": "", "type": "address[]" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "getEpochNumber",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "uint256", "name": "blockNumber", "type": "uint256" }],
-          "name": "getEpochNumberOfBlock",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "getEpochSize",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "address", "name": "group", "type": "address" }],
-          "name": "getGroupEligibility",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            { "internalType": "address", "name": "group", "type": "address" },
-            { "internalType": "uint256", "name": "totalEpochRewards", "type": "uint256" },
-            { "internalType": "uint256", "name": "groupScore", "type": "uint256" }
-          ],
-          "name": "getGroupEpochRewardsBasedOnScore",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "address", "name": "account", "type": "address" }],
-          "name": "getGroupsVotedForByAccount",
-          "outputs": [{ "internalType": "address[]", "name": "", "type": "address[]" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "address", "name": "group", "type": "address" }],
-          "name": "getNumVotesReceivable",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "uint256", "name": "blockNumber", "type": "uint256" }],
-          "name": "getParentSealBitmap",
-          "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "address", "name": "group", "type": "address" }],
-          "name": "getPendingVotesForGroup",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            { "internalType": "address", "name": "group", "type": "address" },
-            { "internalType": "address", "name": "account", "type": "address" }
-          ],
-          "name": "getPendingVotesForGroupByAccount",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "getTotalVotes",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "address", "name": "account", "type": "address" }],
-          "name": "getTotalVotesByAccount",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "getTotalVotesForEligibleValidatorGroups",
-          "outputs": [
-            { "internalType": "address[]", "name": "groups", "type": "address[]" },
-            { "internalType": "uint256[]", "name": "values", "type": "uint256[]" }
-          ],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "address", "name": "group", "type": "address" }],
-          "name": "getTotalVotesForGroup",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            { "internalType": "address", "name": "group", "type": "address" },
-            { "internalType": "address", "name": "account", "type": "address" }
-          ],
-          "name": "getTotalVotesForGroupByAccount",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "bytes", "name": "header", "type": "bytes" }],
-          "name": "getVerifiedSealBitmapFromHeader",
-          "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "getVersionNumber",
-          "outputs": [
-            { "internalType": "uint256", "name": "", "type": "uint256" },
-            { "internalType": "uint256", "name": "", "type": "uint256" },
-            { "internalType": "uint256", "name": "", "type": "uint256" },
-            { "internalType": "uint256", "name": "", "type": "uint256" }
-          ],
-          "payable": false,
-          "stateMutability": "pure",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            { "internalType": "address", "name": "account", "type": "address" },
-            { "internalType": "address", "name": "group", "type": "address" }
-          ],
-          "name": "hasActivatablePendingVotes",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "bytes", "name": "header", "type": "bytes" }],
-          "name": "hashHeader",
-          "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [
-            { "internalType": "address", "name": "registryAddress", "type": "address" },
-            { "internalType": "uint256", "name": "minElectableValidators", "type": "uint256" },
-            { "internalType": "uint256", "name": "maxElectableValidators", "type": "uint256" },
-            { "internalType": "uint256", "name": "_maxNumGroupsVotedFor", "type": "uint256" },
-            { "internalType": "uint256", "name": "_electabilityThreshold", "type": "uint256" }
-          ],
-          "name": "initialize",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "initialized",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "isBlocked",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "isOwner",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [
-            { "internalType": "address", "name": "group", "type": "address" },
-            { "internalType": "address", "name": "lesser", "type": "address" },
-            { "internalType": "address", "name": "greater", "type": "address" }
-          ],
-          "name": "markGroupEligible",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [{ "internalType": "address", "name": "group", "type": "address" }],
-          "name": "markGroupIneligible",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "maxNumGroupsVotedFor",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "uint256", "name": "blockNumber", "type": "uint256" }],
-          "name": "minQuorumSize",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "minQuorumSizeInCurrentSet",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "numberValidatorsInCurrentSet",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "uint256", "name": "blockNumber", "type": "uint256" }],
-          "name": "numberValidatorsInSet",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "owner",
-          "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [],
-          "name": "registry",
-          "outputs": [{ "internalType": "contract IRegistry", "name": "", "type": "address" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [],
-          "name": "renounceOwnership",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [
-            { "internalType": "address", "name": "group", "type": "address" },
-            { "internalType": "uint256", "name": "value", "type": "uint256" },
-            { "internalType": "address", "name": "lesser", "type": "address" },
-            { "internalType": "address", "name": "greater", "type": "address" },
-            { "internalType": "uint256", "name": "index", "type": "uint256" }
-          ],
-          "name": "revokeActive",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [
-            { "internalType": "address", "name": "group", "type": "address" },
-            { "internalType": "address", "name": "lesser", "type": "address" },
-            { "internalType": "address", "name": "greater", "type": "address" },
-            { "internalType": "uint256", "name": "index", "type": "uint256" }
-          ],
-          "name": "revokeAllActive",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [
-            { "internalType": "address", "name": "group", "type": "address" },
-            { "internalType": "uint256", "name": "value", "type": "uint256" },
-            { "internalType": "address", "name": "lesser", "type": "address" },
-            { "internalType": "address", "name": "greater", "type": "address" },
-            { "internalType": "uint256", "name": "index", "type": "uint256" }
-          ],
-          "name": "revokePending",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [{ "internalType": "bool", "name": "flag", "type": "bool" }],
-          "name": "setAllowedToVoteOverMaxNumberOfGroups",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [{ "internalType": "address", "name": "_blockedBy", "type": "address" }],
-          "name": "setBlockedByContract",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [{ "internalType": "uint256", "name": "threshold", "type": "uint256" }],
-          "name": "setElectabilityThreshold",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [
-            { "internalType": "uint256", "name": "min", "type": "uint256" },
-            { "internalType": "uint256", "name": "max", "type": "uint256" }
-          ],
-          "name": "setElectableValidators",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [{ "internalType": "uint256", "name": "_maxNumGroupsVotedFor", "type": "uint256" }],
-          "name": "setMaxNumGroupsVotedFor",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [{ "internalType": "address", "name": "registryAddress", "type": "address" }],
-          "name": "setRegistry",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }],
-          "name": "transferOwnership",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [
-            { "internalType": "address", "name": "account", "type": "address" },
-            { "internalType": "address", "name": "group", "type": "address" }
-          ],
-          "name": "updateTotalVotesByAccountForGroup",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "uint256", "name": "index", "type": "uint256" }],
-          "name": "validatorAddressFromCurrentSet",
-          "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [{ "internalType": "uint256", "name": "index", "type": "uint256" }],
-          "name": "validatorSignerAddressFromCurrentSet",
-          "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            { "internalType": "uint256", "name": "index", "type": "uint256" },
-            { "internalType": "uint256", "name": "blockNumber", "type": "uint256" }
-          ],
-          "name": "validatorSignerAddressFromSet",
-          "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [
-            { "internalType": "address", "name": "group", "type": "address" },
-            { "internalType": "uint256", "name": "value", "type": "uint256" },
-            { "internalType": "address", "name": "lesser", "type": "address" },
-            { "internalType": "address", "name": "greater", "type": "address" }
-          ],
-          "name": "vote",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "anonymous": false,
-          "inputs": [
-            { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-            { "indexed": false, "internalType": "bool", "name": "flag", "type": "bool" }
-          ],
-          "name": "AllowedToVoteOverMaxNumberOfGroups",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [{ "indexed": true, "internalType": "address", "name": "_blockedBy", "type": "address" }],
-          "name": "BlockedBySet",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [{ "indexed": false, "internalType": "uint256", "name": "electabilityThreshold", "type": "uint256" }],
-          "name": "ElectabilityThresholdSet",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [
-            { "indexed": false, "internalType": "uint256", "name": "min", "type": "uint256" },
-            { "indexed": false, "internalType": "uint256", "name": "max", "type": "uint256" }
-          ],
-          "name": "ElectableValidatorsSet",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [
-            { "indexed": true, "internalType": "address", "name": "group", "type": "address" },
-            { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }
-          ],
-          "name": "EpochRewardsDistributedToVoters",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [{ "indexed": false, "internalType": "uint256", "name": "maxNumGroupsVotedFor", "type": "uint256" }],
-          "name": "MaxNumGroupsVotedForSet",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [
-            { "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" },
-            { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }
-          ],
-          "name": "OwnershipTransferred",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [{ "indexed": true, "internalType": "address", "name": "registryAddress", "type": "address" }],
-          "name": "RegistrySet",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [
-            { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-            { "indexed": true, "internalType": "address", "name": "group", "type": "address" },
-            { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" },
-            { "indexed": false, "internalType": "uint256", "name": "units", "type": "uint256" }
-          ],
-          "name": "ValidatorGroupActiveVoteRevoked",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [{ "indexed": true, "internalType": "address", "name": "group", "type": "address" }],
-          "name": "ValidatorGroupMarkedEligible",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [{ "indexed": true, "internalType": "address", "name": "group", "type": "address" }],
-          "name": "ValidatorGroupMarkedIneligible",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [
-            { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-            { "indexed": true, "internalType": "address", "name": "group", "type": "address" },
-            { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }
-          ],
-          "name": "ValidatorGroupPendingVoteRevoked",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [
-            { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-            { "indexed": true, "internalType": "address", "name": "group", "type": "address" },
-            { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" },
-            { "indexed": false, "internalType": "uint256", "name": "units", "type": "uint256" }
-          ],
-          "name": "ValidatorGroupVoteActivated",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [
-            { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-            { "indexed": true, "internalType": "address", "name": "group", "type": "address" },
-            { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }
-          ],
-          "name": "ValidatorGroupVoteCast",
-          "type": "event"
-        }
-      ],
       "deployments": [
         { "chainId": 42220, "address": "0x8D6677192144292870907E3Fa8A5527fE55A7ff6" },
         { "chainId": 44787, "address": "0x1c3eDf937CFc2F6F51784D20DEB1af1F9a8655fA" }
       ]
     }
   },
-  "metadata": { "owner": "Celo Governance", "info": { "legalName": "Celo", "url": "https://celo.org/" } },
+  "metadata": { "owner": "Celo", "info": { "url": "https://celo.org/" }, "contractName": "Celo Election" },
   "display": {
     "formats": {
-      "0x1c5a9d9c": {
+      "activate(address group)": {
         "$id": "activate",
         "intent": "Activate",
         "fields": [
-          { "path": "group", "label": "Validator Group", "format": "addressName", "params": { "types": ["contract"] } },
-          { "path": "@.from", "label": "Vote signer", "format": "addressName", "params": { "types": ["eoa"] } }
-        ],
-        "required": ["group", "@.from"],
-        "excluded": []
+          {
+            "path": "group",
+            "label": "Validator Group",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          },
+          { "path": "@.from", "label": "Vote signer", "format": "addressName", "params": { "types": ["eoa"] }, "visible": "always" }
+        ]
       },
-      "0xc14470c4": {
+      "activateForAccount(address group, address account)": {
         "$id": "activateForAccount",
         "intent": "Activate Votes",
         "fields": [
-          { "path": "group", "label": "Validator Group", "format": "addressName", "params": { "types": ["contract"] } },
-          { "path": "account", "label": "Account", "format": "addressName", "params": { "types": ["contract", "eoa"] } }
-        ],
-        "required": ["group", "account"],
-        "excluded": []
+          {
+            "path": "group",
+            "label": "Validator Group",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "account",
+            "label": "Account",
+            "format": "addressName",
+            "params": { "types": ["contract", "eoa"] },
+            "visible": "always"
+          }
+        ]
       },
-      "0x6e198475": {
+      "revokeActive(address group, uint256 value, address lesser, address greater, uint256 index)": {
         "$id": "revokeActive",
         "intent": "Revoke Votes",
         "fields": [
-          { "path": "group", "label": "Validator Group", "format": "addressName", "params": { "types": ["contract"] } },
-          { "path": "value", "label": "Votes to Revoke", "format": "raw" }
-        ],
-        "required": ["group", "value"],
-        "excluded": ["lesser", "greater", "index"]
+          {
+            "path": "group",
+            "label": "Validator Group",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          },
+          { "path": "value", "label": "Votes to Revoke", "format": "raw", "visible": "always" },
+          { "label": "Lesser", "path": "lesser", "visible": "never" },
+          { "label": "Greater", "path": "greater", "visible": "never" },
+          { "label": "Index", "path": "index", "visible": "never" }
+        ]
       },
-      "0xe0a2ab52": {
+      "revokeAllActive(address group, address lesser, address greater, uint256 index)": {
         "$id": "revokeAllActive",
         "intent": "Revoke Votes",
-        "fields": [{ "path": "group", "label": "Validator Group", "format": "addressName", "params": { "types": ["contract"] } }],
-        "required": ["group"],
-        "excluded": ["lesser", "greater", "index"]
+        "fields": [
+          {
+            "path": "group",
+            "label": "Validator Group",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          },
+          { "label": "Lesser", "path": "lesser", "visible": "never" },
+          { "label": "Greater", "path": "greater", "visible": "never" },
+          { "label": "Index", "path": "index", "visible": "never" }
+        ]
       },
-      "0x9dfb6081": {
+      "revokePending(address group, uint256 value, address lesser, address greater, uint256 index)": {
         "$id": "revokePending",
         "intent": "Revoke Votes",
         "fields": [
-          { "path": "value", "label": "Votes to Revoke", "format": "raw" },
-          { "path": "group", "label": "Validator Group", "format": "addressName", "params": { "types": ["contract"] } }
-        ],
-        "required": ["value", "group", "@.from"],
-        "excluded": ["lesser", "greater", "index"]
+          { "path": "value", "label": "Votes to Revoke", "format": "raw", "visible": "always" },
+          {
+            "path": "group",
+            "label": "Validator Group",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          },
+          { "label": "Lesser", "path": "lesser", "visible": "never" },
+          { "label": "Greater", "path": "greater", "visible": "never" },
+          { "label": "Index", "path": "index", "visible": "never" }
+        ]
       },
-      "0x580d747a": {
+      "vote(address group, uint256 value, address lesser, address greater)": {
         "$id": "vote",
         "intent": "Vote",
         "fields": [
-          { "path": "group", "label": "Validator Group", "format": "addressName", "params": { "types": ["contract"] } },
-          { "path": "value", "label": "Gold to Vote", "format": "raw" }
-        ],
-        "required": ["group", "value"],
-        "excluded": ["lesser", "greater"]
+          {
+            "path": "group",
+            "label": "Validator Group",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          },
+          { "path": "value", "label": "Gold to Vote", "format": "raw", "visible": "always" },
+          { "label": "Lesser", "path": "lesser", "visible": "never" },
+          { "label": "Greater", "path": "greater", "visible": "never" }
+        ]
       }
     }
   }

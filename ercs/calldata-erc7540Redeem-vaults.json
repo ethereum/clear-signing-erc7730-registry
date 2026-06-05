@@ -1,41 +1,6 @@
 {
-  "$schema": "../specs/erc7730-v1.schema.json",
-  "context": {
-    "contract": {
-      "abi": [
-        {
-          "name": "redeem",
-          "type": "function",
-          "inputs": [
-            { "name": "shares", "type": "uint256" },
-            { "name": "receiver", "type": "address" },
-            { "name": "controller", "type": "address" }
-          ]
-        },
-        {
-          "name": "withdraw",
-          "type": "function",
-          "inputs": [
-            { "name": "assets", "type": "uint256" },
-            { "name": "receiver", "type": "address" },
-            { "name": "controller", "type": "address" }
-          ]
-        },
-        {
-          "name": "requestRedeem",
-          "type": "function",
-          "inputs": [{ "name": "shares", "type": "uint256" }, { "name": "controller", "type": "address" }, { "name": "owner", "type": "address" }]
-        },
-        {
-          "name": "setOperator",
-          "type": "function",
-          "inputs": [{ "name": "operator", "type": "address" }, { "name": "approved", "type": "bool" }],
-          "stateMutability": "nonpayable",
-          "outputs": [{ "name": "success", "type": "bool" }]
-        }
-      ]
-    }
-  },
+  "$schema": "../specs/erc7730-v2.schema.json",
+  "context": { "contract": {} },
   "metadata": { "constants": { "underlyingToken": "0x0" } },
   "display": {
     "formats": {
@@ -46,17 +11,24 @@
             "path": "shares",
             "label": "Amount of shares to finalize redemption for",
             "format": "tokenAmount",
-            "params": { "tokenPath": "@.to" }
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
           },
-          { "path": "receiver", "label": "Send assets to", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          {
+            "path": "receiver",
+            "label": "Send assets to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
           {
             "path": "controller",
             "label": "Controller of the request",
             "format": "addressName",
-            "params": { "types": ["eoa", "contract"] }
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
           }
-        ],
-        "required": ["shares", "receiver", "controller"]
+        ]
       },
       "withdraw(uint256 assets, address receiver, address controller)": {
         "intent": "Withdraw",
@@ -66,17 +38,24 @@
             "path": "assets",
             "label": "Amount of assets to receive",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.underlyingToken" }
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
           },
-          { "path": "receiver", "label": "Send assets to", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          {
+            "path": "receiver",
+            "label": "Send assets to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
           {
             "path": "controller",
             "label": "Controller of the request",
             "format": "addressName",
-            "params": { "types": ["eoa", "contract"] }
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
           }
-        ],
-        "required": ["assets", "receiver", "controller"]
+        ]
       },
       "requestRedeem(uint256 shares, address controller, address owner)": {
         "intent": "Request redemption",
@@ -85,25 +64,37 @@
             "path": "shares",
             "label": "Amount of shares to request redemption for",
             "format": "tokenAmount",
-            "params": { "tokenPath": "@.to" }
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
           },
           {
             "path": "controller",
             "label": "Controller of the request",
             "format": "addressName",
-            "params": { "types": ["eoa", "contract"] }
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
           },
-          { "path": "owner", "label": "Owner of the shares", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
-        ],
-        "required": ["shares", "controller", "owner"]
+          {
+            "path": "owner",
+            "label": "Owner of the shares",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
       },
       "setOperator(address operator, bool approved)": {
         "intent": "Set operator",
         "fields": [
-          { "path": "operator", "label": "Operator", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
-          { "path": "approved", "label": "Approved", "format": "raw" }
-        ],
-        "required": ["operator", "approved"]
+          {
+            "path": "operator",
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          { "path": "approved", "label": "Approved", "format": "raw", "visible": "always" }
+        ]
       }
     }
   }

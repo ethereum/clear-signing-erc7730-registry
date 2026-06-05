@@ -1,209 +1,76 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "ETH Staking Vault",
-    "contract": {
-      "deployments": [{ "chainId": 1, "address": "0xb36fc5e542cb4fc562a624912f55da2758998113" }],
-      "abi": [
-        {
-          "type": "function",
-          "name": "claimExitedAssets",
-          "inputs": [
-            {
-              "name": "positionTicket",
-              "type": "uint256",
-              "internalType": "uint256",
-              "components": null,
-              "indexed": null,
-              "unit": null
-            },
-            { "name": "timestamp", "type": "uint256", "internalType": "uint256", "components": null, "indexed": null, "unit": null },
-            {
-              "name": "exitQueueIndex",
-              "type": "uint256",
-              "internalType": "uint256",
-              "components": null,
-              "indexed": null,
-              "unit": null
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "constant": null,
-          "payable": null,
-          "gas": null,
-          "signature": null
-        },
-        {
-          "type": "function",
-          "name": "deposit",
-          "inputs": [
-            { "name": "receiver", "type": "address", "internalType": "address", "components": null, "indexed": null, "unit": null },
-            { "name": "referrer", "type": "address", "internalType": "address", "components": null, "indexed": null, "unit": null }
-          ],
-          "outputs": [{ "name": "shares", "type": "uint256", "internalType": "uint256", "components": null, "indexed": null, "unit": null }],
-          "stateMutability": "payable",
-          "constant": null,
-          "payable": null,
-          "gas": null,
-          "signature": null
-        },
-        {
-          "type": "function",
-          "name": "enterExitQueue",
-          "inputs": [
-            { "name": "shares", "type": "uint256", "internalType": "uint256", "components": null, "indexed": null, "unit": null },
-            { "name": "receiver", "type": "address", "internalType": "address", "components": null, "indexed": null, "unit": null }
-          ],
-          "outputs": [
-            {
-              "name": "positionTicket",
-              "type": "uint256",
-              "internalType": "uint256",
-              "components": null,
-              "indexed": null,
-              "unit": null
-            }
-          ],
-          "stateMutability": "nonpayable",
-          "constant": null,
-          "payable": null,
-          "gas": null,
-          "signature": null
-        },
-        {
-          "type": "function",
-          "name": "multicall",
-          "inputs": [{ "name": "data", "type": "bytes[]", "internalType": "bytes[]", "components": null, "indexed": null, "unit": null }],
-          "outputs": [{ "name": "results", "type": "bytes[]", "internalType": "bytes[]", "components": null, "indexed": null, "unit": null }],
-          "stateMutability": "nonpayable",
-          "constant": null,
-          "payable": null,
-          "gas": null,
-          "signature": null
-        },
-        {
-          "type": "function",
-          "name": "updateState",
-          "inputs": [
-            {
-              "name": "harvestParams",
-              "type": "tuple",
-              "internalType": "struct IKeeperRewards.HarvestParams",
-              "components": [
-                { "name": "rewardsRoot", "type": "bytes32", "internalType": "bytes32", "components": null },
-                { "name": "reward", "type": "int160", "internalType": "int160", "components": null },
-                { "name": "unlockedMevReward", "type": "uint160", "internalType": "uint160", "components": null },
-                { "name": "proof", "type": "bytes32[]", "internalType": "bytes32[]", "components": null }
-              ],
-              "indexed": null,
-              "unit": null
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "constant": null,
-          "payable": null,
-          "gas": null,
-          "signature": null
-        },
-        {
-          "type": "function",
-          "name": "updateStateAndDeposit",
-          "inputs": [
-            { "name": "receiver", "type": "address", "internalType": "address", "components": null, "indexed": null, "unit": null },
-            { "name": "referrer", "type": "address", "internalType": "address", "components": null, "indexed": null, "unit": null },
-            {
-              "name": "harvestParams",
-              "type": "tuple",
-              "internalType": "struct IKeeperRewards.HarvestParams",
-              "components": [
-                { "name": "rewardsRoot", "type": "bytes32", "internalType": "bytes32", "components": null },
-                { "name": "reward", "type": "int160", "internalType": "int160", "components": null },
-                { "name": "unlockedMevReward", "type": "uint160", "internalType": "uint160", "components": null },
-                { "name": "proof", "type": "bytes32[]", "internalType": "bytes32[]", "components": null }
-              ],
-              "indexed": null,
-              "unit": null
-            }
-          ],
-          "outputs": [{ "name": "shares", "type": "uint256", "internalType": "uint256", "components": null, "indexed": null, "unit": null }],
-          "stateMutability": "payable",
-          "constant": null,
-          "payable": null,
-          "gas": null,
-          "signature": null
-        }
-      ],
-      "addressMatcher": null,
-      "factory": null
-    }
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xb36fc5e542cb4fc562a624912f55da2758998113" }] }
   },
-  "metadata": { "owner": "Serenita", "info": { "legalName": "Serenita B.V.", "url": "https://serenita.io/" } },
+  "metadata": { "owner": "Serenita B.V.", "info": { "url": "https://serenita.io/" }, "contractName": "ETH Staking Vault" },
   "display": {
     "formats": {
-      "claimExitedAssets(uint256,uint256,uint256)": {
+      "claimExitedAssets(uint256 positionTicket, uint256 timestamp, uint256 exitQueueIndex)": {
         "intent": "claim exited assets",
-        "fields": [],
-        "required": [],
-        "excluded": ["#.positionTicket", "#.timestamp", "#.exitQueueIndex"]
+        "fields": [
+          { "label": "Position Ticket", "path": "#.positionTicket", "visible": "never" },
+          { "label": "Timestamp", "path": "#.timestamp", "visible": "never" },
+          { "label": "Exit Queue Index", "path": "#.exitQueueIndex", "visible": "never" }
+        ]
       },
-      "deposit(address,address)": {
+      "deposit(address receiver, address referrer)": {
         "intent": "Stake ETH",
         "fields": [
           {
             "label": "Rewards receiver",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
-            "path": "#.receiver"
+            "path": "#.receiver",
+            "visible": "always"
           },
-          { "label": "Amount to stake", "format": "amount", "path": "@.value" }
-        ],
-        "required": ["#.receiver"],
-        "excluded": ["#.referrer"]
+          { "label": "Amount to stake", "format": "amount", "path": "@.value" },
+          { "label": "Referrer", "path": "#.referrer", "visible": "never" }
+        ]
       },
-      "enterExitQueue(uint256,address)": {
+      "enterExitQueue(uint256 shares, address receiver)": {
         "intent": "enter exit queue",
         "fields": [
-          { "label": "Shares to lock", "format": "raw", "path": "#.shares" },
+          { "label": "Shares to lock", "format": "raw", "path": "#.shares", "visible": "always" },
           {
             "label": "Receiver",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
-            "path": "#.receiver"
+            "path": "#.receiver",
+            "visible": "always"
           }
-        ],
-        "required": ["#.shares", "#.receiver"]
+        ]
       },
-      "multicall(bytes[])": {
+      "multicall(bytes[] data)": {
         "intent": "Multicall",
-        "fields": [{ "label": "Call", "path": "#.data.[]", "format": "calldata", "params": { "calleePath": "@.to" } }],
-        "required": ["#.data.[]"]
+        "fields": [{ "label": "Call", "path": "#.data.[]", "format": "calldata", "params": { "calleePath": "@.to" }, "visible": "always" }]
       },
-      "updateState((bytes32,int160,uint160,bytes32[]))": {
+      "updateState((bytes32 rewardsRoot, int160 reward, uint160 unlockedMevReward, bytes32[] proof) harvestParams)": {
         "intent": "Update Vault State",
-        "fields": [],
-        "required": [],
-        "excluded": ["#.harvestParams.rewardsRoot", "#.harvestParams.reward", "#.harvestParams.unlockedMevReward", "#.harvestParams.proof.[]"]
+        "fields": [
+          { "label": "Harvest Params Rewards Root", "path": "#.harvestParams.rewardsRoot", "visible": "never" },
+          { "label": "Harvest Params Reward", "path": "#.harvestParams.reward", "visible": "never" },
+          { "label": "Harvest Params Unlocked Mev Reward", "path": "#.harvestParams.unlockedMevReward", "visible": "never" },
+          { "label": "Harvest Params Proof", "path": "#.harvestParams.proof.[]", "visible": "never" }
+        ]
       },
-      "updateStateAndDeposit(address,address,(bytes32,int160,uint160,bytes32[]))": {
+      "updateStateAndDeposit(address receiver, address referrer, (bytes32 rewardsRoot, int160 reward, uint160 unlockedMevReward, bytes32[] proof) harvestParams)": {
         "intent": "Update & Deposit",
         "fields": [
           {
             "label": "Rewards receiver",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
-            "path": "#.receiver"
+            "path": "#.receiver",
+            "visible": "always"
           },
-          { "label": "Amount to stake", "format": "amount", "path": "@.value" }
-        ],
-        "required": ["#.receiver"],
-        "excluded": [
-          "#.referrer",
-          "#.harvestParams.rewardsRoot",
-          "#.harvestParams.reward",
-          "#.harvestParams.unlockedMevReward",
-          "#.harvestParams.proof.[]"
+          { "label": "Amount to stake", "format": "amount", "path": "@.value" },
+          { "label": "Referrer", "path": "#.referrer", "visible": "never" },
+          { "label": "Harvest Params Rewards Root", "path": "#.harvestParams.rewardsRoot", "visible": "never" },
+          { "label": "Harvest Params Reward", "path": "#.harvestParams.reward", "visible": "never" },
+          { "label": "Harvest Params Unlocked Mev Reward", "path": "#.harvestParams.unlockedMevReward", "visible": "never" },
+          { "label": "Harvest Params Proof", "path": "#.harvestParams.proof.[]", "visible": "never" }
         ]
       }
     }

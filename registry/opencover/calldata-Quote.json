@@ -1,9 +1,8 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "Quote",
     "contract": {
-      "abi": "https://api.etherscan.io/v2/api?chainid=8453&module=contract&action=getabi&address=0x0ac34fe133bde3a2ef589a18a4e10b6a7d253829",
       "deployments": [
         { "chainId": 8453, "address": "0xD68647555e5da198d50866334EEd647cbE3d1556" },
         { "chainId": 10, "address": "0x0AC34fe133BdE3A2eF589a18A4E10b6a7d253829" },
@@ -14,8 +13,9 @@
   },
   "metadata": {
     "owner": "OpenCover",
-    "info": { "legalName": "OpenCover", "url": "https://opencover.com" },
-    "enums": { "assetSymbol": { "0": "ETH", "1": "DAI", "2": "USDC", "3": "USDT", "4": "POL", "5": "cbBTC" } }
+    "info": { "url": "https://opencover.com" },
+    "enums": { "assetSymbol": { "0": "ETH", "1": "DAI", "2": "USDC", "3": "USDT", "4": "POL", "5": "cbBTC" } },
+    "contractName": "Quote"
   },
   "display": {
     "definitions": {
@@ -26,47 +26,48 @@
       "premiumAmount": { "label": "Premium amount", "format": "raw" }
     },
     "formats": {
-      "submitQuote((uint32,uint32,uint32,uint256,uint32,uint256,uint256,uint16,uint256),uint8,bytes32,bytes32)": {
+      "submitQuote((uint32 providerId, uint32 productId, uint32 coverAssetId, uint256 coverAmount, uint32 paymentAssetId, uint256 premiumAmount, uint256 feeAmount, uint16 coverExpiry, uint256 validUntil) quote, uint8 v, bytes32 r, bytes32 s)": {
         "$id": "submitQuote",
         "intent": "Buy cover",
         "fields": [
-          { "path": "#.quote.coverAssetId", "$ref": "$.display.definitions.coverAssetId" },
-          { "path": "#.quote.coverAmount", "$ref": "$.display.definitions.coverAmount" },
-          { "path": "#.quote.coverExpiry", "$ref": "$.display.definitions.coverExpiry" },
-          { "path": "#.quote.paymentAssetId", "$ref": "$.display.definitions.paymentAssetId" },
-          { "path": "#.quote.premiumAmount", "$ref": "$.display.definitions.premiumAmount" },
-          { "path": "#.quote.feeAmount", "label": "Fee amount", "format": "raw" }
-        ],
-        "required": ["#.quote.coverAssetId", "#.quote.coverAmount", "#.quote.coverExpiry", "#.quote.paymentAssetId", "#.quote.premiumAmount"],
-        "excluded": ["#.quote.providerId", "#.quote.productId", "#.quote.validUntil", "#.v", "#.r", "#.s"]
+          { "path": "#.quote.coverAssetId", "$ref": "$.display.definitions.coverAssetId", "visible": "always" },
+          { "path": "#.quote.coverAmount", "$ref": "$.display.definitions.coverAmount", "visible": "always" },
+          { "path": "#.quote.coverExpiry", "$ref": "$.display.definitions.coverExpiry", "visible": "always" },
+          { "path": "#.quote.paymentAssetId", "$ref": "$.display.definitions.paymentAssetId", "visible": "always" },
+          { "path": "#.quote.premiumAmount", "$ref": "$.display.definitions.premiumAmount", "visible": "always" },
+          { "path": "#.quote.feeAmount", "label": "Fee amount", "format": "raw" },
+          { "label": "Quote Provider Id", "path": "#.quote.providerId", "visible": "never" },
+          { "label": "Quote Product Id", "path": "#.quote.productId", "visible": "never" },
+          { "label": "Quote Valid Until", "path": "#.quote.validUntil", "visible": "never" },
+          { "label": "V", "path": "#.v", "visible": "never" },
+          { "label": "R", "path": "#.r", "visible": "never" },
+          { "label": "S", "path": "#.s", "visible": "never" }
+        ]
       },
-      "submitQuoteV15((uint32,uint32,uint32,uint256,uint32,uint256,uint256,uint16,uint256),address[],uint256,address,uint8,bytes32,bytes32)": {
+      "submitQuoteV15((uint32 providerId, uint32 productId, uint32 coverAssetId, uint256 coverAmount, uint32 paymentAssetId, uint256 premiumAmount, uint256 feeAmount, uint16 coverExpiry, uint256 validUntil) quote, address[] coveredAddresses, uint256 integratorId, address mintTo, uint8 v, bytes32 r, bytes32 s)": {
         "$id": "submitQuoteV15",
         "intent": "Buy cover",
         "fields": [
-          { "path": "#.quote.coverAssetId", "$ref": "$.display.definitions.coverAssetId" },
-          { "path": "#.quote.coverAmount", "$ref": "$.display.definitions.coverAmount" },
-          { "path": "#.quote.coverExpiry", "$ref": "$.display.definitions.coverExpiry" },
-          { "path": "#.quote.paymentAssetId", "$ref": "$.display.definitions.paymentAssetId" },
-          { "path": "#.quote.premiumAmount", "$ref": "$.display.definitions.premiumAmount" },
+          { "path": "#.quote.coverAssetId", "$ref": "$.display.definitions.coverAssetId", "visible": "always" },
+          { "path": "#.quote.coverAmount", "$ref": "$.display.definitions.coverAmount", "visible": "always" },
+          { "path": "#.quote.coverExpiry", "$ref": "$.display.definitions.coverExpiry", "visible": "always" },
+          { "path": "#.quote.paymentAssetId", "$ref": "$.display.definitions.paymentAssetId", "visible": "always" },
+          { "path": "#.quote.premiumAmount", "$ref": "$.display.definitions.premiumAmount", "visible": "always" },
           { "path": "#.quote.feeAmount", "label": "Fee amount", "format": "raw" },
           {
             "path": "#.mintTo",
             "label": "Recipient",
             "format": "addressName",
             "params": { "senderAddress": ["0x0000000000000000000000000000000000000000"] }
-          }
-        ],
-        "required": ["#.quote.coverAssetId", "#.quote.coverAmount", "#.quote.coverExpiry", "#.quote.paymentAssetId", "#.quote.premiumAmount"],
-        "excluded": [
-          "#.quote.providerId",
-          "#.quote.productId",
-          "#.quote.validUntil",
-          "#.coveredAddresses",
-          "#.integratorId",
-          "#.v",
-          "#.r",
-          "#.s"
+          },
+          { "label": "Quote Provider Id", "path": "#.quote.providerId", "visible": "never" },
+          { "label": "Quote Product Id", "path": "#.quote.productId", "visible": "never" },
+          { "label": "Quote Valid Until", "path": "#.quote.validUntil", "visible": "never" },
+          { "label": "Covered Addresses", "path": "#.coveredAddresses", "visible": "never" },
+          { "label": "Integrator Id", "path": "#.integratorId", "visible": "never" },
+          { "label": "V", "path": "#.v", "visible": "never" },
+          { "label": "R", "path": "#.r", "visible": "never" },
+          { "label": "S", "path": "#.s", "visible": "never" }
         ]
       }
     }

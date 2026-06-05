@@ -1,5 +1,5 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "eip712": {
       "deployments": [
@@ -9,68 +9,37 @@
         { "chainId": 137, "address": "0x94bc2a1c732bcad7343b25af48385fe76e08734f" },
         { "chainId": 42161, "address": "0x7f069df72b7a39bce9806e3afaf579e54d8cf2b9" }
       ],
-      "domain": { "name": "1inch Limit Order Protocol", "version": "2" },
-      "schemas": [
-        {
-          "primaryType": "OrderStructure",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "OrderStructure": [
-              { "name": "salt", "type": "uint256" },
-              { "name": "maker", "type": "address" },
-              { "name": "receiver", "type": "address" },
-              { "name": "makerAsset", "type": "address" },
-              { "name": "takerAsset", "type": "address" },
-              { "name": "makingAmount", "type": "uint256" },
-              { "name": "takingAmount", "type": "uint256" },
-              { "name": "makerTraits", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "OrderStructure",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "OrderStructure": [
-              { "name": "salt", "type": "uint256" },
-              { "name": "makerAsset", "type": "address" },
-              { "name": "takerAsset", "type": "address" },
-              { "name": "maker", "type": "address" },
-              { "name": "receiver", "type": "address" },
-              { "name": "allowedSender", "type": "address" },
-              { "name": "makingAmount", "type": "uint256" },
-              { "name": "takingAmount", "type": "uint256" },
-              { "name": "offsets", "type": "uint256" },
-              { "name": "interactions", "type": "bytes" }
-            ]
-          }
-        }
-      ]
+      "domain": { "name": "1inch Limit Order Protocol", "version": "2" }
     }
   },
   "metadata": { "owner": "1inch Limit Order Protocol" },
   "display": {
     "formats": {
-      "OrderStructure": {
+      "OrderStructure(uint256 salt,address maker,address receiver,address makerAsset,address takerAsset,uint256 makingAmount,uint256 takingAmount,uint256 makerTraits)": {
         "intent": "1inch Order",
         "fields": [
-          { "path": "maker", "label": "From", "format": "raw" },
-          { "path": "makingAmount", "label": "Send", "format": "tokenAmount", "params": { "tokenPath": "makerAsset" } },
-          { "path": "takingAmount", "label": "Receive minimum", "format": "tokenAmount", "params": { "tokenPath": "takerAsset" } },
-          { "path": "receiver", "label": "To", "format": "raw" }
-        ],
-        "required": ["maker", "makingAmount", "takingAmount", "receiver"],
-        "excluded": ["salt", "makerTraits", "interactions", "allowedSender", "offsets"]
+          { "path": "maker", "label": "From", "format": "raw", "visible": "always" },
+          {
+            "path": "makingAmount",
+            "label": "Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "makerAsset" },
+            "visible": "always"
+          },
+          {
+            "path": "takingAmount",
+            "label": "Receive minimum",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "takerAsset" },
+            "visible": "always"
+          },
+          { "path": "receiver", "label": "To", "format": "raw", "visible": "always" },
+          { "label": "Salt", "path": "salt", "visible": "never" },
+          { "label": "Maker Traits", "path": "makerTraits", "visible": "never" },
+          { "label": "Interactions", "path": "interactions", "visible": "never" },
+          { "label": "Allowed Sender", "path": "allowedSender", "visible": "never" },
+          { "label": "Offsets", "path": "offsets", "visible": "never" }
+        ]
       }
     }
   }

@@ -1,5 +1,5 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "eip712": {
       "deployments": [
@@ -16,44 +16,22 @@
         { "chainId": 43114, "address": "0x111111125421cA6dc452d289314280a0f8842A65" },
         { "chainId": 1313161554, "address": "0x111111125421cA6dc452d289314280a0f8842A65" }
       ],
-      "domain": { "name": "1inch Aggregation Router", "version": "6" },
-      "schemas": [
-        {
-          "primaryType": "Order",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "Order": [
-              { "name": "salt", "type": "uint256" },
-              { "name": "maker", "type": "address" },
-              { "name": "receiver", "type": "address" },
-              { "name": "makerAsset", "type": "address" },
-              { "name": "takerAsset", "type": "address" },
-              { "name": "makingAmount", "type": "uint256" },
-              { "name": "takingAmount", "type": "uint256" },
-              { "name": "makerTraits", "type": "uint256" }
-            ]
-          }
-        }
-      ]
+      "domain": { "name": "1inch Aggregation Router", "version": "6" }
     }
   },
   "metadata": { "owner": "1inch AggregationRouterV6" },
   "display": {
     "formats": {
-      "Order": {
+      "Order(uint256 salt,address maker,address receiver,address makerAsset,address takerAsset,uint256 makingAmount,uint256 takingAmount,uint256 makerTraits)": {
         "intent": "1inch Order",
         "fields": [
           { "path": "maker", "label": "From", "format": "raw" },
           { "path": "makingAmount", "label": "Send", "format": "tokenAmount", "params": { "tokenPath": "makerAsset" } },
           { "path": "takingAmount", "label": "Receive minimum", "format": "tokenAmount", "params": { "tokenPath": "takerAsset" } },
-          { "path": "receiver", "label": "To", "format": "raw" }
-        ],
-        "excluded": ["salt", "makerTraits"]
+          { "path": "receiver", "label": "To", "format": "raw" },
+          { "label": "Salt", "path": "salt", "visible": "never" },
+          { "label": "Maker Traits", "path": "makerTraits", "visible": "never" }
+        ]
       }
     }
   }

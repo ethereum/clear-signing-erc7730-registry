@@ -9,7 +9,7 @@
  * - Optionally create a PR with all changes
  *
  * Usage:
- *   node tools/scripts/batch-process.js <registry-subfolder> [options]
+ *   node tools/scripts/batch-process.js <registry-subfolder|file.json> [options]
  *
  * Options:
  *   --dry-run               Preview changes without modifying files
@@ -43,6 +43,7 @@
  *   --device <device>       Tester device: flex, stax, nanosp, nanox (default: flex)
  *   --test-log-level <lvl>  Tester log level: none, error, warn, info, debug (default: info)
  *   --no-refine             Skip refining expectedTexts from tester screen output
+ *   --file-delay <ms>       Delay between files in ms (default: 2000, avoids rate limits)
  *   --help, -h              Show this help message
  *
  * Environment Variables:
@@ -81,6 +82,8 @@ const CONFIG = {
   localApi: process.argv.includes("--local-api"),
   localApiPort: getArgValue("--local-api-port", 5000),
   includeExternalDeps: process.argv.includes("--include-external-deps"),
+  migrateFirst: !process.argv.includes("--test-first"),
+  prBase: getArgValue("--pr-base", null),
   // Parameters cascaded to generate-tests.js
   depth: getArgValue("--depth", null),
   maxTests: getArgValue("--max-tests", null),
@@ -95,6 +98,7 @@ const CONFIG = {
   testDevice: getArgValue("--device", null),
   testLogLevel: getArgValue("--test-log-level", null),
   noRefine: process.argv.includes("--no-refine"),
+  fileDelay: Number(getArgValue("--file-delay", 2000)),
 };
 
 function getArgValue(flag, defaultValue) {
@@ -129,7 +133,9 @@ function printHelp(exitCode = 0, errorMessage = null) {
     write(errorMessage);
     write("");
   }
-  write("Usage: node tools/scripts/batch-process.js <registry-subfolder> [options]");
+  write("Usage: node tools/scripts/batch-process.js <registry-subfolder|file.json> [options]");
+  write("\nThe target can be a registry subfolder (processes all files) or a single");
+  write("ERC-7730 JSON file (processes only that file).");
   write("\nOptions:");
   write("  --dry-run               Preview changes without modifying files");
   write("  --verbose               Show detailed output");
@@ -144,9 +150,11 @@ function printHelp(exitCode = 0, errorMessage = null) {
   write("  --pr-strict             Prevent PR creation if any step fails");
   write("  --pr-title <title>      Custom PR title");
   write("  --pr-branch <name>      Custom branch name");
+  write("  --pr-base <ref>         Base branch for PR (default: master). Used for stacked PRs");
+  write("  --test-first            Generate tests on v1 first, then migrate (legacy order)");
   write("  --local-api             Auto-start local Flask API server (patched erc7730)");
   write("  --local-api-port <port> Port for the local API server (default: 5000)");
-  write("  --include-external-deps Also migrate included files outside target folder");
+  write("  --include-external-deps Include migrated external deps in PR (default: revert them)");
   write("  --help, -h              Show this help message");
   write("\nTest generation options (cascaded to generate-tests.js):");
   write("  --depth <n>             Max transactions to search (default: 100)");
@@ -162,12 +170,15 @@ function printHelp(exitCode = 0, errorMessage = null) {
   write("  --device <device>       Tester device: flex, stax, nanosp, nanox (default: flex)");
   write("  --test-log-level <lvl>  Tester log level: none, error, warn, info, debug (default: info)");
   write("  --no-refine             Skip refining expectedTexts from tester screen output");
+  write("  --file-delay <ms>       Delay between files in ms (default: 2000, avoids rate limits)");
   write("\nExamples:");
   write("  node tools/scripts/batch-process.js 1inch --dry-run");
   write("  node tools/scripts/batch-process.js registry/ethena --verbose");
   write("  node tools/scripts/batch-process.js morpho --pr");
   write("  node tools/scripts/batch-process.js figment --local-api --verbose");
   write("  node tools/scripts/batch-process.js ethena --device stax --no-refine");
+  write("  node tools/scripts/batch-process.js registry/okx/calldata-foo.json --pr");
+  write("  node tools/scripts/batch-process.js okx/calldata-foo.json --dry-run");
   process.exit(exitCode);
 }
 
@@ -418,7 +429,7 @@ function initGeneratePhaseMetrics() {
     generationTargets: [],
     generationSummary: { skippedFunctions: 0, generatedFunctions: 0, totalTestCases: 0 },
     refinementCases: [],
-    refinementSummary: { refined: 0, failed: 0, total: 0 },
+    refinementSummary: { refined: 0, failed: 0, skipped: 0, total: 0 },
     testerProgress: { started: false, screenshots: 0, verified: 0, complete: false },
   };
 }
@@ -473,6 +484,7 @@ class Report {
     this.testRuns = { attempted: 0, passed: 0, failed: [], skipped: 0 };
     this.modifiedFiles = [];
     this.newFiles = [];
+    this.externalDepsReverted = [];
     this.prCreated = false;
     this.prUrl = null;
   }
@@ -514,10 +526,13 @@ class Report {
       this.testGeneration.failed.forEach((f) => console.log(`     - ${f.file}: ${f.error}`));
     }
 
-    if (this.testRuns.attempted > 0) {
-      console.log("\n🔬 Test Runs:");
+    if (this.testRuns.attempted > 0 || this.testRuns.skipped > 0) {
+      console.log("\n🔬 V2 Sanity Tests:");
       console.log(`   Attempted:  ${this.testRuns.attempted}`);
       console.log(`   Passed:     ${this.testRuns.passed}`);
+      if (this.testRuns.skipped > 0) {
+        console.log(`   Skipped:    ${this.testRuns.skipped}`);
+      }
       if (this.testRuns.failed.length > 0) {
         console.log(`   Failed:     ${this.testRuns.failed.length}`);
         this.testRuns.failed.forEach((f) => console.log(`     - ${f.file}: ${f.error}`));
@@ -529,6 +544,10 @@ class Report {
     this.modifiedFiles.forEach((f) => console.log(`     - ${path.relative(ROOT_DIR, f)}`));
     console.log(`   New files:      ${this.newFiles.length}`);
     this.newFiles.forEach((f) => console.log(`     - ${path.relative(ROOT_DIR, f)}`));
+    if (this.externalDepsReverted.length > 0) {
+      console.log(`   External deps reverted: ${this.externalDepsReverted.length}`);
+      this.externalDepsReverted.forEach((f) => console.log(`     - ${path.relative(ROOT_DIR, f)}`));
+    }
 
     if (this.prCreated) {
       console.log(`\n🔗 PR Created: ${this.prUrl}`);
@@ -812,13 +831,189 @@ function extractExecutedTestCount(output) {
 // =============================================================================
 
 /**
+ * If a test file was modified by the migration script (e.g. expectedTexts owner
+ * patching), track it in the report so it gets included in the PR commit.
+ */
+function trackPatchedTestFile(testFilePath, preMigrationContent, report) {
+  if (!testFilePath || preMigrationContent === null) return;
+  try {
+    if (!fs.existsSync(testFilePath)) return;
+    const currentContent = fs.readFileSync(testFilePath, "utf8");
+    if (currentContent !== preMigrationContent) {
+      report.addModifiedFile(testFilePath);
+    }
+  } catch {
+    // Non-critical — don't break migration flow.
+  }
+}
+
+/**
+ * Resolve the erc7730 CLI command (local venv or global).
+ * @returns {string|null}
+ */
+function getErc7730Command() {
+  const localPath = path.join(ROOT_DIR, "tools", "linter", ".venv", "bin", "erc7730");
+  if (fs.existsSync(localPath)) return localPath;
+  try {
+    spawnSync("erc7730", ["--version"], { encoding: "utf8", stdio: "pipe" });
+    return "erc7730";
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Parse JSON from command output that may have warning lines before the JSON payload.
+ * @param {string} output
+ * @returns {*}
+ */
+function parseJsonFromPossiblyPrefixedOutput(output) {
+  const text = String(output || "");
+  try {
+    return JSON.parse(text);
+  } catch {
+    const lines = text.split(/\r?\n/);
+    const jsonStartLine = lines.findIndex((line) => {
+      const trimmed = line.trimStart();
+      return trimmed.startsWith("[") || trimmed.startsWith("{");
+    });
+    if (jsonStartLine === -1) {
+      throw new Error("No JSON payload found in command output");
+    }
+    return JSON.parse(lines.slice(jsonStartLine).join("\n"));
+  }
+}
+
+/**
+ * Pre-compute the v1 calldata or convert output for a descriptor file before any
+ * migration happens on disk, so that the migration script can compare it to the v2
+ * output even after included dependencies have been migrated.
+ *
+ * @param {string} filePath - Absolute path to the v1 descriptor
+ * @returns {{ tmpPath: string }|null} - Path to the written tmp JSON file, or null on failure
+ */
+function preComputeV1Output(filePath) {
+  const cmd = getErc7730Command();
+  if (!cmd) {
+    log(`  ⚠️  erc7730 CLI not found — cannot pre-compute v1 output`, "warn");
+    return null;
+  }
+
+  let json;
+  let descriptorType;
+  try {
+    const content = fs.readFileSync(filePath, "utf8");
+    const parsed = JSON.parse(content);
+    if (parsed.context?.contract) descriptorType = "contract";
+    else if (parsed.context?.eip712) descriptorType = "eip712";
+    else {
+      log(`  ⚠️  Unknown descriptor type for ${path.relative(ROOT_DIR, filePath)}`, "warn");
+      return null;
+    }
+  } catch (e) {
+    log(`  ⚠️  Failed to read descriptor: ${e.message}`, "warn");
+    return null;
+  }
+
+  try {
+    if (descriptorType === "contract") {
+      const result = spawnSync(cmd, ["calldata", filePath], {
+        cwd: ROOT_DIR,
+        encoding: "utf8",
+        stdio: "pipe",
+        maxBuffer: 50 * 1024 * 1024,
+      });
+
+      const candidates = [result.stdout || "", result.stderr || "", `${result.stdout || ""}\n${result.stderr || ""}`];
+      for (const candidate of candidates) {
+        if (!candidate.trim()) continue;
+        try {
+          json = parseJsonFromPossiblyPrefixedOutput(candidate);
+          break;
+        } catch { /* try next */ }
+      }
+
+      if (json == null) {
+        const hint = result.status !== 0 ? ` (exit ${result.status})` : "";
+        log(`  ⚠️  Failed to parse v1 calldata output${hint}`, "warn");
+        return null;
+      }
+
+    } else {
+      const tempOutputPath = filePath + ".v1-convert.tmp.json";
+      const tempOutputFiles = [];
+      try {
+        const result = spawnSync(cmd, ["convert", "erc7730-to-eip712", filePath, tempOutputPath], {
+          cwd: ROOT_DIR,
+          encoding: "utf8",
+          stdio: "pipe",
+          maxBuffer: 50 * 1024 * 1024,
+        });
+
+        if (result.status !== 0) {
+          log(`  ⚠️  v1 convert failed: ${(result.stderr || result.stdout || "").slice(0, 200)}`, "warn");
+          return null;
+        }
+
+        const outputDir = path.dirname(tempOutputPath);
+        const baseName = path.basename(tempOutputPath, ".json");
+        const outputFiles = fs.readdirSync(outputDir).filter((f) => {
+          return f.startsWith(baseName + ".") && f.endsWith(".json") && f !== path.basename(tempOutputPath);
+        }).map((f) => path.join(outputDir, f));
+
+        if (fs.existsSync(tempOutputPath)) outputFiles.push(tempOutputPath);
+        tempOutputFiles.push(...outputFiles);
+
+        if (outputFiles.length === 0) {
+          log(`  ⚠️  v1 convert produced no output files`, "warn");
+          return null;
+        }
+
+        const combined = {};
+        for (const outFile of outputFiles) {
+          const content = fs.readFileSync(outFile, "utf8");
+          const parsed = JSON.parse(content);
+          const key = parsed.chainId != null ? String(parsed.chainId) : path.basename(outFile);
+          combined[key] = parsed;
+        }
+        json = combined;
+      } finally {
+        for (const f of tempOutputFiles) {
+          try { if (fs.existsSync(f)) fs.unlinkSync(f); } catch { /* ignore */ }
+        }
+        try { if (fs.existsSync(tempOutputPath)) fs.unlinkSync(tempOutputPath); } catch { /* ignore */ }
+      }
+    }
+
+    if (json == null || (typeof json === "object" && Object.keys(json).length === 0) || (Array.isArray(json) && json.length === 0)) {
+      log(`  ⚠️  v1 output is empty for ${path.relative(ROOT_DIR, filePath)}`, "warn");
+      return null;
+    }
+
+    const tmpPath = filePath + ".v1-output.tmp.json";
+    fs.writeFileSync(tmpPath, JSON.stringify(json, null, 2));
+    return { tmpPath };
+  } catch (e) {
+    log(`  ⚠️  Pre-compute v1 output failed: ${e.message}`, "warn");
+    return null;
+  }
+}
+
+/**
  * Migrate a file from v1 to v2
  */
 function migrateFile(filePath, report, options = {}) {
-  const { skipLint = false } = options;
+  const { skipLint = false, v1OutputFile = null } = options;
   report.migrations.attempted++;
   const preMigrationContent = !CONFIG.dryRun && fs.existsSync(filePath)
     ? fs.readFileSync(filePath, "utf8")
+    : null;
+
+  // Snapshot test file content before migration so we can detect if the
+  // migration script patched expectedTexts (owner name reconciliation).
+  const testFilePath = getTestFilePath(filePath);
+  const preMigrationTestContent = !CONFIG.dryRun && fs.existsSync(testFilePath)
+    ? fs.readFileSync(testFilePath, "utf8")
     : null;
 
   const args = ["--file", filePath];
@@ -826,6 +1021,7 @@ function migrateFile(filePath, report, options = {}) {
   if (CONFIG.verbose) args.push("--verbose");
   if (CONFIG.logFile) args.push("--log", CONFIG.logFile);
   if (skipLint) args.push("--skip-lint");
+  if (v1OutputFile) args.push("--v1-output", v1OutputFile);
 
   log(`Migrating: ${path.relative(ROOT_DIR, filePath)}`, "debug");
 
@@ -848,6 +1044,8 @@ function migrateFile(filePath, report, options = {}) {
         report.addModifiedFile(filePath);
       }
 
+      trackPatchedTestFile(testFilePath, preMigrationTestContent, report);
+
       printCommandErrorOutput(
         "migrate-v1-to-v2.js error output",
         result.stdout,
@@ -864,6 +1062,7 @@ function migrateFile(filePath, report, options = {}) {
     report.migrations.successful++;
     if (!CONFIG.dryRun) {
       report.addModifiedFile(filePath);
+      trackPatchedTestFile(testFilePath, preMigrationTestContent, report);
     }
     return true;
   } catch (error) {
@@ -955,7 +1154,12 @@ async function generateTests(filePath, report) {
               if (CONFIG.verboseTestSummary) {
                 ensureProgressLineBreak();
                 const left = `      ${shortenText(event.label || event.target, 82)}`;
-                const right = renderStatusTag("Skipped", "warn");
+                const isRateLimited = event.status === "rate_limited" || event.reason === "rate_limited";
+                const isNoData = event.status === "no_data" ||
+                  ["no_matching_transactions", "no_usable_transactions"].includes(event.reason);
+                const tag = isRateLimited ? "Rate limited" : isNoData ? "No data" : "Skipped";
+                const tone = isRateLimited ? "error" : "warn";
+                const right = renderStatusTag(tag, tone);
                 console.log(alignWithRightStatus(left, right));
               }
             }
@@ -986,15 +1190,16 @@ async function generateTests(filePath, report) {
             renderRefinementProgress();
             break;
           case "refinement_case": {
-            const status = event.status === "refined" ? "refined" : "failed";
+            const status = event.status === "refined" ? "refined" : event.status === "skipped" ? "skipped" : "failed";
             metrics.refinementCases.push({
               index: Number(event.index || 0),
               description: event.description || "",
               status,
             });
             if (status === "refined") metrics.refinementSummary.refined++;
+            else if (status === "skipped") metrics.refinementSummary.skipped++;
             else metrics.refinementSummary.failed++;
-            if (CONFIG.verboseTestSummary) {
+            if (CONFIG.verboseTestSummary && status !== "skipped") {
               ensureProgressLineBreak();
               const left = `      ${formatTestCaseLabel(event.description)}`;
               const right = status === "refined"
@@ -1007,6 +1212,7 @@ async function generateTests(filePath, report) {
           case "refinement_complete":
             metrics.refinementSummary.refined = Number(event.refined || 0);
             metrics.refinementSummary.failed = Number(event.failed || 0);
+            metrics.refinementSummary.skipped = Number(event.skipped || 0);
             metrics.refinementSummary.total = Number(event.total || 0);
             renderRefinementProgress();
             break;
@@ -1099,6 +1305,73 @@ async function generateTests(filePath, report) {
 }
 
 /**
+ * Create a temporary resolved descriptor for the tester when the file uses `includes`.
+ * Returns the temp file path, or null if not needed or resolution fails.
+ */
+/**
+ * Deep-merge two plain objects (b overrides a). Arrays are replaced, not concatenated.
+ */
+function deepMergeObjects(a, b) {
+  const result = { ...a };
+  for (const key of Object.keys(b)) {
+    if (b[key] != null && typeof b[key] === "object" && !Array.isArray(b[key]) &&
+        a[key] != null && typeof a[key] === "object" && !Array.isArray(a[key])) {
+      result[key] = deepMergeObjects(a[key], b[key]);
+    } else {
+      result[key] = b[key];
+    }
+  }
+  return result;
+}
+
+/**
+ * Recursively resolve the `includes` chain for a descriptor, producing a single
+ * self-contained JSON in the input format.
+ */
+function mergeDescriptorIncludes(filePath, visited = new Set()) {
+  if (visited.has(filePath)) return null;
+  visited.add(filePath);
+
+  const raw = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  if (raw.includes == null) return raw;
+
+  const includeRef = typeof raw.includes === "string" ? raw.includes : null;
+  if (!includeRef || /^[a-z]+:\/\//i.test(includeRef)) return raw;
+
+  const includePath = path.resolve(path.dirname(filePath), includeRef);
+  if (!fs.existsSync(includePath)) return raw;
+
+  const base = mergeDescriptorIncludes(includePath, visited);
+  if (!base) return raw;
+
+  const merged = deepMergeObjects(base, raw);
+  delete merged.includes;
+  return merged;
+}
+
+/**
+ * Create a temporary include-merged descriptor for the tester.
+ * Returns the temp file path, or null if not needed or merge fails.
+ */
+function createResolvedDescriptorForTester(filePath) {
+  try {
+    const raw = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    if (raw.includes == null) return null;
+
+    const merged = mergeDescriptorIncludes(filePath);
+    if (!merged || !merged.display) return null;
+
+    const tmpPath = filePath.replace(/\.json$/, ".resolved.tmp.json");
+    fs.writeFileSync(tmpPath, JSON.stringify(merged, null, 2));
+    log(`  → Created merged descriptor for tester: ${path.basename(tmpPath)}`, "debug");
+    return tmpPath;
+  } catch (err) {
+    log(`  → Could not merge descriptor for tester: ${err.message}`, "warning");
+    return null;
+  }
+}
+
+/**
  * Run clear-signing tests for an existing descriptor test file.
  */
 async function runTests(filePath) {
@@ -1117,7 +1390,7 @@ async function runTests(filePath) {
 
   if (!fs.existsSync(testFilePath)) {
     log(`  → Skipping test run (no test file): ${path.relative(ROOT_DIR, testFilePath)}`, "warning");
-    return { ok: false, plannedTests: null, executedTests: null, metrics: finalMetrics };
+    return { ok: true, skipped: true, plannedTests: null, executedTests: null, metrics: finalMetrics };
   }
 
   if (!fs.existsSync(TESTER_SCRIPT)) {
@@ -1187,36 +1460,46 @@ async function runTests(filePath) {
       }
     };
 
-    const result = await spawnAndCapture(
-      "bash",
-      [TESTER_SCRIPT, filePath, testFilePath, device, logLevel],
-      {
-        cwd: ROOT_DIR,
-        env: { ...process.env },
-        onStdoutLine: onLine,
-        onStderrLine: onLine,
-      }
-    );
-    const combinedOutput = `${result.stdout || ""}\n${result.stderr || ""}`;
-    ensureProgressLineBreak();
-    let executedTests = finalMetrics.ran || extractExecutedTestCount(combinedOutput);
+    // For descriptors using `includes`, the tester needs a resolved (self-contained)
+    // descriptor because the API rejects files without a `display` section.
+    const resolvedTmpFile = createResolvedDescriptorForTester(filePath);
+    const testerDescriptor = resolvedTmpFile || filePath;
 
-    if (result.status !== 0) {
-      log(`  → Test run failed for ${path.basename(filePath)}`, "warning");
-      printCommandErrorOutput(
-        "run-test.sh error output",
-        result.stdout,
-        result.stderr
+    try {
+      const result = await spawnAndCapture(
+        "bash",
+        [TESTER_SCRIPT, testerDescriptor, testFilePath, device, logLevel],
+        {
+          cwd: ROOT_DIR,
+          env: { ...process.env },
+          onStdoutLine: onLine,
+          onStderrLine: onLine,
+        }
       );
-      return { ok: false, plannedTests, executedTests, metrics: finalMetrics };
-    }
+      const combinedOutput = `${result.stdout || ""}\n${result.stderr || ""}`;
+      ensureProgressLineBreak();
+      let executedTests = finalMetrics.ran || extractExecutedTestCount(combinedOutput);
 
-    if (executedTests === null && plannedTests !== null) {
-      // If parsing fails but run succeeded, assume all planned tests were executed.
-      executedTests = plannedTests;
+      if (result.status !== 0) {
+        log(`  → Test run failed for ${path.basename(filePath)}`, "warning");
+        printCommandErrorOutput(
+          "run-test.sh error output",
+          result.stdout,
+          result.stderr
+        );
+        return { ok: false, plannedTests, executedTests, metrics: finalMetrics };
+      }
+
+      if (executedTests === null && plannedTests !== null) {
+        executedTests = plannedTests;
+      }
+      log(`  → Test run passed for ${path.basename(filePath)}`, "success");
+      return { ok: true, plannedTests, executedTests, metrics: finalMetrics };
+    } finally {
+      if (resolvedTmpFile && fs.existsSync(resolvedTmpFile)) {
+        fs.unlinkSync(resolvedTmpFile);
+      }
     }
-    log(`  → Test run passed for ${path.basename(filePath)}`, "success");
-    return { ok: true, plannedTests, executedTests, metrics: finalMetrics };
   } catch (error) {
     log(`  → Test run failed for ${path.basename(filePath)}: ${error.message}`, "warning");
     return { ok: false, plannedTests, executedTests: null, metrics: finalMetrics };
@@ -1288,12 +1571,12 @@ function getCurrentBranch() {
  *
  * @param {string} targetFolder - Target folder path
  * @param {Report} report - Processing report
+ * @param {string} label - Human-readable label for branch/PR naming (folder name or file path)
  * @returns {{ originalBranch: string, stashed: boolean } | null} cleanup context, or null if nothing was done
  */
-function createPrFromChanges(targetFolder, report) {
-  const folderName = path.basename(targetFolder);
+function createPrFromChanges(targetFolder, report, label) {
   const remote = getRemoteName();
-  const branchName = CONFIG.prBranch || `migrate-v1-to-v2/${folderName}`;
+  const branchName = CONFIG.prBranch || `migrate-v1-to-v2/${label}`;
   const allChanges = [...report.modifiedFiles, ...report.newFiles];
 
   if (allChanges.length === 0) {
@@ -1327,9 +1610,12 @@ function createPrFromChanges(targetFolder, report) {
     stashed = true;
   }
 
-  // 3. Fetch latest master from remote
-  log(`Fetching ${remote}/master...`, "info");
-  execSync(`git fetch "${remote}" master`, { cwd: ROOT_DIR, stdio: "pipe" });
+  // 3. Fetch base ref from remote
+  const baseRef = CONFIG.prBase || "master";
+  const baseBranch = baseRef.includes("/") ? baseRef : `${remote}/${baseRef}`;
+  const fetchRef = baseRef.includes("/") ? baseRef.split("/").slice(1).join("/") : baseRef;
+  log(`Fetching ${remote}/${fetchRef}...`, "info");
+  execSync(`git fetch "${remote}" "${fetchRef}"`, { cwd: ROOT_DIR, stdio: "pipe" });
 
   // Delete branch if it already exists (stale leftover from a previous run)
   try {
@@ -1340,9 +1626,9 @@ function createPrFromChanges(targetFolder, report) {
     // Branch doesn't exist — good
   }
 
-  // 4. Create a clean branch from remote/master
-  log(`Creating branch ${branchName} from ${remote}/master...`, "info");
-  execSync(`git checkout -b "${branchName}" "${remote}/master"`, { cwd: ROOT_DIR, stdio: "pipe" });
+  // 4. Create a clean branch from the base ref
+  log(`Creating branch ${branchName} from ${baseBranch}...`, "info");
+  execSync(`git checkout -b "${branchName}" "${baseBranch}"`, { cwd: ROOT_DIR, stdio: "pipe" });
 
   // 5. Write captured files onto the clean branch
   for (const [filePath, content] of fileContents) {
@@ -1357,7 +1643,7 @@ function createPrFromChanges(targetFolder, report) {
   }
 
   const commitMessage =
-    `chore(${folderName}): batch migration and test generation\n\n` +
+    `chore(${label}): batch migration and test generation\n\n` +
     `- Migrated ${report.migrations.successful} files from v1 to v2 schema\n` +
     `- Generated ${report.testGeneration.successful} test files`;
 
@@ -1365,10 +1651,11 @@ function createPrFromChanges(targetFolder, report) {
   log("Changes committed", "success");
 
   // 7. Build PR body
-  const prBody = buildPrBody(folderName, report);
+  const prBody = buildPrBody(label, report);
   const prTitle =
-    CONFIG.prTitle || `[V2 migration] ${folderName} - schema migration and test generation`;
-  const prBodyFile = path.join(ROOT_DIR, `.migrate-pr-body-${folderName}.md`);
+    CONFIG.prTitle || `[V2 migration] ${label} - schema migration and test generation`;
+  const safeLabel = label.replace(/[/\\]/g, "-");
+  const prBodyFile = path.join(ROOT_DIR, `.migrate-pr-body-${safeLabel}.md`);
   fs.writeFileSync(prBodyFile, prBody);
   log(`PR summary saved to: ${path.relative(ROOT_DIR, prBodyFile)}`, "info");
 
@@ -1378,14 +1665,14 @@ function createPrFromChanges(targetFolder, report) {
     return { originalBranch, stashed };
   }
 
-  // 8. Push and create PR (always targeting master)
+  // 8. Push and create PR
   log("Pushing branch to remote...", "info");
   execSync(`git push -u "${remote}" "${branchName}"`, { cwd: ROOT_DIR, stdio: "pipe" });
 
-  log("Creating PR targeting master...", "info");
+  log(`Creating PR targeting ${baseRef}...`, "info");
   const draftFlag = CONFIG.prDraft ? " --draft" : "";
   const prResult = execSync(
-    `gh pr create --title "${prTitle}" --body-file "${prBodyFile}" --base master${draftFlag}`,
+    `gh pr create --title "${prTitle}" --body-file "${prBodyFile}" --base "${baseRef}"${draftFlag}`,
     { cwd: ROOT_DIR, encoding: "utf8" }
   );
 
@@ -1425,10 +1712,10 @@ function cleanupAfterPr(context) {
 /**
  * Build PR body content
  */
-function buildPrBody(folderName, report) {
+function buildPrBody(label, report) {
   return `## Summary
 
-This PR contains automated batch updates for the \`${folderName}\` registry folder.
+This PR contains automated batch updates for \`${label}\` in the registry.
 
 ### Changes Made
 
@@ -1572,15 +1859,16 @@ function renderGenerationSummary(relPath, generation) {
     generatedFunctions: 0,
     totalTestCases: 0,
   };
-  const ref = generation.metrics.refinementSummary || { refined: 0, failed: 0, total: 0 };
+  const ref = generation.metrics.refinementSummary || { refined: 0, failed: 0, skipped: 0, total: 0 };
 
   ensureProgressLineBreak();
   console.log(`   Generation summary (${relPath})`);
   console.log(
     `      functions: skipped ${colorStatus(String(gen.skippedFunctions), "warn")} | generated ${colorStatus(String(gen.generatedFunctions), "ok")} | test cases ${colorStatus(String(gen.totalTestCases), "ok")}`
   );
+  const skippedPart = ref.skipped > 0 ? ` | skipped ${colorStatus(String(ref.skipped), "warn")}` : "";
   console.log(
-    `      refinement: refined ${colorStatus(String(ref.refined), "ok")} | failed ${ref.failed > 0 ? colorStatus(String(ref.failed), "error") : colorStatus("0", "ok")}`
+    `      refinement: refined ${colorStatus(String(ref.refined), "ok")} | failed ${ref.failed > 0 ? colorStatus(String(ref.failed), "error") : colorStatus("0", "ok")}${skippedPart}`
   );
 }
 
@@ -1648,14 +1936,18 @@ async function processFile(filePath, report, options = {}) {
     log("  → Running tests after migration...", "info");
     const testRun = await runTests(filePath);
     renderFinalRunSummary(relPath, testRun);
-    report.testRuns.attempted++;
-    if (testRun.ok) {
-      report.testRuns.passed++;
+    if (testRun.skipped) {
+      report.testRuns.skipped++;
     } else {
-      report.testRuns.failed.push({
-        file: relPath,
-        error: "Test run failed after migration",
-      });
+      report.testRuns.attempted++;
+      if (testRun.ok) {
+        report.testRuns.passed++;
+      } else {
+        report.testRuns.failed.push({
+          file: relPath,
+          error: "Test run failed after migration",
+        });
+      }
     }
     if (progress?.finalTests) {
       progress.finalTests.done++;
@@ -1677,9 +1969,9 @@ async function main() {
 
   // Get target folder — skip positional args consumed as values by known flags
   const flagsWithValues = new Set([
-    "--log", "--pr-title", "--pr-branch", "--local-api-port",
+    "--log", "--pr-title", "--pr-branch", "--pr-base", "--local-api-port",
     "--depth", "--max-tests", "--chain", "--backend", "--model",
-    "--api-key", "--api-url", "--device", "--test-log-level",
+    "--api-key", "--api-url", "--device", "--test-log-level", "--file-delay",
   ]);
   const consumedIndices = new Set();
   for (let i = 2; i < process.argv.length; i++) {
@@ -1697,31 +1989,49 @@ async function main() {
   );
 
   if (!targetArg) {
-    printHelp(1, "Error: A registry subfolder argument is required.");
+    printHelp(1, "Error: A registry subfolder or ERC-7730 file argument is required.");
   }
 
-  // Resolve target folder
-  let targetFolder = targetArg;
-  if (!path.isAbsolute(targetFolder)) {
-    // Check if it's a direct subfolder name or a path
-    if (targetFolder.startsWith("registry/")) {
-      targetFolder = path.join(ROOT_DIR, targetFolder);
+  // Resolve target — can be a registry subfolder or a single ERC-7730 file
+  let targetPath = targetArg;
+  if (!path.isAbsolute(targetPath)) {
+    if (targetPath.startsWith("registry/")) {
+      targetPath = path.join(ROOT_DIR, targetPath);
     } else {
-      targetFolder = path.join(REGISTRY_DIR, targetFolder);
+      targetPath = path.join(REGISTRY_DIR, targetPath);
     }
   }
 
-  if (!fs.existsSync(targetFolder)) {
-    console.error(`Target folder not found: ${targetFolder}`);
+  if (!fs.existsSync(targetPath)) {
+    console.error(`Target not found: ${targetPath}`);
     process.exit(1);
   }
 
-  if (!fs.statSync(targetFolder).isDirectory()) {
-    console.error(`Target is not a directory: ${targetFolder}`);
-    process.exit(1);
-  }
+  const isSingleFile = fs.statSync(targetPath).isFile();
+  let targetFolder;
+  let targetFiles;
+  let targetLabel;
 
-  console.log(`Target: ${path.relative(ROOT_DIR, targetFolder)}`);
+  if (isSingleFile) {
+    if (!targetPath.endsWith(".json")) {
+      console.error(`Target file must be a JSON file: ${targetPath}`);
+      process.exit(1);
+    }
+    if (!isErc7730DescriptorFile(targetPath)) {
+      console.error(`Target file is not a valid ERC-7730 descriptor: ${targetPath}`);
+      process.exit(1);
+    }
+    targetFolder = path.dirname(targetPath);
+    targetFiles = [targetPath];
+    const relToRegistry = path.relative(REGISTRY_DIR, targetPath);
+    targetLabel = relToRegistry.replace(/\.json$/, "");
+    console.log(`Target file: ${path.relative(ROOT_DIR, targetPath)}`);
+  } else {
+    targetFolder = targetPath;
+    targetFiles = findErc7730Files(targetFolder);
+    targetLabel = path.basename(targetFolder);
+    console.log(`Target: ${path.relative(ROOT_DIR, targetFolder)}`);
+  }
 
   // Initialize report
   const report = new Report();
@@ -1730,44 +2040,53 @@ async function main() {
   const repoDescriptorFiles = findErc7730Files(ROOT_DIR);
   const dependencyGraph = buildDependencyGraph(repoDescriptorFiles);
 
-  // Target files to process (inside selected folder)
-  const targetFiles = findErc7730Files(targetFolder);
+  // Always collect transitive dependencies for migration consistency
+  const targetFilesSet = new Set(targetFiles);
+  const allFilesSet = collectTransitiveDependencies(targetFiles, dependencyGraph);
+  const externalDeps = [...allFilesSet].filter((f) => !targetFilesSet.has(f));
+  const allFiles = orderFilesByDependencies([...allFilesSet], dependencyGraph);
 
-  // Optionally include transitive dependencies outside target folder
-  const filesSet = CONFIG.includeExternalDeps
-    ? collectTransitiveDependencies(targetFiles, dependencyGraph)
-    : new Set(targetFiles);
-  const files = orderFilesByDependencies([...filesSet], dependencyGraph);
-
+  // Target leaf files: leaves within the target set (tests run only on these)
   const leafFiles = new Set(
-    files.filter((file) => {
+    targetFiles.filter((file) => {
       const node = dependencyGraph.get(file);
       return !node || node.dependents.size === 0;
     })
   );
+  const targetLeafFiles = targetFiles.filter((f) => leafFiles.has(f));
+
+  const modeLabel = CONFIG.migrateFirst ? "migrate-first" : "test-first";
   const progress = {
-    testGeneration: {
-      done: 0,
-      total: CONFIG.skipTests ? 0 : leafFiles.size,
-    },
-    finalTests: {
-      done: 0,
-      total: CONFIG.skipTests || CONFIG.noTest || CONFIG.dryRun ? 0 : leafFiles.size,
-    },
+    migration: { done: 0, total: CONFIG.skipMigration ? 0 : allFiles.length },
+    testGeneration: { done: 0, total: CONFIG.skipTests ? 0 : targetLeafFiles.length },
+    sanityTests: { done: 0, total: (!CONFIG.migrateFirst && !CONFIG.skipTests && !CONFIG.noTest && !CONFIG.dryRun) ? targetLeafFiles.length : 0 },
   };
 
-  console.log(`Found ${targetFiles.length} target ERC-7730 files`);
-  if (CONFIG.includeExternalDeps) {
-    const outsideTargetCount = files.filter((f) => !f.startsWith(`${targetFolder}${path.sep}`)).length;
-    console.log(
-      `Including ${files.length - targetFiles.length} transitive dependency file(s), ` +
-      `${outsideTargetCount} outside target folder`
-    );
+  // Snapshot external dep contents so we can revert after processing
+  const externalSnapshots = new Map();
+  if (!CONFIG.dryRun) {
+    for (const dep of externalDeps) {
+      if (fs.existsSync(dep)) {
+        externalSnapshots.set(dep, fs.readFileSync(dep, "utf8"));
+      }
+    }
   }
-  console.log(`Processing ${files.length} file(s) in dependency order`);
-  console.log(`Test generation + final tests will run only on ${leafFiles.size} leaf file(s)\n`);
 
-  if (files.length === 0) {
+  if (isSingleFile) {
+    console.log(`Processing 1 ERC-7730 file`);
+  } else {
+    console.log(`Found ${targetFiles.length} target ERC-7730 files`);
+    if (externalDeps.length > 0) {
+      console.log(`Resolved ${externalDeps.length} external dependency file(s) for migration:`);
+      externalDeps.forEach((f) => console.log(`  - ${path.relative(ROOT_DIR, f)}`));
+    } else {
+      console.log("No external dependencies");
+    }
+    console.log(`Processing ${allFiles.length} file(s) in dependency order (${modeLabel})`);
+    console.log(`Test generation will run on ${targetLeafFiles.length} leaf file(s)\n`);
+  }
+
+  if (allFiles.length === 0) {
     console.log("No files to process.");
     process.exit(0);
   }
@@ -1787,16 +2106,192 @@ async function main() {
       }
     }
 
-    // Process each file on the current branch
-    logSection("Processing Files");
-    for (const file of files) {
-      const isLeaf = leafFiles.has(file);
-      await processFile(file, report, {
-        runTestGeneration: isLeaf,
-        runFinalTests: isLeaf,
-        isLeaf,
-        progress,
-      });
+    // ================================================================
+    // Phased processing
+    // ================================================================
+
+    // Pre-compute v1 calldata/convert outputs for leaf files before migration
+    // changes any includes on disk. Returns a Map<filePath, tmpPath>.
+    function preComputeV1Outputs(files, leafSet, phaseLabel) {
+      const v1Leaves = files.filter((f) => isV1Schema(f) && leafSet.has(f));
+      if (v1Leaves.length === 0 || CONFIG.skipLint || CONFIG.dryRun) return new Map();
+
+      logSection(`${phaseLabel}: Pre-compute V1 Outputs (${v1Leaves.length} leaf files)`);
+      const outputMap = new Map();
+      for (let i = 0; i < v1Leaves.length; i++) {
+        const file = v1Leaves[i];
+        const relPath = path.relative(ROOT_DIR, file);
+        printPhaseStart("V1 output", i + 1, v1Leaves.length, relPath);
+        const result = preComputeV1Output(file);
+        if (result) {
+          outputMap.set(file, result.tmpPath);
+          log(`  ✓ ${relPath}`, "debug");
+        } else {
+          log(`  ⚠️  ${relPath}: pre-compute failed, will use live v1 calldata`, "debug");
+        }
+      }
+      log(`Pre-computed v1 output for ${outputMap.size}/${v1Leaves.length} leaf files`, "info");
+      return outputMap;
+    }
+
+    function cleanupV1Outputs(outputMap) {
+      for (const tmpPath of outputMap.values()) {
+        try { if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath); } catch { /* ignore */ }
+      }
+    }
+
+    const PHASE_DELAY_MS = 5000;
+    async function delayBetweenPhases(fromLabel, toLabel) {
+      if (CONFIG.dryRun) return;
+      log(`Pausing ${PHASE_DELAY_MS / 1000}s between ${fromLabel} and ${toLabel} (rate limit cooldown)...`, "debug");
+      await new Promise((resolve) => setTimeout(resolve, PHASE_DELAY_MS));
+    }
+
+    if (CONFIG.migrateFirst) {
+      // --- Migrate-first mode (2 phases + pre-compute) ---
+
+      // Phase 0: Pre-compute v1 outputs while all includes are still v1
+      const v1OutputMap = !CONFIG.skipMigration
+        ? preComputeV1Outputs(allFiles, leafFiles, "Phase 0")
+        : new Map();
+
+      // Phase 1: Migrate ALL files (target + deps) to v2
+      if (!CONFIG.skipMigration) {
+        if (v1OutputMap.size > 0) await delayBetweenPhases("pre-compute", "migration");
+        logSection(`Phase 1: Migration (${allFiles.length} files)`);
+        try {
+          for (let i = 0; i < allFiles.length; i++) {
+            const file = allFiles[i];
+            const isLeaf = leafFiles.has(file);
+            report.filesProcessed++;
+            if (isV1Schema(file)) {
+              const relPath = path.relative(ROOT_DIR, file);
+              printPhaseStart("Migration", i + 1, allFiles.length, relPath);
+              const skipLintForThisFile = CONFIG.skipLint || !isLeaf;
+              const v1OutputFile = v1OutputMap.get(file) || null;
+              migrateFile(file, report, { skipLint: skipLintForThisFile, v1OutputFile });
+            } else {
+              log(`  → ${path.relative(ROOT_DIR, file)}: already v2, skipping`, "debug");
+              report.migrations.skipped++;
+            }
+            progress.migration.done++;
+            printPhaseProgress("Migration", progress.migration.done, progress.migration.total);
+          }
+        } finally {
+          cleanupV1Outputs(v1OutputMap);
+        }
+      }
+
+      // Phase 2: Generate tests on target leaf files (v2-on-v2)
+      if (!CONFIG.skipTests) {
+        if (!CONFIG.skipMigration) await delayBetweenPhases("migration", "test generation");
+        logSection(`Phase 2: Test Generation (${targetLeafFiles.length} leaf files)`);
+        for (let i = 0; i < targetLeafFiles.length; i++) {
+          if (i > 0 && CONFIG.fileDelay > 0) {
+            await new Promise((resolve) => setTimeout(resolve, CONFIG.fileDelay));
+          }
+          const file = targetLeafFiles[i];
+          const relPath = path.relative(ROOT_DIR, file);
+          printPhaseStart("Test gen", i + 1, targetLeafFiles.length, relPath);
+          const generation = await generateTests(file, report);
+          renderGenerationSummary(relPath, generation);
+          progress.testGeneration.done++;
+          printPhaseProgress("Test gen", progress.testGeneration.done, progress.testGeneration.total);
+        }
+      }
+
+    } else {
+      // --- Test-first mode (3 phases + pre-compute) ---
+
+      // Phase 1: Generate tests on v1 leaf files
+      if (!CONFIG.skipTests) {
+        logSection(`Phase 1: Test Generation (${targetLeafFiles.length} leaf files)`);
+        for (let i = 0; i < targetLeafFiles.length; i++) {
+          if (i > 0 && CONFIG.fileDelay > 0) {
+            await new Promise((resolve) => setTimeout(resolve, CONFIG.fileDelay));
+          }
+          const file = targetLeafFiles[i];
+          const relPath = path.relative(ROOT_DIR, file);
+          printPhaseStart("Test gen", i + 1, targetLeafFiles.length, relPath);
+          const generation = await generateTests(file, report);
+          renderGenerationSummary(relPath, generation);
+          progress.testGeneration.done++;
+          printPhaseProgress("Test gen", progress.testGeneration.done, progress.testGeneration.total);
+        }
+      }
+
+      // Phase 1.5: Pre-compute v1 outputs before migration
+      if (!CONFIG.skipTests && !CONFIG.skipMigration) await delayBetweenPhases("test generation", "pre-compute");
+      const v1OutputMap = !CONFIG.skipMigration
+        ? preComputeV1Outputs(allFiles, leafFiles, "Phase 1.5")
+        : new Map();
+
+      // Phase 2: Migrate ALL files to v2
+      if (!CONFIG.skipMigration) {
+        if (v1OutputMap.size > 0) await delayBetweenPhases("pre-compute", "migration");
+        logSection(`Phase 2: Migration (${allFiles.length} files)`);
+        try {
+          for (let i = 0; i < allFiles.length; i++) {
+            const file = allFiles[i];
+            const isLeaf = leafFiles.has(file);
+            report.filesProcessed++;
+            if (isV1Schema(file)) {
+              const relPath = path.relative(ROOT_DIR, file);
+              printPhaseStart("Migration", i + 1, allFiles.length, relPath);
+              const skipLintForThisFile = CONFIG.skipLint || !isLeaf;
+              const v1OutputFile = v1OutputMap.get(file) || null;
+              migrateFile(file, report, { skipLint: skipLintForThisFile, v1OutputFile });
+            } else {
+              log(`  → ${path.relative(ROOT_DIR, file)}: already v2, skipping`, "debug");
+              report.migrations.skipped++;
+            }
+            progress.migration.done++;
+            printPhaseProgress("Migration", progress.migration.done, progress.migration.total);
+          }
+        } finally {
+          cleanupV1Outputs(v1OutputMap);
+        }
+      }
+
+      // Phase 3: V2 sanity tests on leaves
+      if (!CONFIG.skipTests && !CONFIG.noTest && !CONFIG.dryRun) {
+        if (!CONFIG.skipMigration) await delayBetweenPhases("migration", "V2 sanity tests");
+        logSection(`Phase 3: V2 Sanity Tests (${targetLeafFiles.length} leaf files)`);
+        for (let i = 0; i < targetLeafFiles.length; i++) {
+          const file = targetLeafFiles[i];
+          const relPath = path.relative(ROOT_DIR, file);
+          printPhaseStart("V2 test", i + 1, targetLeafFiles.length, relPath);
+          const testRun = await runTests(file);
+          renderFinalRunSummary(relPath, testRun);
+          if (testRun.skipped) {
+            report.testRuns.skipped++;
+          } else {
+            report.testRuns.attempted++;
+            if (testRun.ok) {
+              report.testRuns.passed++;
+            } else {
+              report.testRuns.failed.push({ file: relPath, error: "V2 sanity test failed" });
+            }
+          }
+          progress.sanityTests.done++;
+          printPhaseProgress("V2 test", progress.sanityTests.done, progress.sanityTests.total);
+        }
+      }
+    }
+
+    // ================================================================
+    // Cleanup: revert external deps if not --include-external-deps
+    // ================================================================
+
+    if (!CONFIG.includeExternalDeps && externalSnapshots.size > 0) {
+      logSection("Cleanup");
+      log(`Reverting ${externalSnapshots.size} external dependency file(s)...`, "info");
+      for (const [dep, content] of externalSnapshots) {
+        fs.writeFileSync(dep, content);
+        report.modifiedFiles = report.modifiedFiles.filter((f) => f !== dep);
+        log(`  - ${path.relative(ROOT_DIR, dep)}`, "info");
+      }
+      report.externalDepsReverted = [...externalSnapshots.keys()];
     }
 
     // Create PR with only the files modified by batch-process
@@ -1816,7 +2311,7 @@ async function main() {
         log(`Skipping PR creation: --pr-strict is set and there were failures (${reasons})`, "error");
       } else {
         logSection("Creating PR");
-        prCleanupContext = createPrFromChanges(targetFolder, report);
+        prCleanupContext = createPrFromChanges(targetFolder, report, targetLabel);
       }
     }
 

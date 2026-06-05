@@ -1,5 +1,5 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "eip712": {
       "deployments": [
@@ -9,59 +9,13 @@
         { "chainId": 137, "address": "0xf3cd476c3c4d3ac5ca2724767f269070ca09a043" },
         { "chainId": 42161, "address": "0x0927fd43a7a87e3e8b81df2c44b03c4756849f6d" }
       ],
-      "domain": { "name": "AUGUSTUS RFQ", "version": "1" },
-      "schemas": [
-        {
-          "primaryType": "Order",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "Order": [
-              { "name": "nonceAndMeta", "type": "uint256" },
-              { "name": "expiry", "type": "uint128" },
-              { "name": "makerAsset", "type": "address" },
-              { "name": "takerAsset", "type": "address" },
-              { "name": "maker", "type": "address" },
-              { "name": "taker", "type": "address" },
-              { "name": "makerAmount", "type": "uint256" },
-              { "name": "takerAmount", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "OrderNFT",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "OrderNFT": [
-              { "name": "nonceAndMeta", "type": "uint256" },
-              { "name": "expiry", "type": "uint128" },
-              { "name": "makerAsset", "type": "uint256" },
-              { "name": "makerAssetId", "type": "uint256" },
-              { "name": "takerAsset", "type": "uint256" },
-              { "name": "takerAssetId", "type": "uint256" },
-              { "name": "maker", "type": "address" },
-              { "name": "taker", "type": "address" },
-              { "name": "makerAmount", "type": "uint256" },
-              { "name": "takerAmount", "type": "uint256" }
-            ]
-          }
-        }
-      ]
+      "domain": { "name": "AUGUSTUS RFQ", "version": "1" }
     }
   },
   "metadata": { "owner": "AugustusRFQ" },
   "display": {
     "formats": {
-      "Order": {
+      "Order(uint256 nonceAndMeta,uint128 expiry,address makerAsset,address takerAsset,address maker,address taker,uint256 makerAmount,uint256 takerAmount)": {
         "intent": "AugustusRFQ ERC20 order",
         "fields": [
           { "path": "nonceAndMeta", "label": "Nonce and metadata", "format": "raw" },
@@ -74,7 +28,7 @@
           { "path": "takerAmount", "label": "Taker amount", "format": "raw" }
         ]
       },
-      "OrderNFT": {
+      "OrderNFT(uint256 nonceAndMeta,uint128 expiry,uint256 makerAsset,uint256 makerAssetId,uint256 takerAsset,uint256 takerAssetId,address maker,address taker,uint256 makerAmount,uint256 takerAmount)": {
         "intent": "AugustusRFQ NFT order",
         "fields": [
           { "path": "nonceAndMeta", "label": "Nonce and metadata", "format": "raw" },

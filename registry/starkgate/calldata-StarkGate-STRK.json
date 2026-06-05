@@ -1,15 +1,13 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "L1StarkGateSTRKbridge",
-    "contract": {
-      "abi": "https://api.etherscan.io/api?module=contract&action=getabi&address=0x6ad74D4B79A06A492C288eF66Ef868Dd981fdC85",
-      "deployments": [{ "chainId": 1, "address": "0xcE5485Cfb26914C5dcE00B9BAF0580364daFC7a4" }]
-    }
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xcE5485Cfb26914C5dcE00B9BAF0580364daFC7a4" }] }
   },
   "metadata": {
-    "owner": "Starknet",
-    "info": { "url": "https://starkgate.starknet.io/", "legalName": "StarkWare", "deploymentDate": "2024-10-01T00:00:00Z" }
+    "owner": "StarkWare",
+    "info": { "url": "https://starkgate.starknet.io/", "deploymentDate": "2024-10-01T00:00:00Z" },
+    "contractName": "L1StarkGateSTRKbridge"
   },
   "display": {
     "formats": {
@@ -17,11 +15,16 @@
         "$id": "deposit",
         "intent": "Bridge",
         "fields": [
-          { "path": "amount", "label": "Amount to deposit", "format": "tokenAmount", "params": { "tokenPath": "token" } },
-          { "path": "l2Recipient", "label": "Recipient", "format": "raw" },
+          {
+            "path": "amount",
+            "label": "Amount to deposit",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token" },
+            "visible": "always"
+          },
+          { "path": "l2Recipient", "label": "Recipient", "format": "raw", "visible": "always" },
           { "path": "@.value", "label": "Deposit fee", "format": "amount" }
-        ],
-        "required": ["token", "amount", "l2Recipient"]
+        ]
       }
     }
   }

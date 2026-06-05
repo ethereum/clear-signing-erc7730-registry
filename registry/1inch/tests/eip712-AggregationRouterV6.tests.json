@@ -1,0 +1,55 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "1inch Order",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Order": [
+            { "name": "salt", "type": "uint256" },
+            { "name": "maker", "type": "address" },
+            { "name": "receiver", "type": "address" },
+            { "name": "makerAsset", "type": "address" },
+            { "name": "takerAsset", "type": "address" },
+            { "name": "makingAmount", "type": "uint256" },
+            { "name": "takingAmount", "type": "uint256" },
+            { "name": "makerTraits", "type": "uint256" }
+          ]
+        },
+        "primaryType": "Order",
+        "domain": {
+          "name": "1inch Aggregation Router",
+          "version": "6",
+          "chainId": 1,
+          "verifyingContract": "0x111111125421cA6dc452d289314280a0f8842A65"
+        },
+        "message": {
+          "salt": "1777600000123",
+          "maker": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "receiver": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+          "makerAsset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "takerAsset": "0xC02aaA39b223FE8D0A0E5C4F27eAD9083C756Cc2",
+          "makingAmount": "2500000000",
+          "takingAmount": "1000000000000000000",
+          "makerTraits": "562949953421312"
+        }
+      },
+      "expectedTexts": [
+        "From",
+        "0xd8dA6BF26964aF9D 7eEd9e03E53415D37a A96045",
+        "To",
+        "0xE592427A0AEce92D e3Edee1F18E0157C058 61564",
+        "Send",
+        "2500 USDC",
+        "Receive minimum",
+        "1 WETH"
+      ]
+    }
+  ]
+}

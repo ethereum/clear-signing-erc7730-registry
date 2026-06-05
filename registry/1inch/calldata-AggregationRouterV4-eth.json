@@ -1,12 +1,9 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "includes": "common-AggregationRouterV4.json",
   "context": {
     "$id": "AggregationRouterV4",
-    "contract": {
-      "abi": "https://api.etherscan.io/api?module=contract&action=getabi&address=0x1111111254fb6c44bac0bed2854e76f90643097d",
-      "deployments": [{ "chainId": 1, "address": "0x1111111254fb6c44bAC0beD2854e76F90643097d" }]
-    }
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x1111111254fb6c44bAC0beD2854e76F90643097d" }] }
   },
   "display": {
     "formats": {
@@ -14,33 +11,46 @@
         "$id": "clipperSwap",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "dstToken" } },
-          { "path": "@.from", "$ref": "$.display.definitions.beneficiary" }
-        ],
-        "required": ["amount", "minReturn", "@.from"]
+          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" }, "visible": "always" },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "dstToken" },
+            "visible": "always"
+          },
+          { "path": "@.from", "$ref": "$.display.definitions.beneficiary", "visible": "always" }
+        ]
       },
       "clipperSwapTo(address recipient, address srcToken, address dstToken, uint256 amount, uint256 minReturn)": {
         "$id": "clipperSwapTo",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "dstToken" } },
-          { "path": "recipient", "$ref": "$.display.definitions.beneficiary" }
-        ],
-        "required": ["amount", "minReturn", "recipient"]
+          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" }, "visible": "always" },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "dstToken" },
+            "visible": "always"
+          },
+          { "path": "recipient", "$ref": "$.display.definitions.beneficiary", "visible": "always" }
+        ]
       },
       "clipperSwapToWithPermit(address recipient, address srcToken, address dstToken, uint256 amount, uint256 minReturn, bytes permit)": {
         "$id": "clipperSwapToWithPermit",
         "intent": "Swap",
         "fields": [
-          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" } },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "dstToken" } },
-          { "path": "recipient", "$ref": "$.display.definitions.beneficiary" }
-        ],
-        "required": ["amount", "minReturn", "recipient"],
-        "excluded": ["permit"]
+          { "path": "amount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" }, "visible": "always" },
+          {
+            "path": "minReturn",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "dstToken" },
+            "visible": "always"
+          },
+          { "path": "recipient", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          { "label": "Permit", "path": "permit", "visible": "never" }
+        ]
       }
     }
-  }
+  },
+  "metadata": { "contractName": "AggregationRouterV4" }
 }

@@ -22,13 +22,17 @@ node tools/scripts/batch-process.js <folder-name> [options]
 | `--verbose` | Show detailed output for each operation |
 | `--skip-tests` | Skip test file generation |
 | `--skip-migration` | Skip v1 to v2 schema migration |
-| `--pr` | Create a branch and PR with changes (targets master) |
+| `--pr` | Create a branch and PR with changes |
 | `--pr-draft` | Create the PR in draft mode |
 | `--pr-strict` | Prevent PR creation if any step fails |
 | `--pr-title <title>` | Custom PR title |
 | `--pr-branch <name>` | Custom branch name |
+| `--pr-base <ref>` | Base branch for PR (default: `master`). Used for stacked PRs |
+| `--test-first` | Generate tests on v1 first, then migrate (legacy order) |
+| `--include-external-deps` | Include migrated external deps in PR (default: revert them) |
 | `--local-api` | Auto-start local Flask API server for tester calls |
 | `--local-api-port <port>` | Port for local API server (default: `5000`) |
+| `--file-delay <ms>` | Delay between files in ms to avoid API rate limits (default: `2000`) |
 
 ## Cascaded Test Generation Options
 
@@ -81,19 +85,48 @@ Force-run tester with local API (no PR):
 source .env && node tools/scripts/batch-process.js circle --local-api --force-test
 ```
 
-Custom PR settings:
+Migrate-first (default) — works even when ercs/ are v1 on master:
 
 ```bash
-source .env && node tools/scripts/batch-process.js kiln --pr-title "Update Kiln descriptors" --pr-branch "feat/kiln-v2"
+source .env && node tools/scripts/batch-process.js kiln --compact -l --pr --pr-draft
+```
+
+Test-first — use after ercs/ PR merges, or for dApps without external deps:
+
+```bash
+source .env && node tools/scripts/batch-process.js swell --test-first --compact -l --pr --pr-draft
+```
+
+Stacked PR before ercs/ PR merges:
+
+```bash
+source .env && node tools/scripts/batch-process.js kiln --pr --pr-draft --pr-base migrate-v1-to-v2/ercs
 ```
 
 ## Workflow
 
-The script processes each ERC-7730 file in the target folder:
+The script uses phased execution with two ordering modes:
 
-1. **Schema Migration** - Migrates v1 files to v2 format (linting/validation handled by `migrate-v1-to-v2.js`)
-2. **Test Generation** - Creates missing test files from blockchain data
-3. **PR Creation** (with `--pr`) - Creates a clean branch from `<remote>/master`, commits only the files modified by batch-process, and opens a PR targeting `master`
+### Migrate-first (default)
+
+Best for dApps with external deps (e.g. `ercs/` includes). Tests run against a fully v2-consistent disk.
+
+1. **Phase 1: Migration** — Migrate all files (target + transitive deps) to v2
+2. **Phase 2: Test Generation** — Generate tests on leaf target files (v2-on-v2)
+3. **Cleanup** — Revert external dep migrations unless `--include-external-deps` is set
+
+### Test-first (`--test-first`)
+
+Use when external deps are already v2 on master, or when there are no external deps. Matches the original flow.
+
+1. **Phase 1: Test Generation** — Generate tests on v1 leaf files (tester + refinement)
+2. **Phase 2: Migration** — Migrate all files to v2 (may patch test expectedTexts)
+3. **Phase 3: V2 Sanity Tests** — Verify migrated descriptors pass with patched tests
+4. **Cleanup** — Revert external dep migrations unless `--include-external-deps` is set
+
+### PR Creation (with `--pr`)
+
+Creates a clean branch from `<remote>/<base>` (default: `master`), commits only the files modified by batch-process, and opens a PR. Use `--pr-base` to target a different base branch for stacked PRs.
 
 ## Prerequisites
 

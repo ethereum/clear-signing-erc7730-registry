@@ -1,69 +1,8 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "WrappedTokenGatewayV3",
     "contract": {
-      "abi": [
-        {
-          "inputs": [
-            { "internalType": "address", "name": "pool", "type": "address" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" },
-            { "internalType": "uint16", "name": "referralCode", "type": "uint16" }
-          ],
-          "name": "borrowETH",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "address", "name": "pool", "type": "address" },
-            { "internalType": "address", "name": "onBehalfOf", "type": "address" },
-            { "internalType": "uint16", "name": "referralCode", "type": "uint16" }
-          ],
-          "name": "depositETH",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "address", "name": "pool", "type": "address" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" },
-            { "internalType": "address", "name": "onBehalfOf", "type": "address" }
-          ],
-          "name": "repayETH",
-          "outputs": [],
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "address", "name": "pool", "type": "address" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" },
-            { "internalType": "address", "name": "to", "type": "address" }
-          ],
-          "name": "withdrawETH",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            { "internalType": "address", "name": "pool", "type": "address" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" },
-            { "internalType": "address", "name": "to", "type": "address" },
-            { "internalType": "uint256", "name": "deadline", "type": "uint256" },
-            { "internalType": "uint8", "name": "permitV", "type": "uint8" },
-            { "internalType": "bytes32", "name": "permitR", "type": "bytes32" },
-            { "internalType": "bytes32", "name": "permitS", "type": "bytes32" }
-          ],
-          "name": "withdrawETHWithPermit",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        }
-      ],
       "deployments": [
         { "chainId": 1, "address": "0xd01607c3C5eCABa394D8be377a08590149325722" },
         { "chainId": 10, "address": "0x5f2508cAE9923b02316254026CD43d7902866725" },
@@ -81,7 +20,11 @@
       ]
     }
   },
-  "metadata": { "owner": "Aave", "info": { "url": "https://aave.com", "legalName": "Aave DAO", "deploymentDate": "2025-02-11T01:19:11Z" } },
+  "metadata": {
+    "owner": "Aave DAO",
+    "info": { "url": "https://aave.com", "deploymentDate": "2025-02-11T01:19:11Z" },
+    "contractName": "WrappedTokenGatewayV3"
+  },
   "display": {
     "formats": {
       "depositETH(address pool, address onBehalfOf, uint16 referralCode)": {
@@ -93,26 +36,27 @@
             "path": "onBehalfOf",
             "format": "addressName",
             "label": "Collateral recipient",
-            "params": { "types": ["eoa"], "sources": ["local", "ens"] }
-          }
-        ],
-        "required": ["onBehalfOf"],
-        "excluded": ["referralCode", "pool"]
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "label": "Referral Code", "path": "referralCode", "visible": "never" },
+          { "label": "Pool", "path": "pool", "visible": "never" }
+        ]
       },
       "repayETH(address pool, uint256 amount, address onBehalfOf)": {
         "$id": "repayETH",
         "intent": "Repay loan",
         "fields": [
-          { "path": "amount", "format": "amount", "label": "Amount to repay" },
+          { "path": "amount", "format": "amount", "label": "Amount to repay", "visible": "always" },
           {
             "path": "onBehalfOf",
             "format": "addressName",
             "label": "For debt holder",
-            "params": { "types": ["eoa"], "sources": ["local", "ens"] }
-          }
-        ],
-        "required": ["onBehalfOf", "amount"],
-        "excluded": ["pool"]
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "label": "Pool", "path": "pool", "visible": "never" }
+        ]
       },
       "withdrawETH(address pool, uint256 amount, address to)": {
         "$id": "withdrawETH",
@@ -127,19 +71,20 @@
               "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000",
               "threshold": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
               "message": "All"
-            }
+            },
+            "visible": "always"
           },
           {
             "path": "to",
             "format": "addressName",
             "label": "To recipient",
-            "params": { "types": ["eoa"], "sources": ["local", "ens"] }
-          }
-        ],
-        "required": ["to", "amount"],
-        "excluded": ["pool"]
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "label": "Pool", "path": "pool", "visible": "never" }
+        ]
       },
-      "withdrawETHWithPermit(address, uint256 amount, address to, uint256 deadline, uint8 permitV, bytes32 permitR, bytes32 permitS)": {
+      "withdrawETHWithPermit(address pool, uint256 amount, address to, uint256 deadline, uint8 permitV, bytes32 permitR, bytes32 permitS)": {
         "$id": "withdrawETHWithPermit",
         "intent": "Withdraw",
         "fields": [
@@ -152,27 +97,31 @@
               "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000",
               "threshold": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
               "message": "All"
-            }
+            },
+            "visible": "always"
           },
           {
             "path": "to",
             "format": "addressName",
             "label": "To recipient",
-            "params": { "types": ["eoa"], "sources": ["local", "ens"] }
-          }
-        ],
-        "required": ["to", "amount"],
-        "excluded": ["deadline", "permitV", "permitR", "permitS"]
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "label": "Deadline", "path": "deadline", "visible": "never" },
+          { "label": "Permit V", "path": "permitV", "visible": "never" },
+          { "label": "Permit R", "path": "permitR", "visible": "never" },
+          { "label": "Permit S", "path": "permitS", "visible": "never" }
+        ]
       },
       "borrowETH(address pool, uint256 amount, uint16 referralCode)": {
         "$id": "borrowETH",
         "intent": "Borrow",
         "fields": [
-          { "path": "amount", "format": "amount", "label": "Amount to borrow" },
-          { "path": "@.from", "format": "addressName", "label": "Debtor", "params": { "types": ["eoa"], "sources": ["local", "ens"] } }
-        ],
-        "required": ["amount"],
-        "excluded": ["referralCode", "pool"]
+          { "path": "amount", "format": "amount", "label": "Amount to borrow", "visible": "always" },
+          { "path": "@.from", "format": "addressName", "label": "Debtor", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+          { "label": "Referral Code", "path": "referralCode", "visible": "never" },
+          { "label": "Pool", "path": "pool", "visible": "never" }
+        ]
       }
     }
   }

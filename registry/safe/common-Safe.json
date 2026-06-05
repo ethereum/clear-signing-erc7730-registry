@@ -1,10 +1,19 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "metadata": {
-    "owner": "Safe",
-    "info": { "url": "https://app.safe.global/welcome", "legalName": "Safe{Wallet}" },
-    "enums": { "operation": { "0": "Call", "1": "Delegate Call" } },
-    "constants": {"addressAsNull": "0x0000000000000000000000000000000000000000" }
+    "owner": "Safe{Wallet}",
+    "info": {
+      "url": "https://app.safe.global/welcome"
+    },
+    "enums": {
+      "operation": {
+        "0": "Call",
+        "1": "Delegate Call"
+      }
+    },
+    "constants": {
+      "addressAsNull": "0x0000000000000000000000000000000000000000"
+    }
   },
   "display": {
     "formats": {
@@ -16,18 +25,29 @@
             "path": "_owners.[]",
             "label": "Signer",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet"] }
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
           },
           {
             "path": "_threshold",
             "label": "Threshold",
-            "format": "raw"
+            "format": "raw",
+            "visible": "always"
           },
           {
             "path": "fallbackHandler",
             "label": "Fallback handler",
             "format": "addressName",
-            "params": { "types": ["contract"] }
+            "params": {
+              "types": [
+                "contract"
+              ]
+            },
+            "visible": "always"
           },
           {
             "path": "payment",
@@ -36,22 +56,32 @@
             "params": {
               "tokenPath": "paymentToken",
               "nativeCurrencyAddress": "$.metadata.constants.addressAsNull"
-            }
+            },
+            "visible": "always"
           },
           {
             "path": "paymentReceiver",
             "label": "Payment receiver",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet", "contract"] }
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
           },
           {
             "path": "data",
             "label": "Module",
             "format": "calldata",
-            "params": { "calleePath": "to" }
+            "params": {
+              "calleePath": "to"
+            },
+            "visible": "always"
           }
-        ],
-        "required": ["_owners", "_threshold", "to", "data", "fallbackHandler", "paymentToken", "payment", "paymentReceiver"]
+        ]
       },
       "execTransaction(address to, uint256 value, bytes data, uint8 operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, bytes signatures)": {
         "$id": "execTransaction",
@@ -61,19 +91,30 @@
             "path": "operation",
             "label": "Operation type",
             "format": "enum",
-            "params": { "$ref": "$.metadata.enums.operation" }
+            "params": {
+              "$ref": "$.metadata.enums.operation"
+            },
+            "visible": "always"
           },
           {
             "path": "@.to",
             "label": "From Safe",
             "format": "addressName",
-            "params": { "types": ["contract"] }
+            "params": {
+              "types": [
+                "contract"
+              ]
+            }
           },
           {
             "path": "@.from",
             "label": "Execution signer",
             "format": "addressName",
-            "params": { "types": ["eoa"] }
+            "params": {
+              "types": [
+                "eoa"
+              ]
+            }
           },
           {
             "path": "data",
@@ -83,12 +124,14 @@
               "calleePath": "to",
               "amountPath": "value",
               "spenderPath": "@.to"
-            }
+            },
+            "visible": "always"
           },
           {
             "path": "baseGas",
             "label": "Gas amount",
-            "format": "raw"
+            "format": "raw",
+            "visible": "always"
           },
           {
             "path": "gasPrice",
@@ -97,17 +140,33 @@
             "params": {
               "tokenPath": "gasToken",
               "nativeCurrencyAddress": "$.metadata.constants.addressAsNull"
-            }
+            },
+            "visible": "always"
           },
           {
             "path": "refundReceiver",
             "label": "Gas receiver",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet", "contract"] }
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Safe Tx Gas",
+            "path": "safeTxGas",
+            "visible": "never"
+          },
+          {
+            "label": "Signatures",
+            "path": "signatures",
+            "visible": "never"
           }
-        ],
-        "required": ["data", "operation", "baseGas", "gasPrice", "refundReceiver"],
-        "excluded": ["safeTxGas", "signatures"]
+        ]
       },
       "addOwnerWithThreshold(address owner, uint256 _threshold)": {
         "$id": "addOwnerWithThreshold",
@@ -117,15 +176,20 @@
             "path": "owner",
             "label": "Signer",
             "format": "addressName",
-            "params": { "types": ["eoa"] }
+            "params": {
+              "types": [
+                "eoa"
+              ]
+            },
+            "visible": "always"
           },
           {
             "path": "_threshold",
             "label": "New threshold",
-            "format": "raw"
+            "format": "raw",
+            "visible": "always"
           }
-        ],
-        "required": ["owner", "_threshold"]
+        ]
       },
       "removeOwner(address prevOwner, address owner, uint256 _threshold)": {
         "$id": "removeOwner",
@@ -135,16 +199,25 @@
             "path": "owner",
             "label": "Signer",
             "format": "addressName",
-            "params": { "types": ["eoa"] }
+            "params": {
+              "types": [
+                "eoa"
+              ]
+            },
+            "visible": "always"
           },
           {
             "path": "_threshold",
             "label": "New threshold",
-            "format": "raw"
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "label": "Prev Owner",
+            "path": "prevOwner",
+            "visible": "never"
           }
-        ],
-        "required": ["owner", "_threshold"],
-        "excluded": ["prevOwner"]
+        ]
       },
       "swapOwner(address prevOwner, address oldOwner, address newOwner)": {
         "$id": "swapOwner",
@@ -154,17 +227,30 @@
             "path": "oldOwner",
             "label": "Old signer",
             "format": "addressName",
-            "params": { "types": ["eoa"] }
+            "params": {
+              "types": [
+                "eoa"
+              ]
+            },
+            "visible": "always"
           },
           {
             "path": "newOwner",
             "label": "New signer",
             "format": "addressName",
-            "params": { "types": ["eoa"] }
+            "params": {
+              "types": [
+                "eoa"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Prev Owner",
+            "path": "prevOwner",
+            "visible": "never"
           }
-        ],
-        "required": ["oldOwner", "newOwner"],
-        "excluded": ["prevOwner"]
+        ]
       },
       "changeThreshold(uint256 _threshold)": {
         "$id": "changeThreshold",
@@ -173,10 +259,10 @@
           {
             "path": "_threshold",
             "label": "New threshold",
-            "format": "raw"
+            "format": "raw",
+            "visible": "always"
           }
-        ],
-        "required": ["_threshold"]
+        ]
       },
       "approveHash(bytes32 hashToApprove)": {
         "$id": "approveHash",
@@ -185,10 +271,10 @@
           {
             "path": "hashToApprove",
             "label": "Hash to approve",
-            "format": "raw"
+            "format": "raw",
+            "visible": "always"
           }
-        ],
-        "required": ["hashToApprove"]
+        ]
       }
     }
   }

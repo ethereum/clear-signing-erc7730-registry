@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Permit": [
+            { "name": "owner", "type": "address" },
+            { "name": "spender", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": { "name": "Sonne", "version": "1", "chainId": 10, "verifyingContract": "0xb0b195aefa3650a6908f15cdac7d92f8a5791b0b" },
+        "message": {
+          "owner": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "spender": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+          "value": "50000000000000000000",
+          "nonce": 3,
+          "deadline": 1775000000
+        }
+      },
+      "expectedTexts": [
+        "Spender",
+        "0xE592427A0AEce92D e3Edee1F18E0157C058 61564",
+        "Max spending amount",
+        "50 BOB",
+        "Valid until",
+        "2026-03-31 11:33:20 PM UTC"
+      ]
+    }
+  ]
+}

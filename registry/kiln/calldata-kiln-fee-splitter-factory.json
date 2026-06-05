@@ -1,112 +1,80 @@
 {
-  "$schema": "https://eips.ethereum.org/assets/eip-7730/erc7730-v1.schema.json",
+  "$schema": "https://eips.ethereum.org/assets/eip-7730/erc7730-v2.schema.json",
   "context": {
     "$id": "Kiln Staking - Fee Splitter",
     "contract": {
       "deployments": [
         { "chainId": 1, "address": "0x8659EEFF31CFcff580D37AF8e7Af250F8998aA83" },
         { "chainId": 560048, "address": "0x1A76bc69922744807E86375f8B8AB8A7cf18Eb7a" }
-      ],
-      "abi": [
-        { "type": "function", "name": "acceptOwnership", "inputs": [], "outputs": [], "stateMutability": "nonpayable" },
-        {
-          "type": "function",
-          "name": "createOperator",
-          "inputs": [
-            { "name": "_owner", "type": "address", "internalType": "address" },
-            { "name": "_name", "type": "string", "internalType": "string" },
-            { "name": "_operatorFee", "type": "uint256", "internalType": "uint256" },
-            { "name": "_maximumOperatorFee", "type": "uint256", "internalType": "uint256" },
-            { "name": "_recipients", "type": "address[]", "internalType": "address[]" },
-            { "name": "_percents", "type": "uint256[]", "internalType": "uint256[]" }
-          ],
-          "outputs": [{ "name": "newOperator", "type": "address", "internalType": "contract Operator" }],
-          "stateMutability": "nonpayable"
-        },
-        {
-          "type": "function",
-          "name": "createSplitter",
-          "inputs": [
-            { "name": "operator", "type": "address", "internalType": "contract Operator" },
-            { "name": "salt", "type": "bytes32", "internalType": "bytes32" }
-          ],
-          "outputs": [{ "name": "", "type": "address", "internalType": "contract Splitter" }],
-          "stateMutability": "nonpayable"
-        },
-        {
-          "type": "function",
-          "name": "createSplitterAndCall",
-          "inputs": [
-            { "name": "operator", "type": "address", "internalType": "contract Operator" },
-            { "name": "salt", "type": "bytes32", "internalType": "bytes32" },
-            { "name": "callAddress", "type": "address", "internalType": "address" },
-            { "name": "data", "type": "bytes", "internalType": "bytes" }
-          ],
-          "outputs": [{ "name": "newSplitter", "type": "address", "internalType": "contract Splitter" }],
-          "stateMutability": "payable"
-        },
-        { "type": "function", "name": "renounceOwnership", "inputs": [], "outputs": [], "stateMutability": "nonpayable" },
-        {
-          "type": "function",
-          "name": "transferOwnership",
-          "inputs": [{ "name": "newOwner", "type": "address", "internalType": "address" }],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        }
       ]
     }
   },
-  "metadata": { "owner": "Kiln", "info": { "legalName": "Kiln", "url": "https://kiln.fi" } },
+  "metadata": { "owner": "Kiln", "info": { "url": "https://kiln.fi" }, "contractName": "Kiln Staking - Fee Splitter" },
   "display": {
     "formats": {
-      "createOperator(address,string,uint256,uint256,address[],uint256[])": {
+      "createOperator(address _owner, string _name, uint256 _operatorFee, uint256 _maximumOperatorFee, address[] _recipients, uint256[] _percents)": {
         "intent": "Create Operator",
         "fields": [
           {
             "label": "Owner",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet", "contract"], "sources": ["ens", "local"] },
-            "path": "#._owner"
+            "path": "#._owner",
+            "visible": "always"
           },
-          { "label": "Name", "format": "raw", "path": "#._name" },
-          { "label": "Operator Fee", "format": "unit", "params": { "base": "%", "decimals": 2 }, "path": "#._operatorFee" },
+          { "label": "Name", "format": "raw", "path": "#._name", "visible": "always" },
+          {
+            "label": "Operator Fee",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 2 },
+            "path": "#._operatorFee",
+            "visible": "always"
+          },
           {
             "label": "Maximum Operator Fee",
             "format": "unit",
             "params": { "base": "%", "decimals": 2 },
-            "path": "#._maximumOperatorFee"
+            "path": "#._maximumOperatorFee",
+            "visible": "always"
           },
           {
             "label": "Recipients",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
-            "path": "#._recipients.[]"
+            "path": "#._recipients.[]",
+            "visible": "always"
           },
-          { "label": "Percentages", "format": "unit", "params": { "base": "%", "decimals": 2 }, "path": "#._percents.[]" }
-        ],
-        "required": ["#._owner", "#._name", "#._operatorFee", "#._maximumOperatorFee", "#._recipients.[]", "#._percents.[]"]
+          {
+            "label": "Percentages",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 2 },
+            "path": "#._percents.[]",
+            "visible": "always"
+          }
+        ]
       },
-      "createSplitter(address,bytes32)": {
+      "createSplitter(address operator, bytes32 salt)": {
         "intent": "Create Splitter",
         "fields": [
           {
             "label": "Operator",
             "format": "addressName",
             "params": { "types": ["contract"], "sources": ["local", "ens"] },
-            "path": "#.operator"
+            "path": "#.operator",
+            "visible": "always"
           },
           { "label": "Salt", "format": "raw", "path": "#.salt" }
-        ],
-        "required": ["#.operator"]
+        ]
       },
-      "createSplitterAndCall(address,bytes32,address,bytes)": {
+      "createSplitterAndCall(address operator, bytes32 salt, address callAddress, bytes data)": {
         "intent": "Create and Stake",
         "fields": [
           {
             "label": "Operator",
             "format": "addressName",
             "params": { "types": ["contract"], "sources": ["local", "ens"] },
-            "path": "#.operator"
+            "path": "#.operator",
+            "visible": "always"
           },
           { "label": "Salt", "format": "raw", "path": "#.salt" },
           {
@@ -119,22 +87,22 @@
             "label": "Transaction",
             "format": "calldata",
             "params": { "calleePath": "#.callAddress", "amountPath": "@.value" },
-            "path": "#.data"
+            "path": "#.data",
+            "visible": "always"
           }
-        ],
-        "required": ["#.operator", "#.data"]
+        ]
       },
-      "transferOwnership(address)": {
+      "transferOwnership(address newOwner)": {
         "intent": "Start owner transfer",
         "fields": [
           {
             "label": "New Owner",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
-            "path": "#.newOwner"
+            "path": "#.newOwner",
+            "visible": "always"
           }
-        ],
-        "required": ["#.newOwner"]
+        ]
       }
     }
   }

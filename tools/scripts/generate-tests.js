@@ -291,6 +291,12 @@ initLogFile();
 // Block Explorer Providers
 // =============================================================================
 
+// Chains where block explorer APIs are unreachable or time out.
+// Deployments on these chains are skipped during test generation.
+const CHAINS_SKIP_LINT = new Set([
+  324,  // zkSync Era — Etherscan v2 API times out, other explorers unreachable
+]);
+
 /**
  * Provider registry - maps chainId to explorer configuration
  * Uses unified Etherscan V2 API (api.etherscan.io/v2/api?chainid=X)
@@ -368,18 +374,20 @@ function httpsGet(url) {
  * Fetch transactions for an address from a block explorer.
  * Uses Etherscan V2 API format: /v2/api?chainid=X
  * Retries transient failures (NOTOK, network errors) up to 3 times with backoff.
+ *
+ * @returns {{ transactions: object[], rateLimited: boolean }}
  */
 async function fetchTransactions(chainId, address, depth = 100) {
   const provider = PROVIDERS[chainId];
   if (!provider) {
     log(`  ⚠️  No provider configured for chainId ${chainId}`);
-    return [];
+    return { transactions: [], rateLimited: false };
   }
 
   const apiKey = process.env[provider.apiKeyEnv];
   if (!apiKey) {
     log(`  ⚠️  Missing API key: ${provider.apiKeyEnv}`);
-    return [];
+    return { transactions: [], rateLimited: false };
   }
 
   const url =
@@ -390,16 +398,22 @@ async function fetchTransactions(chainId, address, depth = 100) {
   verboseLog(`  📡 Fetching from ${provider.name} (chain ${chainId})...`);
 
   const maxRetries = 3;
+  let wasRateLimited = false;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       const response = await httpsGet(url);
       if (response.status === "1" && Array.isArray(response.result)) {
-        return response.result.filter((tx) => tx.to?.toLowerCase() === address.toLowerCase());
+        return {
+          transactions: response.result.filter((tx) => tx.to?.toLowerCase() === address.toLowerCase()),
+          rateLimited: false,
+        };
       }
       if (response.message === "No transactions found") {
-        return [];
+        return { transactions: [], rateLimited: false };
       }
       const detail = typeof response.result === "string" ? response.result : "";
+      const isRateLimit = /rate limit/i.test(detail) || /rate limit/i.test(response.message || "");
+      if (isRateLimit) wasRateLimited = true;
       if (attempt < maxRetries) {
         const delay = (attempt + 1) * 800;
         verboseLog(`  ⚠️  ${provider.name} API error: ${response.message || "Unknown"}${detail ? ` – ${detail}` : ""} (retry ${attempt + 1}/${maxRetries} in ${delay}ms)`);
@@ -407,7 +421,7 @@ async function fetchTransactions(chainId, address, depth = 100) {
         continue;
       }
       log(`  ⚠️  ${provider.name} API error: ${response.message || "Unknown error"}${detail ? ` – ${detail}` : ""}`);
-      return [];
+      return { transactions: [], rateLimited: wasRateLimited };
     } catch (error) {
       if (attempt < maxRetries) {
         const delay = (attempt + 1) * 800;
@@ -416,10 +430,10 @@ async function fetchTransactions(chainId, address, depth = 100) {
         continue;
       }
       log(`  ❌ ${provider.name} request failed: ${error.message}`);
-      return [];
+      return { transactions: [], rateLimited: wasRateLimited };
     }
   }
-  return [];
+  return { transactions: [], rateLimited: wasRateLimited };
 }
 
 // =============================================================================
@@ -863,33 +877,160 @@ function extractSelector(input) {
 // =============================================================================
 
 /**
- * Parse an ERC-7730 file and extract relevant information
+ * Resolve a descriptor that uses `includes` via the erc7730 CLI, returning the
+ * merged JSON with all includes inlined.  Falls back to null on any error so
+ * callers can continue with the raw (unresolved) JSON.
+ */
+function resolveDescriptorWithCli(filePath, isV2) {
+  const attempts = isV2 ? ["--v2", ""] : [""];
+  for (const flag of attempts) {
+    try {
+      const cmd = flag ? `erc7730 resolve ${flag} "${filePath}"` : `erc7730 resolve "${filePath}"`;
+      const output = execSync(cmd, {
+        encoding: "utf8",
+        stdio: ["pipe", "pipe", "pipe"],
+        timeout: 30_000,
+      });
+      return JSON.parse(output);
+    } catch (err) {
+      verboseLog(`  ⚠️  erc7730 resolve${flag ? ` ${flag}` : ""} failed for ${path.basename(filePath)}: ${err.message}`, "WARN");
+    }
+  }
+  return null;
+}
+
+/**
+ * Create a temporary file containing the resolved (includes-inlined) descriptor.
+ * The tester / API requires a self-contained descriptor with `display`; files that
+ * derive their formats via `includes` must be resolved first.
+ *
+ * @param {string} filePath - Original descriptor path
+ * @returns {string|null} Path to the temp file, or null if resolution failed/unnecessary
+ */
+/**
+ * Deep-merge two plain objects (b overrides a). Arrays are replaced, not concatenated.
+ */
+function deepMerge(a, b) {
+  const result = { ...a };
+  for (const key of Object.keys(b)) {
+    if (b[key] != null && typeof b[key] === "object" && !Array.isArray(b[key]) &&
+        a[key] != null && typeof a[key] === "object" && !Array.isArray(a[key])) {
+      result[key] = deepMerge(a[key], b[key]);
+    } else {
+      result[key] = b[key];
+    }
+  }
+  return result;
+}
+
+/**
+ * Recursively resolve the `includes` chain for a descriptor, producing a single
+ * self-contained JSON in the **input** format (not the resolved/structured format).
+ * Returns null if there are no includes.
+ */
+function mergeIncludes(filePath, visited = new Set()) {
+  if (visited.has(filePath)) return null;
+  visited.add(filePath);
+
+  const raw = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  if (raw.includes == null) return raw;
+
+  const includeRef = typeof raw.includes === "string" ? raw.includes : null;
+  if (!includeRef || /^[a-z]+:\/\//i.test(includeRef)) return raw;
+
+  const includePath = path.resolve(path.dirname(filePath), includeRef);
+  if (!fs.existsSync(includePath)) return raw;
+
+  const base = mergeIncludes(includePath, visited);
+  if (!base) return raw;
+
+  const merged = deepMerge(base, raw);
+  delete merged.includes;
+  return merged;
+}
+
+/**
+ * Create a temporary file containing the include-merged descriptor in input format.
+ * The tester / API requires a self-contained descriptor with `display`.
+ *
+ * @param {string} filePath - Original descriptor path
+ * @returns {string|null} Path to the temp file, or null if resolution failed/unnecessary
+ */
+function createResolvedDescriptorTempFile(filePath) {
+  try {
+    const raw = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    if (raw.includes == null) return null;
+
+    const merged = mergeIncludes(filePath);
+    if (!merged || !merged.display) return null;
+
+    const tmpPath = filePath.replace(/\.json$/, ".resolved.tmp.json");
+    fs.writeFileSync(tmpPath, JSON.stringify(merged, null, 2));
+    verboseLog(`  ℹ️  Created merged descriptor for tester: ${path.basename(tmpPath)}`, "INFO");
+    return tmpPath;
+  } catch (err) {
+    verboseLog(`  ⚠️  Could not create merged descriptor: ${err.message}`, "WARN");
+    return null;
+  }
+}
+
+/**
+ * Build a human-readable function signature from an ABI entry.
+ *   { name: "deposit", inputs: [{type:"uint256",name:"assets"},{type:"address",name:"receiver"}] }
+ *   => "deposit(uint256 assets,address receiver)"
+ */
+function abiEntryToSignature(entry) {
+  const params = (entry.inputs || []).map((i) => `${i.type} ${i.name}`).join(",");
+  return `${entry.name}(${params})`;
+}
+
+/**
+ * Parse an ERC-7730 file and extract relevant information.
+ * When the descriptor uses `includes`, the erc7730 CLI is used to resolve the
+ * full merged descriptor so that inherited display.formats are visible.
  */
 function parseErc7730(filePath) {
   const content = fs.readFileSync(filePath, "utf8");
   const json = JSON.parse(content);
 
+  const hasIncludes = json.includes != null;
+  const isV2 = json.$schema?.includes?.("erc7730-v2") ?? false;
+
+  let resolved = null;
+  if (hasIncludes) {
+    resolved = resolveDescriptorWithCli(filePath, isV2);
+  }
+
   const result = {
     filePath,
     fileName: path.basename(filePath),
-    isCalldata: !!json.context?.contract,
-    isEip712: !!json.context?.eip712,
+    isCalldata: !!json.context?.contract || !!resolved?.context?.contract,
+    isEip712: !!json.context?.eip712 || !!resolved?.context?.eip712,
     deployments: [],
     functions: [],
     messageTypes: [],
     metadata: json.metadata || {},
   };
 
-  // Extract deployments
+  // Extract deployments — prefer raw JSON (leaf always has its own deployments)
   if (json.context?.contract?.deployments) {
     result.deployments = json.context.contract.deployments;
   } else if (json.context?.eip712?.deployments) {
     result.deployments = json.context.eip712.deployments;
+  } else if (resolved?.context?.contract?.deployments) {
+    result.deployments = resolved.context.contract.deployments;
+  } else if (resolved?.context?.eip712?.deployments) {
+    result.deployments = resolved.context.eip712.deployments;
   }
 
-  // Extract functions/message types from display.formats
-  if (json.display?.formats) {
-    for (const [key, format] of Object.entries(json.display.formats)) {
+  // Determine the source for display.formats:
+  //   - If the raw JSON has its own formats, use them (original behaviour).
+  //   - Otherwise, if we resolved via CLI, reconstruct from the resolved output.
+  const rawFormats = json.display?.formats;
+
+  if (rawFormats && Object.keys(rawFormats).length > 0) {
+    // Raw JSON has formats — use them directly (no include resolution needed)
+    for (const [key, format] of Object.entries(rawFormats)) {
       if (result.isCalldata) {
         const selector = computeSelectorManual(key);
         result.functions.push({
@@ -908,6 +1049,53 @@ function parseErc7730(filePath) {
           required: format.required || [],
         });
       }
+    }
+  } else if (resolved?.display?.formats) {
+    // Formats came from resolved includes — keys are 4-byte selectors (calldata)
+    // or encodeType strings (EIP-712). Reconstruct human-readable signatures from
+    // the ABI entries provided in the resolved output.
+    const resolvedFormats = resolved.display.formats;
+
+    if (result.isCalldata) {
+      // Build selector -> signature map from ABI
+      const abi = resolved.context?.contract?.abi || [];
+      const selectorToSig = new Map();
+      for (const entry of abi) {
+        if (entry.name) {
+          const sig = abiEntryToSignature(entry);
+          const sel = computeSelectorManual(sig);
+          selectorToSig.set(sel, sig);
+        }
+      }
+
+      for (const [key, format] of Object.entries(resolvedFormats)) {
+        const selector = key.startsWith("0x") ? key.toLowerCase() : computeSelectorManual(key);
+        const signature = selectorToSig.get(selector) || key;
+        result.functions.push({
+          signature,
+          selector,
+          intent: format.intent || format.$id || key,
+          fields: format.fields || [],
+          required: format.required || [],
+        });
+      }
+    } else if (result.isEip712) {
+      for (const [key, format] of Object.entries(resolvedFormats)) {
+        result.messageTypes.push({
+          primaryType: extractPrimaryType(key),
+          encodeType: key,
+          intent: format.intent || key,
+          fields: format.fields || [],
+          required: format.required || [],
+        });
+      }
+    }
+
+    if (result.functions.length > 0 || result.messageTypes.length > 0) {
+      verboseLog(
+        `  ℹ️  Resolved ${result.functions.length + result.messageTypes.length} format(s) from includes for ${path.basename(filePath)}`,
+        "INFO"
+      );
     }
   }
 
@@ -934,7 +1122,7 @@ function parseErc7730(filePath) {
  * Extract primary type from encodeType string
  */
 function extractPrimaryType(encodeType) {
-  const match = encodeType.match(/^(\w+)\(/);
+  const match = encodeType.match(/^([\w:]+)\(/);
   return match ? match[1] : encodeType;
 }
 
@@ -985,6 +1173,7 @@ async function generateCalldataTests(erc7730, report, coveredFunctions = new Set
   let generatedTestCases = 0;
   const deploymentsToProcess = selectDeploymentsForGeneration(erc7730.deployments);
   const txCache = new Map();
+  let deploymentRateLimited = false;
 
   function normalizeChainId(value) {
     const parsed = Number(value);
@@ -996,9 +1185,10 @@ async function generateCalldataTests(erc7730, report, coveredFunctions = new Set
     if (txCache.has(key)) {
       return txCache.get(key);
     }
-    const txs = await fetchTransactions(chainId, address, CONFIG.depth);
-    txCache.set(key, txs);
-    return txs;
+    const result = await fetchTransactions(chainId, address, CONFIG.depth);
+    if (result.rateLimited) deploymentRateLimited = true;
+    txCache.set(key, result.transactions);
+    return result.transactions;
   }
 
   for (const deployment of deploymentsToProcess) {
@@ -1007,6 +1197,11 @@ async function generateCalldataTests(erc7730, report, coveredFunctions = new Set
 
     // Apply chain filter if specified
     if (!CONFIG.compact && CONFIG.chainFilter && chainId !== parseInt(CONFIG.chainFilter)) {
+      continue;
+    }
+
+    if (CHAINS_SKIP_LINT.has(normalizedChainId)) {
+      log(`\n⚠️  Skipping chain ${chainId} (${address}) — block explorer APIs unreachable for this chain`);
       continue;
     }
 
@@ -1129,13 +1324,14 @@ async function generateCalldataTests(erc7730, report, coveredFunctions = new Set
       }
 
       if (examples.length === 0) {
+        const rateLimitNote = deploymentRateLimited ? " (API rate limited — results may be incomplete)" : "";
         report.notFound.push({
           type: "calldata",
           chainId,
           function: func.signature,
           reason: CONFIG.compact
-            ? "No matching transactions found on selected deployment or same-chain fallback addresses"
-            : "No matching transactions found",
+            ? `No matching transactions found on selected deployment or same-chain fallback addresses${rateLimitNote}`
+            : `No matching transactions found${rateLimitNote}`,
         });
       }
 
@@ -1151,12 +1347,17 @@ async function generateCalldataTests(erc7730, report, coveredFunctions = new Set
         });
       } else {
         skippedTargets++;
+        const noDataReason = deploymentRateLimited
+          ? "rate_limited"
+          : examples.length === 0
+            ? "no_matching_transactions"
+            : "no_usable_transactions";
         emitTestEvent("generation_target", {
           targetType: "function",
           target: func.signature,
           label: targetLabel,
-          status: "skipped",
-          reason: examples.length === 0 ? "no_matching_transactions" : "no_usable_transactions",
+          status: deploymentRateLimited ? "rate_limited" : "no_data",
+          reason: noDataReason,
           testCases: 0,
         });
       }
@@ -1477,7 +1678,7 @@ function generatePlaceholderExample(msgType, deployment) {
  * Parse encodeType string to extract fields
  */
 function parseEncodeType(encodeType) {
-  const match = encodeType.match(/^\w+\(([^)]*)\)/);
+  const match = encodeType.match(/^[\w:]+\(([^)]*)\)/);
   if (!match) return [];
 
   const fieldsStr = match[1];
@@ -2279,6 +2480,31 @@ const GENERIC_UI_PATTERNS = [
  * @param {string} logContent - Full tester log file content
  * @returns {string[][]} Per-test arrays of screen text strings
  */
+/**
+ * Parse per-test result statuses from the tester log.
+ *
+ * Looks for the TYPED DATA / CALLDATA TEST RESULTS table output by the tester,
+ * which maps each test index to a description and status (clear/blind/partial/error).
+ *
+ * @param {string} logContent - Full tester log content
+ * @returns {Array<{index: number, description: string, status: string}>}
+ */
+function parseTesterStatuses(logContent) {
+  const statuses = [];
+  const rowRegex = /│\s+(\d+)\s+│\s+'([^']+)'\s+│\s+'([^']+)'\s+│/g;
+  let match;
+  while ((match = rowRegex.exec(logContent)) !== null) {
+    const rawStatus = match[3];
+    let status;
+    if (rawStatus.includes("clear signed")) status = "clear";
+    else if (rawStatus.includes("blind signed")) status = "blind";
+    else if (/partially/i.test(rawStatus)) status = "partial";
+    else status = "error";
+    statuses.push({ index: parseInt(match[1], 10), description: match[2], status });
+  }
+  return statuses;
+}
+
 function parseTesterScreenTexts(logContent) {
   const allTests = [];
 
@@ -2467,33 +2693,59 @@ function refineTestFile(testFilePath, logFile, erc7730) {
     totalTests: Array.isArray(tests) ? tests.length : 0,
   });
 
+  // When screen count doesn't match test count, try partial refinement by
+  // identifying which tests were clear-signed vs blind-signed from the tester
+  // result table, and only refining the clear-signed subset.
+  let clearSignedIndices = null;
   if (perTestScreens.length !== tests.length) {
-    console.log(
-      `   ⚠️  Screen text count (${perTestScreens.length}) doesn't match test count (${tests.length}), skipping refinement`
-    );
-    emitTestEvent("refinement_complete", {
-      testFile: testFilePath,
-      refined: 0,
-      failed: tests.length,
-      total: tests.length,
-      reason: "screen_count_mismatch",
-    });
-    return { applied: false, refined: 0, failed: tests.length, total: tests.length };
+    const statuses = parseTesterStatuses(logContent);
+    const clearIndices = statuses
+      .filter((s) => s.status === "clear" || s.status === "partial")
+      .map((s) => s.index);
+
+    if (clearIndices.length > 0 && clearIndices.length === perTestScreens.length) {
+      const blindCount = tests.length - clearIndices.length;
+      console.log(
+        `   ℹ️  ${blindCount} blind-signed test(s) detected — refining ${clearIndices.length}/${tests.length} clear-signed test(s)`
+      );
+      clearSignedIndices = new Set(clearIndices);
+    } else {
+      console.log(
+        `   ⚠️  Screen text count (${perTestScreens.length}) doesn't match test count (${tests.length}) and could not resolve from tester statuses, skipping refinement`
+      );
+      emitTestEvent("refinement_complete", {
+        testFile: testFilePath,
+        refined: 0,
+        failed: tests.length,
+        total: tests.length,
+        reason: "screen_count_mismatch",
+      });
+      return { applied: false, refined: 0, failed: tests.length, total: tests.length };
+    }
   }
 
-  // Build a map from descriptor labels per function/intent
   const labelsByIntent = buildLabelsByIntent(erc7730);
 
   let refined = 0;
   let failed = 0;
+  let skipped = 0;
   let needsWrite = false;
+  let screenIdx = 0;
   for (let i = 0; i < tests.length; i++) {
     const test = tests[i];
-    const screenTexts = perTestScreens[i];
 
-    // Determine which labels apply to this test based on its description
+    if (clearSignedIndices && !clearSignedIndices.has(i)) {
+      skipped++;
+      emitTestEvent("refinement_case", {
+        index: i,
+        description: test.description || "",
+        status: "skipped",
+      });
+      continue;
+    }
+
+    const screenTexts = perTestScreens[screenIdx++];
     const labels = findLabelsForTest(test, labelsByIntent, erc7730);
-
     const newExpectedTexts = extractExpectedTexts(screenTexts, labels);
 
     if (newExpectedTexts.length > 0) {
@@ -2505,7 +2757,6 @@ function refineTestFile(testFilePath, logFile, erc7730) {
         status: "refined",
       });
     } else if (!test.expectedTexts) {
-      // Ensure expectedTexts field always exists, even if empty
       test.expectedTexts = [];
       needsWrite = true;
       failed++;
@@ -2526,16 +2777,18 @@ function refineTestFile(testFilePath, logFile, erc7730) {
 
   if (refined > 0 || needsWrite) {
     fs.writeFileSync(testFilePath, JSON.stringify(testFile, null, 2) + "\n");
-    console.log(`   ✅ Refined expectedTexts for ${refined}/${tests.length} test cases`);
+    const skippedSuffix = skipped > 0 ? ` (${skipped} blind-signed skipped)` : "";
+    console.log(`   ✅ Refined expectedTexts for ${refined}/${tests.length} test cases${skippedSuffix}`);
   }
 
   emitTestEvent("refinement_complete", {
     testFile: testFilePath,
     refined,
     failed,
+    skipped,
     total: tests.length,
   });
-  return { applied: refined > 0 || needsWrite, refined, failed, total: tests.length };
+  return { applied: refined > 0 || needsWrite, refined, failed, skipped, total: tests.length };
 }
 
 /**
@@ -2743,25 +2996,37 @@ async function main() {
 
     // Run clear signing tester if enabled and tests were written
     if ((CONFIG.runTest || CONFIG.forceTest) && !CONFIG.dryRun && testFilePath) {
-      const { passed, logFile } = await runTester(filePath, testFilePath);
-      if (!passed) {
-        process.exitCode = 1;
-      }
+      // For descriptors using `includes`, the tester needs a resolved (self-contained)
+      // descriptor because the API rejects files without a `display` section.
+      const resolvedTmpFile = createResolvedDescriptorTempFile(filePath);
+      const testerDescriptor = resolvedTmpFile || filePath;
 
-      // Refine expectedTexts from tester screen output
-      if (CONFIG.refine && logFile) {
-        console.log("\n" + "=".repeat(60));
-        console.log("🔍 REFINING expectedTexts FROM TESTER OUTPUT");
-        console.log("=".repeat(60));
-        console.log(`\n   Log file: ${logFile}`);
-        try {
-          refineTestFile(testFilePath, logFile, erc7730);
-        } catch (err) {
-          console.log(`   ⚠️  Refinement failed: ${err.message}`);
-          verboseError(err.stack);
+      try {
+        const { passed, logFile } = await runTester(testerDescriptor, testFilePath);
+        if (!passed) {
+          process.exitCode = 1;
         }
-      } else if (!CONFIG.refine) {
-        console.log("\nℹ️  Refinement skipped (--no-refine)");
+
+        // Refine expectedTexts from tester screen output
+        if (CONFIG.refine && logFile) {
+          console.log("\n" + "=".repeat(60));
+          console.log("🔍 REFINING expectedTexts FROM TESTER OUTPUT");
+          console.log("=".repeat(60));
+          console.log(`\n   Log file: ${logFile}`);
+          try {
+            refineTestFile(testFilePath, logFile, erc7730);
+          } catch (err) {
+            console.log(`   ⚠️  Refinement failed: ${err.message}`);
+            verboseError(err.stack);
+          }
+        } else if (!CONFIG.refine) {
+          console.log("\nℹ️  Refinement skipped (--no-refine)");
+        }
+      } finally {
+        if (resolvedTmpFile && fs.existsSync(resolvedTmpFile)) {
+          fs.unlinkSync(resolvedTmpFile);
+          verboseLog(`  ℹ️  Cleaned up temp resolved descriptor: ${path.basename(resolvedTmpFile)}`, "INFO");
+        }
       }
     } else if (!CONFIG.runTest) {
       console.log("\nℹ️  Tester skipped (--no-test)");

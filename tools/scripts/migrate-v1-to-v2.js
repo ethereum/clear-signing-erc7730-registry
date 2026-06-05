@@ -47,10 +47,11 @@ const ACCEPTED_OPTIONS = [
   "  --log <path>    Enable verbose logging and write to file",
   "  -l              Enable verbose logging to tools/scripts/logs/",
   "  --file <path>   Process only one JSON file",
+  "  --v1-output <path>  Pre-computed v1 calldata/convert output JSON file",
 ];
 
 const FLAG_OPTIONS = new Set(["--help", "-h", "--dry-run", "--verbose", "--skip-lint", "-l"]);
-const VALUE_OPTIONS = new Set(["--file", "--log"]);
+const VALUE_OPTIONS = new Set(["--file", "--log", "--v1-output"]);
 
 function printHelp(exitCode = 0, errorMessage = null) {
   const write = exitCode === 0 ? console.log : console.error;
@@ -105,26 +106,41 @@ const REGISTRY_DIR = path.join(ROOT_DIR, "registry");
 const LOGS_DIR = path.join(__dirname, "logs");
 const DEFAULT_LOG_FILE = path.join(LOGS_DIR, `migrate-v1-to-v2-${new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)}.verbose.log`);
 const LINTER_MAX_BUFFER = 50 * 1024 * 1024; // 50 MB for large calldata outputs
+const ETHERSCAN_MIN_INTERVAL_MS = 400;
+const ETHERSCAN_MAX_RETRIES = 4;
+
+// Chains where the linter hangs due to unreachable block explorer APIs.
+// When a descriptor has ANY deployment on one of these chains, linting and
+// output validation are skipped entirely to avoid indefinite hangs.
+const CHAINS_SKIP_LINT = new Set([
+  324,  // zkSync Era — Etherscan v2 API times out, other explorers unreachable
+]);
+const LINTER_TIMEOUT_MS = 120_000;
+let _lastEtherscanRequestAt = 0;
 const LOG_FILE = getLogFilePath();
 const DRY_RUN = process.argv.includes("--dry-run");
 const VERBOSE = process.argv.includes("--verbose");
 const LOG_VERBOSE = Boolean(LOG_FILE);
 const SKIP_LINT = process.argv.includes("--skip-lint");
+const V1_OUTPUT_FILE = (() => {
+  const idx = process.argv.indexOf("--v1-output");
+  return idx !== -1 ? process.argv[idx + 1] : null;
+})();
 const SINGLE_FILE = (() => {
   // Support --file <path> flag
   if (process.argv.includes("--file")) {
     return process.argv[process.argv.indexOf("--file") + 1];
   }
   // Support bare positional argument (first arg that is not a flag)
-  const FLAGS = new Set(["--help", "-h", "--dry-run", "--verbose", "--skip-lint", "--file", "--log", "-l"]);
+  const FLAGS = new Set(["--help", "-h", "--dry-run", "--verbose", "--skip-lint", "--file", "--log", "--v1-output", "-l"]);
   for (let i = 2; i < process.argv.length; i++) {
-    if (FLAGS.has(process.argv[i]) && (process.argv[i] === "--file" || process.argv[i] === "--log")) {
+    if (FLAGS.has(process.argv[i]) && (process.argv[i] === "--file" || process.argv[i] === "--log" || process.argv[i] === "--v1-output")) {
       i++;
       continue;
     }
     if (!FLAGS.has(process.argv[i]) && !process.argv[i].startsWith("-")) {
       // Skip if previous arg was --file (already handled above)
-      if (i > 2 && (process.argv[i - 1] === "--file" || process.argv[i - 1] === "--log")) continue;
+      if (i > 2 && (process.argv[i - 1] === "--file" || process.argv[i - 1] === "--log" || process.argv[i - 1] === "--v1-output")) continue;
       return process.argv[i];
     }
   }
@@ -292,6 +308,25 @@ function isWarningsOnlyLintOutput(output) {
 }
 
 /**
+ * Check whether a descriptor file has any deployment on a chain where
+ * linting is known to hang due to unreachable block explorer APIs.
+ * Reads the file JSON and inspects both contract and eip712 deployments.
+ */
+function needsSkipLint(filePath) {
+  if (CHAINS_SKIP_LINT.size === 0) return false;
+  try {
+    const json = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const deployments = [
+      ...(json.context?.contract?.deployments || []),
+      ...(json.context?.eip712?.deployments || []),
+    ];
+    return deployments.some((d) => CHAINS_SKIP_LINT.has(Number(d.chainId)));
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Lint a file using erc7730 CLI
  * @param {string} filePath - Path to the file to lint
  * @param {string} version - "v1" or "v2" for tracking stats
@@ -312,7 +347,19 @@ function lintFile(filePath, version) {
       cwd: ROOT_DIR,
       encoding: "utf8",
       stdio: VERBOSE ? "inherit" : "pipe",
+      timeout: LINTER_TIMEOUT_MS,
     });
+
+    if (result.signal === "SIGTERM") {
+      const msg = `Linter timed out after ${LINTER_TIMEOUT_MS / 1000}s (likely unreachable block explorer)`;
+      verboseLog(`  ⚠️  ${msg}`, "WARN");
+      if (version === "v1") {
+        stats.linting.v1Failed.push({ file: path.relative(ROOT_DIR, filePath), error: msg });
+      } else {
+        stats.linting.v2Failed.push({ file: path.relative(ROOT_DIR, filePath), error: msg });
+      }
+      return false;
+    }
 
     if (result.status !== 0) {
       const combinedOutput = `${result.stdout || ""}\n${result.stderr || ""}`;
@@ -455,6 +502,61 @@ function parseJsonFromPossiblyPrefixedOutput(output) {
 }
 
 /**
+ * Recursively prune empty plain objects from a JSON tree.
+ * When a key deletion leaves a parent object empty, the parent is pruned too,
+ * propagating up until a non-empty ancestor is reached.
+ * Arrays and primitives are never pruned; only `{}` leaf objects trigger removal.
+ *
+ * @param {*} obj - The value to prune
+ * @returns {*} - The pruned value, or undefined if the entire subtree is empty
+ */
+function pruneEmptyObjects(obj) {
+  if (obj === null || obj === undefined || typeof obj !== "object") return obj;
+  if (Array.isArray(obj)) return obj.map(pruneEmptyObjects);
+
+  const result = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== null && typeof value === "object" && !Array.isArray(value)) {
+      const pruned = pruneEmptyObjects(value);
+      if (pruned !== undefined && Object.keys(pruned).length > 0) {
+        result[key] = pruned;
+      }
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+
+/**
+ * Deep-clone a parsed calldata/convert output, sorting any "enums" arrays by
+ * their "value" field so that positional comparison is order-independent.
+ * This accounts for v1 and v2 converters emitting enum entries in different
+ * (but semantically equivalent) orders.
+ */
+function normalizeForComparison(obj) {
+  if (obj === null || typeof obj !== "object") return obj;
+  if (Array.isArray(obj)) return obj.map(normalizeForComparison);
+
+  const out = {};
+  for (const [key, val] of Object.entries(obj)) {
+    if (key === "enums" && Array.isArray(val)) {
+      out[key] = [...val]
+        .map(normalizeForComparison)
+        .sort((a, b) => {
+          const va = a?.value ?? 0;
+          const vb = b?.value ?? 0;
+          if (va !== vb) return va - vb;
+          return JSON.stringify(a).localeCompare(JSON.stringify(b));
+        });
+    } else {
+      out[key] = normalizeForComparison(val);
+    }
+  }
+  return out;
+}
+
+/**
  * Deep compare two JSON values, returning a list of human-readable differences.
  * @param {*} v1 - First value (from v1)
  * @param {*} v2 - Second value (from v2)
@@ -516,51 +618,106 @@ function deepCompare(v1, v2, jsonPath = "$") {
 }
 
 /**
+ * Resolve the effective metadata.owner for a descriptor, following its include
+ * chain (one level deep). Returns the owner string or null.
+ */
+function resolveEffectiveOwner(filePath, json) {
+  if (json.metadata?.owner) return json.metadata.owner;
+  const includeRef = typeof json.includes === "string" ? json.includes : null;
+  if (!includeRef || /^[a-z]+:\/\//i.test(includeRef)) return null;
+  const includePath = path.resolve(path.dirname(filePath), includeRef);
+  try {
+    if (!fs.existsSync(includePath)) return null;
+    const included = JSON.parse(fs.readFileSync(includePath, "utf8"));
+    return included.metadata?.owner || null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Extract the first creator_name from a pre-computed v1 calldata output JSON.
+ * Returns the string or null if not found / not a calldata output.
+ */
+function extractV1CreatorName(v1OutputPath) {
+  try {
+    const json = JSON.parse(fs.readFileSync(v1OutputPath, "utf8"));
+    if (Array.isArray(json) && json.length > 0) {
+      return json[0]?.transaction_info?.creator_name || null;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Filter known acceptable v1/v2 output differences for migration comparisons.
- * When owner is reconciled from legalName, we can ignore creator_name drift.
- * For a given calldata item, descriptor drift can also be ignored when the only
- * other drift on that same item is creator_name.
+ *
+ * Unconditionally filtered (always acceptable):
+ * - EIP712Domain schema entries that are "missing in v1, present in v2": the v2
+ *   erc7730 CLI now explicitly includes the EIP712Domain type definition in
+ *   convert output, while v1 did not. This is a CLI behavioral change, not a
+ *   semantic difference.
+ *
+ * Conditionally filtered (when ignoreCreatorNameDrift is set):
+ * - creator_name drift caused by owner/legalName reconciliation.
+ * - For a given calldata item, descriptor drift can also be ignored when the
+ *   only other drift on that same item is creator_name.
  */
 function filterComparisonDifferences(differences, options = {}) {
   const { ignoreCreatorNameDrift = false } = options;
-  if (!ignoreCreatorNameDrift || !Array.isArray(differences) || differences.length === 0) {
+  if (!Array.isArray(differences) || differences.length === 0) {
     return differences;
   }
+
+  // EIP-712 convert output: EIP712Domain absent in v1 but present in v2 is a
+  // known v1→v2 CLI behavioral change (v2 is more explicit). Accept it.
+  const eip712DomainNewInV2Pattern = /\.schema\.EIP712Domain: missing in v1, present in v2$/;
+
+  // EIP-712 convert output format: $.<chainId>.contracts[n].contractName
+  const eip712ContractNamePattern = /^\$\.\d+\.contracts\[\d+\]\.contractName:/;
 
   // Calldata output format: $[n].transaction_info.creator_name / .descriptor
   const transactionInfoPattern = /^\$\[(\d+)\]\.transaction_info\.(creator_name|descriptor):/;
   const itemPathPattern = /^\$\[(\d+)\]\./;
 
-  // EIP-712 convert output format: $.<chainId>.contracts[n].contractName
-  const eip712ContractNamePattern = /^\$\.\d+\.contracts\[\d+\]\.contractName:/;
-
   const perItem = new Map();
-  for (const diff of differences) {
-    const txMatch = diff.match(transactionInfoPattern);
-    if (txMatch) {
-      const index = txMatch[1];
-      const field = txMatch[2];
-      const state = perItem.get(index) || { creator: false, descriptor: false, other: false };
-      if (field === "creator_name") state.creator = true;
-      if (field === "descriptor") state.descriptor = true;
-      perItem.set(index, state);
-      continue;
-    }
+  if (ignoreCreatorNameDrift) {
+    for (const diff of differences) {
+      const txMatch = diff.match(transactionInfoPattern);
+      if (txMatch) {
+        const index = txMatch[1];
+        const field = txMatch[2];
+        const state = perItem.get(index) || { creator: false, descriptor: false, other: false };
+        if (field === "creator_name") state.creator = true;
+        if (field === "descriptor") state.descriptor = true;
+        perItem.set(index, state);
+        continue;
+      }
 
-    const itemMatch = diff.match(itemPathPattern);
-    if (itemMatch) {
-      const index = itemMatch[1];
-      const state = perItem.get(index) || { creator: false, descriptor: false, other: false };
-      state.other = true;
-      perItem.set(index, state);
+      const itemMatch = diff.match(itemPathPattern);
+      if (itemMatch) {
+        const index = itemMatch[1];
+        const state = perItem.get(index) || { creator: false, descriptor: false, other: false };
+        state.other = true;
+        perItem.set(index, state);
+      }
     }
   }
 
   return differences.filter((diff) => {
-    // Filter EIP-712 contractName diffs caused by owner/legalName reconciliation
+    // EIP712Domain newly present in v2 output — always acceptable
+    if (eip712DomainNewInV2Pattern.test(diff)) {
+      return false;
+    }
+
+    // EIP-712 contractName diffs caused by owner/legalName reconciliation
     if (eip712ContractNamePattern.test(diff)) {
       return false;
     }
+
+    if (!ignoreCreatorNameDrift) return true;
 
     const txMatch = diff.match(transactionInfoPattern);
     if (!txMatch) return true;
@@ -643,6 +800,7 @@ function validateCalldata(filePath, version) {
         encoding: "utf8",
         stdio: "pipe",
         maxBuffer: LINTER_MAX_BUFFER,
+        timeout: LINTER_TIMEOUT_MS,
       });
 
       // Some linter versions may emit warnings and return non-zero even when
@@ -688,6 +846,7 @@ function validateCalldata(filePath, version) {
           encoding: "utf8",
           stdio: "pipe",
           maxBuffer: LINTER_MAX_BUFFER,
+          timeout: LINTER_TIMEOUT_MS,
         });
 
         if (result.status !== 0) {
@@ -792,23 +951,45 @@ function validateMigration(filePath, v1Content, wasV1, comparisonOptions = {}) {
     return;
   }
 
+  if (needsSkipLint(filePath)) {
+    const msg = `  ⚠️  Skipping lint & output validation — deployment on chain with unreachable block explorer`;
+    console.log(msg);
+    appendLogLine("WARN", msg);
+    stats.linting.skipped++;
+    stats.calldata.skipped++;
+    return;
+  }
+
   let v1Result = null;
   let v2Result = null;
 
-  // If we have v1 content, create a temp file and validate it
+  // If we have v1 content, get the v1 output for comparison
   if (wasV1 && v1Content) {
-    const v1TempPath = filePath + ".v1.tmp";
-    try {
-      fs.writeFileSync(v1TempPath, v1Content);
+    if (V1_OUTPUT_FILE) {
+      try {
+        const preComputed = fs.readFileSync(V1_OUTPUT_FILE, "utf8");
+        v1Result = JSON.parse(preComputed);
+        verboseLog(`  📋 Using pre-computed v1 output from ${V1_OUTPUT_FILE}`);
+        stats.linting.skipped++;
+      } catch (e) {
+        verboseLog(`  ⚠️  Failed to read pre-computed v1 output: ${e.message}`, "WARN");
+        stats.linting.skipped++;
+        stats.calldata.v1Failed.push({ file: path.relative(ROOT_DIR, filePath), error: `pre-computed v1 output: ${e.message}` });
+      }
+    } else {
+      const v1TempPath = filePath + ".v1.tmp";
+      try {
+        fs.writeFileSync(v1TempPath, v1Content);
 
-      // Lint v1
-      lintFile(v1TempPath, "v1");
+        // Lint v1
+        lintFile(v1TempPath, "v1");
 
-      // Output validation on v1 (calldata or convert)
-      v1Result = validateCalldata(v1TempPath, "v1");
-    } finally {
-      // Clean up temp file
-      try { if (fs.existsSync(v1TempPath)) fs.unlinkSync(v1TempPath); } catch { /* ignore */ }
+        // Output validation on v1 (calldata or convert)
+        v1Result = validateCalldata(v1TempPath, "v1");
+      } finally {
+        // Clean up temp file
+        try { if (fs.existsSync(v1TempPath)) fs.unlinkSync(v1TempPath); } catch { /* ignore */ }
+      }
     }
   }
 
@@ -820,7 +1001,7 @@ function validateMigration(filePath, v1Content, wasV1, comparisonOptions = {}) {
 
   // Compare v1 and v2 outputs — they should be identical
   if (v1Result !== null && v2Result !== null) {
-    const rawDifferences = deepCompare(v1Result, v2Result);
+    const rawDifferences = deepCompare(normalizeForComparison(v1Result), normalizeForComparison(v2Result));
     const differences = filterComparisonDifferences(rawDifferences, comparisonOptions);
     const filteredCount = rawDifferences.length - differences.length;
     const relPath = path.relative(ROOT_DIR, filePath);
@@ -1022,28 +1203,43 @@ function generateEncodeType(schemas, primaryType) {
 }
 
 /**
- * Build human-readable function signature from ABI entry
+ * Build human-readable function signature from ABI entry.
+ * When the ABI has unnamed parameters (empty name), falls back to names
+ * extracted from oldKey (the existing format key) at the same position.
  */
-function buildHumanReadableSignature(abiEntry) {
+function buildHumanReadableSignature(abiEntry, oldKey) {
   if (!abiEntry || abiEntry.type !== "function") return null;
 
   const name = abiEntry.name;
   const inputs = abiEntry.inputs || [];
 
-  function formatParam(param) {
-    let type = param.type;
-
-    // Handle tuple types
-    if (type === "tuple" || type === "tuple[]") {
-      const components = param.components || [];
-      const inner = components.map(formatParam).join(", ");
-      type = type === "tuple[]" ? `(${inner})[]` : `(${inner})`;
+  let oldParamNames = [];
+  if (oldKey) {
+    const match = String(oldKey).match(/^\w+\((.*)\)$/s);
+    if (match && match[1].trim()) {
+      oldParamNames = splitTopLevelParams(match[1]).map((seg) => {
+        const type = extractParamType(seg);
+        return seg.slice(type.length).trim().split(/\s+/)[0] || "";
+      });
     }
-
-    return `${type} ${param.name}`;
   }
 
-  const params = inputs.map(formatParam).join(", ");
+  function formatParam(param, index) {
+    let type = param.type;
+
+    // Handle tuple types (tuple, tuple[], tuple[][], tuple[N], etc.)
+    const isTuple = type === "tuple" || type.startsWith("tuple[");
+    if (isTuple && Array.isArray(param.components)) {
+      const inner = param.components.map((p, i) => formatParam(p, i)).join(", ");
+      const suffix = type.slice("tuple".length);
+      type = `(${inner})${suffix}`;
+    }
+
+    const paramName = param.name || oldParamNames[index] || `param${index}`;
+    return `${type} ${paramName}`;
+  }
+
+  const params = inputs.map((p, i) => formatParam(p, i)).join(", ");
   return `${name}(${params})`;
 }
 
@@ -1108,7 +1304,7 @@ function extractParamType(paramSegment) {
  */
 function canonicalizeSignature(signatureLike) {
   const text = String(signatureLike || "").trim();
-  const match = text.match(/^([A-Za-z_]\w*)\((.*)\)$/);
+  const match = text.match(/^([A-Za-z_][\w:]*)\((.*)\)$/);
   if (!match) return null;
 
   const name = match[1];
@@ -1166,6 +1362,19 @@ function computeAbiSelector(abiEntry) {
   const sig = abiCanonicalSignature(abiEntry);
   if (!sig) return null;
   return "0x" + keccak256(sig).slice(0, 8);
+}
+
+function syncSleep(ms) {
+  if (ms > 0) spawnSync("sleep", [String(ms / 1000)]);
+}
+
+function etherscanRateLimitWait() {
+  const now = Date.now();
+  const elapsed = now - _lastEtherscanRequestAt;
+  if (elapsed < ETHERSCAN_MIN_INTERVAL_MS) {
+    syncSleep(ETHERSCAN_MIN_INTERVAL_MS - elapsed);
+  }
+  _lastEtherscanRequestAt = Date.now();
 }
 
 /**
@@ -1289,25 +1498,45 @@ function resolveContractAbi(contractContext) {
       );
     }
 
-    const download = spawnSync(
-      "curl",
-      ["-fsSL", "--max-time", "20", "--connect-timeout", "10", url],
-      { encoding: "utf8", stdio: "pipe", maxBuffer: LINTER_MAX_BUFFER }
-    );
-    if (download.status !== 0) {
-      const details = (download.stderr || download.stdout || "").trim();
-      throw new Error(
-        `Failed to download ABI URL ${originalUrl}${details ? `: ${details}` : ""}`
-      );
-    }
+    const isEtherscan = url.includes("etherscan.io");
+    let lastError = null;
+    const maxAttempts = isEtherscan ? ETHERSCAN_MAX_RETRIES + 1 : 1;
 
-    let parsed;
-    try {
-      parsed = JSON.parse(download.stdout);
-    } catch (error) {
-      throw new Error(`Invalid JSON downloaded from ABI URL ${originalUrl}: ${error.message}`);
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      if (isEtherscan) etherscanRateLimitWait();
+
+      const download = spawnSync(
+        "curl",
+        ["-fsSL", "--max-time", "20", "--connect-timeout", "10", url],
+        { encoding: "utf8", stdio: "pipe", maxBuffer: LINTER_MAX_BUFFER }
+      );
+      if (download.status !== 0) {
+        const details = (download.stderr || download.stdout || "").trim();
+        throw new Error(
+          `Failed to download ABI URL ${originalUrl}${details ? `: ${details}` : ""}`
+        );
+      }
+
+      let parsed;
+      try {
+        parsed = JSON.parse(download.stdout);
+      } catch (error) {
+        throw new Error(`Invalid JSON downloaded from ABI URL ${originalUrl}: ${error.message}`);
+      }
+
+      try {
+        return extractAbiArray(parsed, `URL ${originalUrl}`);
+      } catch (error) {
+        if (isEtherscan && attempt < maxAttempts - 1 && /rate limit/i.test(error.message)) {
+          lastError = error;
+          verboseLog(`Etherscan rate limited, retrying in ${(attempt + 1) * 600}ms (attempt ${attempt + 1}/${maxAttempts})...`, "WARN");
+          syncSleep((attempt + 1) * 600);
+          continue;
+        }
+        throw error;
+      }
     }
-    return extractAbiArray(parsed, `URL ${originalUrl}`);
+    throw lastError || new Error(`Failed to fetch ABI from ${originalUrl} after ${maxAttempts} attempts`);
   }
 
   if (typeof abiValue === "object" || typeof abiValue === "string") {
@@ -1343,7 +1572,7 @@ function findAbiEntry(abi, formatKey) {
   }
 
   // Fallback: match by function name only when unambiguous.
-  const match = String(formatKey || "").match(/^([A-Za-z_]\w*)\(/);
+  const match = String(formatKey || "").match(/^([A-Za-z_][\w:]*)\(/);
   if (!match) return null;
 
   const funcName = match[1];
@@ -1383,7 +1612,7 @@ function transformFormatKeys(json) {
       for (const oldKey of Object.keys(json.display.formats)) {
         const abiEntry = findAbiEntry(abi, oldKey);
         if (abiEntry) {
-          const newKey = buildHumanReadableSignature(abiEntry);
+          const newKey = buildHumanReadableSignature(abiEntry, oldKey);
           if (newKey && newKey !== oldKey) {
             keyMapping[oldKey] = newKey;
             stats.changes.formatKeysTransformed++;
@@ -1394,6 +1623,61 @@ function transformFormatKeys(json) {
   }
 
   return keyMapping;
+}
+
+/**
+ * Find test files associated with a descriptor file.
+ * Convention: descriptor at registry/foo/calldata-Bar.json -> tests at registry/foo/tests/calldata-Bar.tests.json
+ * Also handles the case where a folder contains multiple descriptors sharing a tests/ directory.
+ */
+function findTestFilesForDescriptor(descriptorPath) {
+  const dir = path.dirname(descriptorPath);
+  const baseName = path.basename(descriptorPath, ".json");
+  const testFile = path.join(dir, "tests", `${baseName}.tests.json`);
+  if (fs.existsSync(testFile)) {
+    return [testFile];
+  }
+  return [];
+}
+
+/**
+ * Patch expectedTexts in test files when the owner name changed during migration.
+ * Replaces occurrences of oldOwner with newOwner inside expectedTexts arrays.
+ * Logs a warning for each patched file (this is not a failure).
+ */
+function patchTestFilesOwner(descriptorPath, oldOwner, newOwner) {
+  const testFiles = findTestFilesForDescriptor(descriptorPath);
+  for (const testFile of testFiles) {
+    try {
+      const content = fs.readFileSync(testFile, "utf8");
+      const testJson = JSON.parse(content);
+      let patched = false;
+
+      if (Array.isArray(testJson.tests)) {
+        for (const testCase of testJson.tests) {
+          if (!Array.isArray(testCase.expectedTexts)) continue;
+          for (let i = 0; i < testCase.expectedTexts.length; i++) {
+            const text = testCase.expectedTexts[i];
+            if (typeof text === "string" && text.includes(oldOwner)) {
+              testCase.expectedTexts[i] = text.replace(oldOwner, newOwner);
+              patched = true;
+            }
+          }
+        }
+      }
+
+      if (patched) {
+        fs.writeFileSync(testFile, JSON.stringify(testJson, null, 2) + "\n");
+        const relTestPath = path.relative(ROOT_DIR, testFile);
+        console.warn(
+          `  ⚠️  ${relTestPath}: patched expectedTexts owner "${oldOwner}" → "${newOwner}" to match migrated descriptor`
+        );
+      }
+    } catch (error) {
+      const relTestPath = path.relative(ROOT_DIR, testFile);
+      console.warn(`  ⚠️  ${relTestPath}: failed to patch expectedTexts: ${error.message}`);
+    }
+  }
 }
 
 /**
@@ -1462,6 +1746,26 @@ function migrateFile(filePath) {
       );
       modified = true;
       ownerReplacedFromLegalName = true;
+
+      if (!DRY_RUN) {
+        patchTestFilesOwner(filePath, metadataOwner, metadataLegalName);
+      }
+    }
+
+    // When the file inherits metadata via includes, the effective owner may
+    // have changed when the included file was migrated (owner/legalName
+    // reconciliation). Detect this by comparing the current effective owner
+    // with the pre-migration v1 output's creator_name.
+    if (!ownerReplacedFromLegalName && json.includes && V1_OUTPUT_FILE) {
+      const effectiveOwner = resolveEffectiveOwner(filePath, json);
+      const v1CreatorName = extractV1CreatorName(V1_OUTPUT_FILE);
+      if (effectiveOwner && v1CreatorName && effectiveOwner !== v1CreatorName) {
+        ownerReplacedFromLegalName = true;
+        verboseLog(
+          `  ℹ️  ${path.relative(ROOT_DIR, filePath)}: detected owner drift through includes ("${v1CreatorName}" → "${effectiveOwner}")`,
+          "DEBUG"
+        );
+      }
     }
 
     if (json.metadata?.info?.legalName !== undefined) {
@@ -1614,12 +1918,15 @@ function migrateFile(filePath) {
       modified = true;
     }
 
-    // 12. Clean up null values (do this last)
+    // 12. Clean up null values
     const beforeNulls = stats.changes.nullsCleaned;
     json = removeNullValues(json);
     if (stats.changes.nullsCleaned > beforeNulls) {
       modified = true;
     }
+
+    // 13. Prune empty objects left behind by removed keys (screens, legalName, etc.)
+    json = pruneEmptyObjects(json);
 
     // Write back if modified
     if (modified) {

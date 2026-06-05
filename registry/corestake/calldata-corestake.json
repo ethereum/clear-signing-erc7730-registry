@@ -1,34 +1,10 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
-  "context": {
-    "contract": {
-      "abi": [
-        {
-          "outputs": [],
-          "inputs": [{ "name": "_validator", "internalType": "address", "type": "address" }],
-          "name": "mint",
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "outputs": [],
-          "inputs": [{ "name": "stCore", "internalType": "uint256", "type": "uint256" }],
-          "name": "redeem",
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        { "outputs": [], "inputs": [], "name": "withdraw", "stateMutability": "nonpayable", "type": "function" }
-      ],
-      "deployments": [{ "chainId": 1116, "address": "0xf5fA1728bABc3f8D2a617397faC2696c958C3409" }]
-    }
-  },
-  "metadata": {
-    "owner": "CoreDAO",
-    "info": { "legalName": "CoreDAO Earn Contract", "url": "https://coredao.org/", "deploymentDate": "2025-02-24T02:55:15Z" }
-  },
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1116, "address": "0xf5fA1728bABc3f8D2a617397faC2696c958C3409" }] } },
+  "metadata": { "owner": "CoreDAO Earn Contract", "info": { "url": "https://coredao.org/", "deploymentDate": "2025-02-24T02:55:15Z" } },
   "display": {
     "formats": {
-      "mint(address)": {
+      "mint(address _validator)": {
         "intent": "Stake CORE",
         "fields": [
           { "format": "amount", "label": "Amount to stake", "path": "@.value" },
@@ -36,22 +12,22 @@
             "path": "_validator",
             "label": "Validator Address",
             "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
           }
-        ],
-        "required": ["_validator"]
+        ]
       },
-      "redeem(uint256)": {
+      "redeem(uint256 stCore)": {
         "intent": "Request Redeem",
         "fields": [
           {
             "path": "stCore",
             "label": "Amount to Redeem",
             "format": "tokenAmount",
-            "params": { "token": "0xb3A8F0f0da9ffC65318aA39E55079796093029AD" }
+            "params": { "token": "0xb3A8F0f0da9ffC65318aA39E55079796093029AD" },
+            "visible": "always"
           }
-        ],
-        "required": ["stCore"]
+        ]
       },
       "withdraw()": { "intent": "Withdraw CORE", "fields": [] }
     }

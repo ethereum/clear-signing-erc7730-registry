@@ -1,0 +1,77 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "Swap order",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Bridge": [
+            { "name": "protocolSelector", "type": "bytes4" },
+            { "name": "destinationChainId", "type": "uint256" },
+            { "name": "outputToken", "type": "address" },
+            { "name": "scalingFactor", "type": "int8" },
+            { "name": "protocolData", "type": "bytes" }
+          ],
+          "Order": [
+            { "name": "owner", "type": "address" },
+            { "name": "beneficiary", "type": "address" },
+            { "name": "srcToken", "type": "address" },
+            { "name": "destToken", "type": "address" },
+            { "name": "srcAmount", "type": "uint256" },
+            { "name": "destAmount", "type": "uint256" },
+            { "name": "expectedAmount", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" },
+            { "name": "kind", "type": "uint8" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "partnerAndFee", "type": "uint256" },
+            { "name": "permit", "type": "bytes" },
+            { "name": "metadata", "type": "bytes" },
+            { "name": "bridge", "type": "Bridge" }
+          ]
+        },
+        "primaryType": "Order",
+        "domain": { "name": "Velora", "version": "1", "chainId": 1, "verifyingContract": "0x0000000000bbf5c5fd284e657f01bd000933c96d" },
+        "message": {
+          "owner": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "beneficiary": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+          "srcToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "destToken": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "srcAmount": "2500000000",
+          "destAmount": "780000000000000000",
+          "expectedAmount": "790000000000000000",
+          "deadline": "1776729600",
+          "kind": "0",
+          "nonce": "874523901245",
+          "partnerAndFee": "0",
+          "permit": "0x",
+          "metadata": "0x",
+          "bridge": {
+            "protocolSelector": "0x00000000",
+            "destinationChainId": "1",
+            "outputToken": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "scalingFactor": "0",
+            "protocolData": "0x"
+          }
+        }
+      },
+      "expectedTexts": [
+        "Beneficiary",
+        "0x742d35Cc6634C053 2925a3b844Bc454e44 38f44e",
+        "Amount to send",
+        "2500 USDC",
+        "Minimum to receive",
+        "0.78 WETH",
+        "Expiration time",
+        "2026-04-21 12:00:00 AM UTC",
+        "Destination chain ID",
+        "1"
+      ]
+    }
+  ]
+}

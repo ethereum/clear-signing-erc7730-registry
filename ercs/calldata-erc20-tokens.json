@@ -1,51 +1,39 @@
 {
-  "$schema": "../specs/erc7730-v1.schema.json",
-  "context": {
-    "contract": {
-      "abi": [
-        {
-          "constant": false,
-          "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }],
-          "name": "approve",
-          "outputs": [{ "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [{ "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" }],
-          "name": "transfer",
-          "outputs": [{ "name": "", "type": "bool" }],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        }
-      ]
-    }
-  },
+  "$schema": "../specs/erc7730-v2.schema.json",
+  "context": { "contract": {} },
   "display": {
     "formats": {
-      "transfer(address,uint256)": {
+      "transfer(address _to, uint256 _value)": {
         "intent": "Send",
         "fields": [
-          { "path": "_value", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "@.to" } },
-          { "path": "_to", "label": "To", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } }
-        ],
-        "required": ["_to", "_value"]
+          { "path": "_value", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "@.to" }, "visible": "always" },
+          {
+            "path": "_to",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
       },
-      "approve(address,uint256)": {
+      "approve(address _spender, uint256 _value)": {
         "intent": "Approve",
         "fields": [
-          { "path": "_spender", "label": "Spender", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          {
+            "path": "_spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
           {
             "path": "_value",
             "label": "Amount",
             "format": "tokenAmount",
-            "params": { "tokenPath": "@.to", "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000" }
+            "params": { "tokenPath": "@.to", "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000" },
+            "visible": "always"
           }
-        ],
-        "required": ["_spender", "_value"]
+        ]
       }
     }
   }

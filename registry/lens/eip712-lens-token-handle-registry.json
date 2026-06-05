@@ -1,50 +1,15 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "eip712": {
       "deployments": [{ "chainId": 137, "address": "0xd4f2f33680fccb36748fa9831851643781608844" }],
-      "domain": { "name": "Lens Protocol Profiles", "version": "2" },
-      "schemas": [
-        {
-          "primaryType": "unlink_with_sig",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "unlink_with_sig": [
-              { "name": "handle_id", "type": "uint256" },
-              { "name": "profile_id", "type": "uint256" },
-              { "name": "signatureDeadline", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "unlink",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "unlink": [
-              { "name": "handleId", "type": "uint256" },
-              { "name": "profileId", "type": "uint256" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" }
-            ]
-          }
-        }
-      ]
+      "domain": { "name": "Lens Protocol Profiles", "version": "2" }
     }
   },
   "metadata": { "owner": "TokenHandleRegistry" },
   "display": {
     "formats": {
-      "unlink_with_sig": {
+      "unlink_with_sig(uint256 handle_id,uint256 profile_id,uint256 signatureDeadline)": {
         "intent": "unlink_with_sig",
         "fields": [
           { "path": "handle_id", "label": "handle_id", "format": "raw" },
@@ -52,14 +17,14 @@
           { "path": "signatureDeadline", "label": "signatureDeadline", "format": "raw" }
         ]
       },
-      "unlink": {
+      "unlink(uint256 handleId,uint256 profileId,uint256 nonce,uint256 deadline)": {
         "intent": "unlink",
         "fields": [
           { "path": "handleId", "label": "handleId", "format": "raw" },
           { "path": "profileId", "label": "profileId", "format": "raw" },
-          { "path": "nonce", "label": "nonce", "format": "raw" }
-        ],
-        "excluded": ["deadline"]
+          { "path": "nonce", "label": "nonce", "format": "raw" },
+          { "label": "Deadline", "path": "deadline", "visible": "never" }
+        ]
       }
     }
   }

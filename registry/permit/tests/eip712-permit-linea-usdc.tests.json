@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Permit": [
+            { "name": "owner", "type": "address" },
+            { "name": "spender", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": { "name": "USD Coin", "version": "1", "chainId": 59144, "verifyingContract": "0x176211869cA2b568f2A7D4EE941E073a821EE1ff" },
+        "message": {
+          "owner": "0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826",
+          "spender": "0x8617E340B3D01FA5F11F306F4090FD50E238070D",
+          "value": "250000000",
+          "nonce": "12",
+          "deadline": "1776729600"
+        }
+      },
+      "expectedTexts": [
+        "Spender",
+        "0x8617E340B3D01FA5 F11F306F4090FD50E2 38070D",
+        "Max spending amount",
+        "250 USDC",
+        "Valid until",
+        "2026-04-21 12:00:00 AM UTC"
+      ]
+    }
+  ]
+}

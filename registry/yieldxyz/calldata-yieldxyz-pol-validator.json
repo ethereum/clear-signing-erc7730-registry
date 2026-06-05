@@ -1,9 +1,10 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "metadata": {
     "owner": "Yield.xyz",
-    "info": { "legalName": "Yield.xyz", "url": "https://yield.xyz/" },
-    "constants": { "stakingTokenTicker": "POL" }
+    "info": { "url": "https://yield.xyz/" },
+    "constants": { "stakingTokenTicker": "POL" },
+    "contractName": "YieldxyzPolValidator"
   },
   "context": {
     "$id": "YieldxyzPolValidator",
@@ -26,55 +27,40 @@
         { "chainId": 1, "address": "0x2905B3387c9550Ea57fa3EE7d4b7E5Abf3acD3d2" },
         { "chainId": 1, "address": "0x15C2b3AdcA66E26B6F230b4023f52a285b7f9995" },
         { "chainId": 1, "address": "0x2EA3c215daeaCc1C90b51443aB5D08a9ad816138" }
-      ],
-      "abi": [
-        {
-          "name": "buyVoucherPOL",
-          "type": "function",
-          "inputs": [{ "name": "_amount", "type": "uint256" }, { "name": "_minSharesToMint", "type": "uint256" }]
-        },
-        {
-          "name": "sellVoucher_newPOL",
-          "type": "function",
-          "inputs": [{ "name": "claimAmount", "type": "uint256" }, { "name": "maximumSharesToBurn", "type": "uint256" }]
-        },
-        { "name": "unstakeClaimTokens_newPOL", "type": "function", "inputs": [{ "name": "unbondNonce", "type": "uint256" }] },
-        { "name": "withdrawRewardsPOL", "type": "function", "inputs": [] }
       ]
     }
   },
   "display": {
     "formats": {
-      "buyVoucherPOL(uint256,uint256)": {
+      "buyVoucherPOL(uint256 _amount, uint256 _minSharesToMint)": {
         "intent": "Stake POL",
         "fields": [
           {
             "path": "#._amount",
             "label": "Stake amount",
             "format": "unit",
-            "params": { "base": "$.metadata.constants.stakingTokenTicker", "decimals": 18 }
+            "params": { "base": "$.metadata.constants.stakingTokenTicker", "decimals": 18 },
+            "visible": "always"
           },
-          { "path": "#._minSharesToMint", "label": "Min shares", "format": "raw" }
-        ],
-        "required": ["#._amount", "#._minSharesToMint"]
+          { "path": "#._minSharesToMint", "label": "Min shares", "format": "raw", "visible": "always" }
+        ]
       },
-      "sellVoucher_newPOL(uint256,uint256)": {
+      "sellVoucher_newPOL(uint256 claimAmount, uint256 maximumSharesToBurn)": {
         "intent": "Unstake POL",
         "fields": [
           {
             "path": "#.claimAmount",
             "label": "Claim amount",
             "format": "unit",
-            "params": { "base": "$.metadata.constants.stakingTokenTicker", "decimals": 18 }
+            "params": { "base": "$.metadata.constants.stakingTokenTicker", "decimals": 18 },
+            "visible": "always"
           },
-          { "path": "#.maximumSharesToBurn", "label": "Max shares", "format": "raw" }
-        ],
-        "required": ["#.claimAmount", "#.maximumSharesToBurn"]
+          { "path": "#.maximumSharesToBurn", "label": "Max shares", "format": "raw", "visible": "always" }
+        ]
       },
-      "unstakeClaimTokens_newPOL(uint256)": {
+      "unstakeClaimTokens_newPOL(uint256 unbondNonce)": {
         "intent": "Claim unstaked POL",
-        "fields": [{ "path": "#.unbondNonce", "label": "Unbond nonce", "format": "raw" }],
-        "required": ["#.unbondNonce"]
+        "fields": [{ "path": "#.unbondNonce", "label": "Unbond nonce", "format": "raw", "visible": "always" }]
       },
       "withdrawRewardsPOL()": { "intent": "Withdraw POL rewards", "fields": [] }
     }

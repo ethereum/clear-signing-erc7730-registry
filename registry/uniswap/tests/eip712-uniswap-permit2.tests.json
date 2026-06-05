@@ -1,0 +1,98 @@
+{
+  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "tests": [
+    {
+      "description": "Authorize spending of token",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "PermitDetails": [
+            { "name": "token", "type": "address" },
+            { "name": "amount", "type": "uint160" },
+            { "name": "expiration", "type": "uint48" },
+            { "name": "nonce", "type": "uint48" }
+          ],
+          "PermitSingle": [
+            { "name": "details", "type": "PermitDetails" },
+            { "name": "spender", "type": "address" },
+            { "name": "sigDeadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "PermitSingle",
+        "domain": { "name": "Permit2", "chainId": 1, "verifyingContract": "0x000000000022D473030F116dDEE9F6B43aC78BA3" },
+        "message": {
+          "details": { "token": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "amount": "2500000000", "expiration": 1782864000, "nonce": 7 },
+          "spender": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+          "sigDeadline": 1774915200
+        }
+      },
+      "expectedTexts": [
+        "Amount allowance",
+        "2500 USDC",
+        "Approval expires",
+        "2026-07-01 12:00:00 AM UTC",
+        "Spender",
+        "0xE592427A0AEce92D e3Edee1F18E0157C058 61564"
+      ]
+    },
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "PermitDetails": [
+            { "name": "token", "type": "address" },
+            { "name": "amount", "type": "uint160" },
+            { "name": "expiration", "type": "uint48" },
+            { "name": "nonce", "type": "uint48" }
+          ],
+          "PermitBatch": [
+            { "name": "details", "type": "PermitDetails[]" },
+            { "name": "spender", "type": "address" },
+            { "name": "sigDeadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "PermitBatch",
+        "domain": { "name": "Permit2", "chainId": 1, "verifyingContract": "0x000000000022D473030F116dDEE9F6B43aC78BA3" },
+        "message": {
+          "details": [
+            {
+              "token": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "amount": "2500000000",
+              "expiration": "1780000000",
+              "nonce": "912345"
+            },
+            {
+              "token": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "amount": "750000000000000000",
+              "expiration": "1780000000",
+              "nonce": "912346"
+            }
+          ],
+          "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+          "sigDeadline": "1775200000"
+        }
+      },
+      "expectedTexts": [
+        "Amount allowance",
+        "2500000000 ???",
+        "Approval expires",
+        "2026-05-28 08:26:40 PM UTC",
+        "Amount allowance",
+        "750000000000000000 ???",
+        "Approval expires",
+        "2026-05-28 08:26:40 PM UTC",
+        "Spender",
+        "0x68b3465833fb72A7 0ecDF485E0e4C7bD86 65Fc45"
+      ]
+    }
+  ]
+}

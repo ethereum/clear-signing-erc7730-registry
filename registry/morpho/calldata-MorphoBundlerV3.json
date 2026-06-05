@@ -1,95 +1,39 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "contract": {
       "deployments": [
         { "chainId": 1, "address": "0x6566194141eefa99Af43Bb5Aa71460Ca2Dc90245" },
         { "chainId": 8453, "address": "0x6BFd8137e702540E7A42B74178A4a49Ba43920C4" }
-      ],
-      "abi": [
-        {
-          "type": "function",
-          "name": "initiator",
-          "inputs": [],
-          "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
-          "stateMutability": "view"
-        },
-        {
-          "type": "function",
-          "name": "multicall",
-          "inputs": [
-            {
-              "name": "bundle",
-              "type": "tuple[]",
-              "internalType": "struct Call[]",
-              "components": [
-                { "name": "to", "type": "address", "internalType": "address" },
-                { "name": "data", "type": "bytes", "internalType": "bytes" },
-                { "name": "value", "type": "uint256", "internalType": "uint256" },
-                { "name": "skipRevert", "type": "bool", "internalType": "bool" },
-                { "name": "callbackHash", "type": "bytes32", "internalType": "bytes32" }
-              ]
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "payable"
-        },
-        {
-          "type": "function",
-          "name": "reenter",
-          "inputs": [
-            {
-              "name": "bundle",
-              "type": "tuple[]",
-              "internalType": "struct Call[]",
-              "components": [
-                { "name": "to", "type": "address", "internalType": "address" },
-                { "name": "data", "type": "bytes", "internalType": "bytes" },
-                { "name": "value", "type": "uint256", "internalType": "uint256" },
-                { "name": "skipRevert", "type": "bool", "internalType": "bool" },
-                { "name": "callbackHash", "type": "bytes32", "internalType": "bytes32" }
-              ]
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        {
-          "type": "function",
-          "name": "reenterHash",
-          "inputs": [],
-          "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
-          "stateMutability": "view"
-        }
       ]
     }
   },
-  "metadata": { "owner": "Morpho DAO", "info": { "legalName": "Morpho DAO", "url": "https://morpho.org" } },
+  "metadata": { "owner": "Morpho DAO", "info": { "url": "https://morpho.org" } },
   "display": {
     "formats": {
-      "multicall((address,bytes,uint256,bool,bytes32)[])": {
+      "multicall((address to, bytes data, uint256 value, bool skipRevert, bytes32 callbackHash)[] bundle)": {
         "intent": "Bundler3 Multicall",
         "fields": [
           {
             "path": "#.bundle.[].data",
             "label": "Action",
             "format": "calldata",
-            "params": { "calleePath": "#.bundle.[].to", "amountPath": "#.bundle.[].value" }
+            "params": { "calleePath": "#.bundle.[].to", "amountPath": "#.bundle.[].value" },
+            "visible": "always"
           }
-        ],
-        "required": ["#.bundle.[].to", "#.bundle.[].data", "#.bundle.[].value", "#.bundle.[].skipRevert", "#.bundle.[].callbackHash"]
+        ]
       },
-      "reenter((address,bytes,uint256,bool,bytes32)[])": {
+      "reenter((address to, bytes data, uint256 value, bool skipRevert, bytes32 callbackHash)[] bundle)": {
         "intent": "Reenter Bundler3",
         "fields": [
           {
             "path": "#.bundle.[].data",
             "label": "Action",
             "format": "calldata",
-            "params": { "calleePath": "#.bundle.[].to", "amountPath": "#.bundle.[].value" }
+            "params": { "calleePath": "#.bundle.[].to", "amountPath": "#.bundle.[].value" },
+            "visible": "always"
           }
-        ],
-        "required": ["#.bundle.[].to", "#.bundle.[].data", "#.bundle.[].value", "#.bundle.[].skipRevert", "#.bundle.[].callbackHash"]
+        ]
       }
     }
   }

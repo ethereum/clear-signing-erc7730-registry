@@ -1,453 +1,28 @@
 {
-  "$schema": "../../specs/erc7730-v1.schema.json",
+  "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "eip712": {
       "deployments": [{ "chainId": 137, "address": "0xdb46d1dc155634fbc732f92e853b10b288ad5a1d" }],
-      "domain": { "name": "Lens Protocol Profiles", "version": "2" },
-      "schemas": [
-        {
-          "primaryType": "act",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "act": [
-              { "name": "publicationActedProfileId", "type": "uint256" },
-              { "name": "publicationActedId", "type": "uint256" },
-              { "name": "actorProfileId", "type": "uint256" },
-              { "name": "referrerProfileIds", "type": "uint256[]" },
-              { "name": "referrerPubIds", "type": "uint256[]" },
-              { "name": "actionModuleAddress", "type": "address" },
-              { "name": "actionModuleData", "type": "bytes" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "burn",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "burn": [{ "name": "tokenId", "type": "uint256" }]
-          }
-        },
-        {
-          "primaryType": "ChangeDelegatedExecutorsConfig",
-          "types": {
-            "ChangeDelegatedExecutorsConfig": [
-              { "name": "delegatorProfileId", "type": "uint256" },
-              { "name": "delegatedExecutors", "type": "address[]" },
-              { "name": "approvals", "type": "bool[]" },
-              { "name": "configNumber", "type": "uint64" },
-              { "name": "switchToGivenConfig", "type": "bool" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" }
-            ],
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ]
-          }
-        },
-        {
-          "primaryType": "collect",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "collect": [
-              { "name": "publicationCollectedProfileId", "type": "uint256" },
-              { "name": "publicationCollectedId", "type": "uint256" },
-              { "name": "collectorProfileId", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "collect_with_sign",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "collect_with_sign": [
-              { "name": "publicationCollectedProfileId", "type": "uint256" },
-              { "name": "publicationCollectedId", "type": "uint256" },
-              { "name": "collectorProfileId", "type": "uint256" },
-              { "name": "signatureDeadline", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "Comment",
-          "types": {
-            "Comment": [
-              { "name": "profileId", "type": "uint256" },
-              { "name": "contentURI", "type": "string" },
-              { "name": "pointedProfileId", "type": "uint256" },
-              { "name": "pointedPubId", "type": "uint256" },
-              { "name": "referrerProfileIds", "type": "uint256[]" },
-              { "name": "referrerPubIds", "type": "uint256[]" },
-              { "name": "referenceModuleData", "type": "bytes" },
-              { "name": "actionModules", "type": "address[]" },
-              { "name": "actionModulesInitDatas", "type": "bytes[]" },
-              { "name": "referenceModule", "type": "address" },
-              { "name": "referenceModuleInitData", "type": "bytes" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" }
-            ],
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ]
-          }
-        },
-        {
-          "primaryType": "comment_with_sign",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "comment_with_sign": [
-              { "name": "profile_id", "type": "uint256" },
-              { "name": "profile_id_pointed", "type": "uint256" },
-              { "name": "pubid_pointed", "type": "uint256" },
-              { "name": "signatureDeadline", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "create_profile",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "create_profile": [{ "name": "to", "type": "address" }, { "name": "followModule", "type": "address" }]
-          }
-        },
-        {
-          "primaryType": "Follow",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "Follow": [
-              { "name": "followerProfileId", "type": "uint256" },
-              { "name": "idsOfProfilesToFollow", "type": "uint256[]" },
-              { "name": "followTokenIds", "type": "uint256[]" },
-              { "name": "datas", "type": "bytes[]" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "follow_with_sign",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "follow_with_sign": [{ "name": "followerProfileId", "type": "uint256" }, { "name": "signatureDeadline", "type": "uint256" }]
-          }
-        },
-        {
-          "primaryType": "link",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "link": [{ "name": "handle_id", "type": "uint256" }, { "name": "profile_id", "type": "uint256" }]
-          }
-        },
-        {
-          "primaryType": "link_with_sig",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "link_with_sig": [
-              { "name": "handle_id", "type": "uint256" },
-              { "name": "profile_id", "type": "uint256" },
-              { "name": "signatureDeadline", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "mint",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "mint": [
-              { "name": "to", "type": "uint256" },
-              { "name": "profile_id", "type": "uint256" },
-              { "name": "profile_id_pointed", "type": "uint256" },
-              { "name": "pubid_pointed", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "Mirror",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "Mirror": [
-              { "name": "profileId", "type": "uint256" },
-              { "name": "metadataURI", "type": "string" },
-              { "name": "pointedProfileId", "type": "uint256" },
-              { "name": "pointedPubId", "type": "uint256" },
-              { "name": "referrerProfileIds", "type": "uint256[]" },
-              { "name": "referrerPubIds", "type": "uint256[]" },
-              { "name": "referenceModuleData", "type": "bytes" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "mirror_with_sig",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "mirror_with_sig": [
-              { "name": "profile_id", "type": "uint256" },
-              { "name": "profile_id_pointed", "type": "uint256" },
-              { "name": "pubid_pointed", "type": "uint256" },
-              { "name": "signatureDeadline", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "Post",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "Post": [
-              { "name": "profileId", "type": "uint256" },
-              { "name": "contentURI", "type": "string" },
-              { "name": "actionModules", "type": "address[]" },
-              { "name": "actionModulesInitDatas", "type": "bytes[]" },
-              { "name": "referenceModule", "type": "address" },
-              { "name": "referenceModuleInitData", "type": "bytes" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "post_with_sign",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "post_with_sign": [{ "name": "profile_id", "type": "uint256" }, { "name": "signatureDeadline", "type": "uint256" }]
-          }
-        },
-        {
-          "primaryType": "Quote",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "Quote": [
-              { "name": "profileId", "type": "uint256" },
-              { "name": "contentURI", "type": "string" },
-              { "name": "pointedProfileId", "type": "uint256" },
-              { "name": "pointedPubId", "type": "uint256" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "quote_with_sign",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "quote_with_sign": [
-              { "name": "profile_id", "type": "uint256" },
-              { "name": "profile_id_pointed", "type": "uint256" },
-              { "name": "pubid_pointed", "type": "uint256" },
-              { "name": "signatureDeadline", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "set_block_status",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "set_block_status": [{ "name": "byProfileId", "type": "uint256" }, { "name": "signatureDeadline", "type": "uint256" }]
-          }
-        },
-        {
-          "primaryType": "SetProfileMetadataURI",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "SetProfileMetadataURI": [
-              { "name": "profileId", "type": "uint256" },
-              { "name": "metadataURI", "type": "string" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "set_block_status_with_sig",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "set_block_status_with_sig": [{ "name": "byProfileId", "type": "uint256" }, { "name": "signatureDeadline", "type": "uint256" }]
-          }
-        },
-        {
-          "primaryType": "SetFollowModule",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "SetFollowModule": [
-              { "name": "profileId", "type": "uint256" },
-              { "name": "followModule", "type": "address" },
-              { "name": "followModuleInitData", "type": "bytes" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "set_profile_metadata_with_sign",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "set_profile_metadata_with_sign": [{ "name": "profileId", "type": "uint256" }, { "name": "signatureDeadline", "type": "uint256" }]
-          }
-        },
-        {
-          "primaryType": "Unfollow",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "Unfollow": [
-              { "name": "unfollowerProfileId", "type": "uint256" },
-              { "name": "idsOfProfilesToUnfollow", "type": "uint256[]" },
-              { "name": "nonce", "type": "uint256" },
-              { "name": "deadline", "type": "uint256" }
-            ]
-          }
-        },
-        {
-          "primaryType": "unfollow_with_sign",
-          "types": {
-            "EIP712Domain": [
-              { "name": "name", "type": "string" },
-              { "name": "version", "type": "string" },
-              { "name": "chainId", "type": "uint256" },
-              { "name": "verifyingContract", "type": "address" }
-            ],
-            "unfollow_with_sign": [{ "name": "unfollowerProfileId", "type": "uint256" }, { "name": "signatureDeadline", "type": "uint256" }]
-          }
-        }
-      ]
+      "domain": { "name": "Lens Protocol Profiles", "version": "2" }
     }
   },
   "metadata": { "owner": "LensHub" },
   "display": {
     "formats": {
-      "act": {
-        "intent": "act",
+      "Act(uint256 publicationActedProfileId,uint256 publicationActedId,uint256 actorProfileId,uint256[] referrerProfileIds,uint256[] referrerPubIds,address actionModuleAddress,bytes actionModuleData,uint256 nonce,uint256 deadline)": {
+        "intent": "Act",
         "fields": [
           { "path": "actorProfileId", "label": "actorProfileId", "format": "raw" },
           { "path": "publicationActedId", "label": "publicationActedId", "format": "raw" },
-          { "path": "publicationActedProfileId", "label": "publicationActedProfileId", "format": "raw" }
-        ],
-        "excluded": ["deadline", "actionModuleAddress", "referrerProfileIds.[]", "actionModuleData", "referrerPubIds.[]"]
+          { "path": "publicationActedProfileId", "label": "publicationActedProfileId", "format": "raw" },
+          { "label": "Deadline", "path": "deadline", "visible": "never" },
+          { "label": "Action Module Address", "path": "actionModuleAddress", "visible": "never" },
+          { "label": "Referrer Profile Ids", "path": "referrerProfileIds.[]", "visible": "never" },
+          { "label": "Action Module Data", "path": "actionModuleData", "visible": "never" },
+          { "label": "Referrer Pub Ids", "path": "referrerPubIds.[]", "visible": "never" }
+        ]
       },
-      "burn": { "intent": "burn", "fields": [{ "path": "tokenId", "label": "tokenId", "format": "raw" }] },
-      "ChangeDelegatedExecutorsConfig": {
+      "ChangeDelegatedExecutorsConfig(uint256 delegatorProfileId,address[] delegatedExecutors,bool[] approvals,uint64 configNumber,bool switchToGivenConfig,uint256 nonce,uint256 deadline)": {
         "intent": "ChangeDelegatedExecutorsConfig",
         "fields": [
           { "path": "delegatorProfileId", "label": "Delegator ProfileId", "format": "raw" },
@@ -455,86 +30,54 @@
           { "path": "approvals.[]", "label": "Approvals", "format": "raw" },
           { "path": "configNumber", "label": "configNumber", "format": "raw" },
           { "path": "switchToGivenConfig", "label": "switchToGivenConfig", "format": "raw" },
-          { "path": "nonce", "label": "nonce", "format": "raw" }
-        ],
-        "excluded": ["deadline"]
-      },
-      "collect": {
-        "intent": "collect",
-        "fields": [
-          { "path": "publicationCollectedProfileId", "label": "Publication Collected ProfileId", "format": "raw" },
-          { "path": "publicationCollectedId", "label": "Publication CollectedId", "format": "raw" },
-          { "path": "collectorProfileId", "label": "collector ProfileId", "format": "raw" }
+          { "path": "nonce", "label": "nonce", "format": "raw" },
+          { "label": "Deadline", "path": "deadline", "visible": "never" }
         ]
       },
-      "collect_with_sign": {
-        "intent": "collect_with_sign",
-        "fields": [
-          { "path": "publicationCollectedProfileId", "label": "publicationCollectedProfileId", "format": "raw" },
-          { "path": "publicationCollectedId", "label": "publicationCollectedId", "format": "raw" },
-          { "path": "collectorProfileId", "label": "collectorProfileId", "format": "raw" },
-          { "path": "signatureDeadline", "label": "signatureDeadline", "format": "raw" }
-        ]
-      },
-      "Comment": {
+      "Comment(uint256 profileId,string contentURI,uint256 pointedProfileId,uint256 pointedPubId,uint256[] referrerProfileIds,uint256[] referrerPubIds,bytes referenceModuleData,address[] actionModules,bytes[] actionModulesInitDatas,address referenceModule,bytes referenceModuleInitData,uint256 nonce,uint256 deadline)": {
         "intent": "Comment",
         "fields": [
           { "path": "profileId", "label": "Profile Id", "format": "raw" },
           { "path": "contentURI", "label": "content URI", "format": "raw" },
           { "path": "pointedProfileId", "label": "Pointed Profile Id", "format": "raw" },
           { "path": "pointedPubId", "label": "Pointed Pub Id", "format": "raw" },
-          { "path": "nonce", "label": "nonce", "format": "raw" }
-        ],
-        "excluded": [
-          "referenceModuleInitData",
-          "referenceModuleData",
-          "actionModules",
-          "deadline",
-          "referrerProfileIds",
-          "referenceModule",
-          "actionModulesInitDatas",
-          "referrerPubIds"
+          { "path": "nonce", "label": "nonce", "format": "raw" },
+          { "label": "Reference Module Init Data", "path": "referenceModuleInitData", "visible": "never" },
+          { "label": "Reference Module Data", "path": "referenceModuleData", "visible": "never" },
+          { "label": "Action Modules", "path": "actionModules", "visible": "never" },
+          { "label": "Deadline", "path": "deadline", "visible": "never" },
+          { "label": "Referrer Profile Ids", "path": "referrerProfileIds", "visible": "never" },
+          { "label": "Reference Module", "path": "referenceModule", "visible": "never" },
+          { "label": "Action Modules Init Datas", "path": "actionModulesInitDatas", "visible": "never" },
+          { "label": "Referrer Pub Ids", "path": "referrerPubIds", "visible": "never" }
         ]
       },
-      "comment_with_sign": {
-        "intent": "comment_with_sign",
-        "fields": [
-          { "path": "profile_id", "label": "profile_id", "format": "raw" },
-          { "path": "profile_id_pointed", "label": "profile_id_pointed", "format": "raw" },
-          { "path": "pubid_pointed", "label": "pubid_pointed", "format": "raw" },
-          { "path": "signatureDeadline", "label": "signatureDeadline", "format": "raw" }
-        ]
-      },
-      "create_profile": {
-        "intent": "create_profile",
-        "fields": [{ "path": "to", "label": "to", "format": "raw" }, { "path": "followModule", "label": "followModule", "format": "raw" }]
-      },
-      "Follow": {
+      "Follow(uint256 followerProfileId,uint256[] idsOfProfilesToFollow,uint256[] followTokenIds,bytes[] datas,uint256 nonce,uint256 deadline)": {
         "intent": "Follow",
         "fields": [
           { "path": "followerProfileId", "label": "follower ProfileId", "format": "raw" },
           { "path": "idsOfProfilesToFollow.[]", "label": "ids Of Profiles To Follow", "format": "raw" },
           { "path": "followTokenIds.[]", "label": "follow TokenIds", "format": "raw" },
           { "path": "datas.[]", "label": "datas", "format": "raw" },
-          { "path": "nonce", "label": "nonce", "format": "raw" }
-        ],
-        "excluded": ["deadline"]
+          { "path": "nonce", "label": "nonce", "format": "raw" },
+          { "label": "Deadline", "path": "deadline", "visible": "never" }
+        ]
       },
-      "follow_with_sign": {
+      "follow_with_sign(uint256 followerProfileId,uint256 signatureDeadline)": {
         "intent": "follow_with_sign",
         "fields": [
           { "path": "followerProfileId", "label": "followerProfileId", "format": "raw" },
           { "path": "signatureDeadline", "label": "signatureDeadline", "format": "raw" }
         ]
       },
-      "link": {
+      "link(uint256 handle_id,uint256 profile_id)": {
         "intent": "link",
         "fields": [
           { "path": "handle_id", "label": "handle_id", "format": "raw" },
           { "path": "profile_id", "label": "profile_id", "format": "raw" }
         ]
       },
-      "link_with_sig": {
+      "link_with_sig(uint256 handle_id,uint256 profile_id,uint256 signatureDeadline)": {
         "intent": "link_with_sig",
         "fields": [
           { "path": "handle_id", "label": "handle_id", "format": "raw" },
@@ -542,7 +85,7 @@
           { "path": "signatureDeadline", "label": "signatureDeadline", "format": "raw" }
         ]
       },
-      "mint": {
+      "mint(uint256 to,uint256 profile_id,uint256 profile_id_pointed,uint256 pubid_pointed)": {
         "intent": "mint",
         "fields": [
           { "path": "to", "label": "to", "format": "raw" },
@@ -551,17 +94,21 @@
           { "path": "pubid_pointed", "label": "pubid_pointed", "format": "raw" }
         ]
       },
-      "Mirror": {
+      "Mirror(uint256 profileId,string metadataURI,uint256 pointedProfileId,uint256 pointedPubId,uint256[] referrerProfileIds,uint256[] referrerPubIds,bytes referenceModuleData,uint256 nonce,uint256 deadline)": {
         "intent": "mirror",
         "fields": [
           { "path": "profileId", "label": "profileId", "format": "raw" },
           { "path": "metadataURI", "label": "metadataURI", "format": "raw" },
           { "path": "pointedProfileId", "label": "pointedProfileId", "format": "raw" },
-          { "path": "nonce", "label": "nonce", "format": "raw" }
-        ],
-        "excluded": ["deadline", "pointedPubId", "referenceModuleData", "referrerProfileIds", "referrerPubIds"]
+          { "path": "nonce", "label": "nonce", "format": "raw" },
+          { "label": "Deadline", "path": "deadline", "visible": "never" },
+          { "label": "Pointed Pub Id", "path": "pointedPubId", "visible": "never" },
+          { "label": "Reference Module Data", "path": "referenceModuleData", "visible": "never" },
+          { "label": "Referrer Profile Ids", "path": "referrerProfileIds", "visible": "never" },
+          { "label": "Referrer Pub Ids", "path": "referrerPubIds", "visible": "never" }
+        ]
       },
-      "mirror_with_sig": {
+      "mirror_with_sig(uint256 profile_id,uint256 profile_id_pointed,uint256 pubid_pointed,uint256 signatureDeadline)": {
         "intent": "mirror_with_sig",
         "fields": [
           { "path": "profile_id", "label": "profile_id", "format": "raw" },
@@ -570,23 +117,27 @@
           { "path": "signatureDeadline", "label": "signatureDeadline", "format": "raw" }
         ]
       },
-      "Post": {
+      "Post(uint256 profileId,string contentURI,address[] actionModules,bytes[] actionModulesInitDatas,address referenceModule,bytes referenceModuleInitData,uint256 nonce,uint256 deadline)": {
         "intent": "Post",
         "fields": [
           { "path": "profileId", "label": "Profile Id", "format": "raw" },
           { "path": "contentURI", "label": "Post URI", "format": "raw" },
-          { "path": "nonce", "label": "nonce", "format": "raw" }
-        ],
-        "excluded": ["referenceModuleInitData", "actionModules", "deadline", "referenceModule", "actionModulesInitDatas"]
+          { "path": "nonce", "label": "nonce", "format": "raw" },
+          { "label": "Reference Module Init Data", "path": "referenceModuleInitData", "visible": "never" },
+          { "label": "Action Modules", "path": "actionModules", "visible": "never" },
+          { "label": "Deadline", "path": "deadline", "visible": "never" },
+          { "label": "Reference Module", "path": "referenceModule", "visible": "never" },
+          { "label": "Action Modules Init Datas", "path": "actionModulesInitDatas", "visible": "never" }
+        ]
       },
-      "post_with_sign": {
+      "post_with_sign(uint256 profile_id,uint256 signatureDeadline)": {
         "intent": "post_with_sign",
         "fields": [
           { "path": "profile_id", "label": "profile_id", "format": "raw" },
           { "path": "signatureDeadline", "label": "signatureDeadline", "format": "raw" }
         ]
       },
-      "Quote": {
+      "Quote(uint256 profileId,string contentURI,uint256 pointedProfileId,uint256 pointedPubId,uint256 nonce,uint256 deadline)": {
         "intent": "Quote",
         "fields": [
           { "path": "profileId", "label": "profileId", "format": "raw" },
@@ -597,7 +148,7 @@
           { "path": "deadline", "label": "deadline", "format": "raw" }
         ]
       },
-      "quote_with_sign": {
+      "quote_with_sign(uint256 profile_id,uint256 profile_id_pointed,uint256 pubid_pointed,uint256 signatureDeadline)": {
         "intent": "quote_with_sign",
         "fields": [
           { "path": "profile_id", "label": "profile_id", "format": "raw" },
@@ -606,46 +157,47 @@
           { "path": "signatureDeadline", "label": "signatureDeadline", "format": "raw" }
         ]
       },
-      "set_block_status": {
+      "set_block_status(uint256 byProfileId,uint256 signatureDeadline)": {
         "intent": "set_block_status",
         "fields": [
           { "path": "byProfileId", "label": "byProfileId", "format": "raw" },
           { "path": "signatureDeadline", "label": "signatureDeadline", "format": "raw" }
         ]
       },
-      "SetProfileMetadataURI": {
+      "SetProfileMetadataURI(uint256 profileId,string metadataURI,uint256 nonce,uint256 deadline)": {
         "intent": "SetProfileMetadataURI",
         "fields": [
           { "path": "profileId", "label": "profileId", "format": "raw" },
           { "path": "metadataURI", "label": "metadataURI", "format": "raw" },
-          { "path": "nonce", "label": "nonce", "format": "raw" }
-        ],
-        "excluded": ["deadline"]
+          { "path": "nonce", "label": "nonce", "format": "raw" },
+          { "label": "Deadline", "path": "deadline", "visible": "never" }
+        ]
       },
-      "set_block_status_with_sig": {
+      "set_block_status_with_sig(uint256 byProfileId,uint256 signatureDeadline)": {
         "intent": "set_block_status_with_sig",
         "fields": [
           { "path": "byProfileId", "label": "byProfileId", "format": "raw" },
           { "path": "signatureDeadline", "label": "signatureDeadline", "format": "raw" }
         ]
       },
-      "SetFollowModule": {
+      "SetFollowModule(uint256 profileId,address followModule,bytes followModuleInitData,uint256 nonce,uint256 deadline)": {
         "intent": "Set Follow Module",
         "fields": [
           { "path": "profileId", "label": "profileId", "format": "raw" },
           { "path": "followModule", "label": "followModule", "format": "raw" },
-          { "path": "nonce", "label": "nonce", "format": "raw" }
-        ],
-        "excluded": ["deadline", "followModuleInitData"]
+          { "path": "nonce", "label": "nonce", "format": "raw" },
+          { "label": "Deadline", "path": "deadline", "visible": "never" },
+          { "label": "Follow Module Init Data", "path": "followModuleInitData", "visible": "never" }
+        ]
       },
-      "set_profile_metadata_with_sign": {
+      "set_profile_metadata_with_sign(uint256 profileId,uint256 signatureDeadline)": {
         "intent": "set_profile_metadata_with_sign",
         "fields": [
           { "path": "profileId", "label": "profileId", "format": "raw" },
           { "path": "signatureDeadline", "label": "signatureDeadline", "format": "raw" }
         ]
       },
-      "Unfollow": {
+      "Unfollow(uint256 unfollowerProfileId,uint256[] idsOfProfilesToUnfollow,uint256 nonce,uint256 deadline)": {
         "intent": "Unfollow",
         "fields": [
           { "path": "unfollowerProfileId", "label": "Unfollower ProfileId", "format": "raw" },
@@ -654,7 +206,7 @@
           { "path": "deadline", "label": "deadline", "format": "raw" }
         ]
       },
-      "unfollow_with_sign": {
+      "unfollow_with_sign(uint256 unfollowerProfileId,uint256 signatureDeadline)": {
         "intent": "unfollow_with_sign",
         "fields": [
           { "path": "unfollowerProfileId", "label": "unfollowerProfileId", "format": "raw" },
