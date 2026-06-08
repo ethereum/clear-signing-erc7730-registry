@@ -161,7 +161,8 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
 | Field | Required | Description |
 |-------|----------|-------------|
 | `description` | Yes | Human-readable test identifier — used to match runner results back to this case. **Must be unique within the test file.** |
-| `rawTx` | Yes | The raw signed transaction (hex string, 0x-prefixed) |
+| `rawTx` | Yes | The raw **unsigned** transaction (hex string, 0x-prefixed). Runners don't verify signatures, so fixtures stay simpler and reproducible by leaving the v/r/s off |
+| `from` | No | Checksummed signer address. Only set when the descriptor references the signer via `@.from`; otherwise omit |
 | `txHash` | No | Transaction hash for reference (e.g., link to Etherscan) |
 | `expected` | Yes | Expected rendered output: `{ intent, interpolatedIntent?, owner, fields }`. Field values are strings, or nested `{ intent, owner, fields }` objects for calldata formatters |
 

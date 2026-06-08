@@ -74,7 +74,7 @@
   "definitions": {
     "calldataTest": {
       "type": "object",
-      "description": "Test case for a calldata (raw signed transaction) descriptor.",
+      "description": "Test case for a calldata (raw unsigned transaction) descriptor.",
       "required": ["description", "rawTx", "expected"],
       "properties": {
         "description": {
@@ -84,12 +84,17 @@
         },
         "rawTx": {
           "type": "string",
-          "description": "Raw signed transaction hex string (0x prefixed).",
+          "description": "Raw unsigned transaction hex string (0x prefixed).",
           "pattern": "^0x[0-9a-fA-F]+$"
+        },
+        "from": {
+          "type": "string",
+          "description": "Checksummed signer address. Optional. Only set when the descriptor references the signer via `@.from` (otherwise it has no effect on rendering and should be omitted).",
+          "pattern": "^0x[0-9a-fA-F]{40}$"
         },
         "txHash": {
           "type": "string",
-          "description": "Transaction hash for reference only (e.g. link to Etherscan).",
+          "description": "Transaction hash for reference only (e.g. link to Etherscan). Optional.",
           "pattern": "^0x[0-9a-fA-F]{64}$"
         },
         "expected": { "$ref": "#/definitions/renderedOutput" }
