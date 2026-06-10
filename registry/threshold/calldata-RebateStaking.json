@@ -1,0 +1,101 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Threshold Rebate Staking",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x0184739C32edc3471D3e4860c8E39a5f3Ff85A45"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Threshold Network",
+    "info": { "url": "https://threshold.network/" },
+    "contractName": "RebateStaking",
+    "enums": {
+      "rebateTreasuryFeeMode": {
+        "0": "Mint and redeem",
+        "1": "Deposits only",
+        "2": "Redemptions only"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "stake(uint96 amount)": {
+        "$id": "stake",
+        "intent": "Stake T",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "unit",
+            "params": { "base": "T", "decimals": 18, "prefix": false },
+            "visible": "always"
+          }
+        ]
+      },
+      "startUnstaking(uint96 amount)": {
+        "$id": "startUnstaking",
+        "intent": "Start unstaking T",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "unit",
+            "params": { "base": "T", "decimals": 18, "prefix": false },
+            "visible": "always"
+          }
+        ]
+      },
+      "finalizeUnstaking(address receiver)": {
+        "$id": "finalizeUnstaking",
+        "intent": "Finalize T unstaking",
+        "fields": [
+          {
+            "path": "receiver",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": {
+              "types": ["wallet", "eoa", "contract"],
+              "sources": ["local", "ens"]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setDelegatee(address _delegatee)": {
+        "$id": "setDelegatee",
+        "intent": "Set rebate delegatee",
+        "fields": [
+          {
+            "path": "_delegatee",
+            "label": "Delegatee",
+            "format": "addressName",
+            "params": {
+              "types": ["wallet", "eoa", "contract"],
+              "sources": ["local", "ens"]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setRebateTreasuryFeeMode(uint8 _rebateTreasuryFeeMode)": {
+        "$id": "setRebateTreasuryFeeMode",
+        "intent": "Set fee waiver mode",
+        "fields": [
+          {
+            "path": "_rebateTreasuryFeeMode",
+            "label": "Fee waiver mode",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.rebateTreasuryFeeMode" },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

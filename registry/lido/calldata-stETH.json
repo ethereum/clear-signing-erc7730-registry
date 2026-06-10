@@ -11,6 +11,7 @@
     "formats": {
       "approve(address _spender, uint256 _amount)": {
         "intent": "Approve stETH",
+        "interpolatedIntent": "Allow to spend {_amount}",
         "fields": [
           {
             "label": "Spender",
@@ -23,20 +24,26 @@
             "label": "Amount",
             "format": "tokenAmount",
             "path": "#._amount",
-            "params": { "token": "$.metadata.constants.stETHaddress" },
+            "params": {
+              "token": "$.metadata.constants.stETHaddress",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            },
             "visible": "always"
           }
         ]
       },
       "submit(address _referral)": {
         "intent": "Stake ETH",
+        "interpolatedIntent": "Stake {@.value} ETH",
         "fields": [
-          { "label": "Amount to stake", "format": "amount", "path": "@.value" },
+          { "label": "Amount", "format": "amount", "path": "@.value" },
           { "label": "Referral", "path": "#._referral", "visible": "never" }
         ]
       },
       "transfer(address _recipient, uint256 _amount)": {
         "intent": "Transfer stETH",
+        "interpolatedIntent": "Send {_amount} to {_recipient}",
         "fields": [
           {
             "label": "Recipient",

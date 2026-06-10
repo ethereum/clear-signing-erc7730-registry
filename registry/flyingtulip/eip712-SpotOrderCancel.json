@@ -1,0 +1,87 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "eip712": {
+      "domain": {
+        "name": "FT SessionManager",
+        "version": "1"
+      },
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0xF9f3ddF2E96Cabef94e2634c326DC6dde99360f8"
+        },
+        {
+          "chainId": 146,
+          "address": "0x109AE72778a0260571b9767477204F1ce41FBdff"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Flying Tulip",
+    "contractName": "Spot order cancellation",
+    "info": {
+      "url": "https://flyingtulip.com"
+    }
+  },
+  "display": {
+    "formats": {
+      "CancelOrder(string orderId)": {
+        "intent": "Cancel spot order",
+        "fields": [
+          {
+            "path": "orderId",
+            "label": "Order ID",
+            "format": "raw",
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Cancel order {orderId}"
+      },
+      "TpslGroupCancel(address user,string positionId,string tpslGroupId,uint256 deadline)": {
+        "intent": "Cancel TP/SL orders",
+        "fields": [
+          {
+            "path": "user",
+            "label": "User",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "positionId",
+            "label": "Position ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "tpslGroupId",
+            "label": "TP/SL group",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "deadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Cancel TP/SL {tpslGroupId}"
+      }
+    }
+  }
+}

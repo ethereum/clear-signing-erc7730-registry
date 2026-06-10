@@ -1,0 +1,199 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 146,
+          "address": "0x9bB958D459a97e3E37E11BeCf842E728167d9114"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Flying Tulip",
+    "contractName": "pFT Marketplace",
+    "info": {
+      "url": "https://flyingtulip.com"
+    }
+  },
+  "display": {
+    "formats": {
+      "addListing(uint256 tokenId, address token, uint256 price, uint40 expires)": {
+        "intent": "List FT PUT",
+        "fields": [
+          {
+            "path": "tokenId",
+            "label": "Position",
+            "format": "nftName",
+            "params": {
+              "collection": "0x1d8051c90076FaA5b683A3551Ee4369d00f99D67"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "price",
+            "label": "Price",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "token"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "expires",
+            "label": "Expires",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "List PUT {tokenId}"
+      },
+      "editListing(uint256 tokenId, address token, uint256 price, uint256 expires)": {
+        "intent": "Edit FT PUT listing",
+        "fields": [
+          {
+            "path": "tokenId",
+            "label": "Position",
+            "format": "nftName",
+            "params": {
+              "collection": "0x1d8051c90076FaA5b683A3551Ee4369d00f99D67"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "price",
+            "label": "Price",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "token"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "expires",
+            "label": "Expires",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Edit PUT {tokenId}"
+      },
+      "removeListing(uint256 tokenId)": {
+        "intent": "Remove FT PUT listing",
+        "fields": [
+          {
+            "path": "tokenId",
+            "label": "Position",
+            "format": "nftName",
+            "params": {
+              "collection": "0x1d8051c90076FaA5b683A3551Ee4369d00f99D67"
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Remove PUT {tokenId}"
+      },
+      "buy(uint256 tokenId, address expectedToken, uint256 expectedPrice, bytes32 expectedPutHash, (uint256 nonce, uint40 deadline, bytes signature) permit2Data)": {
+        "intent": "Buy FT PUT",
+        "fields": [
+          {
+            "path": "tokenId",
+            "label": "Position",
+            "format": "nftName",
+            "params": {
+              "collection": "0x1d8051c90076FaA5b683A3551Ee4369d00f99D67"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "expectedPrice",
+            "label": "Price",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "expectedToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "permit2Data.deadline",
+            "label": "Permit deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "optional"
+          },
+          {
+            "path": "expectedPutHash",
+            "label": "Expected PUT hash",
+            "format": "raw",
+            "visible": "never"
+          }
+        ],
+        "interpolatedIntent": "Buy PUT {tokenId}"
+      },
+      "acceptBuyOffer((address buyer, address denominationToken, uint96 minAmountRemaining, uint96 minFt, uint96 minStrike, address paymentToken, uint96 price, uint256 nonce, uint40 deadline) offer, uint256 tokenId, bytes signature, bytes permit2Signature, uint256 permit2Nonce, bytes32 expectedPutHash)": {
+        "intent": "Accept FT PUT offer",
+        "fields": [
+          {
+            "path": "tokenId",
+            "label": "Position",
+            "format": "nftName",
+            "params": {
+              "collection": "0x1d8051c90076FaA5b683A3551Ee4369d00f99D67"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "offer.price",
+            "label": "Offer price",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "offer.paymentToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "offer.buyer",
+            "label": "Buyer",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "offer.deadline",
+            "label": "Offer expires",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "expectedPutHash",
+            "label": "Expected PUT hash",
+            "format": "raw",
+            "visible": "never"
+          }
+        ],
+        "interpolatedIntent": "Accept offer {tokenId}"
+      }
+    }
+  }
+}
