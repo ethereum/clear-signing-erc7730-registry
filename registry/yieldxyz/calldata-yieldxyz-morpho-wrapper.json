@@ -5,69 +5,28 @@
       "deployments": [
         {
           "chainId": 1,
-          "address": "0xecD0b98A0Be75341E51F3509fBc02C4BC28f0EC2"
+          "address": "0x3D12e5770773f609b614E3a177D343dC41aeeE75"
         },
         {
           "chainId": 8453,
-          "address": "0x316Fe0A320fbC7815cC73AC3F718e955419f85aC"
+          "address": "0x3D12e5770773f609b614E3a177D343dC41aeeE75"
         }
       ]
     }
   },
   "metadata": {
-    "owner": "Morpho DAO",
+    "owner": "Yield.xyz",
     "info": {
-      "url": "https://docs.morpho.org"
+      "url": "https://yield.xyz/"
     }
   },
   "display": {
     "formats": {
-      "borrow((address loanToken,address collateralToken,address oracle,address irm,uint256 lltv) marketParams,uint256 assets,uint256 shares,address onBehalf,address receiver)": {
+      "borrow((address loanToken,address collateralToken,address oracle,address irm,uint256 lltv) marketParams,uint256 assets)": {
         "$id": "borrow",
         "intent": "Borrow",
         "fields": [
           {
-            "$ref": "$.display.definitions.lltvWad",
-            "path": "marketParams.lltv",
-            "visible": "always"
-          },
-          {
-            "path": "assets",
-            "label": "Amount to borrow",
-            "format": "tokenAmount",
-            "params": {
-              "tokenPath": "marketParams.loanToken"
-            },
-            "visible": "always"
-          },
-          {
-            "path": "shares",
-            "label": "Max borrow shares",
-            "format": "raw",
-            "visible": "always"
-          },
-          {
-            "$ref": "$.display.definitions.onBehalfOf",
-            "path": "onBehalf",
-            "visible": "always"
-          },
-          {
-            "$ref": "$.display.definitions.receiver",
-            "path": "receiver",
-            "visible": "always"
-          }
-        ]
-      },
-      "borrow((address loanToken,address collateralToken,address oracle,address irm,uint256 lltv) marketParams,uint256 assets)": {
-        "$id": "borrowSimple",
-        "intent": "Borrow",
-        "fields": [
-          {
-            "$ref": "$.display.definitions.lltvWad",
-            "path": "marketParams.lltv",
-            "visible": "always"
-          },
-          {
             "path": "assets",
             "label": "Amount to borrow",
             "format": "tokenAmount",
@@ -78,144 +37,62 @@
           }
         ]
       },
-      "transfer(address to,uint256 amount)": {
-        "$id": "transfer",
-        "intent": "Transfer",
+      "borrow((address loanToken,address collateralToken,address oracle,address irm,uint256 lltv) marketParams,uint256 assets,(address authorizer,address authorized,bool isAuthorized,uint256 nonce,uint256 deadline) authOpen,(uint8 v,bytes32 r,bytes32 s) sigOpen,(address authorizer,address authorized,bool isAuthorized,uint256 nonce,uint256 deadline) authClose,(uint8 v,bytes32 r,bytes32 s) sigClose)": {
+        "$id": "borrowWithAuth",
+        "intent": "Borrow with authorization",
         "fields": [
           {
-            "$ref": "$.display.definitions.receiver",
-            "path": "to",
+            "path": "assets",
+            "label": "Amount to borrow",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "marketParams.loanToken"
+            },
             "visible": "always"
           },
           {
-            "path": "amount",
-            "label": "Amount to send",
-            "format": "raw",
+            "path": "authOpen.authorized",
+            "label": "Authorized address",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract",
+                "eoa"
+              ]
+            },
             "visible": "always"
           }
         ]
       },
-      "grantRole(bytes32 role,address account)": {
-        "$id": "grantRole",
-        "intent": "Grant Role",
+      "supply((address loanToken,address collateralToken,address oracle,address irm,uint256 lltv) marketParams,uint256 assets)": {
+        "$id": "supply",
+        "intent": "Supply to market",
         "fields": [
           {
-            "$ref": "$.display.definitions.role",
-            "path": "role",
-            "visible": "always"
-          },
-          {
-            "$ref": "$.display.definitions.account",
-            "path": "account",
+            "path": "assets",
+            "label": "Supply amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "marketParams.loanToken"
+            },
             "visible": "always"
           }
         ]
       },
-      "revokeRole(bytes32 role,address account)": {
-        "$id": "revokeRole",
-        "intent": "Revoke Role",
+      "supplyCollateral((address loanToken,address collateralToken,address oracle,address irm,uint256 lltv) marketParams,uint256 assets)": {
+        "$id": "supplyCollateral",
+        "intent": "Supply collateral",
         "fields": [
           {
-            "$ref": "$.display.definitions.role",
-            "path": "role",
-            "visible": "always"
-          },
-          {
-            "$ref": "$.display.definitions.account",
-            "path": "account",
+            "path": "assets",
+            "label": "Collateral amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "marketParams.collateralToken"
+            },
             "visible": "always"
           }
         ]
-      },
-      "renounceRole(bytes32 role,address callerConfirmation)": {
-        "$id": "renounceRole",
-        "intent": "Renounce Role",
-        "fields": [
-          {
-            "$ref": "$.display.definitions.role",
-            "path": "role",
-            "visible": "always"
-          },
-          {
-            "$ref": "$.display.definitions.account",
-            "path": "callerConfirmation",
-            "visible": "always"
-          }
-        ]
-      }
-    },
-    "definitions": {
-      "loanToken": {
-        "label": "Loan token",
-        "format": "addressName",
-        "params": {
-          "types": [
-            "contract",
-            "eoa"
-          ]
-        }
-      },
-      "collateral": {
-        "label": "Collateral",
-        "format": "addressName",
-        "params": {
-          "types": [
-            "contract",
-            "eoa"
-          ]
-        }
-      },
-      "interestModel": {
-        "label": "Interest model",
-        "format": "addressName",
-        "params": {
-          "types": [
-            "contract",
-            "eoa"
-          ]
-        }
-      },
-      "lltvWad": {
-        "label": "LLTV",
-        "format": "unit",
-        "params": {
-          "base": "%",
-          "decimals": 16
-        }
-      },
-      "onBehalfOf": {
-        "label": "On behalf of",
-        "format": "addressName",
-        "params": {
-          "types": [
-            "contract",
-            "eoa"
-          ]
-        }
-      },
-      "receiver": {
-        "label": "Receiver address",
-        "format": "addressName",
-        "params": {
-          "types": [
-            "contract",
-            "eoa"
-          ]
-        }
-      },
-      "role": {
-        "label": "Role",
-        "format": "raw"
-      },
-      "account": {
-        "label": "Account",
-        "format": "addressName",
-        "params": {
-          "types": [
-            "contract",
-            "eoa"
-          ]
-        }
       }
     }
   }
