@@ -1,0 +1,99 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "SomniaStakingV5",
+    "contract": {
+      "deployments": [
+        { "chainId": 5031, "address": "0xBe367d410D96E1cAeF68C0632251072CDf1b8250" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Somnia",
+    "contractName": "SomniaStakingV5",
+    "info": { "url": "https://somnia.network" },
+    "constants": {
+      "nativeTokenTicker": "SOMI",
+      "nativeDecimals": 18
+    }
+  },
+  "display": {
+    "formats": {
+      "delegateStake(address validator, uint256 amount)": {
+        "intent": "Delegate",
+        "fields": [
+          {
+            "path": "#.validator",
+            "label": "Validator",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Delegate amount",
+            "format": "amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "undelegateStake(address validator, uint256 amount)": {
+        "intent": "Undelegate",
+        "fields": [
+          {
+            "path": "#.validator",
+            "label": "Validator",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.amount",
+            "label": "Undelegate amount",
+            "format": "amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "claimDelegatorRewards(address validator)": {
+        "intent": "Claim rewards",
+        "fields": [
+          {
+            "path": "#.validator",
+            "label": "Validator",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "partialUnstake(uint256 amount)": {
+        "intent": "Partial unstake",
+        "fields": [
+          {
+            "path": "#.amount",
+            "label": "Amount",
+            "format": "amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "requestTotalUnstake()": {
+        "intent": "Request total unstake",
+        "fields": []
+      },
+      "totalUnstake(address validator)": {
+        "intent": "Finalize total unstake",
+        "fields": [
+          {
+            "path": "#.validator",
+            "label": "Validator",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
