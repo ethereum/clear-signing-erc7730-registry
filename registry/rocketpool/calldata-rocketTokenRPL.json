@@ -1,0 +1,152 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "rocketTokenRPL",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xD33526068D116cE69F19A9ee46F0bd304F21A51f" },
+        { "chainId": 560048, "address": "0x1Cc9cF5586522c6F483E84A19c3C2B0B6d027bF0" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Rocket Pool",
+    "info": { "url": "https://rocketpool.net", "legalName": "Rocket Pool" },
+    "constants": { "legacyRPLaddress": "0xB4EFd85c19999D84251304bDA99E90B92300Bd93" },
+    "contractName": "RPL"
+  },
+  "display": {
+    "formats": {
+      "approve(address spender, uint256 amount)": {
+        "intent": "Approve RPL",
+        "interpolatedIntent": "Approve {amount}",
+        "fields": [
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#.spender",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.amount",
+            "params": {
+              "tokenPath": "@.to",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "increaseAllowance(address spender, uint256 addedValue)": {
+        "intent": "Increase RPL allowance",
+        "fields": [
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#.spender",
+            "visible": "always"
+          },
+          {
+            "label": "Allowance increase",
+            "format": "tokenAmount",
+            "path": "#.addedValue",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          }
+        ]
+      },
+      "decreaseAllowance(address spender, uint256 subtractedValue)": {
+        "intent": "Decrease RPL allowance",
+        "fields": [
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#.spender",
+            "visible": "always"
+          },
+          {
+            "label": "Allowance decrease",
+            "format": "tokenAmount",
+            "path": "#.subtractedValue",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          }
+        ]
+      },
+      "transfer(address recipient, uint256 amount)": {
+        "intent": "Transfer RPL",
+        "interpolatedIntent": "Send {amount} to {recipient}",
+        "fields": [
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.recipient",
+            "visible": "always"
+          },
+          { "label": "Amount", "format": "tokenAmount", "path": "#.amount", "params": { "tokenPath": "@.to" }, "visible": "always" }
+        ]
+      },
+      "transferFrom(address sender, address recipient, uint256 amount)": {
+        "intent": "Transfer RPL",
+        "interpolatedIntent": "Send {amount} to {recipient}",
+        "fields": [
+          {
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.sender",
+            "visible": "always"
+          },
+          {
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.recipient",
+            "visible": "always"
+          },
+          { "label": "Amount", "format": "tokenAmount", "path": "#.amount", "params": { "tokenPath": "@.to" }, "visible": "always" }
+        ]
+      },
+      "burn(uint256 amount)": {
+        "intent": "Burn RPL",
+        "interpolatedIntent": "Burn {amount}",
+        "fields": [{ "label": "Amount", "format": "tokenAmount", "path": "#.amount", "params": { "tokenPath": "@.to" }, "visible": "always" }]
+      },
+      "burnFrom(address account, uint256 amount)": {
+        "intent": "Burn RPL",
+        "interpolatedIntent": "Burn {amount} from {account}",
+        "fields": [
+          {
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.account",
+            "visible": "always"
+          },
+          { "label": "Amount", "format": "tokenAmount", "path": "#.amount", "params": { "tokenPath": "@.to" }, "visible": "always" }
+        ]
+      },
+      "swapTokens(uint256 _amount)": {
+        "intent": "Swap legacy RPL for RPL",
+        "interpolatedIntent": "Swap {_amount}",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#._amount",
+            "params": { "token": "$.metadata.constants.legacyRPLaddress" },
+            "visible": "always"
+          }
+        ]
+      },
+      "inflationMintTokens()": { "intent": "Mint RPL inflation", "fields": [] }
+    }
+  }
+}

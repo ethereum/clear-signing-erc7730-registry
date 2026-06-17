@@ -1,0 +1,81 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "rocketNodeDeposit",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x6B13698c306a297Fee1383cdC2c65d63781D2D47" },
+        { "chainId": 560048, "address": "0x3FB8d496EA722455fB56D3B30CC97c3930F1CbF0" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Rocket Pool",
+    "info": { "url": "https://rocketpool.net", "legalName": "Rocket Pool" },
+    "contractName": "rocketNodeDeposit"
+  },
+  "display": {
+    "formats": {
+      "deposit(uint256 _bondAmount, bool _useExpressTicket, bytes _validatorPubkey, bytes _validatorSignature, bytes32 _depositDataRoot)": {
+        "intent": "Create validator",
+        "fields": [
+          { "label": "Bond amount", "format": "amount", "path": "#._bondAmount", "visible": "always" },
+          { "label": "ETH deposited", "format": "amount", "path": "@.value", "visible": "always" },
+          { "label": "Validator pubkey", "format": "raw", "path": "#._validatorPubkey", "visible": "always" },
+          { "label": "Use express ticket", "format": "raw", "path": "#._useExpressTicket", "visible": "always" },
+          { "label": "Validator signature", "path": "#._validatorSignature", "visible": "never" },
+          { "label": "Deposit data root", "path": "#._depositDataRoot", "visible": "never" }
+        ]
+      },
+      "depositWithCredit(uint256 _bondAmount, bool _useExpressTicket, bytes _validatorPubkey, bytes _validatorSignature, bytes32 _depositDataRoot)": {
+        "intent": "Create validator using credit",
+        "fields": [
+          { "label": "Bond amount", "format": "amount", "path": "#._bondAmount", "visible": "always" },
+          { "label": "ETH deposited", "format": "amount", "path": "@.value", "visible": "always" },
+          { "label": "Validator pubkey", "format": "raw", "path": "#._validatorPubkey", "visible": "always" },
+          { "label": "Use express ticket", "format": "raw", "path": "#._useExpressTicket", "visible": "always" },
+          { "label": "Validator signature", "path": "#._validatorSignature", "visible": "never" },
+          { "label": "Deposit data root", "path": "#._depositDataRoot", "visible": "never" }
+        ]
+      },
+      "depositMulti((uint256 bondAmount, bool useExpressTicket, bytes validatorPubkey, bytes validatorSignature, bytes32 depositDataRoot)[] _deposits)": {
+        "intent": "Create validators",
+        "fields": [
+          { "label": "ETH deposited", "format": "amount", "path": "@.value", "visible": "always" },
+          { "label": "Bond amount", "format": "amount", "path": "#._deposits.[].bondAmount", "visible": "always" },
+          { "label": "Validator pubkey", "format": "raw", "path": "#._deposits.[].validatorPubkey", "visible": "always" },
+          { "label": "Use express ticket", "path": "#._deposits.[].useExpressTicket", "visible": "never" },
+          { "label": "Validator signature", "path": "#._deposits.[].validatorSignature", "visible": "never" },
+          { "label": "Deposit data root", "path": "#._deposits.[].depositDataRoot", "visible": "never" }
+        ]
+      },
+      "depositEthFor(address _nodeAddress)": {
+        "intent": "Deposit ETH for node",
+        "interpolatedIntent": "Deposit {@.value} ETH",
+        "fields": [
+          { "label": "ETH deposited", "format": "amount", "path": "@.value", "visible": "always" },
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          }
+        ]
+      },
+      "withdrawEth(address _nodeAddress, uint256 _amount)": {
+        "intent": "Withdraw ETH deposit",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          { "label": "Amount", "format": "amount", "path": "#._amount", "visible": "always" }
+        ]
+      }
+    }
+  }
+}
