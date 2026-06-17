@@ -1,0 +1,129 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "rocketMegapoolManager",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xf2CCd522Ba5fFEda28fe0389963845D61F342034" },
+        { "chainId": 560048, "address": "0x8Fb4399DE1442f28F8DcDbDc1435969aEAF4170E" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Rocket Pool",
+    "info": { "url": "https://rocketpool.net", "legalName": "Rocket Pool" },
+    "contractName": "rocketMegapoolManager"
+  },
+  "display": {
+    "formats": {
+      "addValidator(address _megapoolAddress, uint32 _validatorId, bytes _pubkey)": {
+        "intent": "Add megapool validator",
+        "fields": [
+          {
+            "label": "Megapool",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#._megapoolAddress",
+            "visible": "always"
+          },
+          { "label": "Validator ID", "format": "raw", "path": "#._validatorId", "visible": "always" },
+          { "label": "Validator pubkey", "format": "raw", "path": "#._pubkey", "visible": "always" }
+        ]
+      },
+      "challengeExit((address megapool, uint32[] validatorIds)[] _challenges)": {
+        "intent": "Challenge megapool exit",
+        "fields": [
+          {
+            "label": "Megapool",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#._challenges.[].megapool",
+            "visible": "always"
+          },
+          { "label": "Validator IDs", "format": "raw", "path": "#._challenges.[].validatorIds.[]", "visible": "always" }
+        ]
+      },
+      "dissolve(address _megapool, uint32 _validatorId, uint64 _slotTimestamp, (uint40 validatorIndex, (bytes pubkey, bytes32 withdrawalCredentials, uint64 effectiveBalance, bool slashed, uint64 activationEligibilityEpoch, uint64 activationEpoch, uint64 exitEpoch, uint64 withdrawableEpoch) validator, bytes32[] witnesses) _validatorProof, (uint64 slot, bytes32[] witnesses) _slotProof)": {
+        "intent": "Dissolve megapool validator",
+        "fields": [
+          {
+            "label": "Megapool",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#._megapool",
+            "visible": "always"
+          },
+          { "label": "Validator ID", "format": "raw", "path": "#._validatorId", "visible": "always" },
+          { "label": "Slot timestamp", "format": "raw", "path": "#._slotTimestamp", "visible": "always" },
+          { "label": "Validator proof", "path": "#._validatorProof", "visible": "never" },
+          { "label": "Slot proof", "path": "#._slotProof", "visible": "never" }
+        ]
+      },
+      "notifyExit(address _megapool, uint32 _validatorId, uint64 _slotTimestamp, (uint40 validatorIndex, (bytes pubkey, bytes32 withdrawalCredentials, uint64 effectiveBalance, bool slashed, uint64 activationEligibilityEpoch, uint64 activationEpoch, uint64 exitEpoch, uint64 withdrawableEpoch) validator, bytes32[] witnesses) _validatorProof, (uint64 slot, bytes32[] witnesses) _slotProof)": {
+        "intent": "Notify megapool validator exit",
+        "fields": [
+          {
+            "label": "Megapool",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#._megapool",
+            "visible": "always"
+          },
+          { "label": "Validator ID", "format": "raw", "path": "#._validatorId", "visible": "always" },
+          { "label": "Slot timestamp", "format": "raw", "path": "#._slotTimestamp", "visible": "always" },
+          { "label": "Validator proof", "path": "#._validatorProof", "visible": "never" },
+          { "label": "Slot proof", "path": "#._slotProof", "visible": "never" }
+        ]
+      },
+      "notifyNotExit(address _megapool, uint32 _validatorId, uint64 _slotTimestamp, (uint40 validatorIndex, (bytes pubkey, bytes32 withdrawalCredentials, uint64 effectiveBalance, bool slashed, uint64 activationEligibilityEpoch, uint64 activationEpoch, uint64 exitEpoch, uint64 withdrawableEpoch) validator, bytes32[] witnesses) _validatorProof, (uint64 slot, bytes32[] witnesses) _slotProof)": {
+        "intent": "Notify megapool not exited",
+        "fields": [
+          {
+            "label": "Megapool",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#._megapool",
+            "visible": "always"
+          },
+          { "label": "Validator ID", "format": "raw", "path": "#._validatorId", "visible": "always" },
+          { "label": "Slot timestamp", "format": "raw", "path": "#._slotTimestamp", "visible": "always" },
+          { "label": "Validator proof", "path": "#._validatorProof", "visible": "never" },
+          { "label": "Slot proof", "path": "#._slotProof", "visible": "never" }
+        ]
+      },
+      "stake(address _megapool, uint32 _validatorId, uint64 _slotTimestamp, (uint40 validatorIndex, (bytes pubkey, bytes32 withdrawalCredentials, uint64 effectiveBalance, bool slashed, uint64 activationEligibilityEpoch, uint64 activationEpoch, uint64 exitEpoch, uint64 withdrawableEpoch) validator, bytes32[] witnesses) _validatorProof, (uint64 slot, bytes32[] witnesses) _slotProof)": {
+        "intent": "Stake megapool validator",
+        "fields": [
+          {
+            "label": "Megapool",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#._megapool",
+            "visible": "always"
+          },
+          { "label": "Validator ID", "format": "raw", "path": "#._validatorId", "visible": "always" },
+          { "label": "Slot timestamp", "format": "raw", "path": "#._slotTimestamp", "visible": "always" },
+          { "label": "Validator proof", "path": "#._validatorProof", "visible": "never" },
+          { "label": "Slot proof", "path": "#._slotProof", "visible": "never" }
+        ]
+      },
+      "notifyFinalBalance(address _megapool, uint32 _validatorId, uint64 _slotTimestamp, (uint64 withdrawalSlot, uint16 withdrawalNum, (uint64 index, uint64 validatorIndex, bytes20 withdrawalCredentials, uint64 amountInGwei) withdrawal, bytes32[] witnesses) _withdrawalProof, (uint40 validatorIndex, (bytes pubkey, bytes32 withdrawalCredentials, uint64 effectiveBalance, bool slashed, uint64 activationEligibilityEpoch, uint64 activationEpoch, uint64 exitEpoch, uint64 withdrawableEpoch) validator, bytes32[] witnesses) _validatorProof, (uint64 slot, bytes32[] witnesses) _slotProof)": {
+        "intent": "Notify megapool final balance",
+        "fields": [
+          {
+            "label": "Megapool",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#._megapool",
+            "visible": "always"
+          },
+          { "label": "Validator ID", "format": "raw", "path": "#._validatorId", "visible": "always" },
+          { "label": "Slot timestamp", "format": "raw", "path": "#._slotTimestamp", "visible": "always" },
+          { "label": "Withdrawal proof", "path": "#._withdrawalProof", "visible": "never" },
+          { "label": "Validator proof", "path": "#._validatorProof", "visible": "never" },
+          { "label": "Slot proof", "path": "#._slotProof", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
