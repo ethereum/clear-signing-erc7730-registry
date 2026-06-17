@@ -1,0 +1,40 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "rocketDepositPool",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xCE15294273CFb9D9b628F4D61636623decDF4fdC" },
+        { "chainId": 560048, "address": "0x425E6f83e27f1676AD78BC39dA79C2C7b33d3Fd8" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Rocket Pool",
+    "info": { "url": "https://rocketpool.net", "legalName": "Rocket Pool" },
+    "contractName": "rocketDepositPool"
+  },
+  "display": {
+    "formats": {
+      "deposit()": {
+        "intent": "Stake ETH for rETH",
+        "interpolatedIntent": "Stake {@.value} ETH",
+        "fields": [{ "label": "Amount staked", "format": "amount", "path": "@.value", "visible": "always" }]
+      },
+      "exitQueue(address _nodeAddress, uint32 _validatorId, bool _expressQueue)": {
+        "intent": "Exit deposit queue",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          { "label": "Validator ID", "format": "raw", "path": "#._validatorId", "visible": "always" },
+          { "label": "Express queue", "format": "raw", "path": "#._expressQueue", "visible": "always" }
+        ]
+      }
+    }
+  }
+}
