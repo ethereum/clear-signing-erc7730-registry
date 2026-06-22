@@ -41,4 +41,10 @@ runs:
       env:
         TEST_FILE: ${{ inputs.test-file }}
         OUTPUT: ${{ inputs.output }}
-      run: cs-test run "$TEST_FILE" --output "$OUTPUT"
+      run: |
+        # Registry root = two levels up from the test file's `testsv2` dir
+        # (.../registry/<entity>/testsv2/<name>.tests.json). This lets the runner
+        # resolve nested-call descriptors (e.g. Safe inner call, kiln inner
+        # deposit) from anywhere in the tree, not just beside the test file.
+        REGISTRY_ROOT="$(cd "$(dirname "$TEST_FILE")/../.." && pwd)"
+        cs-test run "$TEST_FILE" --registry "$REGISTRY_ROOT" --output "$OUTPUT"
