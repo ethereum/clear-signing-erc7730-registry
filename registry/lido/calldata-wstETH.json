@@ -14,6 +14,7 @@
     "formats": {
       "approve(address spender, uint256 amount)": {
         "intent": "Authorize spending",
+        "interpolatedIntent": "Allow to spend {amount}",
         "fields": [
           {
             "label": "Spender",
@@ -26,13 +27,95 @@
             "label": "Amount",
             "format": "tokenAmount",
             "path": "#.amount",
+            "params": {
+              "token": "$.metadata.constants.wstETHaddress",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "decreaseAllowance(address spender, uint256 subtractedValue)": {
+        "intent": "Decrease allowance",
+        "fields": [
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#.spender",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.subtractedValue",
             "params": { "token": "$.metadata.constants.wstETHaddress" },
             "visible": "always"
           }
         ]
       },
+      "increaseAllowance(address spender, uint256 addedValue)": {
+        "intent": "Increase allowance",
+        "fields": [
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#.spender",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.addedValue",
+            "params": {
+              "token": "$.metadata.constants.wstETHaddress",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s)": {
+        "intent": "Permit spending",
+        "interpolatedIntent": "Permit {value} spending",
+        "fields": [
+          {
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.owner",
+            "visible": "always"
+          },
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#.spender",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.value",
+            "params": {
+              "token": "$.metadata.constants.wstETHaddress",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          },
+          { "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" }, "path": "#.deadline", "visible": "always" },
+          { "label": "V", "path": "#.v", "visible": "never" },
+          { "label": "R", "path": "#.r", "visible": "never" },
+          { "label": "S", "path": "#.s", "visible": "never" }
+        ]
+      },
       "wrap(uint256 _stETHAmount)": {
         "intent": "Wrap stETH",
+        "interpolatedIntent": "Wrap {_stETHAmount}",
         "fields": [
           {
             "label": "stETH amount",
@@ -45,6 +128,7 @@
       },
       "unwrap(uint256 _wstETHAmount)": {
         "intent": "Unwrap wstETH to stETH",
+        "interpolatedIntent": "Unwrap {_wstETHAmount}",
         "fields": [
           {
             "label": "wstETH amount",
@@ -57,7 +141,35 @@
       },
       "transfer(address recipient, uint256 amount)": {
         "intent": "Transfer wstETH",
+        "interpolatedIntent": "Send {amount} to {recipient}",
         "fields": [
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.recipient",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.amount",
+            "params": { "token": "$.metadata.constants.wstETHaddress" },
+            "visible": "always"
+          }
+        ]
+      },
+      "transferFrom(address sender, address recipient, uint256 amount)": {
+        "intent": "Transfer wstETH",
+        "interpolatedIntent": "Send {amount} to {recipient}",
+        "fields": [
+          {
+            "label": "Sender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.sender",
+            "visible": "always"
+          },
           {
             "label": "Recipient",
             "format": "addressName",
