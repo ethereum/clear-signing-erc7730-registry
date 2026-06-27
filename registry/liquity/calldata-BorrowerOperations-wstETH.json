@@ -1,76 +1,160 @@
 {
   "$schema": "../../specs/erc7730-v2.schema.json",
-  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0xa741a32f9dcfe6adba088fd0f97e90742d7d5da3" }] } },
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0xa741a32f9dcfe6adba088fd0f97e90742d7d5da3"
+        }
+      ]
+    }
+  },
   "metadata": {
     "owner": "Liquity",
-    "info": { "legalName": "Liquity AG", "url": "https://www.liquity.org" },
+    "info": {
+      "url": "https://www.liquity.org"
+    },
     "constants": {
       "boldToken": "0x6440f144b7e50d6a8439336510312d2f54beb01d",
       "collateralToken": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0"
     },
-    "enums": { "collDirection": { "0": "Remove", "1": "Add" }, "debtDirection": { "0": "Repay", "1": "Borrow" } }
+    "enums": {
+      "collDirection": {
+        "0": "Remove",
+        "1": "Add"
+      },
+      "debtDirection": {
+        "0": "Repay",
+        "1": "Borrow"
+      }
+    }
   },
   "display": {
     "formats": {
       "openTrove(address _owner, uint256 _ownerIndex, uint256 _collAmount, uint256 _boldAmount, uint256 _upperHint, uint256 _lowerHint, uint256 _annualInterestRate, uint256 _maxUpfrontFee, address _addManager, address _removeManager, address _receiver)": {
         "intent": "Open Trove",
         "fields": [
-          { "path": "#._owner", "label": "Owner", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] } },
+          {
+            "path": "#._owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
           {
             "path": "#._collAmount",
             "label": "Collateral",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.collateralToken" }
+            "params": {
+              "token": "$.metadata.constants.collateralToken"
+            }
           },
           {
             "path": "#._boldAmount",
             "label": "Borrow BOLD",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.boldToken" }
+            "params": {
+              "token": "$.metadata.constants.boldToken"
+            }
           },
-          { "path": "#._annualInterestRate", "label": "Interest rate", "format": "unit", "params": { "base": "%", "decimals": 16 } },
+          {
+            "path": "#._annualInterestRate",
+            "label": "Interest rate",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
           {
             "path": "#._maxUpfrontFee",
             "label": "Max upfront fee",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.boldToken" }
+            "params": {
+              "token": "$.metadata.constants.boldToken"
+            }
           },
           {
             "path": "#._addManager",
             "label": "Add manager",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet", "contract"] },
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
             "visible": "optional"
           },
           {
             "path": "#._removeManager",
             "label": "Remove manager",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet", "contract"] },
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
             "visible": "optional"
           },
           {
             "path": "#._receiver",
             "label": "Receiver",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet", "contract"] },
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
             "visible": "optional"
           },
-          { "path": "#._ownerIndex", "label": "", "format": "raw", "visible": "never" },
-          { "path": "#._upperHint", "label": "", "format": "raw", "visible": "never" },
-          { "path": "#._lowerHint", "label": "", "format": "raw", "visible": "never" }
+          {
+            "path": "#._ownerIndex",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#._upperHint",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#._lowerHint",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          }
         ]
       },
       "addColl(uint256 _troveId, uint256 _collAmount)": {
         "intent": "Add collateral",
         "interpolatedIntent": "Add {_collAmount}",
         "fields": [
-          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
+          {
+            "path": "#._troveId",
+            "label": "Trove ID",
+            "format": "raw"
+          },
           {
             "path": "#._collAmount",
             "label": "Collateral",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.collateralToken" }
+            "params": {
+              "token": "$.metadata.constants.collateralToken"
+            }
           }
         ]
       },
@@ -78,12 +162,18 @@
         "intent": "Withdraw collateral",
         "interpolatedIntent": "Withdraw {_collWithdrawal}",
         "fields": [
-          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
+          {
+            "path": "#._troveId",
+            "label": "Trove ID",
+            "format": "raw"
+          },
           {
             "path": "#._collWithdrawal",
             "label": "Collateral",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.collateralToken" }
+            "params": {
+              "token": "$.metadata.constants.collateralToken"
+            }
           }
         ]
       },
@@ -91,18 +181,26 @@
         "intent": "Borrow BOLD",
         "interpolatedIntent": "Borrow {_boldAmount}",
         "fields": [
-          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
+          {
+            "path": "#._troveId",
+            "label": "Trove ID",
+            "format": "raw"
+          },
           {
             "path": "#._boldAmount",
             "label": "Borrow BOLD",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.boldToken" }
+            "params": {
+              "token": "$.metadata.constants.boldToken"
+            }
           },
           {
             "path": "#._maxUpfrontFee",
             "label": "Max upfront fee",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.boldToken" }
+            "params": {
+              "token": "$.metadata.constants.boldToken"
+            }
           }
         ]
       },
@@ -110,202 +208,408 @@
         "intent": "Repay BOLD",
         "interpolatedIntent": "Repay {_boldAmount}",
         "fields": [
-          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
+          {
+            "path": "#._troveId",
+            "label": "Trove ID",
+            "format": "raw"
+          },
           {
             "path": "#._boldAmount",
             "label": "Repay BOLD",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.boldToken" }
+            "params": {
+              "token": "$.metadata.constants.boldToken"
+            }
           }
         ]
       },
-      "closeTrove(uint256 _troveId)": { "intent": "Close Trove", "fields": [{ "path": "#._troveId", "label": "Trove ID", "format": "raw" }] },
+      "closeTrove(uint256 _troveId)": {
+        "intent": "Close Trove",
+        "fields": [
+          {
+            "path": "#._troveId",
+            "label": "Trove ID",
+            "format": "raw"
+          }
+        ]
+      },
       "adjustTrove(uint256 _troveId, uint256 _collChange, bool _isCollIncrease, uint256 _boldChange, bool _isDebtIncrease, uint256 _maxUpfrontFee)": {
         "intent": "Adjust Trove",
         "fields": [
-          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
+          {
+            "path": "#._troveId",
+            "label": "Trove ID",
+            "format": "raw"
+          },
           {
             "path": "#._isCollIncrease",
             "label": "Collateral change",
             "format": "enum",
-            "params": { "$ref": "$.metadata.enums.collDirection" }
+            "params": {
+              "$ref": "$.metadata.enums.collDirection"
+            }
           },
           {
             "path": "#._collChange",
             "label": "Collateral amount",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.collateralToken" }
+            "params": {
+              "token": "$.metadata.constants.collateralToken"
+            }
           },
           {
             "path": "#._isDebtIncrease",
             "label": "Debt change",
             "format": "enum",
-            "params": { "$ref": "$.metadata.enums.debtDirection" }
+            "params": {
+              "$ref": "$.metadata.enums.debtDirection"
+            }
           },
           {
             "path": "#._boldChange",
             "label": "BOLD amount",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.boldToken" }
+            "params": {
+              "token": "$.metadata.constants.boldToken"
+            }
           },
           {
             "path": "#._maxUpfrontFee",
             "label": "Max upfront fee",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.boldToken" }
+            "params": {
+              "token": "$.metadata.constants.boldToken"
+            }
           }
         ]
       },
       "adjustZombieTrove(uint256 _troveId, uint256 _collChange, bool _isCollIncrease, uint256 _boldChange, bool _isDebtIncrease, uint256 _upperHint, uint256 _lowerHint, uint256 _maxUpfrontFee)": {
         "intent": "Adjust Trove",
         "fields": [
-          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
+          {
+            "path": "#._troveId",
+            "label": "Trove ID",
+            "format": "raw"
+          },
           {
             "path": "#._isCollIncrease",
             "label": "Collateral change",
             "format": "enum",
-            "params": { "$ref": "$.metadata.enums.collDirection" }
+            "params": {
+              "$ref": "$.metadata.enums.collDirection"
+            }
           },
           {
             "path": "#._collChange",
             "label": "Collateral amount",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.collateralToken" }
+            "params": {
+              "token": "$.metadata.constants.collateralToken"
+            }
           },
           {
             "path": "#._isDebtIncrease",
             "label": "Debt change",
             "format": "enum",
-            "params": { "$ref": "$.metadata.enums.debtDirection" }
+            "params": {
+              "$ref": "$.metadata.enums.debtDirection"
+            }
           },
           {
             "path": "#._boldChange",
             "label": "BOLD amount",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.boldToken" }
+            "params": {
+              "token": "$.metadata.constants.boldToken"
+            }
           },
           {
             "path": "#._maxUpfrontFee",
             "label": "Max upfront fee",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.boldToken" }
+            "params": {
+              "token": "$.metadata.constants.boldToken"
+            }
           },
-          { "path": "#._upperHint", "label": "", "format": "raw", "visible": "never" },
-          { "path": "#._lowerHint", "label": "", "format": "raw", "visible": "never" }
+          {
+            "path": "#._upperHint",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#._lowerHint",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          }
         ]
       },
       "adjustTroveInterestRate(uint256 _troveId, uint256 _newAnnualInterestRate, uint256 _upperHint, uint256 _lowerHint, uint256 _maxUpfrontFee)": {
         "intent": "Update interest rate",
         "fields": [
-          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
+          {
+            "path": "#._troveId",
+            "label": "Trove ID",
+            "format": "raw"
+          },
           {
             "path": "#._newAnnualInterestRate",
             "label": "New interest rate",
             "format": "unit",
-            "params": { "base": "%", "decimals": 16 }
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
           },
           {
             "path": "#._maxUpfrontFee",
             "label": "Max upfront fee",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.boldToken" }
+            "params": {
+              "token": "$.metadata.constants.boldToken"
+            }
           },
-          { "path": "#._upperHint", "label": "", "format": "raw", "visible": "never" },
-          { "path": "#._lowerHint", "label": "", "format": "raw", "visible": "never" }
+          {
+            "path": "#._upperHint",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#._lowerHint",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          }
         ]
       },
-      "claimCollateral()": { "intent": "Claim collateral", "fields": [] },
+      "claimCollateral()": {
+        "intent": "Claim collateral",
+        "fields": []
+      },
       "openTroveAndJoinInterestBatchManager((address,uint256,uint256,uint256,uint256,uint256,address,uint256,address,address,address) _params)": {
         "intent": "Open Trove (batch)",
         "fields": [
-          { "path": "#._params.owner", "label": "Owner", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] } },
+          {
+            "path": "#._params.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
           {
             "path": "#._params.collAmount",
             "label": "Collateral",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.collateralToken" }
+            "params": {
+              "token": "$.metadata.constants.collateralToken"
+            }
           },
           {
             "path": "#._params.boldAmount",
             "label": "Borrow BOLD",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.boldToken" }
+            "params": {
+              "token": "$.metadata.constants.boldToken"
+            }
           },
           {
             "path": "#._params.interestBatchManager",
             "label": "Batch manager",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet", "contract"] }
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
           },
           {
             "path": "#._params.maxUpfrontFee",
             "label": "Max upfront fee",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.boldToken" }
+            "params": {
+              "token": "$.metadata.constants.boldToken"
+            }
           },
           {
             "path": "#._params.addManager",
             "label": "Add manager",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet", "contract"] },
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
             "visible": "optional"
           },
           {
             "path": "#._params.removeManager",
             "label": "Remove manager",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet", "contract"] },
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
             "visible": "optional"
           },
           {
             "path": "#._params.receiver",
             "label": "Receiver",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet", "contract"] },
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
             "visible": "optional"
           },
-          { "path": "#._params.ownerIndex", "label": "", "format": "raw", "visible": "never" },
-          { "path": "#._params.upperHint", "label": "", "format": "raw", "visible": "never" },
-          { "path": "#._params.lowerHint", "label": "", "format": "raw", "visible": "never" }
+          {
+            "path": "#._params.ownerIndex",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#._params.upperHint",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#._params.lowerHint",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          }
         ]
       },
       "setInterestBatchManager(uint256 _troveId, address _newBatchManager, uint256 _upperHint, uint256 _lowerHint, uint256 _maxUpfrontFee)": {
         "intent": "Set batch manager",
         "fields": [
-          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
+          {
+            "path": "#._troveId",
+            "label": "Trove ID",
+            "format": "raw"
+          },
           {
             "path": "#._newBatchManager",
             "label": "Batch manager",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet", "contract"] }
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
           },
           {
             "path": "#._maxUpfrontFee",
             "label": "Max upfront fee",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.boldToken" }
+            "params": {
+              "token": "$.metadata.constants.boldToken"
+            }
           },
-          { "path": "#._upperHint", "label": "", "format": "raw", "visible": "never" },
-          { "path": "#._lowerHint", "label": "", "format": "raw", "visible": "never" }
+          {
+            "path": "#._upperHint",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#._lowerHint",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          }
         ]
       },
       "setInterestIndividualDelegate(uint256 _troveId, address _delegate, uint128 _minInterestRate, uint128 _maxInterestRate, uint256 _newAnnualInterestRate, uint256 _upperHint, uint256 _lowerHint, uint256 _maxUpfrontFee, uint256 _minInterestRateChangePeriod)": {
         "intent": "Set rate delegate",
         "fields": [
-          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
-          { "path": "#._delegate", "label": "Delegate", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] } },
-          { "path": "#._minInterestRate", "label": "Min rate", "format": "unit", "params": { "base": "%", "decimals": 16 } },
-          { "path": "#._maxInterestRate", "label": "Max rate", "format": "unit", "params": { "base": "%", "decimals": 16 } },
+          {
+            "path": "#._troveId",
+            "label": "Trove ID",
+            "format": "raw"
+          },
+          {
+            "path": "#._delegate",
+            "label": "Delegate",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "#._minInterestRate",
+            "label": "Min rate",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "#._maxInterestRate",
+            "label": "Max rate",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
           {
             "path": "#._maxUpfrontFee",
             "label": "Max upfront fee",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.boldToken" }
+            "params": {
+              "token": "$.metadata.constants.boldToken"
+            }
           },
-          { "path": "#._newAnnualInterestRate", "label": "", "format": "raw", "visible": "never" },
-          { "path": "#._upperHint", "label": "", "format": "raw", "visible": "never" },
-          { "path": "#._lowerHint", "label": "", "format": "raw", "visible": "never" },
-          { "path": "#._minInterestRateChangePeriod", "label": "", "format": "raw", "visible": "never" }
+          {
+            "path": "#._newAnnualInterestRate",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#._upperHint",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#._lowerHint",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#._minInterestRateChangePeriod",
+            "label": "",
+            "format": "raw",
+            "visible": "never"
+          }
         ]
       }
     }
