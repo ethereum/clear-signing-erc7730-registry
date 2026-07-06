@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-PoolDynamic-MUSDC-sepolia.json",
+  "dataProvider": {
+    "tokens": {
+      "0xfd4f11a2aae86165050688c85ec9ed6210c427a9": {
+        "symbol": "MUSDC",
+        "decimals": 6,
+        "name": "Mock USDC"
+      },
+      "0xd1f0774ccff0ce4f36dea57b6a28ab7feb0a01b0": {
+        "symbol": "xFIGSOL",
+        "decimals": 6,
+        "name": "Figment Stablecoin Staking Yield MUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit 10 MUSDC into the Sepolia PoolDynamic vault",
+      "rawTx": "0x02f87283aa36a78201138459682f0084acc5dfa08304e43d94d1f0774ccff0ce4f36dea57b6a28ab7feb0a01b080b8446e553f650000000000000000000000000000000000000000000000000000000000989680000000000000000000000000f54f2ddb122f52456e9344d0ac2f72c7deb048d3c0",
+      "txHash": "0xfe3ae76a50dfbdd6a051892ba35ff869228ac0bcbe747f9594e4b1b14bc5840a",
+      "expected": {
+        "intent": "Deposit into Stablecoin Vault",
+        "owner": "Figment",
+        "fields": [
+          { "label": "Amount to deposit", "value": "10 MUSDC" },
+          { "label": "Depositing wallet", "value": "0xF54F2Ddb122F52456E9344d0Ac2F72C7DeB048D3" }
+        ]
+      }
+    },
+    {
+      "description": "Request redemption of vault shares on Sepolia",
+      "rawTx": "0x02f85183aa36a78201148459682f0084aaad205c830802c894d1f0774ccff0ce4f36dea57b6a28ab7feb0a01b080a4aa2f892d000000000000000000000000000000000000000000000000000000000080472ac0",
+      "txHash": "0x378c1084e6f10dca37ecbad65406bcf14ad314b07e15dc71d0d7331160fcb909",
+      "expected": {
+        "intent": "Redeem from Stablecoin Vault",
+        "owner": "Figment",
+        "fields": [
+          { "label": "Shares to redeem", "value": "8.406826 xFIGSOL" }
+        ]
+      }
+    }
+  ]
+}

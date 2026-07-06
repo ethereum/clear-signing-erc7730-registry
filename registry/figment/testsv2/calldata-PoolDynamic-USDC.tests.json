@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-PoolDynamic-USDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0xe1b1252652a2ff0cc3a4214ee73d9fed1fea5b4f": {
+        "symbol": "xSOLY",
+        "decimals": 6,
+        "name": "Figment Stablecoin Staking Yield USDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit 1 USDC into the mainnet PoolDynamic vault",
+      "rawTx": "0x02f86d01188477359400848b218dff8304e43d94e1b1252652a2ff0cc3a4214ee73d9fed1fea5b4f80b8446e553f6500000000000000000000000000000000000000000000000000000000000f4240000000000000000000000000b77c9b529bf7f41d95c0b508e64a4bd647ed7908c0",
+      "txHash": "0x8e8a969991a2e883a7e4b625c5b155cefed0076da5174cee043c0dc75c430306",
+      "expected": {
+        "intent": "Deposit into Stablecoin Vault",
+        "owner": "Figment",
+        "fields": [
+          { "label": "Amount to deposit", "value": "1 USDC" },
+          { "label": "Depositing wallet", "value": "0xb77c9b529Bf7f41D95c0B508e64a4BD647eD7908" }
+        ]
+      }
+    },
+    {
+      "description": "Request redemption of vault shares on mainnet",
+      "rawTx": "0x02f84c01198477359400848fe28009830802c894e1b1252652a2ff0cc3a4214ee73d9fed1fea5b4f80a4aa2f892d00000000000000000000000000000000000000000000000000000000000efc83c0",
+      "txHash": "0xaf19b6741413ea9397f2a339720674a3c585c6f1e3181e5261f52070522dd5c7",
+      "expected": {
+        "intent": "Redeem from Stablecoin Vault",
+        "owner": "Figment",
+        "fields": [
+          { "label": "Shares to redeem", "value": "0.982147 xSOLY" }
+        ]
+      }
+    }
+  ]
+}
