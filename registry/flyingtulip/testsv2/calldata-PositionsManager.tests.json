@@ -1,0 +1,119 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-PositionsManager.json",
+  "dataProvider": {
+    "tokens": {
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": {
+        "decimals": 6,
+        "name": "USD Coin",
+        "symbol": "USDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit into lend position",
+      "rawTx": "0x02f869011401843b9aca008307a12094be4050a73a7fb384c65e885a15c33461a4b2005580b84447e7ef24000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000004c4b40c0",
+      "from": "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A",
+      "expected": {
+        "intent": "Deposit collateral",
+        "owner": "Flying Tulip",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "5 USDC"
+          }
+        ],
+        "interpolatedIntent": "Deposit 5 USDC"
+      }
+    },
+    {
+      "description": "Withdraw from lend position",
+      "rawTx": "0x02f869011501843b9aca008307a12094be4050a73a7fb384c65e885a15c33461a4b2005580b844f3fef3a3000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000f4240c0",
+      "from": "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A",
+      "expected": {
+        "intent": "Withdraw collateral",
+        "owner": "Flying Tulip",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "1 USDC"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 1 USDC"
+      }
+    },
+    {
+      "description": "Borrow from lend position",
+      "rawTx": "0x02f869011601843b9aca008307a12094be4050a73a7fb384c65e885a15c33461a4b2005580b8444b8a3529000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000001e8480c0",
+      "from": "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A",
+      "expected": {
+        "intent": "Borrow asset",
+        "owner": "Flying Tulip",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "2 USDC"
+          }
+        ],
+        "interpolatedIntent": "Borrow 2 USDC"
+      }
+    },
+    {
+      "description": "Repay lend position",
+      "rawTx": "0x02f869011701843b9aca008307a12094be4050a73a7fb384c65e885a15c33461a4b2005580b84422867d78000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000001e8480c0",
+      "from": "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A",
+      "expected": {
+        "intent": "Repay debt",
+        "owner": "Flying Tulip",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "2 USDC"
+          }
+        ],
+        "interpolatedIntent": "Repay 2 USDC"
+      }
+    },
+    {
+      "description": "Approve lend borrow delegate",
+      "rawTx": "0x02f889011801843b9aca008307a12094be4050a73a7fb384c65e885a15c33461a4b2005580b864ef75b72b0000000000000000000000001111111111111111111111111111111111111111000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000989680c0",
+      "from": "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A",
+      "expected": {
+        "intent": "Approve borrowing",
+        "owner": "Flying Tulip",
+        "fields": [
+          {
+            "label": "Delegate",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Allowance",
+            "value": "10 USDC"
+          }
+        ],
+        "interpolatedIntent": "Borrow OK 0x1111111111111111111111111111111111111111"
+      }
+    },
+    {
+      "description": "Approve lend engine",
+      "rawTx": "0x02f889011901843b9aca008307a12094be4050a73a7fb384c65e885a15c33461a4b2005580b8649beefaf00000000000000000000000003333333333333333333333333333333333333333000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000989680c0",
+      "from": "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A",
+      "expected": {
+        "intent": "Approve engine debit",
+        "owner": "Flying Tulip",
+        "fields": [
+          {
+            "label": "Engine",
+            "value": "0x3333333333333333333333333333333333333333"
+          },
+          {
+            "label": "Allowance",
+            "value": "10 USDC"
+          }
+        ],
+        "interpolatedIntent": "Engine OK 0x3333333333333333333333333333333333333333"
+      }
+    }
+  ]
+}

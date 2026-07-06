@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-permit-avalanche_c_chain-wbtc.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "Bitcoin",
+          "version": "1",
+          "chainId": 43114,
+          "verifyingContract": "0x152b9d0FdC40C096757F570A51E494bd4b943E50"
+        },
+        "message": {
+          "owner": "0x52908400098527886E0F7030069857D2E4169EE7",
+          "spender": "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
+          "value": 2500000,
+          "nonce": 7,
+          "deadline": 1777000000
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of tokens",
+        "owner": "BTC.b",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7"
+          },
+          {
+            "label": "Max spending amount",
+            "value": "0.025 BTC.b"
+          },
+          {
+            "label": "Valid until",
+            "value": "2026-04-24 03:06:40Z"
+          }
+        ]
+      }
+    }
+  ],
+  "dataProvider": {
+    "tokens": {
+      "0x152b9d0FdC40C096757F570A51E494bd4b943E50": {
+        "symbol": "BTC.b",
+        "decimals": 8,
+        "name": "Bitcoin"
+      }
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-hakutora-hUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": {
+        "decimals": 6,
+        "name": "USD Coin",
+        "symbol": "USDC"
+      },
+      "0x974c8FBf4fd795F66B85B73ebC988A51F1A040a9": {
+        "symbol": "hUSDC",
+        "decimals": 18,
+        "name": "Hakutora USDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit - chain 1",
+      "rawTx": "0x02f86a018195128408edd6bc831e848094974c8fbf4fd795f66b85b73ebc988a51f1a040a980b8446e553f6500000000000000000000000000000000000000000000000000000000000003e8000000000000000000000000db494a7aa82349c40c053736cadc00fb18068d4ec0",
+      "txHash": "0xa643899cff94e3e8d17fa9a9f9b71a50122492815b5eccaf8b172ab2a52963ff",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Hakutora",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.001 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "hUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xdb494A7Aa82349c40C053736Cadc00Fb18068d4e"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw - chain 1",
+      "rawTx": "0x02f88d010184054e0840842faf08008306e39e94974c8fbf4fd795f66b85b73ebc988a51f1a040a980b864b460af9400000000000000000000000000000000000000000000000000000002540be4000000000000000000000000003157c44c04bb41811895b046fc3de4ab7543a4690000000000000000000000003157c44c04bb41811895b046fc3de4ab7543a469c0",
+      "txHash": "0x83dc77df6887c74a4426639b1f296dcb4e53943adc01ba6f8355283e653ba9e1",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Hakutora",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "10000 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x3157c44C04bb41811895B046fc3dE4ab7543a469"
+          },
+          {
+            "label": "Owner",
+            "value": "0x3157c44C04bb41811895B046fc3dE4ab7543a469"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88d016084079671a084079671a083082b2194974c8fbf4fd795f66b85b73ebc988a51f1a040a980b864ba0876520000000000000000000000000000000000000000000000003a947b83940b173b0000000000000000000000007720866bab3fff360db6e080eb49cefa06fb1d070000000000000000000000007720866bab3fff360db6e080eb49cefa06fb1d07c0",
+      "txHash": "0x8bf30ac8812aec3f7998e2eca904f3b0ac9a55f146b7722dfee97e92aff645f7",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Hakutora",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "4.221134555807684411 hUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x7720866BAB3ffF360Db6E080EB49ceFa06fB1d07"
+          },
+          {
+            "label": "Owner",
+            "value": "0x7720866BAB3ffF360Db6E080EB49ceFa06fB1d07"
+          }
+        ]
+      }
+    }
+  ]
+}

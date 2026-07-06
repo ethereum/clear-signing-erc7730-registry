@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-mev_capital-MCwBTC.json",
+  "dataProvider": {
+    "tokens": {
+      "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599": {
+        "decimals": 8,
+        "name": "Wrapped BTC",
+        "symbol": "WBTC"
+      },
+      "0x1c530D6de70c05A81bF1670157b9d928e9699089": {
+        "symbol": "MCwBTC",
+        "decimals": 18,
+        "name": "MEV Capital WBTC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Withdraw - chain 1",
+      "rawTx": "0x02f88c014e8359e9c5843c4c5f45831b9e50941c530d6de70c05a81bf1670157b9d928e969908980b864b460af94000000000000000000000000000000000000000000000000000000000000da39000000000000000000000000e3137ad66f739c0e6df4753e4a6a9665bc50ae9f000000000000000000000000e3137ad66f739c0e6df4753e4a6a9665bc50ae9fc0",
+      "txHash": "0x70e6ef32b70f9dad762aecdff7f1d564eb04c16655a69f308c9e42654ead5164",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "MEV Capital",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "0.00055865 WBTC"
+          },
+          {
+            "label": "To",
+            "value": "0xE3137aD66F739c0e6dF4753E4a6a9665bC50Ae9f"
+          },
+          {
+            "label": "Owner",
+            "value": "0xE3137aD66F739c0e6dF4753E4a6a9665bC50Ae9f"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88f0182022c8401f89bb0844d3f640083056bb5941c530d6de70c05a81bf1670157b9d928e969908980b864ba087652000000000000000000000000000000000000000000000000000019c7761152e5000000000000000000000000e3137ad66f739c0e6df4753e4a6a9665bc50ae9f000000000000000000000000e3137ad66f739c0e6df4753e4a6a9665bc50ae9fc0",
+      "txHash": "0xdc35d22a1e82f8cf8220e4f7172cd111fe67d5a224590b6f273917261669b9cf",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "MEV Capital",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "0.000028344470033125 MCwBTC"
+          },
+          {
+            "label": "To",
+            "value": "0xE3137aD66F739c0e6dF4753E4a6a9665bC50Ae9f"
+          },
+          {
+            "label": "Owner",
+            "value": "0xE3137aD66F739c0e6dF4753E4a6a9665bC50Ae9f"
+          }
+        ]
+      }
+    }
+  ]
+}

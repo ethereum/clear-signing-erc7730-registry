@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-permit-optimism-usdt.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "Tether USD",
+          "version": "1",
+          "chainId": 10,
+          "verifyingContract": "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58"
+        },
+        "message": {
+          "owner": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+          "spender": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+          "value": "250000000",
+          "nonce": "12",
+          "deadline": "1780000000"
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of tokens",
+        "owner": "Tether USD",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0xE592427A0AEce92De3Edee1F18E0157C05861564"
+          },
+          {
+            "label": "Max spending amount",
+            "value": "250 USDT"
+          },
+          {
+            "label": "Valid until",
+            "value": "2026-05-28 20:26:40Z"
+          }
+        ]
+      }
+    }
+  ],
+  "dataProvider": {
+    "tokens": {
+      "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58": {
+        "symbol": "USDT",
+        "decimals": 6,
+        "name": "Tether USD"
+      }
+    }
+  }
+}

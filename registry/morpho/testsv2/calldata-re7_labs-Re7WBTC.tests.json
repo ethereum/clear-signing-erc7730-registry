@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-re7_labs-Re7WBTC.json",
+  "dataProvider": {
+    "tokens": {
+      "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599": {
+        "decimals": 8,
+        "name": "Wrapped BTC",
+        "symbol": "WBTC"
+      },
+      "0xE0C98605f279e4D7946d25B75869c69802823763": {
+        "symbol": "Re7WBTC",
+        "decimals": 18,
+        "name": "Re7 WBTC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Mint - chain 1",
+      "rawTx": "0xf86b8203568411bd5ed68316e36094e0c98605f279e4d7946d25b75869c6980282376380b84494bf804d000000000000000000000000000000000000000000000000000000e8990a4600000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0xff59b5d911ce8b9b99f5028ceea718ff0a0a516a7249c04e6894cb981d676698",
+      "expected": {
+        "intent": "Mint",
+        "owner": "RE7 Labs",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "WBTC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000999 Re7WBTC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88d010b840171434084410756c08308311994e0c98605f279e4d7946d25b75869c6980282376380b864ba0876520000000000000000000000000000000000000000000000000018c3a857cb9a240000000000000000000000005aff481603bfab1b69785d1f6361a143697c55a90000000000000000000000005aff481603bfab1b69785d1f6361a143697c55a9c0",
+      "txHash": "0xfa8847646f90532ece4da2e969d7cf5ec1fda803b4c870b35e7e3dee545f1d25",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "RE7 Labs",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "0.006970527235938852 Re7WBTC"
+          },
+          {
+            "label": "To",
+            "value": "0x5aFF481603BFAB1B69785D1f6361a143697c55A9"
+          },
+          {
+            "label": "Owner",
+            "value": "0x5aFF481603BFAB1B69785D1f6361a143697c55A9"
+          }
+        ]
+      }
+    }
+  ]
+}

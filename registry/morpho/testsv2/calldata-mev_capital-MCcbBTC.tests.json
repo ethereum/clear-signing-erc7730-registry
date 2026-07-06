@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-mev_capital-MCcbBTC.json",
+  "dataProvider": {
+    "tokens": {
+      "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf": {
+        "decimals": 8,
+        "name": "Coinbase Wrapped BTC",
+        "symbol": "cbBTC"
+      },
+      "0x98cF0B67Da0F16E1F8f1a1D23ad8Dc64c0c70E0b": {
+        "symbol": "MCcbBTC",
+        "decimals": 18,
+        "name": "MEV Capital cbBTC"
+      }
+    },
+    "ensNames": {
+      "0x0448cB024711D99f1DaEd26A90408E58745Ee66e": "kozakura.eth"
+    }
+  },
+  "tests": [
+    {
+      "description": "Mint - chain 1",
+      "rawTx": "0xf86b820360841c9b7a408316e3609498cf0b67da0f16e1f8f1a1d23ad8dc64c0c70e0b80b84494bf804d000000000000000000000000000000000000000000000000000000e8990a4600000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x2df237208cbd87ae093ae613599b8ab0a85af12132a091f61aec4252c779f650",
+      "expected": {
+        "intent": "Mint",
+        "owner": "MEV Capital",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "cbBTC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000999 MCcbBTC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88f01820104840109cee08404380460830652eb9498cf0b67da0f16e1f8f1a1d23ad8dc64c0c70e0b80b864ba0876520000000000000000000000000000000000000000000000000024ffec078a260b0000000000000000000000000448cb024711d99f1daed26a90408e58745ee66e0000000000000000000000000448cb024711d99f1daed26a90408e58745ee66ec0",
+      "txHash": "0x66371451ef7743ec44100db98c6dbc34d57236a23a585906af06d40c4f75b20d",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "MEV Capital",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "0.010414488365442571 MCcbBTC"
+          },
+          {
+            "label": "To",
+            "value": "kozakura.eth"
+          },
+          {
+            "label": "Owner",
+            "value": "kozakura.eth"
+          }
+        ]
+      }
+    }
+  ]
+}

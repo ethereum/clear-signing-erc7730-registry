@@ -1,0 +1,58 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-L2WormholeGateway.json",
+  "tests": [
+    {
+      "description": "Bridge native tBTC from Base to Ethereum",
+      "rawTx": "0x02f8d5822105468405f5e10084773594008303d0909409959798b95d00a3183d20fac298e4594e599eab865af3107a4000b8a4f69785f300000000000000000000000000000000000000000000000003782dace9d900000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000742d35cc6634c0532925a3b844bc454e4438f44e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000309c0",
+      "from": "0x79E21e5E86A61A6702814A2359F2fB333ff8f91c",
+      "txHash": "0x1614cee6d1a64deae8481693d4c52f1cb0487662bffc71b12227659cf97f63d8",
+      "expected": {
+        "intent": "Bridge tBTC",
+        "owner": "Threshold Network",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "0.25tBTC"
+          },
+          {
+            "label": "Destination chain",
+            "value": "Ethereum"
+          },
+          {
+            "label": "Recipient",
+            "value": "0x000000000000000000000000742d35cc6634c0532925a3b844bc454e4438f44e"
+          },
+          {
+            "label": "Arbiter fee",
+            "value": "0tBTC"
+          },
+          {
+            "label": "Nonce",
+            "value": "777"
+          },
+          {
+            "label": "Wormhole message fee",
+            "value": "0.0001 ETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim bridged tBTC through the L2 Wormhole Gateway",
+      "rawTx": "0x02f8cf822105478405f5e10084773594008303d0909409959798b95d00a3183d20fac298e4594e599eab80b8a45d21a5960000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004901000000000100abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab0000000000000000000000000000000000000000000000c0",
+      "from": "0x79E21e5E86A61A6702814A2359F2fB333ff8f91c",
+      "txHash": "0x98b51fab0423a8f1dde0cae81bb4795e41d6c79497c387604839fbe4ebc768d1",
+      "expected": {
+        "intent": "Claim bridged tBTC",
+        "owner": "Threshold Network",
+        "fields": [
+          {
+            "label": "Wormhole message",
+            "value": "0x01000000000100abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+          }
+        ]
+      }
+    }
+  ]
+}

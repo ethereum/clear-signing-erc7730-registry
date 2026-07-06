@@ -1,0 +1,50 @@
+name: Run Rust (llbartekll/clear-signing) clear-signing tests
+description: Install llbartekll/clear-signing's cs-test binary via cargo, run it against a .tests.json fixture, and produce a results.json conforming to the format in .github/test-runner-docs/.
+
+inputs:
+  test-file:
+    description: Absolute path to the .tests.json fixture.
+    required: true
+  output:
+    description: Absolute path where results.json should be written.
+    required: true
+
+outputs:
+  results-path:
+    description: Path to the produced results.json.
+    value: ${{ inputs.output }}
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout llbartekll/clear-signing
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        repository: llbartekll/clear-signing
+        ref: 0809971c81182ea93271759c62c04d1935415eff # main @ 2026-06-19
+        path: cs-runner
+        persist-credentials: false
+
+    - uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+
+    - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+      with:
+        workspaces: cs-runner
+
+    - name: Install cs-test
+      shell: bash
+      working-directory: cs-runner
+      run: cargo install --path crates/cs-test --locked
+
+    - name: Run tests
+      shell: bash
+      env:
+        TEST_FILE: ${{ inputs.test-file }}
+        OUTPUT: ${{ inputs.output }}
+      run: |
+        # Registry root = two levels up from the test file's `testsv2` dir
+        # (.../registry/<entity>/testsv2/<name>.tests.json). This lets the runner
+        # resolve nested-call descriptors (e.g. Safe inner call, kiln inner
+        # deposit) from anywhere in the tree, not just beside the test file.
+        REGISTRY_ROOT="$(cd "$(dirname "$TEST_FILE")/../.." && pwd)"
+        cs-test run "$TEST_FILE" --registry "$REGISTRY_ROOT" --output "$OUTPUT"
