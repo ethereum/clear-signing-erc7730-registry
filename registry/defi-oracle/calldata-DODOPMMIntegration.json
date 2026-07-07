@@ -1,0 +1,55 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "DODOPMMIntegration",
+    "contract": {
+      "abi": [
+        {
+          "inputs": [
+            { "internalType": "address", "name": "pool", "type": "address" },
+            { "internalType": "address", "name": "tokenIn", "type": "address" },
+            { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+            { "internalType": "uint256", "name": "minAmountOut", "type": "uint256" }
+          ],
+          "name": "swapExactIn",
+          "outputs": [{ "internalType": "uint256", "name": "amountOut", "type": "uint256" }],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ],
+      "deployments": [{ "chainId": 138, "address": "0x86ADA6Ef91A3B450F89f2b751e93B1b7A3218895" }]
+    }
+  },
+  "metadata": { "owner": "DeFi Oracle Meta", "contractName": "DODOPMMIntegration" },
+  "display": {
+    "formats": {
+      "swapExactIn(address pool,address tokenIn,uint256 amountIn,uint256 minAmountOut)": {
+        "intent": "Swap via DODO PMM",
+        "fields": [
+          {
+            "path": "#.pool",
+            "label": "Pool",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.tokenIn",
+            "label": "Token in",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.amountIn",
+            "label": "Amount in",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.tokenIn" },
+            "visible": "always"
+          },
+          { "path": "#.minAmountOut", "label": "Minimum output", "format": "raw", "visible": "always" }
+        ]
+      }
+    }
+  }
+}
