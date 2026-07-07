@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-StabilityPool.json",
+  "dataProvider": {
+    "tokens": {
+      "0x6440f144b7e50d6a8439336510312d2f54beb01d": { "symbol": "BOLD", "decimals": 18, "name": "BOLD Stablecoin" },
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" },
+      "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0": { "symbol": "wstETH", "decimals": 18, "name": "Wrapped liquid staked Ether 2.0" },
+      "0xae78736cd615f374d3085123a210448e74fc6393": { "symbol": "rETH", "decimals": 18, "name": "Rocket Pool ETH" }
+    }
+  },
+  "tests": [
+    {
+      "description": "withdrawFromSP on calldata-StabilityPool",
+      "rawTx": "0x02f86d011a8405f5e100840c9e49208303f624945721cbbd64fc7ae3ef44a0a3f9a790a9264cf9bf80b844cfddf5f50000000000000000000000000000000000000000000000b5e2f9fe536628cbca0000000000000000000000000000000000000000000000000000000000000001c0",
+      "txHash": "0xfd462afd0c0664862ea50702b1f343ea0dbe8a78e16f46823aa60bb38637c1c0",
+      "expected": {
+        "intent": "Withdraw from Earn",
+        "owner": "Liquity",
+        "fields": [{ "label": "Withdraw BOLD", "value": "3355.21606049735119969 BOLD" }, { "label": "Claim rewards", "value": "true" }],
+        "interpolatedIntent": "Withdraw 3355.21606049735119969 BOLD"
+      }
+    },
+    {
+      "description": "provideToSP on calldata-StabilityPool",
+      "rawTx": "0x02f86d017984082bca708421969dbb83033aa0945721cbbd64fc7ae3ef44a0a3f9a790a9264cf9bf80b844aeb4b970000000000000000000000000000000000000000000000c4d6768ac89994430f50000000000000000000000000000000000000000000000000000000000000001c0",
+      "txHash": "0xdf55a54f095d9388f0fce9994ec2c1f4905f8ea901e57ab9cc2c5cb7dd4dae44",
+      "expected": {
+        "intent": "Deposit to Earn",
+        "owner": "Liquity",
+        "fields": [{ "label": "Deposit BOLD", "value": "58096.248483401844404469 BOLD" }, { "label": "Claim rewards", "value": "true" }],
+        "interpolatedIntent": "Deposit 58096.248483401844404469 BOLD"
+      }
+    }
+  ]
+}
