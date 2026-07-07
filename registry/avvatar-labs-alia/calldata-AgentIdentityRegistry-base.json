@@ -1,0 +1,1413 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ALIA Agent Identity Registry Base",
+    "contract": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_auditorRegistry",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "_colOracle",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "constructor"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "agentWallet",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "ownerWallet",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum AgentIdentityRegistry.AgentType",
+              "name": "agentType",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            }
+          ],
+          "name": "AgentRegistered",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "agentWallet",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum AgentIdentityRegistry.AgentStatus",
+              "name": "oldStatus",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum AgentIdentityRegistry.AgentStatus",
+              "name": "newStatus",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "reason",
+              "type": "string"
+            }
+          ],
+          "name": "AgentStatusUpdated",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "agent",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "action",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "assetInvolved",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "bool",
+              "name": "success",
+              "type": "bool"
+            }
+          ],
+          "name": "DecisionRecorded",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "agent",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "description",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "totalIncidents",
+              "type": "uint256"
+            }
+          ],
+          "name": "IncidentRecorded",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "agent",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "reputationBefore",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "reputationAfter",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "reason",
+              "type": "string"
+            }
+          ],
+          "name": "ReputationUpdated",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "parentAgent",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "subAgent",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "maxValue",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "validUntil",
+              "type": "uint256"
+            }
+          ],
+          "name": "SubMandateGranted",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "parentAgent",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "subAgent",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "reason",
+              "type": "string"
+            }
+          ],
+          "name": "SubMandateRevoked",
+          "type": "event"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "agentCapabilities",
+          "outputs": [
+            {
+              "internalType": "enum AgentIdentityRegistry.Capability",
+              "name": "",
+              "type": "uint8"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "agentList",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "name": "agentMeta",
+          "outputs": [
+            {
+              "internalType": "string",
+              "name": "manufacturer",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "serialNumber",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "totalDecisions",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "totalValueManaged",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "incidents",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "registeredAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastActivityAt",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "name": "agents",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "agentWallet",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "ownerWallet",
+              "type": "address"
+            },
+            {
+              "internalType": "enum AgentIdentityRegistry.AgentType",
+              "name": "agentType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum AgentIdentityRegistry.AgentStatus",
+              "name": "status",
+              "type": "uint8"
+            },
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "internalType": "address",
+              "name": "mandateRegistry",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "parentAgent",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minColScore",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxLTV",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "reputationScore",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "isActive",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "auditorRegistry",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_agent",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_colScore",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_ltv",
+              "type": "uint256"
+            }
+          ],
+          "name": "canActOn",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "allowed",
+              "type": "bool"
+            },
+            {
+              "internalType": "string",
+              "name": "reason",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "colOracle",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "decisionHistory",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "agent",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "action",
+              "type": "string"
+            },
+            {
+              "internalType": "address",
+              "name": "assetInvolved",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "success",
+              "type": "bool"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "txHash",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_agent",
+              "type": "address"
+            }
+          ],
+          "name": "getActiveSubMandates",
+          "outputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "parentAgent",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "subAgent",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "maxValue",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "validUntil",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum AgentIdentityRegistry.Capability[]",
+                  "name": "capabilities",
+                  "type": "uint8[]"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isActive",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct AgentIdentityRegistry.SubMandate[]",
+              "name": "",
+              "type": "tuple[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_agent",
+              "type": "address"
+            }
+          ],
+          "name": "getAgent",
+          "outputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "agentWallet",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "ownerWallet",
+                  "type": "address"
+                },
+                {
+                  "internalType": "enum AgentIdentityRegistry.AgentType",
+                  "name": "agentType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum AgentIdentityRegistry.AgentStatus",
+                  "name": "status",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "string",
+                  "name": "name",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "version",
+                  "type": "string"
+                },
+                {
+                  "internalType": "address",
+                  "name": "mandateRegistry",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "parentAgent",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "minColScore",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "maxLTV",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "reputationScore",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isActive",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct AgentIdentityRegistry.AgentIdentity",
+              "name": "",
+              "type": "tuple"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "_serialNumber",
+              "type": "string"
+            }
+          ],
+          "name": "getAgentBySerial",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "getAgentCount",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_agent",
+              "type": "address"
+            }
+          ],
+          "name": "getAgentMeta",
+          "outputs": [
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "manufacturer",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "serialNumber",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "totalDecisions",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "totalValueManaged",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "incidents",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "registeredAt",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "lastActivityAt",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct AgentIdentityRegistry.AgentMeta",
+              "name": "",
+              "type": "tuple"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "enum AgentIdentityRegistry.AgentType",
+              "name": "_type",
+              "type": "uint8"
+            }
+          ],
+          "name": "getAgentsByType",
+          "outputs": [
+            {
+              "internalType": "address[]",
+              "name": "",
+              "type": "address[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_agent",
+              "type": "address"
+            }
+          ],
+          "name": "getDecisionHistory",
+          "outputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "agent",
+                  "type": "address"
+                },
+                {
+                  "internalType": "string",
+                  "name": "action",
+                  "type": "string"
+                },
+                {
+                  "internalType": "address",
+                  "name": "assetInvolved",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "value",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "timestamp",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "success",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "txHash",
+                  "type": "bytes32"
+                }
+              ],
+              "internalType": "struct AgentIdentityRegistry.Decision[]",
+              "name": "",
+              "type": "tuple[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_agent",
+              "type": "address"
+            }
+          ],
+          "name": "getReputation",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "reputationScore",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "totalDecisions",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "totalValueManaged",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "incidents",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum AgentIdentityRegistry.AgentType",
+              "name": "agentType",
+              "type": "uint8"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_subAgent",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_maxValue",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_validityDays",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum AgentIdentityRegistry.Capability[]",
+              "name": "_capabilities",
+              "type": "uint8[]"
+            }
+          ],
+          "name": "grantSubMandate",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_agent",
+              "type": "address"
+            },
+            {
+              "internalType": "enum AgentIdentityRegistry.Capability",
+              "name": "_capability",
+              "type": "uint8"
+            }
+          ],
+          "name": "hasCapability",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "name": "isRegistered",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "owner",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_agent",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "_action",
+              "type": "string"
+            },
+            {
+              "internalType": "address",
+              "name": "_assetInvolved",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_value",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "_success",
+              "type": "bool"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "_txHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "recordDecision",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_agent",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "_description",
+              "type": "string"
+            }
+          ],
+          "name": "recordIncident",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_agentWallet",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "_ownerWallet",
+              "type": "address"
+            },
+            {
+              "internalType": "enum AgentIdentityRegistry.AgentType",
+              "name": "_agentType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "string",
+              "name": "_name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "_version",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "_manufacturer",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "_serialNumber",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_minColScore",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_maxLTV",
+              "type": "uint256"
+            }
+          ],
+          "name": "registerAgent",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_subAgent",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "_reason",
+              "type": "string"
+            }
+          ],
+          "name": "revokeSubMandate",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "",
+              "type": "string"
+            }
+          ],
+          "name": "serialToAgent",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_agent",
+              "type": "address"
+            },
+            {
+              "internalType": "enum AgentIdentityRegistry.Capability[]",
+              "name": "_capabilities",
+              "type": "uint8[]"
+            }
+          ],
+          "name": "setCapabilities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_agent",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "_mandateRegistry",
+              "type": "address"
+            }
+          ],
+          "name": "setMandateRegistry",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "subMandates",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "parentAgent",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "subAgent",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxValue",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "validUntil",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "isActive",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "transferOwnership",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_agent",
+              "type": "address"
+            },
+            {
+              "internalType": "enum AgentIdentityRegistry.AgentStatus",
+              "name": "_newStatus",
+              "type": "uint8"
+            },
+            {
+              "internalType": "string",
+              "name": "_reason",
+              "type": "string"
+            }
+          ],
+          "name": "updateAgentStatus",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_agent",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "_newVersion",
+              "type": "string"
+            }
+          ],
+          "name": "updateFirmware",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ],
+      "deployments": [
+        {
+          "chainId": 8453,
+          "address": "0xD5667AcB0Ac8108B45f6CDD4774559264098f8de"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "ALIA Quality Network",
+    "info": {
+      "url": "https://avvatar.io",
+      "deploymentDate": "2026-04-06T10:46:58Z"
+    }
+  },
+  "display": {
+    "formats": {
+      "recordDecision(address _agent, string _action, address _assetInvolved, uint256 _value, bool _success, bytes32 _txHash)": {
+        "$id": "agent_decision",
+        "intent": "Record A2A decision",
+        "fields": [
+          {
+            "path": "_agent",
+            "label": "Agent",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "_action",
+            "label": "Action",
+            "format": "raw"
+          },
+          {
+            "path": "_assetInvolved",
+            "label": "Asset",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
+          },
+          {
+            "path": "_value",
+            "label": "Value",
+            "format": "raw"
+          },
+          {
+            "path": "_success",
+            "label": "Success",
+            "format": "raw"
+          },
+          {
+            "path": "_txHash",
+            "label": "Tx Hash",
+            "format": "raw"
+          }
+        ]
+      },
+      "recordIncident(address _agent, string _description)": {
+        "$id": "agent_incident",
+        "intent": "Record agent incident",
+        "fields": [
+          {
+            "path": "_agent",
+            "label": "Agent",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "_description",
+            "label": "Description",
+            "format": "raw"
+          }
+        ]
+      },
+      "registerAgent(address _agentWallet, address _ownerWallet, uint8 _agentType, string _name, string _version, string _manufacturer, string _serialNumber, uint256 _minColScore, uint256 _maxLTV)": {
+        "$id": "agent_register",
+        "intent": "Register agent ERC-8240",
+        "fields": [
+          {
+            "path": "_agentWallet",
+            "label": "Agent Wallet",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "_ownerWallet",
+            "label": "Owner Wallet",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "_agentType",
+            "label": "Agent Type",
+            "format": "raw"
+          },
+          {
+            "path": "_name",
+            "label": "Name",
+            "format": "raw"
+          },
+          {
+            "path": "_version",
+            "label": "Version",
+            "format": "raw"
+          },
+          {
+            "path": "_manufacturer",
+            "label": "Manufacturer",
+            "format": "raw"
+          },
+          {
+            "path": "_serialNumber",
+            "label": "Serial",
+            "format": "raw"
+          },
+          {
+            "path": "_minColScore",
+            "label": "Min Score",
+            "format": "raw"
+          },
+          {
+            "path": "_maxLTV",
+            "label": "Max LTV",
+            "format": "raw"
+          }
+        ]
+      },
+      "updateAgentStatus(address _agent, uint8 _newStatus, string _reason)": {
+        "$id": "agent_status",
+        "intent": "Update agent status",
+        "fields": [
+          {
+            "path": "_agent",
+            "label": "Agent",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "_newStatus",
+            "label": "Status",
+            "format": "raw"
+          },
+          {
+            "path": "_reason",
+            "label": "Reason",
+            "format": "raw"
+          }
+        ]
+      },
+      "updateFirmware(address _agent, string _newVersion)": {
+        "$id": "agent_firmware",
+        "intent": "Update agent firmware",
+        "fields": [
+          {
+            "path": "_agent",
+            "label": "Agent",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "_newVersion",
+            "label": "New version",
+            "format": "raw"
+          }
+        ]
+      }
+    }
+  }
+}

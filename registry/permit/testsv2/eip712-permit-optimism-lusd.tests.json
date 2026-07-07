@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-permit-optimism-lusd.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "LUSD Stablecoin",
+          "version": "1",
+          "chainId": 10,
+          "verifyingContract": "0xc40F949F8a4e094D1b49a23ea9241D289B7b2819"
+        },
+        "message": {
+          "owner": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "spender": "0x1111111254EEB25477B68fb85Ed929f73A960582",
+          "value": "1000000000000000000000",
+          "nonce": "7",
+          "deadline": "1777000000"
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of tokens",
+        "owner": "LUSD Stablecoin",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x1111111254EEB25477B68fb85Ed929f73A960582"
+          },
+          {
+            "label": "Max spending amount",
+            "value": "1000 LUSD"
+          },
+          {
+            "label": "Valid until",
+            "value": "2026-04-24 03:06:40Z"
+          }
+        ]
+      }
+    }
+  ],
+  "dataProvider": {
+    "tokens": {
+      "0xc40F949F8a4e094D1b49a23ea9241D289B7b2819": {
+        "symbol": "LUSD",
+        "decimals": 18,
+        "name": "LUSD Stablecoin"
+      }
+    }
+  }
+}

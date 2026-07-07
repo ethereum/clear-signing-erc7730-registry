@@ -1,0 +1,93 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-permit-avalanche_c_chain-yetiswap.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "YetiSwap",
+          "chainId": 43114,
+          "verifyingContract": "0x488f73cddda1de3664775ffd91623637383d6404"
+        },
+        "message": {
+          "owner": "0x1111111111111111111111111111111111111111",
+          "spender": "0x1111111111111111111111111111111111111111",
+          "value": "1000000000000000000",
+          "nonce": "1000000000000000000",
+          "deadline": 1782864000
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of tokens",
+        "owner": "YetiSwap",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Max spending amount",
+            "value": "1 YTS"
+          },
+          {
+            "label": "Valid until",
+            "value": "2026-07-01 00:00:00Z"
+          }
+        ]
+      }
+    }
+  ],
+  "dataProvider": {
+    "tokens": {
+      "0x488F73cddDA1DE3664775fFd91623637383D6404": {
+        "symbol": "YTS",
+        "decimals": 18,
+        "name": "YetiSwap"
+      }
+    }
+  }
+}

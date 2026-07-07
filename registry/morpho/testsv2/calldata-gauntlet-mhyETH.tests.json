@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-mhyETH.json",
+  "dataProvider": {
+    "tokens": {
+      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": {
+        "decimals": 18,
+        "name": "Wrapped Ether",
+        "symbol": "WETH"
+      },
+      "0x701907283a57FF77E255C3f1aAD790466B8CE4ef": {
+        "symbol": "mhyETH",
+        "decimals": 18,
+        "name": "Index Coop hyETH"
+      }
+    },
+    "addressNames": {
+      "0x3006ef6777ccC79C3aF305101Fe0B3D14bd47b59": "capitalistarebelde.et h"
+    }
+  },
+  "tests": [
+    {
+      "description": "Mint - chain 1",
+      "rawTx": "0xf86b82021a84069b9be18316e36094701907283a57ff77e255c3f1aad790466b8ce4ef80b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x75b5a6ac9ac2ab1ecacc84b17cde381cf69c2366b2f9099a4b8e826c3560ae66",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Gauntlet",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "WETH"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 mhyETH"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88f0182064a8402625a00840ac6ca00830af9c294701907283a57ff77e255c3f1aad790466b8ce4ef80b864ba087652000000000000000000000000000000000000000000000000037c03009a9eccfb0000000000000000000000003006ef6777ccc79c3af305101fe0b3d14bd47b590000000000000000000000003006ef6777ccc79c3af305101fe0b3d14bd47b59c0",
+      "txHash": "0xab3a6e91905c418c656865f832b945a07ef94312e575606db2835ea15fbb95f4",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Gauntlet",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "0.251078980354886907 mhyETH"
+          },
+          {
+            "label": "To",
+            "value": "capitalistarebelde.et h"
+          },
+          {
+            "label": "Owner",
+            "value": "capitalistarebelde.et h"
+          }
+        ]
+      }
+    }
+  ]
+}

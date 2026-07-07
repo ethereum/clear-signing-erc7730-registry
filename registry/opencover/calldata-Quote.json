@@ -4,6 +4,7 @@
     "$id": "Quote",
     "contract": {
       "deployments": [
+        { "chainId": 1, "address": "0x789d89eBb2A882343044830A9d4d072737FFEC92" },
         { "chainId": 8453, "address": "0xD68647555e5da198d50866334EEd647cbE3d1556" },
         { "chainId": 10, "address": "0x0AC34fe133BdE3A2eF589a18A4E10b6a7d253829" },
         { "chainId": 137, "address": "0x0AC34fe133BdE3A2eF589a18A4E10b6a7d253829" },
@@ -18,23 +19,17 @@
     "contractName": "Quote"
   },
   "display": {
-    "definitions": {
-      "coverAssetId": { "label": "Cover asset", "format": "enum", "params": { "$ref": "$.metadata.enums.assetSymbol" } },
-      "coverAmount": { "label": "Cover amount", "format": "raw" },
-      "coverExpiry": { "label": "Cover duration", "format": "unit", "params": { "base": "days" } },
-      "paymentAssetId": { "label": "Payment asset", "format": "enum", "params": { "$ref": "$.metadata.enums.assetSymbol" } },
-      "premiumAmount": { "label": "Premium amount", "format": "raw" }
-    },
     "formats": {
       "submitQuote((uint32 providerId, uint32 productId, uint32 coverAssetId, uint256 coverAmount, uint32 paymentAssetId, uint256 premiumAmount, uint256 feeAmount, uint16 coverExpiry, uint256 validUntil) quote, uint8 v, bytes32 r, bytes32 s)": {
         "$id": "submitQuote",
         "intent": "Buy cover",
+        "interpolatedIntent": "Buy cover in {quote.coverAssetId}",
         "fields": [
-          { "path": "#.quote.coverAssetId", "$ref": "$.display.definitions.coverAssetId", "visible": "always" },
-          { "path": "#.quote.coverAmount", "$ref": "$.display.definitions.coverAmount", "visible": "always" },
-          { "path": "#.quote.coverExpiry", "$ref": "$.display.definitions.coverExpiry", "visible": "always" },
-          { "path": "#.quote.paymentAssetId", "$ref": "$.display.definitions.paymentAssetId", "visible": "always" },
-          { "path": "#.quote.premiumAmount", "$ref": "$.display.definitions.premiumAmount", "visible": "always" },
+          { "path": "#.quote.coverAssetId", "label": "Cover asset", "format": "enum", "params": { "$ref": "$.metadata.enums.assetSymbol" }, "visible": "always" },
+          { "path": "#.quote.coverAmount", "label": "Cover amount", "format": "raw", "visible": "always" },
+          { "path": "#.quote.coverExpiry", "label": "Cover duration", "format": "unit", "params": { "base": "days" }, "visible": "always" },
+          { "path": "#.quote.paymentAssetId", "label": "Payment asset", "format": "enum", "params": { "$ref": "$.metadata.enums.assetSymbol" }, "visible": "always" },
+          { "path": "#.quote.premiumAmount", "label": "Premium amount", "format": "raw", "visible": "always" },
           { "path": "#.quote.feeAmount", "label": "Fee amount", "format": "raw" },
           { "label": "Quote Provider Id", "path": "#.quote.providerId", "visible": "never" },
           { "label": "Quote Product Id", "path": "#.quote.productId", "visible": "never" },
@@ -47,12 +42,13 @@
       "submitQuoteV15((uint32 providerId, uint32 productId, uint32 coverAssetId, uint256 coverAmount, uint32 paymentAssetId, uint256 premiumAmount, uint256 feeAmount, uint16 coverExpiry, uint256 validUntil) quote, address[] coveredAddresses, uint256 integratorId, address mintTo, uint8 v, bytes32 r, bytes32 s)": {
         "$id": "submitQuoteV15",
         "intent": "Buy cover",
+        "interpolatedIntent": "Buy cover in {quote.coverAssetId}",
         "fields": [
-          { "path": "#.quote.coverAssetId", "$ref": "$.display.definitions.coverAssetId", "visible": "always" },
-          { "path": "#.quote.coverAmount", "$ref": "$.display.definitions.coverAmount", "visible": "always" },
-          { "path": "#.quote.coverExpiry", "$ref": "$.display.definitions.coverExpiry", "visible": "always" },
-          { "path": "#.quote.paymentAssetId", "$ref": "$.display.definitions.paymentAssetId", "visible": "always" },
-          { "path": "#.quote.premiumAmount", "$ref": "$.display.definitions.premiumAmount", "visible": "always" },
+          { "path": "#.quote.coverAssetId", "label": "Cover asset", "format": "enum", "params": { "$ref": "$.metadata.enums.assetSymbol" }, "visible": "always" },
+          { "path": "#.quote.coverAmount", "label": "Cover amount", "format": "raw", "visible": "always" },
+          { "path": "#.quote.coverExpiry", "label": "Cover duration", "format": "unit", "params": { "base": "days" }, "visible": "always" },
+          { "path": "#.quote.paymentAssetId", "label": "Payment asset", "format": "enum", "params": { "$ref": "$.metadata.enums.assetSymbol" }, "visible": "always" },
+          { "path": "#.quote.premiumAmount", "label": "Premium amount", "format": "raw", "visible": "always" },
           { "path": "#.quote.feeAmount", "label": "Fee amount", "format": "raw" },
           {
             "path": "#.mintTo",

@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-block_analitica-bbUSDT.json",
+  "dataProvider": {
+    "tokens": {
+      "0xdAC17F958D2ee523a2206206994597C13D831ec7": {
+        "decimals": 6,
+        "name": "Tether USD",
+        "symbol": "USDT"
+      },
+      "0x2C25f6C25770fFEC5959D34B94Bf898865e5D6b1": {
+        "symbol": "bbUSDT",
+        "decimals": 18,
+        "name": "Flagship USDT"
+      }
+    },
+    "ensNames": {
+      "0xd93f808E16EeEAFcc342a55634FBA3B77E9231b3": "ccamborde.eth"
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit - chain 1",
+      "rawTx": "0x02f86d011184054e0840840bebc20083124f80942c25f6c25770ffec5959d34b94bf898865e5d6b180b8446e553f6500000000000000000000000000000000000000000000000000000000000186a0000000000000000000000000bbaaa6f7f8c6d95efb8eb58c96084b0fe8e2df74c0",
+      "txHash": "0x667a1de923cbd76a75adc7735add68fc22da1bd05f5feee8e85968fc809ac912",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Block Analitica",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.1 USDT"
+          },
+          {
+            "label": "Share ticker",
+            "value": "bbUSDT"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xBBaAa6f7f8C6d95EfB8eB58c96084b0FE8E2dF74"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint - chain 1",
+      "rawTx": "0xf86b8202348409c7c66c8316e360942c25f6c25770ffec5959d34b94bf898865e5d6b180b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x0309d43a20035008d3fb0183a3142dcb70a9038f8505b3037393adaf57346b61",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Block Analitica",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDT"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 bbUSDT"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88d014c8405f5e100840ef902008303d0dd942c25f6c25770ffec5959d34b94bf898865e5d6b180b864ba08765200000000000000000000000000000000000000000000000594bce7778d012cc1000000000000000000000000d93f808e16eeeafcc342a55634fba3b77e9231b3000000000000000000000000d93f808e16eeeafcc342a55634fba3b77e9231b3c0",
+      "txHash": "0xa07e89c430c6b4088030a02cadd09e49bae133e605289ead6e15734566bb147b",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Block Analitica",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "102.951416082435484865 bbUSDT"
+          },
+          {
+            "label": "To",
+            "value": "ccamborde.eth"
+          },
+          {
+            "label": "Owner",
+            "value": "ccamborde.eth"
+          }
+        ]
+      }
+    }
+  ]
+}

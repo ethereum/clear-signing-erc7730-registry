@@ -1,0 +1,89 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-re7_labs-Re7USDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": {
+        "decimals": 6,
+        "name": "USD Coin",
+        "symbol": "USDC"
+      },
+      "0x60d715515d4411f7F43e4206dc5d4a3677f0eC78": {
+        "symbol": "Re7USDC",
+        "decimals": 18,
+        "name": "Re7 USDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit - chain 1",
+      "rawTx": "0x02f86c01318302bf2084641381c08308be7b9460d715515d4411f7f43e4206dc5d4a3677f0ec7880b8446e553f6500000000000000000000000000000000000000000000000000000000001e8480000000000000000000000000027c348c69fcf6f311334c7bedef7ddf7eeffff9c0",
+      "txHash": "0xe3a12d3cbb88151ff0770ad0ae32a0e2d8197c49967a6a29b4e0811c493dce69",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "RE7 Labs",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "2 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "Re7USDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x027C348C69fcf6f311334C7BedEf7ddf7EEfFfF9"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw - chain 1",
+      "rawTx": "0x02f88c013383087be0845a5c530083086be89460d715515d4411f7f43e4206dc5d4a3677f0ec7880b864b460af940000000000000000000000000000000000000000000000000000000000000025000000000000000000000000027c348c69fcf6f311334c7bedef7ddf7eeffff9000000000000000000000000027c348c69fcf6f311334c7bedef7ddf7eeffff9c0",
+      "txHash": "0x4e9e82f5fbdaf67554d576a0ec806379d3e8a68e04d9e120a701832850ccf264",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "RE7 Labs",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "0.000037 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x027C348C69fcf6f311334C7BedEf7ddf7EEfFfF9"
+          },
+          {
+            "label": "Owner",
+            "value": "0x027C348C69fcf6f311334C7BedEf7ddf7EEfFfF9"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88f0182018284054e08408416a65700830960199460d715515d4411f7f43e4206dc5d4a3677f0ec7880b864ba0876520000000000000000000000000000000000000000000000000dc845de262bdcae0000000000000000000000006877bb79f680216bbdf01704939037f22193e7710000000000000000000000006877bb79f680216bbdf01704939037f22193e771c0",
+      "txHash": "0xba9152488544bceb62a814a14a80dc453a3d6d020706ab039fb8b8147375c2b5",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "RE7 Labs",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "0.993120538260659374 Re7USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x6877BB79f680216BbdF01704939037F22193e771"
+          },
+          {
+            "label": "Owner",
+            "value": "0x6877BB79f680216BbdF01704939037F22193e771"
+          }
+        ]
+      }
+    }
+  ]
+}

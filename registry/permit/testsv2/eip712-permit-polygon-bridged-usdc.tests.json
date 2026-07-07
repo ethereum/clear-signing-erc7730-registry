@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-permit-polygon-bridged-usdc.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "USD Coin",
+          "version": "2",
+          "chainId": 137,
+          "verifyingContract": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"
+        },
+        "message": {
+          "owner": "0x52908400098527886E0F7030069857D2E4169EE7",
+          "spender": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+          "value": "250000000",
+          "nonce": 12,
+          "deadline": 1779331200
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of tokens",
+        "owner": "USD Coin (PoS)",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0xE592427A0AEce92De3Edee1F18E0157C05861564"
+          },
+          {
+            "label": "Max spending amount",
+            "value": "250 USDC"
+          },
+          {
+            "label": "Valid until",
+            "value": "2026-05-21 02:40:00Z"
+          }
+        ]
+      }
+    }
+  ],
+  "dataProvider": {
+    "tokens": {
+      "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin (PoS)"
+      }
+    }
+  }
+}

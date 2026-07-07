@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-permit-arbitrum-bridged-usdc.json",
+  "tests": [
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "USD Coin",
+          "version": "2",
+          "chainId": 42161,
+          "verifyingContract": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8"
+        },
+        "message": {
+          "owner": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "spender": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+          "value": "250000000",
+          "nonce": "12",
+          "deadline": "1785000000"
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of tokens",
+        "owner": "USDC (bridged)",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0xE592427A0AEce92De3Edee1F18E0157C05861564"
+          },
+          {
+            "label": "Max spending amount",
+            "value": "250 USDC"
+          },
+          {
+            "label": "Valid until",
+            "value": "2026-07-25 17:20:00Z"
+          }
+        ]
+      }
+    }
+  ],
+  "dataProvider": {
+    "tokens": {
+      "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin (Arb1)"
+      }
+    }
+  }
+}

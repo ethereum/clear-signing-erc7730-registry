@@ -1,0 +1,138 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-SpotOrderCancel.json",
+  "dataProvider": {},
+  "tests": [
+    {
+      "description": "Cancel spot order",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "CancelOrder": [
+            {
+              "name": "orderId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "CancelOrder",
+        "domain": {
+          "name": "FT SessionManager",
+          "version": "1",
+          "chainId": 146,
+          "verifyingContract": "0x109AE72778a0260571b9767477204F1ce41FBdff"
+        },
+        "message": {
+          "orderId": "ft-spot-141"
+        }
+      },
+      "expected": {
+        "intent": "Cancel spot order",
+        "owner": "Flying Tulip",
+        "fields": [
+          {
+            "label": "Order ID",
+            "value": "ft-spot-141"
+          }
+        ],
+        "interpolatedIntent": "Cancel order ft-spot-141"
+      }
+    },
+    {
+      "description": "Cancel TP/SL orders",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "TpslGroupCancel": [
+            {
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "name": "positionId",
+              "type": "string"
+            },
+            {
+              "name": "tpslGroupId",
+              "type": "string"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "TpslGroupCancel",
+        "domain": {
+          "name": "FT SessionManager",
+          "version": "1",
+          "chainId": 146,
+          "verifyingContract": "0x109AE72778a0260571b9767477204F1ce41FBdff"
+        },
+        "message": {
+          "user": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "positionId": "position-141",
+          "tpslGroupId": "tpsl-7",
+          "deadline": "1775200000"
+        }
+      },
+      "expected": {
+        "intent": "Cancel TP/SL orders",
+        "owner": "Flying Tulip",
+        "fields": [
+          {
+            "label": "User",
+            "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+          },
+          {
+            "label": "Position ID",
+            "value": "position-141"
+          },
+          {
+            "label": "TP/SL group",
+            "value": "tpsl-7"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-04-03 07:06:40Z"
+          }
+        ],
+        "interpolatedIntent": "Cancel TP/SL tpsl-7"
+      }
+    }
+  ]
+}

@@ -1,0 +1,475 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-TransferWithAuthorization.json",
+  "dataProvider": {
+    "tokens": {
+      "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "CoinGecko x402 v2 - USDC transfer authorization for onchain DEX pool search API",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "TransferWithAuthorization": [
+            {
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "validAfter",
+              "type": "uint256"
+            },
+            {
+              "name": "validBefore",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "bytes32"
+            }
+          ]
+        },
+        "primaryType": "TransferWithAuthorization",
+        "domain": {
+          "name": "USD Coin",
+          "version": "2",
+          "chainId": 8453,
+          "verifyingContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+        },
+        "message": {
+          "from": "0x1234567890123456789012345678901234567890",
+          "to": "0x110cdBba7FE6434Ec4CE3464CC523942ad6Fb784",
+          "value": "10000",
+          "validAfter": "0",
+          "validBefore": "1738886400",
+          "nonce": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        }
+      },
+      "expected": {
+        "intent": "Authorize USDC transfer",
+        "owner": "Circle Internet Financial",
+        "fields": [
+          {
+            "label": "From",
+            "value": "0x1234567890123456789012345678901234567890"
+          },
+          {
+            "label": "To",
+            "value": "0x110cdBba7FE6434Ec4CE3464CC523942ad6Fb784"
+          },
+          {
+            "label": "Amount",
+            "value": "0.01 USDC"
+          },
+          {
+            "label": "Valid after",
+            "value": "1970-01-01 00:00:00Z"
+          },
+          {
+            "label": "Valid before",
+            "value": "2025-02-07 00:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Zapper x402 v1 - USDC transfer authorization for token price API",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "TransferWithAuthorization": [
+            {
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "validAfter",
+              "type": "uint256"
+            },
+            {
+              "name": "validBefore",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "bytes32"
+            }
+          ]
+        },
+        "primaryType": "TransferWithAuthorization",
+        "domain": {
+          "name": "USD Coin",
+          "version": "2",
+          "chainId": 8453,
+          "verifyingContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+        },
+        "message": {
+          "from": "0xabCDeF0123456789AbcdEf0123456789aBCDEF01",
+          "to": "0x43A2A720cD0911690C248075f4a29a5e7716f758",
+          "value": "3000",
+          "validAfter": "0",
+          "validBefore": "1738886410",
+          "nonce": "0x0000000000000000000000000000000000000000000000000000000000000002"
+        }
+      },
+      "expected": {
+        "intent": "Authorize USDC transfer",
+        "owner": "Circle Internet Financial",
+        "fields": [
+          {
+            "label": "From",
+            "value": "0xabCDeF0123456789AbcdEf0123456789aBCDEF01"
+          },
+          {
+            "label": "To",
+            "value": "0x43A2A720cD0911690C248075f4a29a5e7716f758"
+          },
+          {
+            "label": "Amount",
+            "value": "0.003 USDC"
+          },
+          {
+            "label": "Valid after",
+            "value": "1970-01-01 00:00:00Z"
+          },
+          {
+            "label": "Valid before",
+            "value": "2025-02-07 00:00:10Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "x402Factory x402 v1 - USDC transfer authorization for text-to-speech API",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "TransferWithAuthorization": [
+            {
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "validAfter",
+              "type": "uint256"
+            },
+            {
+              "name": "validBefore",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "bytes32"
+            }
+          ]
+        },
+        "primaryType": "TransferWithAuthorization",
+        "domain": {
+          "name": "USD Coin",
+          "version": "2",
+          "chainId": 8453,
+          "verifyingContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+        },
+        "message": {
+          "from": "0x9876543210987654321098765432109876543210",
+          "to": "0x402FaCcC3fAeb72351CC2b68C7966faF5f22B0d4",
+          "value": "300000",
+          "validAfter": "0",
+          "validBefore": "1738886460",
+          "nonce": "0x0000000000000000000000000000000000000000000000000000000000000003"
+        }
+      },
+      "expected": {
+        "intent": "Authorize USDC transfer",
+        "owner": "Circle Internet Financial",
+        "fields": [
+          {
+            "label": "From",
+            "value": "0x9876543210987654321098765432109876543210"
+          },
+          {
+            "label": "To",
+            "value": "0x402FaCcC3fAeb72351CC2b68C7966faF5f22B0d4"
+          },
+          {
+            "label": "Amount",
+            "value": "0.3 USDC"
+          },
+          {
+            "label": "Valid after",
+            "value": "1970-01-01 00:00:00Z"
+          },
+          {
+            "label": "Valid before",
+            "value": "2025-02-07 00:01:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "SilverbackDeFi x402 v2 - USDC transfer authorization for pool analysis API",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "TransferWithAuthorization": [
+            {
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "validAfter",
+              "type": "uint256"
+            },
+            {
+              "name": "validBefore",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "bytes32"
+            }
+          ]
+        },
+        "primaryType": "TransferWithAuthorization",
+        "domain": {
+          "name": "USD Coin",
+          "version": "2",
+          "chainId": 8453,
+          "verifyingContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+        },
+        "message": {
+          "from": "0xfEdcBA9876543210FedCBa9876543210fEdCBa98",
+          "to": "0xD34411a70EffbDd000c529bbF572082ffDcF1794",
+          "value": "5000",
+          "validAfter": "0",
+          "validBefore": "1738886700",
+          "nonce": "0x0000000000000000000000000000000000000000000000000000000000000004"
+        }
+      },
+      "expected": {
+        "intent": "Authorize USDC transfer",
+        "owner": "Circle Internet Financial",
+        "fields": [
+          {
+            "label": "From",
+            "value": "0xfEdcBA9876543210FedCBa9876543210fEdCBa98"
+          },
+          {
+            "label": "To",
+            "value": "0xD34411a70EffbDd000c529bbF572082ffDcF1794"
+          },
+          {
+            "label": "Amount",
+            "value": "0.005 USDC"
+          },
+          {
+            "label": "Valid after",
+            "value": "1970-01-01 00:00:00Z"
+          },
+          {
+            "label": "Valid before",
+            "value": "2025-02-07 00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Nittarab x402 v1 - USDC transfer authorization for secret content API",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "TransferWithAuthorization": [
+            {
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "validAfter",
+              "type": "uint256"
+            },
+            {
+              "name": "validBefore",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "bytes32"
+            }
+          ]
+        },
+        "primaryType": "TransferWithAuthorization",
+        "domain": {
+          "name": "USD Coin",
+          "version": "2",
+          "chainId": 8453,
+          "verifyingContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+        },
+        "message": {
+          "from": "0x0123456789abcDEF0123456789abCDef01234567",
+          "to": "0x89764c3dEd721c29999A237cF935a34e1C8EDf97",
+          "value": "50000",
+          "validAfter": "0",
+          "validBefore": "1738886700",
+          "nonce": "0x0000000000000000000000000000000000000000000000000000000000000005"
+        }
+      },
+      "expected": {
+        "intent": "Authorize USDC transfer",
+        "owner": "Circle Internet Financial",
+        "fields": [
+          {
+            "label": "From",
+            "value": "0x0123456789abcDEF0123456789abCDef01234567"
+          },
+          {
+            "label": "To",
+            "value": "0x89764c3dEd721c29999A237cF935a34e1C8EDf97"
+          },
+          {
+            "label": "Amount",
+            "value": "0.05 USDC"
+          },
+          {
+            "label": "Valid after",
+            "value": "1970-01-01 00:00:00Z"
+          },
+          {
+            "label": "Valid before",
+            "value": "2025-02-07 00:05:00Z"
+          }
+        ]
+      }
+    }
+  ]
+}

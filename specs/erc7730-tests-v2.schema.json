@@ -1,0 +1,173 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/LedgerHQ/clear-signing-erc7730-registry/blob/master/specs/erc7730-tests-v2.schema.json",
+  "title": "ERC-7730 Test Cases Schema (v2)",
+  "description": "v2 schema for defining test cases against ERC-7730 clear-signing descriptors. A test file lives at registry/<entity>/testsv2/<descriptor-name>.tests.json and is consumed by the implementation runners listed in .github/test-runner-docs/. Each test asserts the human-readable output (intent, owner, fields) the implementation should produce for a given transaction or typed-data input.",
+  "type": "object",
+  "required": ["descriptor", "tests"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to the schema file"
+    },
+    "descriptor": {
+      "type": "string",
+      "description": "Relative path to the ERC-7730 descriptor under test (resolved from the test file's directory).",
+      "minLength": 1
+    },
+    "dataProvider": {
+      "type": "object",
+      "description": "Mock data injected into the runner so tests do not require network access. Address keys are lowercase 0x-prefixed.",
+      "properties": {
+        "tokens": {
+          "type": "object",
+          "description": "Address → token metadata map.",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["symbol", "decimals", "name"],
+            "properties": {
+              "symbol": { "type": "string" },
+              "decimals": { "type": "integer", "minimum": 0 },
+              "name": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "addressNames": {
+          "type": "object",
+          "description": "Address → local display name map (contact labels, contract names). Keep ENS reverse-resolutions in `ensNames` instead so descriptor fields specifying `sources: [\"local\"]` only match local labels.",
+          "additionalProperties": { "type": "string" }
+        },
+        "ensNames": {
+          "type": "object",
+          "description": "Address → ENS reverse-resolution map (entries end in `.eth`). Kept separate from `addressNames` so descriptor fields specifying `sources: [\"ens\"]` are evaluated against ENS-sourced names only.",
+          "additionalProperties": { "type": "string" }
+        },
+        "nftCollectionNames": {
+          "type": "object",
+          "description": "NFT collection address → display name.",
+          "additionalProperties": { "type": "string" }
+        },
+        "blockTimestamps": {
+          "type": "object",
+          "description": "Block height (decimal string key) → Unix timestamp in seconds.",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "tests": {
+      "type": "array",
+      "description": "List of test cases. The `description` field serves as the join key between this file and runner-produced results.json files.",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          { "$ref": "#/definitions/calldataTest" },
+          { "$ref": "#/definitions/eip712Test" }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "calldataTest": {
+      "type": "object",
+      "description": "Test case for a calldata (raw unsigned transaction) descriptor.",
+      "required": ["description", "rawTx", "expected"],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Human-readable identifier — used as the join key against runner output. Must be unique within the test file (duplicates collide silently in result aggregation).",
+          "minLength": 1
+        },
+        "rawTx": {
+          "type": "string",
+          "description": "Raw unsigned transaction hex string (0x prefixed).",
+          "pattern": "^0x[0-9a-fA-F]+$"
+        },
+        "from": {
+          "type": "string",
+          "description": "Checksummed signer address. Optional. Only set when the descriptor references the signer via `@.from` (otherwise it has no effect on rendering and should be omitted).",
+          "pattern": "^0x[0-9a-fA-F]{40}$"
+        },
+        "txHash": {
+          "type": "string",
+          "description": "Transaction hash for reference only (e.g. link to Etherscan). Optional.",
+          "pattern": "^0x[0-9a-fA-F]{64}$"
+        },
+        "expected": { "$ref": "#/definitions/renderedOutput" }
+      },
+      "additionalProperties": false
+    },
+    "eip712Test": {
+      "type": "object",
+      "description": "Test case for an EIP-712 typed-data descriptor.",
+      "required": ["description", "data", "expected"],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Human-readable identifier — used as the join key against runner output. Must be unique within the test file (duplicates collide silently in result aggregation).",
+          "minLength": 1
+        },
+        "data": {
+          "type": "object",
+          "description": "Complete EIP-712 typed-data object.",
+          "required": ["types", "primaryType", "domain", "message"],
+          "properties": {
+            "types": { "type": "object" },
+            "primaryType": { "type": "string" },
+            "domain": { "type": "object" },
+            "message": { "type": "object" }
+          }
+        },
+        "expected": { "$ref": "#/definitions/renderedOutput" }
+      },
+      "additionalProperties": false
+    },
+    "renderedOutput": {
+      "type": "object",
+      "description": "The human-readable output an implementation should produce. Mirrored by `cases[].rendered` in results.json. See .github/test-runner-docs/README.md.",
+      "required": ["intent", "owner", "fields"],
+      "properties": {
+        "intent": {
+          "type": "string",
+          "description": "The transaction intent shown to the user (e.g. 'Approve', 'Swap'). The action label declared in the descriptor's `intent`; for descriptors using a templated intent, this is the un-interpolated literal form."
+        },
+        "interpolatedIntent": {
+          "type": "string",
+          "description": "Optional. The fully-rendered interpolatedIntent string after substituting any template placeholders against the formatted fields (e.g. 'Swap 100 USDC for DAI'). Omit when the descriptor has no interpolatedIntent."
+        },
+        "owner": {
+          "type": "string",
+          "description": "The descriptor owner shown to the user (e.g. 'Aave DAO')."
+        },
+        "fields": { "$ref": "#/definitions/fields" }
+      },
+      "additionalProperties": false
+    },
+    "fields": {
+      "type": "array",
+      "description": "Ordered list of rendered fields. Each entry is `{label, value}` — labels are not unique because array-iteration paths can produce fields with the same label. Entry order must match the order in the descriptor. `value` is the formatted string, or a nested object with the same shape as `renderedOutput` (`intent`, `owner`, `fields`) for calldata-formatted fields. Nesting is recursive.",
+      "items": {
+        "type": "object",
+        "required": ["label", "value"],
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "The field label as declared in the descriptor (e.g. 'Spender', 'Amount')."
+          },
+          "value": {
+            "description": "The rendered value, either a string or a nested `renderedOutput` for calldata-formatted fields.",
+            "oneOf": [
+              { "type": "string" },
+              { "$ref": "#/definitions/renderedOutput" }
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-steakUSDT.json",
+  "dataProvider": {
+    "tokens": {
+      "0xdAC17F958D2ee523a2206206994597C13D831ec7": {
+        "decimals": 6,
+        "name": "Tether USD",
+        "symbol": "USDT"
+      },
+      "0xbEef047a543E45807105E51A8BBEFCc5950fcfBa": {
+        "symbol": "steakUSDT",
+        "decimals": 18,
+        "name": "Steakhouse USDT"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit - chain 1",
+      "rawTx": "0x02f869013a0f840947e8978307503394beef047a543e45807105e51a8bbefcc5950fcfba80b8446e553f6500000000000000000000000000000000000000000000000000000001cf07f86e000000000000000000000000bb12e9dee4c2b5811c53198bf2134325be444a3ac0",
+      "txHash": "0xec34e48ead4d572829bc21739c29f125e854f0c137171e27316c178db1b4c06f",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Steakhouse Financial",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "7768.373358 USDT"
+          },
+          {
+            "label": "Share ticker",
+            "value": "steakUSDT"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xbB12e9dee4c2B5811c53198BF2134325bE444A3a"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw - chain 1",
+      "rawTx": "0x02f88e0182069d835f0c0884033b2dd083085c5894beef047a543e45807105e51a8bbefcc5950fcfba80b864b460af9400000000000000000000000000000000000000000000000000000082c2feeae800000000000000000000000068230e37b83fd2b586b51f3e58f6ed4a0689a4af00000000000000000000000068230e37b83fd2b586b51f3e58f6ed4a0689a4afc0",
+      "txHash": "0x7e53b7ac983d03d7a3e14c3c86f6ad1f1ea7d80088f576ece3c2b09d3de38507",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Steakhouse Financial",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "561617.234664 USDT"
+          },
+          {
+            "label": "To",
+            "value": "0x68230E37B83Fd2b586B51F3e58f6Ed4A0689A4Af"
+          },
+          {
+            "label": "Owner",
+            "value": "0x68230E37B83Fd2b586B51F3e58f6Ed4A0689A4Af"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88d01188405f5e1008408c491608308d16294beef047a543e45807105e51a8bbefcc5950fcfba80b864ba0876520000000000000000000000000000000000000000000000056d46ff0eaacb92630000000000000000000000000dd5b2999c33ec54fe276ccded69965d4ca909ff0000000000000000000000000dd5b2999c33ec54fe276ccded69965d4ca909ffc0",
+      "txHash": "0xc6bb1f7d17f7d8cade6c590f56839eda1a04475ceaec59f3d98cb2fbb65d8c2a",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Steakhouse Financial",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "100.107981805511742051 steakUSDT"
+          },
+          {
+            "label": "To",
+            "value": "0x0dD5B2999C33Ec54fE276cCDED69965D4cA909fF"
+          },
+          {
+            "label": "Owner",
+            "value": "0x0dD5B2999C33Ec54fE276cCDED69965D4cA909fF"
+          }
+        ]
+      }
+    }
+  ]
+}
