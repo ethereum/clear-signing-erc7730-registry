@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-BoldToken.json",
+  "dataProvider": {
+    "tokens": {
+      "0x6440f144b7e50d6a8439336510312d2f54beb01d": { "symbol": "BOLD", "decimals": 18, "name": "BOLD Stablecoin" },
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" },
+      "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0": { "symbol": "wstETH", "decimals": 18, "name": "Wrapped liquid staked Ether 2.0" },
+      "0xae78736cd615f374d3085123a210448e74fc6393": { "symbol": "rETH", "decimals": 18, "name": "Rocket Pool ETH" }
+    }
+  },
+  "tests": [
+    {
+      "description": "transfer on calldata-BoldToken",
+      "rawTx": "0x02f86e0182015a841dcd65008423525bc082ca67946440f144b7e50d6a8439336510312d2f54beb01d80b844a9059cbb000000000000000000000000930fcc7713010bef90847567897156a0488cadb400000000000000000000000000000000000000000000001b46ec103d344380c4c0",
+      "txHash": "0x87e5750cac676590a51c61d302027033c87d7a63c07761aa4be2eeaa8b98bd7b",
+      "expected": {
+        "intent": "Send BOLD",
+        "owner": "Liquity",
+        "fields": [
+          { "label": "To", "value": "0x930fcC7713010BeF90847567897156A0488cadb4" },
+          { "label": "Amount", "value": "503.172567522372452548 BOLD" }
+        ],
+        "interpolatedIntent": "Send 503.172567522372452548 BOLD to 0x930fcC7713010BeF90847567897156A0488cadb4"
+      }
+    },
+    {
+      "description": "approve on calldata-BoldToken",
+      "rawTx": "0x02f86d01188405f5e10084108ee440830111ae946440f144b7e50d6a8439336510312d2f54beb01d80b844095ea7b3000000000000000000000000111111125421ca6dc452d289314280a0f8842a650000000000000000000000000000000000000000000004574ea66a5853d00000c0",
+      "txHash": "0xb98b582f7f75cb7c7b3abbeca6257b3e14bf6daaedacd822c77b3db5e2fd45f1",
+      "expected": {
+        "intent": "Approve BOLD",
+        "owner": "Liquity",
+        "fields": [{ "label": "Spender", "value": "0x111111125421cA6dc452d289314280a0f8842A65" }, { "label": "Amount", "value": "20500 BOLD" }],
+        "interpolatedIntent": "Approve 20500 BOLD"
+      }
+    }
+  ]
+}
