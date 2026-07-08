@@ -1,85 +1,208 @@
 {
-  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-ConfidentialWrapper.json",
+  "dataProvider": {
+    "tokens": {
+      "0xe978f22157048e5db8e5d07971376e86671672b2": { "symbol": "cUSDC", "decimals": 6, "name": "Confidential USDC" }
+    }
+  },
   "tests": [
     {
       "description": "Shield 1000000 underlying tokens to a receiver",
       "rawTx": "0x02f8b10180843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b844bf376c7a00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c800000000000000000000000000000000000000000000000000000000000f4240c080a009fc03631f131224cd33a4b5923163684ca6ee6bdadee120841cb7190e27df06a007f3ba28c8356d07f8413c9f9aebf00541f5b5e7e5daa629a9835b0b80529f8e",
-      "expectedTexts": ["Shield", "Amount", "1000000", "Receiver"]
+      "expected": {
+        "intent": "Shield",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Amount", "value": "1000000" },
+          { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
+        ]
+      }
     },
     {
       "description": "Request to unshield using a known encrypted amount handle",
       "rawTx": "0x02f8d10101843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b864e8c15fd40000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789c001a0d70ae3f40a0b193ce1d8e548f7e59aa253a72c256fe9175ebb6ba5d512349a51a02b77c897eb799db3d6e824f43934be60bfb7d700c266c28c15961607bb71acb9",
-      "expectedTexts": ["Request to unshield", "Holder", "Receiver", "Amount"]
+      "expected": {
+        "intent": "Request to unshield",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Holder", "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" },
+          { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" },
+          { "label": "Amount", "value": "[Encrypted Amount]" }
+        ]
+      }
     },
     {
       "description": "Request to unshield with an external encrypted amount and input proof",
       "rawTx": "0x02f901310102843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b8c45bf4ef060000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8abcdef0123456789abcdef0123456789abcdef0123456789abcdef012345678900000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000004deadbeef00000000000000000000000000000000000000000000000000000000c080a007dccde290c8da165f4d095697d5f5da47437f0d6fc348ed3735f04aa7381ad3a0277c8804ded81658d7955ad835f1f9b714753b0c9f10ba95e9de154a29be7da1",
-      "expectedTexts": ["Request to unshield", "Holder", "Receiver", "Amount"]
+      "expected": {
+        "intent": "Request to unshield",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Holder", "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" },
+          { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" },
+          { "label": "Amount", "value": "[Encrypted Amount]" }
+        ]
+      }
     },
     {
       "description": "Finalize unshield with cleartext amount and decryption proof",
       "rawTx": "0x02f901110103843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b8a45bb67a05111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000004cafebabe00000000000000000000000000000000000000000000000000000000c080a02d5be50c80c21e22b792038f0f61787c0ec5e1bc6632e30ec957789ee9c1217fa031c5afa294dea8cfa7b1b4fe0f2a4116376a77cfd8a4a938157f9e30683bac5d",
-      "expectedTexts": ["Finalize unshield", "Amount"]
+      "expected": {
+        "intent": "Finalize unshield",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Amount", "value": "1 cUSDC" },
+          { "label": "Request ID", "value": "0x1111111111111111111111111111111111111111111111111111111111111111" }
+        ]
+      }
     },
     {
       "description": "Confidential transfer with a known encrypted amount handle",
       "rawTx": "0x02f8b10104843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b8445bebed7e00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789c080a07c31cedad0f15c153234bfd083fa8f286c81bae0fc00459a526aa4632c3818b9a070bfff8662245e00c26dcb4882db90a16d5ed193772cf78f3314c8aef48d283c",
-      "expectedTexts": ["Confidential transfer", "Amount", "Receiver"]
+      "expected": {
+        "intent": "Confidential transfer",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Amount", "value": "[Encrypted Amount]" },
+          { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
+        ]
+      }
     },
     {
       "description": "Confidential transfer with an external encrypted amount and input proof",
       "rawTx": "0x02f901110105843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b8a42fb74e6200000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8abcdef0123456789abcdef0123456789abcdef0123456789abcdef012345678900000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000004deadbeef00000000000000000000000000000000000000000000000000000000c001a076dc7b000a1a98ff4dc3cd67b47f1aa824922d5d7378de662a6e8ad2062fcd38a07d624fe296b77fd21d9881f84864f119e01194bb4d3091da3bd3131c1dd65dbc",
-      "expectedTexts": ["Confidential transfer", "Amount", "Receiver"]
+      "expected": {
+        "intent": "Confidential transfer",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Amount", "value": "[Encrypted Amount]" },
+          { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
+        ]
+      }
     },
     {
       "description": "Confidential transfer from a holder using a known encrypted amount handle",
       "rawTx": "0x02f8d10106843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b864eb3155b50000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789c001a0dd583828e16a91e9dce5785a90e2ab3458a3fb241914c8b1749a85c362d44ba4a0293f1b3d2dbfbf0d5510eb5eaf66ed2f3029b11b676ce2f76ffc23fda0e27160",
-      "expectedTexts": ["Confidential transfer from", "Holder", "Receiver", "Amount"]
+      "expected": {
+        "intent": "Confidential transfer",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Amount", "value": "[Encrypted Amount]" },
+          { "label": "Holder", "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" },
+          { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
+        ]
+      }
     },
     {
       "description": "Confidential transfer from a holder with an external encrypted amount and input proof",
       "rawTx": "0x02f901310107843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b8c4e064b9bb0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8abcdef0123456789abcdef0123456789abcdef0123456789abcdef012345678900000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000004deadbeef00000000000000000000000000000000000000000000000000000000c080a057ef64da06c0f378dcf7996dcd9b66297e79cd0194802ae95bef30d2acd4cedca02667fd7a10d3de7077e95babc8659ad4a8b9c2401a96fb8da73749515d24e382",
-      "expectedTexts": ["Confidential transfer from", "Holder", "Receiver", "Amount"]
+      "expected": {
+        "intent": "Confidential transfer",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Amount", "value": "[Encrypted Amount]" },
+          { "label": "Holder", "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" },
+          { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
+        ]
+      }
     },
     {
-      "description": "Confidential transfer with callback using a known encrypted amount handle (requires the callbackData $ref fix)",
+      "description": "Confidential transfer with callback using a known encrypted amount handle",
       "rawTx": "0x02f901110108843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b8a4537d3c5000000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8abcdef0123456789abcdef0123456789abcdef0123456789abcdef012345678900000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000002beef000000000000000000000000000000000000000000000000000000000000c001a010b8fccb73f3b0fedbc365f47b04579b8fb10ca67c0ae7c178aec948add44593a05be270025755d8575f02e70527814e4ae768c05b422c79d87557b0ef775d5b33",
-      "expectedTexts": ["Confidential transfer with callback", "Amount", "Receiver"]
+      "expected": {
+        "intent": "Confidential transfer",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Amount", "value": "[Encrypted Amount]" },
+          { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
+        ]
+      }
     },
     {
       "description": "Confidential transfer with callback using an external encrypted amount, input proof and callback data",
       "rawTx": "0x02f901720109843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b90104de64211900000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000004deadbeef000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002beef000000000000000000000000000000000000000000000000000000000000c080a0a5cb526698a19375851d0aa092bb5663cebd6744d0be32e32d17b0c33512b4cba0142ab551edb41147413a5feab00cdc1a78946b76436f3d49ff27b0ab3da93279",
-      "expectedTexts": ["Confidential transfer with callback", "Amount", "Receiver"]
+      "expected": {
+        "intent": "Confidential transfer",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Amount", "value": "[Encrypted Amount]" },
+          { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
+        ]
+      }
     },
     {
       "description": "Confidential transfer from a holder with callback using a known encrypted amount handle",
       "rawTx": "0x02f90131010a843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b8c4c7b8a75e0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8abcdef0123456789abcdef0123456789abcdef0123456789abcdef012345678900000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002beef000000000000000000000000000000000000000000000000000000000000c080a09ac461ac55d171ddee2d592fb947c00624d9e3e4b6b6d1076a024e691229d58aa01029e5f3eb6421d15ef0e1a0b9f30b0595bec847b37dc813c86c60d15010da9c",
-      "expectedTexts": ["Confidential transfer from with callback", "Holder", "Receiver", "Amount"]
+      "expected": {
+        "intent": "Confidential transfer",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Amount", "value": "[Encrypted Amount]" },
+          { "label": "Holder", "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" },
+          { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
+        ]
+      }
     },
     {
       "description": "Confidential transfer from a holder with callback using an external encrypted amount, input proof and callback data",
       "rawTx": "0x02f90192010b843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b9012434c457430000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8abcdef0123456789abcdef0123456789abcdef0123456789abcdef012345678900000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000004deadbeef000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002beef000000000000000000000000000000000000000000000000000000000000c001a0cdf10abdb79d76d8ea2527470d852feaaf0df885f2b879af16ef591d4920aea6a010fdde345f5ecb2d479e6ea6eadfc7330d3c0b2edab1b0a656eae745383f5ba2",
-      "expectedTexts": ["Confidential transfer from with callback", "Holder", "Receiver", "Amount"]
+      "expected": {
+        "intent": "Confidential transfer",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Amount", "value": "[Encrypted Amount]" },
+          { "label": "Holder", "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" },
+          { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
+        ]
+      }
     },
     {
       "description": "Authorize an operator until a future timestamp",
       "rawTx": "0x02f8b1010c843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b844d4febb9600000000000000000000000090f79bf6eb2c4f870365e785982e1f101e93b9060000000000000000000000000000000000000000000000000000000070dbd880c001a0bf279d9809d40f6cd0bd38c0cccef67de34a0b5be2a0cf01f76cb77e21c019a0a003c236d0e801254fdb62c787d94d9d3b3d087250e26c56f896ca8a5934608407",
-      "expectedTexts": ["Authorize operator", "Operator to authorize", "Authorized until"]
+      "expected": {
+        "intent": "Authorize operator",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Authorize operator", "value": "0x90F79bf6EB2c4f870365E785982E1f101E93b906" },
+          { "label": "Authorized until", "value": "2030-01-01 00:00 UTC" }
+        ]
+      }
     },
     {
       "description": "Request public disclosure of an encrypted amount",
       "rawTx": "0x02f890010d843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280a4d8061806abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789c080a0e552e021a170ce73b7416492c0b711d94202c14220ba5fce1c64119b5ca50e6fa0722c679a2a9a8619ab350e93a6b9524a9b24455c5853c702baec94d4c648c101",
-      "expectedTexts": ["Request public disclosure", "Amount"]
+      "expected": {
+        "intent": "Request public disclosure",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Amount", "value": "[Encrypted Amount]" }
+        ]
+      }
     },
     {
       "description": "Disclose an encrypted amount publicly with cleartext value and decryption proof",
       "rawTx": "0x02f90111010e843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b8a4b1af281eabcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789000000000000000000000000000000000000000000000000000000000007a12000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000004cafebabe00000000000000000000000000000000000000000000000000000000c080a0064fd09ccaa1660abe4c32158f716c689eb39997a4ee3635e8e4ddd7a12881dfa0688e12ff8a7c63bd7bc6bae59500abdc60272b6632d8ce69bcb8a1ec8f5dd089",
-      "expectedTexts": ["Disclose encrypted amount publicly", "Amount"]
+      "expected": {
+        "intent": "Disclose amount publicly",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Amount", "value": "0.5 cUSDC" },
+          { "label": "Amount", "value": "[Encrypted Amount]" }
+        ]
+      }
     },
     {
       "description": "Shield on Sepolia (testnet deployment, chainId 11155111)",
       "rawTx": "0x02f8b483aa36a780843b9aca008506fc23ac008303d090947c5bf43b851c1dff1a4fee8db225b87f2c22363980b844bf376c7a00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c800000000000000000000000000000000000000000000000000000000002625a0c001a0fce3d9c5a84421797157964ec6a4499ba658b87eece3233badd46c2f5fc66611a0406eae8d09ee171ffb10cdce0250a66f24a294f1f7e2642ff13c8e37f0ce5848",
-      "expectedTexts": ["Shield", "Amount", "2500000", "Receiver"]
+      "expected": {
+        "intent": "Shield",
+        "owner": "Zama",
+        "fields": [
+          { "label": "Amount", "value": "2500000" },
+          { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
+        ]
+      }
     }
   ]
 }
