@@ -1,0 +1,1564 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "$id": "DeFiInteractorModule",
+    "contract": {
+      "abi": [
+        {
+          "inputs": [
+            { "internalType": "address", "name": "_avatar", "type": "address" },
+            { "internalType": "address", "name": "_owner", "type": "address" },
+            {
+              "internalType": "address",
+              "name": "_authorizedUpdater",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "constructor"
+        },
+        { "inputs": [], "name": "AddressNotAllowed", "type": "error" },
+        { "inputs": [], "name": "ApprovalExceedsLimit", "type": "error" },
+        { "inputs": [], "name": "ApprovalFailed", "type": "error" },
+        { "inputs": [], "name": "ApprovalNotAllowed", "type": "error" },
+        { "inputs": [], "name": "EnforcedPause", "type": "error" },
+        { "inputs": [], "name": "ExceedsApprovalLimit", "type": "error" },
+        { "inputs": [], "name": "ExceedsMaxLoss", "type": "error" },
+        { "inputs": [], "name": "ExceedsPortfolioLimit", "type": "error" },
+        { "inputs": [], "name": "ExceedsTransferLimit", "type": "error" },
+        { "inputs": [], "name": "ExpectedPause", "type": "error" },
+        { "inputs": [], "name": "InvalidAddress", "type": "error" },
+        { "inputs": [], "name": "InvalidLimitConfiguration", "type": "error" },
+        { "inputs": [], "name": "InvalidPrice", "type": "error" },
+        { "inputs": [], "name": "InvalidPriceFeed", "type": "error" },
+        { "inputs": [], "name": "InvalidUpdaterAddress", "type": "error" },
+        { "inputs": [], "name": "ModuleTransactionFailed", "type": "error" },
+        { "inputs": [], "name": "NoPriceFeedSet", "type": "error" },
+        { "inputs": [], "name": "NoTrackedTokens", "type": "error" },
+        { "inputs": [], "name": "OnlyAuthorizedUpdater", "type": "error" },
+        { "inputs": [], "name": "OracleNotSet", "type": "error" },
+        {
+          "inputs": [],
+          "name": "ReentrancyGuardReentrantCall",
+          "type": "error"
+        },
+        { "inputs": [], "name": "StalePortfolioValue", "type": "error" },
+        { "inputs": [], "name": "StalePriceFeed", "type": "error" },
+        { "inputs": [], "name": "TransactionFailed", "type": "error" },
+        { "inputs": [], "name": "Unauthorized", "type": "error" },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "subAccount",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "address[]",
+              "name": "targets",
+              "type": "address[]"
+            },
+            {
+              "indexed": false,
+              "internalType": "bool",
+              "name": "allowed",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "AllowedAddressesSet",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "subAccount",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "protocol",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "ApprovalExecuted",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "subAccount",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "approvalAmountUSD",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "cumulativeApprovedUSD",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "portfolioValueUSD",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "limitBps",
+              "type": "uint256"
+            }
+          ],
+          "name": "ApprovalValueChecked",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "oldUpdater",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newUpdater",
+              "type": "address"
+            }
+          ],
+          "name": "AuthorizedUpdaterChanged",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousAvatar",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newAvatar",
+              "type": "address"
+            }
+          ],
+          "name": "AvatarSet",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "by",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "EmergencyPaused",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "by",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "EmergencyUnpaused",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "subAccount",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "newWindowStart",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "portfolioValue",
+              "type": "uint256"
+            }
+          ],
+          "name": "ExecutionWindowReset",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "oldAge",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "newAge",
+              "type": "uint256"
+            }
+          ],
+          "name": "MaxPriceFeedAgeUpdated",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "oldAge",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "newAge",
+              "type": "uint256"
+            }
+          ],
+          "name": "MaxSafeValueAgeUpdated",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Paused",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "subAccount",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "newWindowStart",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "portfolioValueUSD",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "PortfolioWindowReset",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "subAccount",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "target",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "portfolioValueBefore",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "portfolioValueAfter",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "valueLost",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "cumulativeLossInWindow",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "ProtocolExecuted",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "member",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "uint16",
+              "name": "roleId",
+              "type": "uint16"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "RoleAssigned",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "member",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "uint16",
+              "name": "roleId",
+              "type": "uint16"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "RoleRevoked",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "totalValueUSD",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "updateCount",
+              "type": "uint256"
+            }
+          ],
+          "name": "SafeValueUpdated",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "subAccount",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "maxLossBps",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "maxTransferBps",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "windowDuration",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "SubAccountLimitsSet",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousTarget",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newTarget",
+              "type": "address"
+            }
+          ],
+          "name": "TargetSet",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            }
+          ],
+          "name": "TokenPriceFeedRemoved",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "priceFeed",
+              "type": "address"
+            }
+          ],
+          "name": "TokenPriceFeedSet",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "subAccount",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "safeBalanceBefore",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "safeBalanceAfter",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "cumulativeInWindow",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "percentageOfBalance",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "TransferExecuted",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "subAccount",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "transferAmountUSD",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "cumulativeTransferredUSD",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "portfolioValueUSD",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "limitBps",
+              "type": "uint256"
+            }
+          ],
+          "name": "TransferValueChecked",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "subAccount",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "newWindowStart",
+              "type": "uint256"
+            }
+          ],
+          "name": "TransferWindowReset",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Unpaused",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "subAccount",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "activityType",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "threshold",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "UnusualActivity",
+          "type": "event"
+        },
+        {
+          "inputs": [],
+          "name": "DEFAULT_LIMIT_WINDOW_DURATION",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "DEFAULT_MAX_LOSS_BPS",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "DEFAULT_MAX_TRANSFER_BPS",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "DEFI_EXECUTE_ROLE",
+          "outputs": [
+            { "internalType": "uint16", "name": "", "type": "uint16" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "DEFI_TRANSFER_ROLE",
+          "outputs": [
+            { "internalType": "uint16", "name": "", "type": "uint16" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "", "type": "address" },
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "name": "allowedAddresses",
+          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "token", "type": "address" },
+            { "internalType": "address", "name": "target", "type": "address" },
+            { "internalType": "uint256", "name": "amount", "type": "uint256" }
+          ],
+          "name": "approveProtocol",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "authorizedUpdater",
+          "outputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "avatar",
+          "outputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "target", "type": "address" },
+            { "internalType": "bytes", "name": "data", "type": "bytes" }
+          ],
+          "name": "executeOnProtocol",
+          "outputs": [
+            { "internalType": "bytes", "name": "result", "type": "bytes" }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "name": "executionWindowPortfolioValue",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "name": "executionWindowStart",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "getSafeValue",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "totalValueUSD",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastUpdated",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "updateCount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "subAccount",
+              "type": "address"
+            }
+          ],
+          "name": "getSubAccountLimits",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "maxLossBps",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTransferBps",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "windowDuration",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "uint16", "name": "roleId", "type": "uint16" }
+          ],
+          "name": "getSubaccountCount",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "uint16", "name": "roleId", "type": "uint16" }
+          ],
+          "name": "getSubaccountsByRole",
+          "outputs": [
+            { "internalType": "address[]", "name": "", "type": "address[]" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address[]",
+              "name": "tokens",
+              "type": "address[]"
+            }
+          ],
+          "name": "getTokenBalances",
+          "outputs": [
+            {
+              "internalType": "uint256[]",
+              "name": "balances",
+              "type": "uint256[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "member", "type": "address" },
+            { "internalType": "uint16", "name": "roleId", "type": "uint16" }
+          ],
+          "name": "grantRole",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "member", "type": "address" },
+            { "internalType": "uint16", "name": "roleId", "type": "uint16" }
+          ],
+          "name": "hasRole",
+          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "maxAge", "type": "uint256" }
+          ],
+          "name": "isValueStale",
+          "outputs": [
+            { "internalType": "bool", "name": "isStale", "type": "bool" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "maxPriceFeedAge",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "maxSafeValueAge",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "owner",
+          "outputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "pause",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "paused",
+          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "token", "type": "address" }
+          ],
+          "name": "removeTokenPriceFeed",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "member", "type": "address" },
+            { "internalType": "uint16", "name": "roleId", "type": "uint16" }
+          ],
+          "name": "revokeRole",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "safeValue",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "totalValueUSD",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastUpdated",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "updateCount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "subAccount",
+              "type": "address"
+            },
+            {
+              "internalType": "address[]",
+              "name": "targets",
+              "type": "address[]"
+            },
+            { "internalType": "bool", "name": "allowed", "type": "bool" }
+          ],
+          "name": "setAllowedAddresses",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "newUpdater",
+              "type": "address"
+            }
+          ],
+          "name": "setAuthorizedUpdater",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "_avatar", "type": "address" }
+          ],
+          "name": "setAvatar",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "newMaxAge",
+              "type": "uint256"
+            }
+          ],
+          "name": "setMaxPriceFeedAge",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "newMaxAge",
+              "type": "uint256"
+            }
+          ],
+          "name": "setMaxSafeValueAge",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "subAccount",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxLossBps",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTransferBps",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "windowDuration",
+              "type": "uint256"
+            }
+          ],
+          "name": "setSubAccountLimits",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "_target", "type": "address" }
+          ],
+          "name": "setTarget",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "token", "type": "address" },
+            {
+              "internalType": "address",
+              "name": "priceFeed",
+              "type": "address"
+            }
+          ],
+          "name": "setTokenPriceFeed",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address[]",
+              "name": "tokens",
+              "type": "address[]"
+            },
+            {
+              "internalType": "address[]",
+              "name": "priceFeeds",
+              "type": "address[]"
+            }
+          ],
+          "name": "setTokenPriceFeeds",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "name": "subAccountLimits",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "maxLossBps",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTransferBps",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "windowDuration",
+              "type": "uint256"
+            },
+            { "internalType": "bool", "name": "isConfigured", "type": "bool" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "", "type": "address" },
+            { "internalType": "uint16", "name": "", "type": "uint16" }
+          ],
+          "name": "subAccountRoles",
+          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "uint16", "name": "", "type": "uint16" },
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "name": "subaccount",
+          "outputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "target",
+          "outputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "name": "tokenPriceFeeds",
+          "outputs": [
+            {
+              "internalType": "contract AggregatorV3Interface",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "transferOwnership",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "token", "type": "address" },
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            { "internalType": "uint256", "name": "amount", "type": "uint256" }
+          ],
+          "name": "transferToken",
+          "outputs": [
+            { "internalType": "bool", "name": "success", "type": "bool" }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "", "type": "address" },
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "name": "transferWindowBalance",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "", "type": "address" },
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "name": "transferWindowStart",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "", "type": "address" },
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "name": "transferredInWindow",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "unpause",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "totalValueUSD",
+              "type": "uint256"
+            }
+          ],
+          "name": "updateSafeValue",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "name": "valueApprovedInWindow",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "name": "valueTransferredInWindow",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        }
+      ],
+      "deployments": [
+        {
+          "chainId": 11155111,
+          "address": "0x42FBd804C677324c4b711Fce26Ee8226702B389A"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "MultiSub",
+    "info": {
+      "url": "https://multisub.netlify.app/",
+      "legalName": "MultiSub"
+    }
+  },
+  "display": {
+    "formats": {
+      "pause()": {
+        "intent": "Pause operations",
+        "fields": []
+      },
+      "unpause()": {
+        "intent": "Unpause operations",
+        "fields": []
+      },
+      "grantRole(address,uint16)": {
+        "intent": "Grant role to sub-account",
+        "fields": [
+          {
+            "path": "member",
+            "label": "Member",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "contract"],
+              "sources": ["trust"]
+            }
+          },
+          {
+            "path": "roleId",
+            "label": "Role Id",
+            "format": "raw"
+          }
+        ]
+      },
+      "revokeRole(address,uint16)": {
+        "intent": "Revoke role from sub-account",
+        "fields": [
+          {
+            "path": "member",
+            "label": "Member",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "contract"],
+              "sources": ["trust"]
+            }
+          },
+          {
+            "path": "roleId",
+            "label": "Role Id",
+            "format": "raw"
+          }
+        ]
+      },
+      "updateSafeValue(uint256)": {
+        "intent": "Update Safe USD value",
+        "fields": [
+          {
+            "path": "totalValueUSD",
+            "label": "Total Value U S D",
+            "format": "tokenAmount"
+          }
+        ]
+      },
+      "setAuthorizedUpdater(address)": {
+        "intent": "Set authorized updater",
+        "fields": [
+          {
+            "path": "newUpdater",
+            "label": "New Updater",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "contract"],
+              "sources": ["trust"]
+            }
+          }
+        ]
+      },
+      "setMaxSafeValueAge(uint256)": {
+        "intent": "Set max Safe value age",
+        "fields": [
+          {
+            "path": "newMaxAge",
+            "label": "New Max Age",
+            "format": "raw"
+          }
+        ]
+      },
+      "setMaxPriceFeedAge(uint256)": {
+        "intent": "Set max price feed age",
+        "fields": [
+          {
+            "path": "newMaxAge",
+            "label": "New Max Age",
+            "format": "raw"
+          }
+        ]
+      },
+      "setTokenPriceFeed(address,address)": {
+        "intent": "Set token price feed",
+        "fields": [
+          {
+            "path": "token",
+            "label": "Token",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "contract"],
+              "sources": ["trust"]
+            }
+          },
+          {
+            "path": "priceFeed",
+            "label": "Price Feed",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "contract"],
+              "sources": ["trust"]
+            }
+          }
+        ]
+      },
+      "setTokenPriceFeeds(address[],address[])": {
+        "intent": "Set multiple price feeds",
+        "fields": [
+          {
+            "path": "tokens.[]",
+            "label": "Tokens",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "contract"],
+              "sources": ["trust"]
+            }
+          },
+          {
+            "path": "priceFeeds.[]",
+            "label": "Price Feeds",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "contract"],
+              "sources": ["trust"]
+            }
+          }
+        ]
+      },
+      "removeTokenPriceFeed(address)": {
+        "intent": "Remove token price feed",
+        "fields": [
+          {
+            "path": "token",
+            "label": "Token",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "contract"],
+              "sources": ["trust"]
+            }
+          }
+        ]
+      }
+    }
+  }
+}
