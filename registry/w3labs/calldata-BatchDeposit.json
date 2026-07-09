@@ -1,0 +1,37 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "$id": "Ethereum Staking BatchDeposit",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x8fC32441C13706bB981A506FdE65DeDD5dEF3981" },
+        { "chainId": 17000, "address": "0xf079e540F598a85C22dA6eb570236B2169bE4962" }
+      ],
+      "abi": "https://api.etherscan.io/api?module=contract&action=getabi&address=0x8fC32441C13706bB981A506FdE65DeDD5dEF3981"
+    }
+  },
+  "metadata": {
+    "owner": "w3.labs",
+    "info": { "url": "https://www.w3labs.xyz", "legalName": "w3.labs GmbH", "lastUpdate": "2025-01-04T16:27:00Z" }
+  },
+  "display": {
+    "formats": {
+      "batchDeposit(address withdrawalAddress,bytes[] pubkeys,bytes[] signatures,bytes32[] depositDataRoots)": {
+        "$id": "BatchDeposit",
+        "intent": "Deposit to Validators",
+        "fields": [
+          { "path": "@.value", "label": "Amount to Deposit", "format": "amount" },
+          {
+            "path": "withdrawalAddress",
+            "label": "Address for Withdrawal",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] }
+          },
+          { "path": "pubkeys.[]", "label": "Public Keys", "format": "raw" }
+        ],
+        "required": ["@.value", "withdrawalAddress", "pubkeys.[]"],
+        "excluded": ["signatures.[]", "depositDataRoots.[]"]
+      }
+    }
+  }
+}
