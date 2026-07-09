@@ -1,0 +1,111 @@
+{
+    "$schema": "../../specs/erc7730-v1.schema.json",
+    "context": {
+        "contract": {
+            "deployments": [
+                {
+                    "chainId": 8453,
+                    "address": "0xc0634090F2Fe6c6d75e61Be2b949464aBB498973"
+                }
+            ],
+            "abi": "https://gist.githubusercontent.com/veox/8800debbf56e24718f9f483e1e40c35c/raw/erc20.abi.json"
+        }
+    },
+    "metadata": {
+        "owner": "Keeta",
+        "info": {
+            "legalName": "Keeta",
+            "lastUpdate": "2025-07-28T02:17:00Z",
+            "url": "https://keeta.com"
+        },
+        "constants": {
+            "keetaToken": "0xc0634090F2Fe6c6d75e61Be2b949464aBB498973"
+        }
+    },
+    "display": {
+        "formats": {
+            "transfer(address,uint256)": {
+                "intent": "Moves `amount` tokens from the caller's account to `to`",
+                "fields": [
+                    {
+                        "label": "To",
+                        "format": "addressName",
+                        "params": {
+                            "types": [
+                                "eoa",
+                                "wallet"
+                            ]
+                        },
+                        "path": "#.to"
+                    },
+                    {
+                        "label": "Amount",
+                        "format": "tokenAmount",
+                        "path": "#.amount",
+                        "params": {
+                            "token": "$.metadata.constants.keetaToken"
+                        }
+                    }
+                ]
+            },
+            "transferFrom(address,address,uint256)": {
+                "intent": "Moves `amount` tokens from `from` to `to` using the allowance mechanism",
+                "fields": [
+                    {
+                        "label": "From",
+                        "format": "addressName",
+                        "params": {
+                            "types": [
+                                "eoa",
+                                "wallet"
+                            ]
+                        },
+                        "path": "#.from"
+                    },
+                    {
+                        "label": "To",
+                        "format": "addressName",
+                        "params": {
+                            "types": [
+                                "eoa",
+                                "wallet"
+                            ]
+                        },
+                        "path": "#.to"
+                    },
+                    {
+                        "label": "Amount",
+                        "format": "tokenAmount",
+                        "path": "#.amount",
+                        "params": {
+                            "token": "$.metadata.constants.keetaToken"
+                        }
+                    }
+                ]
+            },
+            "approve(address,uint256)": {
+                "intent": "Sets `amount` as the allowance of `spender` over the caller's tokens",
+                "fields": [
+                    {
+                        "label": "Spender",
+                        "format": "addressName",
+                        "params": {
+                            "types": [
+                                "contract"
+                            ]
+                        },
+                        "path": "#.spender"
+                    },
+                    {
+                        "label": "Amount",
+                        "format": "tokenAmount",
+                        "path": "#.amount",
+                        "params": {
+                            "token": "$.metadata.constants.keetaToken"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
