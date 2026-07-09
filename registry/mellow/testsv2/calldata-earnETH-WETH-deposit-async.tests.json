@@ -1,43 +1,70 @@
 {
-  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-earnETH-WETH-deposit-async.json",
+  "dataProvider": {
+    "tokens": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "Wrapped Ether"
+      }
+    }
+  },
   "tests": [
     {
       "description": "Async deposit - 0.106 WETH, zero referral",
       "rawTx": "0x02f8f001248405f5e1008415721cc083067ba8943fc48660d02e59fbedd0a5cc18a5580d1f8dd6a480b8841dbd773b0000000000000000000000000000000000000000000000000178e969bf88781b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000c080a05d879e2f1663989a60e14089141f9d90e5c81ea4555d3876c9248f64d240e9f2a07145e35f88e84605f9f71f508dd0a3d89af9aba21899983ce6884f7ba050d457",
       "txHash": "0xbaaf157236fdcbf0dfeb490a091ee6bdd92f603540ed4903d4dc3a25f1eba112",
-      "expectedTexts": [
-        "Interaction with",
-        "Mellow Protocol",
-        "Request deposit",
-        "Vault",
-        "Lido Earn ETH",
-        "Deposit amount"
-      ]
+      "expected": {
+        "intent": "Request deposit",
+        "interpolatedIntent": "Request deposit of 0.106091231637436443 WETH",
+        "owner": "Mellow Protocol",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Lido Earn ETH"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "0.106091231637436443 WETH"
+          }
+        ]
+      }
     },
     {
       "description": "Claim deposited shares",
       "rawTx": "0x02f88f01288404b571c08411490c808306ec97943fc48660d02e59fbedd0a5cc18a5580d1f8dd6a480a41e83409a0000000000000000000000001d4f271c4d70ea2cccc324728eb7bfde947c1573c001a07d3dee45f712ce7f0dd4054b98a3000f17a6570fad2c7b8d4fe48946e0f4c5aaa07258c589cf91e7c5d2be1b43c922a96097dcb024fefcb1594651daeeb0c9b8b0",
       "txHash": "0x12e363fe030ac2cc0748ff8eb921a1971bbad39cc887da130718459e8b45f837",
-      "expectedTexts": [
-        "Interaction with",
-        "Mellow Protocol",
-        "Claim deposited shares",
-        "Vault",
-        "Lido Earn ETH",
-        "Mint shares to"
-      ]
+      "expected": {
+        "intent": "Claim deposited shares",
+        "interpolatedIntent": "Claim deposited shares to 0x1d4f271C4D70Ea2ccCC324728eb7BfdE947C1573",
+        "owner": "Mellow Protocol",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Lido Earn ETH"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x1d4f271C4D70Ea2ccCC324728eb7BfdE947C1573"
+          }
+        ]
+      }
     },
     {
       "description": "Cancel pending deposit request",
       "rawTx": "0x02f870018204b183394fe08425d494b68302dff3943fc48660d02e59fbedd0a5cc18a5580d1f8dd6a48084e6720254c001a0c1407d7cc1ee50b43eddf46f60c13cb45b525b7c08c6c0f3ff2c3f6a543b268ba05c568b9986bb4b35585275dd21191d0608e191fb339a21b45367540a63ec3ac3",
       "txHash": "0xdd568eefe0db7311d1eb8352160ed92b3237598d53e1bd69a4d70da8df965032",
-      "expectedTexts": [
-        "Interaction with",
-        "Mellow Protocol",
-        "Cancel pending deposit request",
-        "Vault",
-        "Lido Earn ETH"
-      ]
+      "expected": {
+        "intent": "Cancel pending deposit request",
+        "owner": "Mellow Protocol",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Lido Earn ETH"
+          }
+        ]
+      }
     }
   ]
 }

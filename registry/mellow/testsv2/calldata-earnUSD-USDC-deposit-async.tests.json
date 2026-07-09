@@ -1,19 +1,35 @@
 {
-  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-earnUSD-USDC-deposit-async.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      }
+    }
+  },
   "tests": [
     {
       "description": "Async deposit - 3000 USDC, zero referral",
       "rawTx": "0x02f8f10181a28405f5e1008410196620830741bc94c75e7e73b25fea8bb23eb55cc48ba55067b5be7680b8841dbd773b00000000000000000000000000000000000000000000000000000000b2d05e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000c080a0b793fba97c5ec86618726dda193fa24ac92fb2b1e80c43aa54fa425898f23195a0719655d54122bdb41e2adc0f258c0acbc78596099be2569b03ffa23b0e86beb6",
       "txHash": "0x5f8908f726c55184105bb436306105d3e031582f1d79ca2c00259f99c82339a1",
-      "expectedTexts": [
-        "Interaction with",
-        "Mellow Protocol",
-        "Request deposit",
-        "Vault",
-        "Lido Earn USD",
-        "Deposit amount",
-        "3000 USDC"
-      ]
+      "expected": {
+        "intent": "Request deposit",
+        "interpolatedIntent": "Request deposit of 3000 USDC",
+        "owner": "Mellow Protocol",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Lido Earn USD"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "3000 USDC"
+          }
+        ]
+      }
     }
   ]
 }

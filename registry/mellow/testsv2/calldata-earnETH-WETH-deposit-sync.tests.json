@@ -1,19 +1,39 @@
 {
-  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-earnETH-WETH-deposit-sync.json",
+  "dataProvider": {
+    "tokens": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "Wrapped Ether"
+      }
+    }
+  },
   "tests": [
     {
       "description": "Sync deposit - 31.6 WETH with referral",
       "rawTx": "0x02f9025e0181db845438ab4084b37836c0830de45294ce6c2505fef74d2de10fcf1d534cb73ecc83797680b901f01dbd773b000000000000000000000000000000000000000000000001b700d891287ce179000000000000000000000000a9f03a8b7f10fd194e75082b2714d38153a3f53200000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000cc0f90adb8fcb0d706f7aa2e9b98e1c967d3ba6d9167d5401b65bfe91d5357b35ff89b19b9a47cf414273d809da5e74fe23e8f9e0507e2adff00153a34be1dc3ac87652eb85bd1730053b8e5cb84e04eae2523350e76d4be1b08b86d20f37d52ddc569537150bda94200e97b226469737472696275746f724964223a224d704f6756446e63222c22616374696f6e223a226465706f736974222c226f70706f7274756e6974794964223a2235383062366366642d356138342d343037352d383331622d633337666231306566323963222c22616d6f756e74223a223331363333353231393030363131343934323635222c22616d6f756e74557364223a2237333737362e3635222c22746f6b656e496e223a22307843303261614133396232323346453844304130653543344632376541443930383343373536436332222c22746f6b656e496e446563696d616c73223a31387d0001010df09f90a24561726e0000000000000000deadbeefc001a0e3f5d5f2396e2ac5ad2cc76aa48bc464e35ab82857744897b94561c33c61ebb1a040df603f5055c12f62ec0ec8bc9260962c7e438ccd885f8c1587155ae46d5e6e",
       "txHash": "0x2f9b7bf3a51ca71ca397423a7bd6cac21c01bd15597c83d9de3ec07fb92651bb",
-      "expectedTexts": [
-        "Interaction with",
-        "Mellow Protocol",
-        "Deposit (immediate)",
-        "Vault",
-        "Lido Earn ETH",
-        "Deposit amount",
-        "Referral"
-      ]
+      "expected": {
+        "intent": "Deposit (immediate)",
+        "interpolatedIntent": "Deposit 31.633521900611494265 WETH",
+        "owner": "Mellow Protocol",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Lido Earn ETH"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "31.633521900611494265 WETH"
+          },
+          {
+            "label": "Referral",
+            "value": "0xa9f03a8B7F10fd194E75082B2714D38153a3F532"
+          }
+        ]
+      }
     }
   ]
 }
