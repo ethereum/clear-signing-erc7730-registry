@@ -1,0 +1,109 @@
+{
+  "$schema": "https://github.com/LedgerHQ/clear-signing-erc7730-registry/blob/master/specs/erc7730-v1.schema.json",
+  "context": {
+    "$id": "houdini-identity-nft-0g-testnet",
+    "contract": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "og0RootHash",
+              "type": "string"
+            },
+            {
+              "internalType": "enum HoudiniIdentityNFT.ProfileType",
+              "name": "profileType",
+              "type": "uint8"
+            }
+          ],
+          "name": "mintIdentity",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "newOg0RootHash",
+              "type": "string"
+            }
+          ],
+          "name": "updateIdentity",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ],
+      "deployments": [
+        {
+          "chainId": "16602",
+          "address": "0x116938bFd313667f9beFCB762CeD66445b62dC65"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "izzetemredemir",
+    "info": {
+      "legalName": "Houdini Identity NFT",
+      "url": "https://github.com/izzetemredemir/Houdini"
+    },
+    "enums": {
+      "ProfileType": {
+        "0": "Personal Identity",
+        "1": "Project Identity",
+        "2": "DAO Identity"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "mintIdentity(string,uint8)": {
+        "intent": "Mint Identity NFT",
+        "fields": [
+          {
+            "path": "og0RootHash",
+            "label": "0G Storage Hash",
+            "format": "raw"
+          },
+          {
+            "path": "profileType",
+            "label": "Profile Type",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.ProfileType"
+            }
+          }
+        ]
+      },
+      "updateIdentity(uint256,string)": {
+        "intent": "Update Profile",
+        "fields": [
+          {
+            "path": "tokenId",
+            "label": "NFT Token ID",
+            "format": "raw"
+          },
+          {
+            "path": "newOg0RootHash",
+            "label": "New 0G Storage Hash",
+            "format": "raw"
+          }
+        ]
+      }
+    }
+  }
+}
