@@ -1,0 +1,65 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "$id": "Uniswap Universal Router",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x66a9893cC07D91D95644AEDD05D03f95e1dBA8Af" },
+        { "chainId": 10, "address": "0xCb1355ff08Ab38bBCE60111F1bb2B784bE25D7e8" },
+        { "chainId": 56, "address": "0x4Dae2f939ACf50408e13d58534Ff8c2776d45265" },
+        { "chainId": 137, "address": "0xec7BE89e9d109e7e3Fec59c222CF297125FEFda2" },
+        { "chainId": 42161, "address": "0xA51afAFe0263b40EdaEf0Df8781eA9aa03E381a3" },
+        { "chainId": 43114, "address": "0x4Dae2f939ACf50408e13d58534Ff8c2776d45265" },
+        { "chainId": 8453, "address": "0x6fF5693b99212Da76ad316178A184AB56D299b43" },
+        { "chainId": 81457, "address": "0x643770E279d5D0733F21d6DC03A8efbABf3255B4" }
+      ],
+      "abi": [
+        {
+          "type": "function",
+          "name": "execute",
+          "inputs": [
+            { "name": "commands", "type": "bytes", "internalType": "bytes" },
+            { "name": "inputs", "type": "bytes[]", "internalType": "bytes[]" },
+            { "name": "deadline", "type": "uint256", "internalType": "uint256" }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        {
+          "type": "function",
+          "name": "execute",
+          "inputs": [
+            { "name": "commands", "type": "bytes", "internalType": "bytes" },
+            { "name": "inputs", "type": "bytes[]", "internalType": "bytes[]" }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Uniswap",
+    "info": { "legalName": "Uniswap Labs", "deploymentDate": "2023-06-01T00:00:00Z", "url": "https://uniswap.org/" }
+  },
+  "display": {
+    "formats": {
+      "0x3593564c": {
+        "$id": "execute",
+        "intent": "Execute Swap",
+        "fields": [
+          { "path": "@.value", "label": "Amount to Send", "format": "amount" },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
+        ],
+        "required": ["deadline"],
+        "excluded": ["commands", "commands.[]", "inputs", "inputs.[]"]
+      },
+      "0x24856bc3": {
+        "$id": "execute",
+        "intent": "Execute Swap",
+        "fields": [{ "path": "@.value", "label": "Amount to Send", "format": "amount" }],
+        "excluded": ["commands", "commands.[]", "inputs", "inputs.[]"]
+      }
+    }
+  }
+}
