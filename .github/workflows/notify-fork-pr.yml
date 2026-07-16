@@ -35,13 +35,13 @@ jobs:
 
             const label = 'run-tests';
             const body = [
-              '## 🧪 Clear Signing Tests',
+              '## Clear Signing Tests',
               '',
               '> ⏳ **Waiting for maintainer approval to run tests.**',
               '',
               `This PR is from a fork. A maintainer needs to add the \`${label}\` label to trigger the clear signing tests.`,
               '',
-              'Once approved, the tests will run automatically and post screenshots here.',
+              'Once approved, the tests will run automatically and post their results here.',
             ].join('\n');
 
             const { data: comments } = await github.rest.issues.listComments({
@@ -49,13 +49,14 @@ jobs:
               repo: context.repo.repo,
               issue_number: metadata.pr_number
             });
-            const existing = comments.find(c => c.user.type === 'Bot' && c.body.includes('Clear Signing Tests'));
+            // Same "## Clear Signing Tests" marker the results comment uses, so a
+            // fresh commit that didn't re-run the tests overwrites the stale
+            // results with this approval note — and the tests overwrite it back.
+            const existing = comments.find(c => c.user.type === 'Bot' && c.body.startsWith('## Clear Signing Tests'));
 
-            if (!existing) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: metadata.pr_number,
-                body
-              });
+            const params = { owner: context.repo.owner, repo: context.repo.repo, body };
+            if (existing) {
+              await github.rest.issues.updateComment({ ...params, comment_id: existing.id });
+            } else {
+              await github.rest.issues.createComment({ ...params, issue_number: metadata.pr_number });
             }
