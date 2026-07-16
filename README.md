@@ -8,6 +8,8 @@ This repository maintains records of past and current metadata files in the `reg
 
 ```
 README.md                                    # top-level README file with submission process
+index.calldata.json                          # index of calldata descriptors (see "Index files")
+index.eip712.json                            # index of EIP-712 descriptors (see "Index files")
 specs/
   erc-7730.md                                # most advanced version of the spec but reference should be the ERC
   erc7730-v1.schema.json                     # the json schema of the latest version of the extension
@@ -42,6 +44,26 @@ ercs/
 - All ERC-7730 compatible files are prefixed with either `calldata` for smart contracts or `eip712` for EIP-712 messages.
 - All ERC-7730 compatible files are correctly validated against the schema file located at `specs/erc7730-v2.schema.json`.
 - Do not use the `calldata` or `eip712` prefixes for common files which are included by the ERC-7730 files and placed at the top level of the entity folder.
+- The index files at the repository root are up to date with the descriptors the PR adds, changes or removes. See [Index files](#index-files).
+- Each descriptor added or changed is accompanied by a test file so descriptors can be verified against the formatter implementations. See [Reference test cases](#reference-test-cases).
+
+## Index files
+
+`index.calldata.json` and `index.eip712.json` let wallets and libraries find the right descriptor for a transaction without downloading the whole registry. They are published at the repository root and fetched directly from this repo, so a descriptor that is missing from them is invisible to consumers even though its file is present.
+
+Both files are keyed by [CAIP-10](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-10.md)-style `eip155:$chainId:$address` identifiers:
+
+- `index.calldata.json` maps each identifier to the path of the descriptor for that contract.
+- `index.eip712.json` maps each identifier to its EIP-712 primary types, and each primary type to the descriptors defining it. Every entry also carries the keccak256 hashes of the `encodeType` strings it covers, so consumers can pick the right descriptor when several define the same primary type for the same contract.
+
+Both files are **generated** — do not edit them by hand. After adding, changing or removing a descriptor, regenerate them and commit the result:
+
+```bash
+npm ci
+npm run generate-index
+```
+
+The generator derives both files from the descriptors under `registry/`, resolving `includes` first, so a descriptor that inherits its deployments or formats from a common file is indexed correctly. Pull requests are checked against it, and fail if a descriptor they touch is not reflected in the index files.
 
 ## How to validate
 
