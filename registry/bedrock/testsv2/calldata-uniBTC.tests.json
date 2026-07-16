@@ -1,17 +1,52 @@
 {
-  "$schema": "../../../specs/erc7730-tests.schema.json",
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-uniBTC.json",
+  "dataProvider": {
+    "addressNames": {
+      "0xf14aa9ed0b6d90b7a49b782f6a9846bea8f0b333": "Receiver",
+      "0x80226fc0ee2b096224eeac085bb9a8cba1146f7d": "Spender"
+    }
+  },
   "tests": [
     {
       "description": "uniBTC transfer - send 0.08570997 uniBTC (chain 1)",
       "rawTx": "0x02f8b20183015703832d3429841508e0ef8301209994004e9c3ef86bc1ca1f0bb5c7662861ee9335056880b844a9059cbb000000000000000000000000f14aa9ed0b6d90b7a49b782f6a9846bea8f0b333000000000000000000000000000000000000000000000000000000000082c875c001a00b8cf9ee0134de83858343dc68aff72ac27e1d2b865ae4c116b17652e75cc465a00cc72e4f20c4d9bbdf8d3c13d98f97bfa5899a545359fa89254db042ca355a11",
       "txHash": "0x32eb0afba14ace2465b1c9df1b84203ee0381c93abd6df3b3c00222a60dde05f",
-      "expectedTexts": ["Send", "Recipient", "Amount to Send"]
+      "expected": {
+        "intent": "Send",
+        "interpolatedIntent": "Send 0.08570997 uniBTC to Receiver",
+        "owner": "Bedrock",
+        "fields": [
+          {
+            "label": "Recipient",
+            "value": "Receiver"
+          },
+          {
+            "label": "Amount to Send",
+            "value": "0.08570997 uniBTC"
+          }
+        ]
+      }
     },
     {
       "description": "uniBTC approve - grant allowance to spender (chain 1)",
       "rawTx": "0x02f8b001820964839896808477ce2a8082fe0494004e9c3ef86bc1ca1f0bb5c7662861ee9335056880b844095ea7b300000000000000000000000080226fc0ee2b096224eeac085bb9a8cba1146f7d0000000000000000000000000000000000000000000000000000000000138101c080a00c0e154b7111dd5aa4c04299822af3564dd4cecb63a9ef5787d52199ed346f6ba019c3342be18aed2edc78ec0a57a30fcbb1efe1bf649ce058242076e636bce6ed",
       "txHash": "0xfd653dc2fb5ea9ce5856da6c787f9f8702fe82c2e1e2124713bd965871c9112b",
-      "expectedTexts": ["Approve", "Spender", "Amount to Approve"]
+      "expected": {
+        "intent": "Approve",
+        "interpolatedIntent": "Allow Spender to spend 0.01278209 uniBTC",
+        "owner": "Bedrock",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "Spender"
+          },
+          {
+            "label": "Amount to Approve",
+            "value": "0.01278209 uniBTC"
+          }
+        ]
+      }
     }
   ]
 }
