@@ -8,7 +8,7 @@ The following files are automatically synced from the [ethereum/ERCs](https://gi
 
 | Local file | Upstream source |
 |---|---|
-| `erc-7730.md` | [ERCS/erc-7734.md](https://github.com/ethereum/ERCs/blob/master/ERCS/erc-7734.md) |
+| `erc-7730.md` | [ERCS/erc-7730.md](https://github.com/ethereum/ERCs/blob/master/ERCS/erc-7730.md) |
 | `erc7730-v2.schema.json` | [assets/erc-7730/erc7730-v2.schema.json](https://github.com/ethereum/ERCs/blob/master/assets/erc-7730/erc7730-v2.schema.json) |
 | `erc7730-v1.schema.json` | [assets/erc-7730/erc7730-v1.schema.json](https://github.com/ethereum/ERCs/blob/master/assets/erc-7730/erc7730-v1.schema.json) |
 
