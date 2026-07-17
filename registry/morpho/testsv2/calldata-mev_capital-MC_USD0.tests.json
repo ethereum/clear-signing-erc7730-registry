@@ -1,0 +1,89 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-mev_capital-MC_USD0.json",
+  "dataProvider": {
+    "tokens": {
+      "0x73A15FeD60Bf67631dC6cd7Bc5B6e8da8190aCF5": {
+        "decimals": 18,
+        "name": "Usual USD",
+        "symbol": "USD0"
+      },
+      "0x749794E985Af5a9A384B9cEe6D88DaB4CE1576A1": {
+        "symbol": "MC_USD0",
+        "decimals": 18,
+        "name": "MEV Capital USD0"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Mint - chain 1",
+      "rawTx": "0xf86b82028a84047645308316e36094749794e985af5a9a384b9cee6d88dab4ce1576a180b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0xfb0cc0ca2d800da47f81754b139340116ccba7429715bb412e5f883503e47270",
+      "expected": {
+        "intent": "Mint",
+        "owner": "MEV Capital",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USD0"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 MC_USD0"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw - chain 1",
+      "rawTx": "0x02f88e01818d841dcd650084245ee9c083139a4f94749794e985af5a9a384b9cee6d88dab4ce1576a180b864b460af940000000000000000000000000000000000000000000000000a6efa8c291f0a3d000000000000000000000000117b7819a3d2ace81f57398fac0a30c6e72ad5ee000000000000000000000000117b7819a3d2ace81f57398fac0a30c6e72ad5eec0",
+      "txHash": "0x35cbab1063a6a5fd7afc596dda9d5b0589ece7bb5f67d5814216cb31610a295c",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "MEV Capital",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "0.751813667709717053 USD0"
+          },
+          {
+            "label": "To",
+            "value": "0x117b7819a3D2AcE81F57398fAc0a30C6e72AD5eE"
+          },
+          {
+            "label": "Owner",
+            "value": "0x117b7819a3D2AcE81F57398fAc0a30C6e72AD5eE"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88f0182019a84017429708403fa5f20830d568d94749794e985af5a9a384b9cee6d88dab4ce1576a180b864ba087652000000000000000000000000000000000000000000000002aadc379a11afdd2000000000000000000000000075c43c290e374ec5c202a0edb4b54ef3885698f800000000000000000000000075c43c290e374ec5c202a0edb4b54ef3885698f8c0",
+      "txHash": "0x6f9f436a5c5e8aae37e05d4038d10e600f202f56e4d1e25ea063dc35ab938a2b",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "MEV Capital",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "49.205264763604426016 MC_USD0"
+          },
+          {
+            "label": "To",
+            "value": "0x75c43c290E374Ec5C202a0EDB4b54eF3885698f8"
+          },
+          {
+            "label": "Owner",
+            "value": "0x75c43c290E374Ec5C202a0EDB4b54eF3885698f8"
+          }
+        ]
+      }
+    }
+  ]
+}

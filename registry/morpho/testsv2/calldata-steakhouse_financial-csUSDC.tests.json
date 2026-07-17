@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-csUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": {
+        "decimals": 6,
+        "name": "USD Coin",
+        "symbol": "USDC"
+      },
+      "0x7204B7Dbf9412567835633B6F00C3Edc3a8D6330": {
+        "symbol": "csUSDC",
+        "decimals": 18,
+        "name": "Coinshift USDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Mint - chain 1",
+      "rawTx": "0xf86b82033084463a12af8316e360947204b7dbf9412567835633b6f00c3edc3a8d633080b84494bf804d000000000000000000000000000000000000000000000000000000e8990a4600000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x73b6c6c4bba8c64408aad731606f9e31b3d19fcd102a841437db67486742a7b0",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Steakhouse Financial",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000999 csUSDC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88f01820101840405d0d08414aeccc083074145947204b7dbf9412567835633b6f00c3edc3a8d633080b864ba0876520000000000000000000000000000000000000000000000008a7962f8d597de66000000000000000000000000977767f401fc909614905857c9174bd08af02363000000000000000000000000977767f401fc909614905857c9174bd08af02363c0",
+      "txHash": "0x3150fd241b78bd5002fa7865220014e214d0560a6450ef3a2c65a6f08aff867f",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Steakhouse Financial",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "9.978115270290955878 csUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x977767f401Fc909614905857c9174bd08af02363"
+          },
+          {
+            "label": "Owner",
+            "value": "0x977767f401Fc909614905857c9174bd08af02363"
+          }
+        ]
+      }
+    }
+  ]
+}

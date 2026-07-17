@@ -1,0 +1,70 @@
+name: Upload clear-signing test results
+description: Validate the basic structure of a results.json against the spec in .github/test-runner-docs/README.md, then upload it as an artifact with a consistent name. Shared by all runners that emit the unified results format.
+
+inputs:
+  results-path:
+    description: Absolute path to the results.json file.
+    required: true
+  implementation-slug:
+    description: Short slug identifying the implementation (e.g. sourcify-ts-clear-signing). Used in the artifact name; the full package@version identifier lives inside the JSON.
+    required: true
+  entity:
+    description: Entity name (e.g. aave).
+    required: true
+  descriptor-name:
+    description: Descriptor name (e.g. calldata-lpv2).
+    required: true
+  retention-days:
+    description: Artifact retention in days.
+    required: false
+    default: '30'
+
+runs:
+  using: composite
+  steps:
+    - name: Validate results.json structure
+      shell: bash
+      env:
+        RESULTS_PATH: ${{ inputs.results-path }}
+      run: |
+        if [ ! -f "$RESULTS_PATH" ]; then
+          echo "::error::results.json not found at $RESULTS_PATH"
+          exit 1
+        fi
+
+        if ! jq -e '
+          has("runner") and
+          has("implementation") and
+          has("cases") and
+          (.cases | type == "array") and
+          (.cases | all(
+            has("description") and
+            has("status") and
+            (.status | IN("pass","fail","error","skipped"))
+          ))
+        ' "$RESULTS_PATH" > /dev/null; then
+          echo "::error file=$RESULTS_PATH::results.json failed structural validation against the spec in .github/test-runner-docs/README.md"
+          exit 1
+        fi
+
+    - name: Stage with unique filename
+      shell: bash
+      env:
+        RESULTS_PATH: ${{ inputs.results-path }}
+        SLUG: ${{ inputs.implementation-slug }}
+        ENTITY: ${{ inputs.entity }}
+        DESCRIPTOR: ${{ inputs.descriptor-name }}
+        WORKSPACE: ${{ github.workspace }}
+      run: |
+        # Rename so multi-artifact downloads (with merge-multiple: true) don't
+        # collide on a shared `results.json` filename. The slug+entity+descriptor
+        # combination is guaranteed unique per matrix entry.
+        mkdir -p "$WORKSPACE/results-staging"
+        cp "$RESULTS_PATH" "$WORKSPACE/results-staging/${SLUG}__${ENTITY}__${DESCRIPTOR}.json"
+
+    - name: Upload results
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: results__${{ inputs.implementation-slug }}__${{ inputs.entity }}__${{ inputs.descriptor-name }}
+        path: ${{ github.workspace }}/results-staging/${{ inputs.implementation-slug }}__${{ inputs.entity }}__${{ inputs.descriptor-name }}.json
+        retention-days: ${{ inputs.retention-days }}

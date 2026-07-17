@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-MintAndRedeem-dev.json",
+  "dataProvider": {
+    "tokens": {
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Buy ftUSD",
+      "rawTx": "0x02f8aa81920c01843b9aca008307a12094b9b23b0555b8066f3d5954ea6c679a02339f78dc80b884a647e8ec000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000000000069cf67000000000000000000000000000000000000000000000000000dbd2fc137a30000c0",
+      "from": "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A",
+      "expected": {
+        "intent": "Buy ftUSD",
+        "owner": "Flying Tulip",
+        "fields": [
+          {
+            "label": "Pay",
+            "value": "1 USDC"
+          },
+          {
+            "label": "Minimum ftUSD",
+            "value": "990000000000000000"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-04-03 07:06:40Z"
+          }
+        ],
+        "interpolatedIntent": "Buy 990000000000000000"
+      }
+    },
+    {
+      "description": "Sell ftUSD",
+      "rawTx": "0x02f8aa81920d01843b9aca008307a12094b9b23b0555b8066f3d5954ea6c679a02339f78dc80b884ea2092f3000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000000000069cf670000000000000000000000000000000000000000000000000000000000000f1b30c0",
+      "from": "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A",
+      "expected": {
+        "intent": "Sell ftUSD",
+        "owner": "Flying Tulip",
+        "fields": [
+          {
+            "label": "ftUSD amount",
+            "value": "1000000000000000000"
+          },
+          {
+            "label": "Minimum receive",
+            "value": "0.99 USDC"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-04-03 07:06:40Z"
+          }
+        ],
+        "interpolatedIntent": "Sell 1000000000000000000"
+      }
+    }
+  ]
+}

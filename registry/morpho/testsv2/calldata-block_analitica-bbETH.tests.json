@@ -1,0 +1,115 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-block_analitica-bbETH.json",
+  "dataProvider": {
+    "tokens": {
+      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": {
+        "decimals": 18,
+        "name": "Wrapped Ether",
+        "symbol": "WETH"
+      },
+      "0x38989BBA00BDF8181F4082995b3DEAe96163aC5D": {
+        "symbol": "bbETH",
+        "decimals": 18,
+        "name": "Flagship ETH"
+      }
+    },
+    "ensNames": {
+      "0x71912cBe10302B66F14F4D39f6329986798aaA6a": "duelinggalois.eth"
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit - chain 1",
+      "rawTx": "0x02f86e01268405f5e1008504da7c7523830730789438989bba00bdf8181f4082995b3deae96163ac5d80b8446e553f6500000000000000000000000000000000000000000000000000b1a2bc2ec500000000000000000000000000008949ac8bae1389179cc222d9ec21a1fc2f69c786c0",
+      "txHash": "0x01062eec602faa1abff730e565e4b9a4ae29cd68552c876206b3fe8a983fb060",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Block Analitica",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.05 WETH"
+          },
+          {
+            "label": "Share ticker",
+            "value": "bbETH"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x8949ac8bae1389179Cc222d9eC21a1Fc2F69C786"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint - chain 1",
+      "rawTx": "0xf86b8202a68402708be58316e3609438989bba00bdf8181f4082995b3deae96163ac5d80b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca000000000000000000000000000000000000000000000000000000000000000001018080",
+      "txHash": "0xa81b7d46981f96643d90067dbb82c052d606d535634e63f6882bc11f8f8236e6",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Block Analitica",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "WETH"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 bbETH"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x0000000000000000000000000000000000000001"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw - chain 1",
+      "rawTx": "0x02f88e01288405f5e100850880052f778304fdfb9438989bba00bdf8181f4082995b3deae96163ac5d80b864b460af94000000000000000000000000000000000000000000000000002c68af0bb140000000000000000000000000008949ac8bae1389179cc222d9ec21a1fc2f69c7860000000000000000000000008949ac8bae1389179cc222d9ec21a1fc2f69c786c0",
+      "txHash": "0x8fe3a3dfa623a2bb078b2e006554897139935dbec99ca2b103a66f3580c9d061",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Block Analitica",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "0.0125 WETH"
+          },
+          {
+            "label": "To",
+            "value": "0x8949ac8bae1389179Cc222d9eC21a1Fc2F69C786"
+          },
+          {
+            "label": "Owner",
+            "value": "0x8949ac8bae1389179Cc222d9eC21a1Fc2F69C786"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88f018201388405f5e10084087538e083037bce9438989bba00bdf8181f4082995b3deae96163ac5d80b864ba08765200000000000000000000000000000000000000000000000048cd63c52f59d43f00000000000000000000000071912cbe10302b66f14f4d39f6329986798aaa6a00000000000000000000000071912cbe10302b66f14f4d39f6329986798aaa6ac0",
+      "txHash": "0x5d2bf1c4f8d76914f00c1fce2252f6d4c7f1008e78b82603014d70d70b83fe38",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Block Analitica",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "5.245958839510619199 bbETH"
+          },
+          {
+            "label": "To",
+            "value": "duelinggalois.eth"
+          },
+          {
+            "label": "Owner",
+            "value": "duelinggalois.eth"
+          }
+        ]
+      }
+    }
+  ]
+}

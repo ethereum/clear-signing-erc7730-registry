@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-mev_capital-MC-USR.json",
+  "dataProvider": {
+    "tokens": {
+      "0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110": {
+        "decimals": 18,
+        "name": "Resolv USD",
+        "symbol": "USR"
+      },
+      "0xD50DA5F859811A91fD1876C9461fD39c23C747Ad": {
+        "symbol": "MC-USR",
+        "decimals": 18,
+        "name": "MEV Capital Resolv USR"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Mint - chain 1",
+      "rawTx": "0xf86b820294840435b83c8316e36094d50da5f859811a91fd1876c9461fd39c23c747ad80b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0xb8cd21e6bd5aee99fc731326ac6ad4da7a3ecbbaae3925f931c4ecc89092fa26",
+      "expected": {
+        "intent": "Mint",
+        "owner": "MEV Capital",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USR"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 MC-USR"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f88d01819a8398968084034e40a0830e7fc694d50da5f859811a91fd1876c9461fd39c23c747ad80b864ba0876520000000000000000000000000000000000000000000000008b72a32870ee9536000000000000000000000000ceedf4da3eca8e5442a40ba450878c85cf5b5c03000000000000000000000000ceedf4da3eca8e5442a40ba450878c85cf5b5c03c0",
+      "txHash": "0x5d41b273ee55ce1b052d84e86bef5026922d13efc10e6dba23662fa355159af5",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "MEV Capital",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "10.048273112705701174 MC-USR"
+          },
+          {
+            "label": "To",
+            "value": "0xceEdf4DA3eCA8E5442A40BA450878c85CF5B5c03"
+          },
+          {
+            "label": "Owner",
+            "value": "0xceEdf4DA3eCA8E5442A40BA450878c85CF5B5c03"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-ledgerquest.json",
+  "tests": [
+    {
+      "description": "Mint",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "mint": [
+            {
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "name": "categoryId",
+              "type": "uint256"
+            },
+            {
+              "name": "collectionId",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "mint",
+        "domain": {
+          "name": "Ledger Quest",
+          "version": "1",
+          "chainId": 137,
+          "verifyingContract": "0x33C6EeC1723B12c46732f7AB41398DE45641FA42"
+        },
+        "message": {
+          "receiver": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "categoryId": "3",
+          "collectionId": "12"
+        }
+      },
+      "expected": {
+        "intent": "Mint",
+        "owner": "Ledger",
+        "fields": [
+          {
+            "label": "Receiver",
+            "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+          },
+          {
+            "label": "Quest Type",
+            "value": "3"
+          },
+          {
+            "label": "Collection",
+            "value": "12"
+          }
+        ]
+      }
+    }
+  ]
+}

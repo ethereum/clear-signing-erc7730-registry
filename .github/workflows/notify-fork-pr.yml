@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Download PR metadata
         id: download
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: pr-metadata
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -25,7 +25,7 @@ jobs:
 
       - name: Post notification comment
         if: steps.download.outcome == 'success'
-        uses: actions/github-script@v9.0.0
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             const fs = require('fs');
@@ -35,13 +35,13 @@ jobs:
 
             const label = 'run-tests';
             const body = [
-              '## 🧪 Clear Signing Tests',
+              '## Clear Signing Tests',
               '',
               '> ⏳ **Waiting for maintainer approval to run tests.**',
               '',
               `This PR is from a fork. A maintainer needs to add the \`${label}\` label to trigger the clear signing tests.`,
               '',
-              'Once approved, the tests will run automatically and post screenshots here.',
+              'Once approved, the tests will run automatically and post their results here.',
             ].join('\n');
 
             const { data: comments } = await github.rest.issues.listComments({
@@ -49,13 +49,14 @@ jobs:
               repo: context.repo.repo,
               issue_number: metadata.pr_number
             });
-            const existing = comments.find(c => c.user.type === 'Bot' && c.body.includes('Clear Signing Tests'));
+            // Same "## Clear Signing Tests" marker the results comment uses, so a
+            // fresh commit that didn't re-run the tests overwrites the stale
+            // results with this approval note — and the tests overwrite it back.
+            const existing = comments.find(c => c.user.type === 'Bot' && c.body.startsWith('## Clear Signing Tests'));
 
-            if (!existing) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: metadata.pr_number,
-                body
-              });
+            const params = { owner: context.repo.owner, repo: context.repo.repo, body };
+            if (existing) {
+              await github.rest.issues.updateComment({ ...params, comment_id: existing.id });
+            } else {
+              await github.rest.issues.createComment({ ...params, issue_number: metadata.pr_number });
             }

@@ -1,0 +1,68 @@
+{
+  "descriptor": "../calldata-lpv2.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "Wrapped Ether"
+      }
+    },
+    "addressNames": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": "WETH"
+    },
+    "ensNames": {
+      "0xd20c9018a5097e922e9c0539aef389c871e76c3f": "sosalkin.eth"
+    }
+  },
+  "tests": [
+    {
+      "description": "Repay All USDC variable rate",
+      "rawTx": "0x02f8ad018189830186a084028c8c9c830493e0947d2768de32b0b80b7a3454c06bdac94a69ddc7a980b884573ade81000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000020000000000000000000000002fec9b58d089447d3e5e50578b9f71321713a470c0",
+      "txHash": "0xf869d27754007494d428c0999fffa0808b111f235acfd8466fe21626282283bb",
+      "expected": {
+        "intent": "Repay loan",
+        "owner": "Aave DAO",
+        "fields": [
+          { "label": "Amount to repay", "value": "All USDC" },
+          { "label": "Interest rate mode", "value": "variable" },
+          {
+            "label": "For debt holder",
+            "value": "0x2Fec9B58d089447d3E5E50578B9F71321713a470"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Manage collateral — disable WETH",
+      "rawTx": "0x02f86d010f8477359400847a653b2c83021b10947d2768de32b0b80b7a3454c06bdac94a69ddc7a980b8445a3b74b9000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0x6096b535e6cd3516f62eebb23bd062d9b8b715629306a30bb8a0a3e7bcdc88b9",
+      "expected": {
+        "intent": "Manage collateral",
+        "owner": "Aave DAO",
+        "fields": [
+          { "label": "For asset", "value": "WETH" },
+          { "label": "Enable as collateral", "value": "false" }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw Max WETH to sosalkin.eth",
+      "rawTx": "0x02f88f018207e08405f5e1008419ea8580830544e9947d2768de32b0b80b7a3454c06bdac94a69ddc7a980b86469328dec000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000d20c9018a5097e922e9c0539aef389c871e76c3fc0",
+      "txHash": "0xe99efacfa20e0831b9101f468e59a4012e19a6b12c11ce7d03e95d3eebe8c267",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Aave DAO",
+        "fields": [
+          { "label": "Amount to withdraw", "value": "Max WETH" },
+          { "label": "To recipient", "value": "sosalkin.eth" }
+        ]
+      }
+    }
+  ]
+}

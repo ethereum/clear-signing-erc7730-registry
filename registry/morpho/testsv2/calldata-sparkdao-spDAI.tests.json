@@ -1,0 +1,89 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-sparkdao-spDAI.json",
+  "dataProvider": {
+    "tokens": {
+      "0x6B175474E89094C44Da98b954EedeAC495271d0F": {
+        "decimals": 18,
+        "name": "Dai Stablecoin",
+        "symbol": "DAI"
+      },
+      "0x73e65DBD630f90604062f6E02fAb9138e713edD9": {
+        "symbol": "spDAI",
+        "decimals": 18,
+        "name": "Spark DAI Vault"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit - chain 1",
+      "rawTx": "0x02f86d0171843b9aca008450eb2827831749b29473e65dbd630f90604062f6e02fab9138e713edd980b8446e553f65000000000000000000000000000000000000000000000004d31f847531c400000000000000000000000000003263116cc11b1b4f3a45662e1d6ef93a0aaf7f9bc0",
+      "txHash": "0xebc3c510f5aff9527dd35dfd4772b9f95babbe5c60265d0d7bd12fb829e17b2d",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "SparkDAO",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "89 DAI"
+          },
+          {
+            "label": "Share ticker",
+            "value": "spDAI"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x3263116cC11B1b4F3a45662E1D6Ef93a0AaF7F9b"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint - chain 1",
+      "rawTx": "0xf86b82027e840487c1198316e3609473e65dbd630f90604062f6e02fab9138e713edd980b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0xb72ba61c2438c23df9b354695bf5f3835939fa1196b2b944536b8e7f7b19849c",
+      "expected": {
+        "intent": "Mint",
+        "owner": "SparkDAO",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "DAI"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 spDAI"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw - chain 1",
+      "rawTx": "0x02f88d01098477359400849d1dd4e78312f43a9473e65dbd630f90604062f6e02fab9138e713edd980b864b460af940000000000000000000000000000000000000000000000000de0b6c1f91e4a76000000000000000000000000d7c6b904ba79b1a2d7e505db8fcff6c30d28b097000000000000000000000000d7c6b904ba79b1a2d7e505db8fcff6c30d28b097c0",
+      "txHash": "0xc27947bab051aa71585f472d4179a674f845b31d3a6a3c98854431b2cb46d6dc",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "SparkDAO",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "1.000000061500705398 DAI"
+          },
+          {
+            "label": "To",
+            "value": "0xd7C6b904bA79b1A2d7E505Db8FCff6c30D28b097"
+          },
+          {
+            "label": "Owner",
+            "value": "0xd7C6b904bA79b1A2d7E505Db8FCff6c30D28b097"
+          }
+        ]
+      }
+    }
+  ]
+}

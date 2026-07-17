@@ -24,22 +24,25 @@ jobs:
     steps:
       - name: Checkout
         timeout-minutes: 10
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Get all changed descriptor files
         timeout-minutes: 5
         id: changed-descriptor-files
-        uses: tj-actions/changed-files@v47.0.5
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
         with:
           files: |
             registry/**/eip712-*.json
             registry/**/calldata-*.json
-          files_ignore: registry/**/tests/**
+          files_ignore: |
+            registry/**/tests/**
+            registry/**/testsv2/**
+            registry/**/*.tests.json
 
       - name: Setup python
         timeout-minutes: 10
         if: steps.changed-descriptor-files.outputs.any_changed == 'true'
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.12"
           cache: "pip"
@@ -63,22 +66,21 @@ jobs:
     steps:
       - name: Checkout
         timeout-minutes: 10
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Get all changed JSON files
         timeout-minutes: 5
         id: changed-json-files
-        uses: tj-actions/changed-files@v47.0.5
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
         with:
           files: |
             registry/**/*.json
             ercs/**/*.json
-          files_ignore: registry/**/tests/**
 
       - name: Setup python
         timeout-minutes: 10
         if: steps.changed-json-files.outputs.any_changed == 'true'
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.12"
           cache: "pip"
@@ -95,11 +97,20 @@ jobs:
           CHANGED_FILES: ${{ steps.changed-json-files.outputs.all_changed_files }}
         run: |
           DEFAULT_SCHEMA="specs/erc7730-v2.schema.json"
+          TESTS_V1_SCHEMA="specs/erc7730-tests.schema.json"
+          TESTS_V2_SCHEMA="specs/erc7730-tests-v2.schema.json"
           FAILED=0
 
           for file in $CHANGED_FILES; do
-            # Extract $schema value from the JSON file
-            SCHEMA_REF=$(python3 -c '
+            # Resolve schema — folder-based dispatch for test files takes precedence,
+            # since legacy test files do not carry a $schema field.
+            if echo "$file" | grep -qE '/testsv2/.*\.tests\.json$'; then
+              SCHEMA_PATH="$TESTS_V2_SCHEMA"
+            elif echo "$file" | grep -qE '/tests/.*\.tests\.json$'; then
+              SCHEMA_PATH="$TESTS_V1_SCHEMA"
+            else
+              # Descriptor / shared / ercs file — read its $schema field if present.
+              SCHEMA_REF=$(python3 -c '
           import json, sys
           try:
               with open(sys.argv[1]) as f:
@@ -109,18 +120,18 @@ jobs:
               print("")
           ' "$file")
 
-            # Resolve schema path
-            if [ -z "$SCHEMA_REF" ]; then
-              SCHEMA_PATH="$DEFAULT_SCHEMA"
-            elif echo "$SCHEMA_REF" | grep -qE '^https?://'; then
-              SCHEMA_PATH="$DEFAULT_SCHEMA"
-            else
-              FILE_DIR=$(dirname "$file")
-              RESOLVED=$(cd "$FILE_DIR" && realpath -m "$SCHEMA_REF" 2>/dev/null || echo "")
-              if [ -n "$RESOLVED" ] && [ -f "$RESOLVED" ]; then
-                SCHEMA_PATH="$RESOLVED"
-              else
+              if [ -z "$SCHEMA_REF" ]; then
                 SCHEMA_PATH="$DEFAULT_SCHEMA"
+              elif echo "$SCHEMA_REF" | grep -qE '^https?://'; then
+                SCHEMA_PATH="$DEFAULT_SCHEMA"
+              else
+                FILE_DIR=$(dirname "$file")
+                RESOLVED=$(cd "$FILE_DIR" && realpath -m "$SCHEMA_REF" 2>/dev/null || echo "")
+                if [ -n "$RESOLVED" ] && [ -f "$RESOLVED" ]; then
+                  SCHEMA_PATH="$RESOLVED"
+                else
+                  SCHEMA_PATH="$DEFAULT_SCHEMA"
+                fi
               fi
             fi
 
