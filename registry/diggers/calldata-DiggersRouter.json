@@ -1,0 +1,89 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Diggers Router",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 4663,
+          "address": "0x7FAFA1AD0BF1ec4516b5724A12E4154a2a68514b"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Diggers",
+    "contractName": "Diggers Router",
+    "info": {
+      "url": "https://diggers.fun/",
+      "legalName": "Diggers",
+      "deploymentDate": "2026-07-15T00:00:00Z"
+    }
+  },
+  "display": {
+    "formats": {
+      "buy(address token,uint8 venue,bytes pool,uint256 minOut,uint256 deadline,address recipient)": {
+        "$id": "buy",
+        "intent": "Buy token",
+        "fields": [
+          {
+            "path": "@.value",
+            "label": "You pay",
+            "format": "amount",
+            "visible": "always"
+          },
+          {
+            "path": "minOut",
+            "label": "Minimum received",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token" },
+            "visible": "always"
+          },
+          {
+            "path": "deadline",
+            "label": "Expires",
+            "format": "date",
+            "params": { "encoding": "timestamp" }
+          },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "sell(address token,uint8 venue,bytes pool,uint256 amountIn,uint256 minOut,uint256 deadline,address recipient)": {
+        "$id": "sell",
+        "intent": "Sell token",
+        "fields": [
+          {
+            "path": "amountIn",
+            "label": "You sell",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token" },
+            "visible": "always"
+          },
+          {
+            "path": "minOut",
+            "label": "Minimum ETH received",
+            "format": "amount",
+            "visible": "always"
+          },
+          {
+            "path": "deadline",
+            "label": "Expires",
+            "format": "date",
+            "params": { "encoding": "timestamp" }
+          },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      }
+    }
+  }
+}
