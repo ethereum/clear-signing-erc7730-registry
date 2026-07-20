@@ -7,7 +7,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write
+  contents: write
+  pull-requests: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -19,7 +20,7 @@ env:
 jobs:
   format:
     name: format descriptors
-    runs-on: unbuntu-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
       - name: Checkout
@@ -57,13 +58,13 @@ jobs:
         timeout-minutes: 10
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
         with:
-          token: ${{ secrets.CI_BOT_TOKEN }}
-          author: ${{ secrets.CI_BOT_USERNAME }} <${{ secrets.CI_BOT_USERNAME }}@users.noreply.github.com>
+          token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ env.BRANCH }}-format-descriptors
           base: ${{ env.BRANCH }}
           delete-branch: false
           commit-message: "chore: format descriptors - ${{ env.CURRENT_DATE }}"
           title: "chore: format descriptors - ${{ env.CURRENT_DATE }}"
-          body: ${{ steps.submodules.outputs.prBody }}
+          body: |
+            Automated `erc7730 format` of the registry descriptors - ${{ env.CURRENT_DATE }}.
           draft: false
           signoff: false
