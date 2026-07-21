@@ -44,26 +44,7 @@ ercs/
 - All ERC-7730 compatible files are prefixed with either `calldata` for smart contracts or `eip712` for EIP-712 messages.
 - All ERC-7730 compatible files are correctly validated against the schema file located at `specs/erc7730-v2.schema.json`.
 - Do not use the `calldata` or `eip712` prefixes for common files which are included by the ERC-7730 files and placed at the top level of the entity folder.
-- The index files at the repository root are up to date with the descriptors the PR adds, changes or removes. See [Index files](#index-files).
 - Each descriptor added or changed is accompanied by a test file so descriptors can be verified against the formatter implementations. See [Reference test cases](#reference-test-cases).
-
-## Index files
-
-`index.calldata.json` and `index.eip712.json` let wallets and libraries find the right descriptor for a transaction without downloading the whole registry. They are published at the repository root and fetched directly from this repo, so a descriptor that is missing from them is invisible to consumers even though its file is present.
-
-Both files are keyed by [CAIP-10](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-10.md)-style `eip155:$chainId:$address` identifiers:
-
-- `index.calldata.json` maps each identifier to the path of the descriptor for that contract.
-- `index.eip712.json` maps each identifier to its EIP-712 primary types, and each primary type to the descriptors defining it. Every entry also carries the keccak256 hashes of the `encodeType` strings it covers, so consumers can pick the right descriptor when several define the same primary type for the same contract.
-
-Both files are **generated** — do not edit them by hand. After adding, changing or removing a descriptor, regenerate them and commit the result:
-
-```bash
-npm ci
-npm run generate-index
-```
-
-The generator derives both files from the descriptors under `registry/`, resolving `includes` first, so a descriptor that inherits its deployments or formats from a common file is indexed correctly. Pull requests are checked against it, and fail if a descriptor they touch is not reflected in the index files.
 
 ## How to validate
 
@@ -211,3 +192,12 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
 2. **Use real transactions** when possible - they provide the most realistic test cases
 3. **Add descriptive labels** to help reviewers understand what each test validates
 4. **Test edge cases** like maximum values, zero values, and special addresses
+
+## Index files
+
+`index.calldata.json` and `index.eip712.json` at the repository root let wallets and libraries find the right descriptor for a transaction without downloading the whole registry. Both are keyed by [CAIP-10](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-10.md)-style `eip155:$chainId:$address` identifiers:
+
+- `index.calldata.json` maps each identifier to the path of the descriptor for that contract.
+- `index.eip712.json` maps each identifier to its EIP-712 primary types, and each primary type to the descriptors defining it. Every entry also carries the keccak256 hashes of the `encodeType` strings it covers, so consumers can pick the right descriptor when several define the same primary type for the same contract.
+
+Both files are **generated** from the descriptors under `registry/` — do not edit them by hand. A weekly CI job regenerates them and opens a pull request when they change, so contributors do not need to update them. To regenerate locally, run `npm ci && npm run generate-index`.
