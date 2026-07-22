@@ -49,21 +49,23 @@ source .env && source tools/linter/.venv/bin/activate
 Or as a one-liner from the repository root:
 
 ```bash
-source .env && source tools/linter/.venv/bin/activate && erc7730 lint registry/
+source .env && source tools/linter/.venv/bin/activate && erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
 ```
 
 ### Lint descriptor files
 
-Validate all descriptor files in the registry:
-
-```bash
-erc7730 lint registry/
-```
-
 Validate a specific file:
 
 ```bash
-erc7730 lint registry/uniswap/calldata-permit2.json
+erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
+```
+
+Validate all descriptor files in the registry. The CLI treats any file named
+`calldata-*`/`eip712-*` as a descriptor, so pointing it at `registry/` also picks
+up the `*.tests.json` fixtures, which fail validation — exclude them explicitly:
+
+```bash
+erc7730 lint $(find registry -type f \( -name 'calldata-*.json' -o -name 'eip712-*.json' \) -not -name '*.tests.json')
 ```
 
 ### Other commands
