@@ -1,0 +1,75 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Porto Orchestrator 0.5.5",
+    "eip712": {
+      "domain": { "name": "Orchestrator", "version": "0.5.5" },
+      "deployments": [
+        { "chainId": 1, "address": "0x36A7Cd5b1F475122A2b52580FC8e170A2Cd312eF" },
+        { "chainId": 10, "address": "0x36A7Cd5b1F475122A2b52580FC8e170A2Cd312eF" },
+        { "chainId": 56, "address": "0x36A7Cd5b1F475122A2b52580FC8e170A2Cd312eF" },
+        { "chainId": 4663, "address": "0x36A7Cd5b1F475122A2b52580FC8e170A2Cd312eF" },
+        { "chainId": 8453, "address": "0x36A7Cd5b1F475122A2b52580FC8e170A2Cd312eF" },
+        { "chainId": 42161, "address": "0x36A7Cd5b1F475122A2b52580FC8e170A2Cd312eF" },
+        { "chainId": 84532, "address": "0x36A7Cd5b1F475122A2b52580FC8e170A2Cd312eF" },
+        { "chainId": 11155111, "address": "0x36A7Cd5b1F475122A2b52580FC8e170A2Cd312eF" },
+        { "chainId": 11155420, "address": "0x36A7Cd5b1F475122A2b52580FC8e170A2Cd312eF" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Porto", "contractName": "Orchestrator", "info": { "url": "https://porto.sh" } },
+  "display": {
+    "formats": {
+      "Intent(bool multichain,address eoa,Call[] calls,uint256 nonce,address payer,address paymentToken,uint256 paymentMaxAmount,uint256 combinedGas,bytes[] encodedPreCalls,bytes[] encodedFundTransfers,address settler,uint256 expiry)Call(address to,uint256 value,bytes data)": {
+        "$id": "Porto Intent",
+        "intent": "Execute account actions",
+        "fields": [
+          { "path": "multichain", "label": "Multiple networks", "format": "raw", "visible": "always" },
+          {
+            "path": "eoa",
+            "label": "Account",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "calls.[]",
+            "label": "Account action",
+            "fields": [
+              {
+                "path": "to",
+                "label": "Target",
+                "format": "addressName",
+                "params": { "types": ["contract", "eoa"], "sources": ["local", "ens"] },
+                "visible": "always"
+              },
+              { "path": "value", "label": "Native value", "format": "raw", "visible": "always" },
+              {
+                "path": "data",
+                "label": "Call",
+                "format": "calldata",
+                "params": { "calleePath": "to", "amountPath": "value", "spenderPath": "#.eoa" },
+                "visible": "always"
+              }
+            ]
+          },
+          {
+            "path": "paymentMaxAmount",
+            "label": "Maximum payment",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "paymentToken", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+            "visible": "always"
+          },
+          { "path": "paymentToken", "label": "Payment token", "format": "raw", "visible": "always" },
+          { "path": "payer", "label": "Payer", "format": "raw", "visible": "always" },
+          { "path": "combinedGas", "label": "Combined gas limit", "format": "raw", "visible": "always" },
+          { "path": "encodedPreCalls.[]", "label": "Pre-call", "format": "raw", "visible": "always" },
+          { "path": "encodedFundTransfers.[]", "label": "Fund transfer", "format": "raw", "visible": "always" },
+          { "path": "settler", "label": "Settler", "format": "raw", "visible": "always" },
+          { "path": "expiry", "label": "Expiry", "format": "raw", "visible": "always" },
+          { "path": "nonce", "label": "Nonce", "format": "raw", "visible": "always" }
+        ]
+      }
+    }
+  }
+}
