@@ -7,7 +7,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write
+  contents: write
+  pull-requests: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -31,13 +32,13 @@ jobs:
         run: echo "CURRENT_DATE=$(date +"%Y-%m-%d %H:%M")" >> $GITHUB_ENV
 
       # File mapping (upstream -> local):
-      #   ERCS/erc-7734.md                          -> specs/erc-7730.md
+      #   ERCS/erc-7730.md                          -> specs/erc-7730.md
       #   assets/erc-7730/erc7730-v2.schema.json     -> specs/erc7730-v2.schema.json
       #   assets/erc-7730/erc7730-v1.schema.json     -> specs/erc7730-v1.schema.json
       - name: Fetch upstream spec files
         timeout-minutes: 10
         run: |
-          curl -fsSL "https://raw.githubusercontent.com/ethereum/ERCs/master/ERCS/erc-7734.md" \
+          curl -fsSL "https://raw.githubusercontent.com/ethereum/ERCs/master/ERCS/erc-7730.md" \
             -o specs/erc-7730.md
           curl -fsSL "https://raw.githubusercontent.com/ethereum/ERCs/master/assets/erc-7730/erc7730-v2.schema.json" \
             -o specs/erc7730-v2.schema.json
@@ -56,8 +57,9 @@ jobs:
         timeout-minutes: 10
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
         with:
-          token: ${{ secrets.CI_BOT_TOKEN }}
-          author: ${{ secrets.CI_BOT_USERNAME }} <${{ secrets.CI_BOT_USERNAME }}@users.noreply.github.com>
+          token: ${{ secrets.GITHUB_TOKEN }}
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           branch: ${{ env.BRANCH }}-sync-specs
           base: ${{ env.BRANCH }}
           delete-branch: false
@@ -67,7 +69,7 @@ jobs:
             Automated sync of spec files from [ethereum/ERCs](https://github.com/ethereum/ERCs).
 
             Files synced:
-            - `ERCS/erc-7734.md` -> `specs/erc-7730.md`
+            - `ERCS/erc-7730.md` -> `specs/erc-7730.md`
             - `assets/erc-7730/erc7730-v2.schema.json` -> `specs/erc7730-v2.schema.json`
             - `assets/erc-7730/erc7730-v1.schema.json` -> `specs/erc7730-v1.schema.json`
           draft: false
