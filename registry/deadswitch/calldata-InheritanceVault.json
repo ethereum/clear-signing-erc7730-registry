@@ -1,0 +1,191 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "$id": "InheritanceVault",
+    "contract": {
+      "abi": [
+        {
+          "inputs": [],
+          "name": "heartbeat",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "bytes32", "name": "_worldIdNullifier", "type": "bytes32" }
+          ],
+          "name": "claim",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "cancel",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "_newBeneficiary", "type": "address" },
+            { "internalType": "bytes32", "name": "_newWorldIdNullifier", "type": "bytes32" },
+            { "internalType": "string", "name": "_newENS", "type": "string" }
+          ],
+          "name": "updateBeneficiary",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "_newInterval", "type": "uint256" }
+          ],
+          "name": "updateInterval",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "_guardian", "type": "address" }
+          ],
+          "name": "setGuardian",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "pauseRecovery",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "resumeFromRecovery",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "_additionalSeconds", "type": "uint256" }
+          ],
+          "name": "extendHeartbeat",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ],
+      "deployments": [
+        { "chainId": 11155111, "address": "0xF957cDA1f676B9EAE65Ab99982CAa3a31A193CB7" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "DeadSwitch",
+    "info": {
+      "legalName": "DeadSwitch — Decentralized Crypto Inheritance",
+      "url": "https://deadswitch.online"
+    }
+  },
+  "display": {
+    "formats": {
+      "heartbeat()": {
+        "$id": "heartbeat",
+        "intent": "Send heartbeat",
+        "fields": [],
+        "required": []
+      },
+      "claim(bytes32 _worldIdNullifier)": {
+        "$id": "claim",
+        "intent": "Claim inheritance",
+        "fields": [
+          {
+            "path": "_worldIdNullifier",
+            "label": "World ID Proof",
+            "format": "raw"
+          }
+        ],
+        "required": ["_worldIdNullifier"]
+      },
+      "cancel()": {
+        "$id": "cancel",
+        "intent": "Cancel vault & withdraw",
+        "fields": [],
+        "required": []
+      },
+      "updateBeneficiary(address _newBeneficiary, bytes32 _newWorldIdNullifier, string _newENS)": {
+        "$id": "updateBeneficiary",
+        "intent": "Update heir",
+        "fields": [
+          {
+            "path": "_newBeneficiary",
+            "label": "New heir address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          },
+          {
+            "path": "_newENS",
+            "label": "Heir ENS name",
+            "format": "raw"
+          }
+        ],
+        "required": ["_newBeneficiary", "_newENS"],
+        "excluded": ["_newWorldIdNullifier"]
+      },
+      "updateInterval(uint256 _newInterval)": {
+        "$id": "updateInterval",
+        "intent": "Update heartbeat interval",
+        "fields": [
+          {
+            "path": "_newInterval",
+            "label": "New interval",
+            "format": "duration"
+          }
+        ],
+        "required": ["_newInterval"]
+      },
+      "setGuardian(address _guardian)": {
+        "$id": "setGuardian",
+        "intent": "Set guardian",
+        "fields": [
+          {
+            "path": "_guardian",
+            "label": "Guardian address",
+            "format": "addressName",
+            "params": { "types": ["eoa"] }
+          }
+        ],
+        "required": ["_guardian"]
+      },
+      "pauseRecovery()": {
+        "$id": "pauseRecovery",
+        "intent": "Pause recovery mode",
+        "fields": [],
+        "required": []
+      },
+      "resumeFromRecovery()": {
+        "$id": "resumeFromRecovery",
+        "intent": "Resume from recovery",
+        "fields": [],
+        "required": []
+      },
+      "extendHeartbeat(uint256 _additionalSeconds)": {
+        "$id": "extendHeartbeat",
+        "intent": "Extend heartbeat deadline",
+        "fields": [
+          {
+            "path": "_additionalSeconds",
+            "label": "Additional time",
+            "format": "duration"
+          }
+        ],
+        "required": ["_additionalSeconds"]
+      }
+    }
+  }
+}
