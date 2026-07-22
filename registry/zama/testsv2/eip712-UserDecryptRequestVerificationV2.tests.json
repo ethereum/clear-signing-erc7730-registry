@@ -1,0 +1,98 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-UserDecryptRequestVerificationV2.json",
+  "tests": [
+    {
+      "description": "Authorize unified (v2) user decryption for a single contract on mainnet",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "UserDecryptRequestVerification": [
+            { "name": "userAddress", "type": "address" },
+            { "name": "publicKey", "type": "bytes" },
+            { "name": "allowedContracts", "type": "address[]" },
+            { "name": "startTimestamp", "type": "uint256" },
+            { "name": "durationSeconds", "type": "uint256" },
+            { "name": "extraData", "type": "bytes" }
+          ]
+        },
+        "primaryType": "UserDecryptRequestVerification",
+        "domain": {
+          "name": "Decryption",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0x0f6024a97684f7d90ddb0fAAD79cB15F2C888D24"
+        },
+        "message": {
+          "userAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+          "publicKey": "0x2000000000000000000000000000000000000000000000000000000000000001",
+          "allowedContracts": ["0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"],
+          "startTimestamp": 1751328000,
+          "durationSeconds": 864000,
+          "extraData": "0x"
+        }
+      },
+      "expected": {
+        "intent": "Authorize decryption of your confidential data",
+        "owner": "Zama",
+        "fields": [
+          { "label": "User", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" },
+          { "label": "Authorized contract", "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" },
+          { "label": "Valid from", "value": "2025-07-01 00:00:00Z" },
+          { "label": "Valid for", "value": "240:00:00" }
+        ]
+      }
+    },
+    {
+      "description": "Authorize unified (v2) user decryption on Sepolia (testnet, chainId 11155111)",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "UserDecryptRequestVerification": [
+            { "name": "userAddress", "type": "address" },
+            { "name": "publicKey", "type": "bytes" },
+            { "name": "allowedContracts", "type": "address[]" },
+            { "name": "startTimestamp", "type": "uint256" },
+            { "name": "durationSeconds", "type": "uint256" },
+            { "name": "extraData", "type": "bytes" }
+          ]
+        },
+        "primaryType": "UserDecryptRequestVerification",
+        "domain": {
+          "name": "Decryption",
+          "version": "1",
+          "chainId": 11155111,
+          "verifyingContract": "0x5D8BD78e2ea6bbE41f26dFe9fdaEAa349e077478"
+        },
+        "message": {
+          "userAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+          "publicKey": "0x2000000000000000000000000000000000000000000000000000000000000001",
+          "allowedContracts": ["0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"],
+          "startTimestamp": 1751328000,
+          "durationSeconds": 864000,
+          "extraData": "0x"
+        }
+      },
+      "expected": {
+        "intent": "Authorize decryption of your confidential data",
+        "owner": "Zama",
+        "fields": [
+          { "label": "User", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" },
+          { "label": "Authorized contract", "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" },
+          { "label": "Valid from", "value": "2025-07-01 00:00:00Z" },
+          { "label": "Valid for", "value": "240:00:00" }
+        ]
+      }
+    }
+  ]
+}

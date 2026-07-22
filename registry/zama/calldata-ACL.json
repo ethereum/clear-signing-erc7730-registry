@@ -1,0 +1,38 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ACL",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xcA2E8f1F656CD25C01F05d0b243Ab1ecd4a8ffb6" },
+        { "chainId": 11155111, "address": "0xf0Ffdc93b7E186bC2f8CB3dAA75D86d1930A433D" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Zama", "info": { "url": "https://www.zama.org/" }, "contractName": "ACL" },
+  "display": {
+    "definitions": {
+      "delegate": { "label": "Delegate to", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+      "delegationContract": { "label": "For contract", "format": "addressName", "params": { "types": ["contract"] } }
+    },
+    "formats": {
+      "delegateForUserDecryption(address delegate, address contractAddress, uint64 expirationDate)": {
+        "$id": "delegateForUserDecryption",
+        "intent": "Delegate decryption rights",
+        "fields": [
+          { "path": "delegate", "$ref": "$.display.definitions.delegate" },
+          { "path": "contractAddress", "$ref": "$.display.definitions.delegationContract" },
+          { "path": "expirationDate", "label": "Delegated until", "format": "date", "params": { "encoding": "timestamp" } }
+        ]
+      },
+      "revokeDelegationForUserDecryption(address delegate, address contractAddress)": {
+        "$id": "revokeDelegationForUserDecryption",
+        "intent": "Revoke decryption delegation",
+        "fields": [
+          { "path": "delegate", "$ref": "$.display.definitions.delegate" },
+          { "path": "contractAddress", "$ref": "$.display.definitions.delegationContract" }
+        ]
+      }
+    }
+  }
+}
