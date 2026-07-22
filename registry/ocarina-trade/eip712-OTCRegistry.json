@@ -1,0 +1,116 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "OTCRegistry EIP-712",
+    "eip712": {
+      "domain": { "name": "OTCRegistry", "version": "1" },
+      "deployments": [
+        { "chainId": 1, "address": "0x07C0000007b4B558e2fCd47F47A573413B0Caf7C" },
+        { "chainId": 11155111, "address": "0xfc9E05BF732FB5Aeee7e270928F349Ed3FA3cc0D" },
+        { "chainId": 8453, "address": "0x07C00000057b66A84004adD3B0f9164E744354CB" },
+        { "chainId": 137, "address": "0x07C000000e10b73C0506f36BA75E50a5D3147061" },
+        { "chainId": 57073, "address": "0x07C00000025CF03243E6fde1BE86af60D12fbF8f" }
+      ],
+      "schemas": [
+        {
+          "primaryType": "OrderRegistration",
+          "types": {
+            "EIP712Domain": [
+              { "name": "name", "type": "string" },
+              { "name": "version", "type": "string" },
+              { "name": "chainId", "type": "uint256" },
+              { "name": "verifyingContract", "type": "address" }
+            ],
+            "OrderRegistration": [
+              { "name": "orderHash", "type": "bytes32" },
+              { "name": "seaportSignature", "type": "bytes" },
+              { "name": "memo", "type": "string" }
+            ]
+          }
+        },
+        {
+          "primaryType": "TipAuthorization",
+          "types": {
+            "EIP712Domain": [
+              { "name": "name", "type": "string" },
+              { "name": "version", "type": "string" },
+              { "name": "chainId", "type": "uint256" },
+              { "name": "verifyingContract", "type": "address" }
+            ],
+            "TipAuthorization": [
+              { "name": "orderHash", "type": "bytes32" },
+              { "name": "fulfiller", "type": "address" },
+              { "name": "tips", "type": "TipItem[]" },
+              { "name": "deadline", "type": "uint256" }
+            ],
+            "TipItem": [
+              { "name": "itemType", "type": "uint8" },
+              { "name": "token", "type": "address" },
+              { "name": "identifier", "type": "uint256" },
+              { "name": "amount", "type": "uint256" },
+              { "name": "recipient", "type": "address" }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Ocarina",
+    "contractName": "OTCRegistry",
+    "info": { "url": "https://ocarina.trade/" },
+    "constants": { "nativeAssetAddress": "0x0000000000000000000000000000000000000000" }
+  },
+  "display": {
+    "formats": {
+      "OrderRegistration(bytes32 orderHash,bytes seaportSignature,string memo)": {
+        "intent": "Authorize offer",
+        "fields": [
+          { "path": "orderHash", "label": "Order hash", "format": "raw", "visible": "always" },
+          { "path": "memo", "label": "Memo", "format": "raw", "visible": { "ifNotIn": [""] } },
+          { "path": "seaportSignature", "label": "Seaport signature", "visible": "never" }
+        ]
+      },
+      "TipAuthorization(bytes32 orderHash,address fulfiller,TipItem[] tips,uint256 deadline)TipItem(uint8 itemType,address token,uint256 identifier,uint256 amount,address recipient)": {
+        "intent": "Authorize tip",
+        "interpolatedIntent": "Authorize {tips.[].amount} tip",
+        "fields": [
+          { "path": "tips.[]", "label": "Tips", "visible": "never" },
+          {
+            "label": "Tips",
+            "iteration": "bundled",
+            "fields": [
+              { "path": "tips.[].itemType", "label": "Tip type", "visible": { "mustBe": ["0", "1"] } },
+              {
+                "path": "tips.[].amount",
+                "label": "Tip amount",
+                "format": "tokenAmount",
+                "separator": "Tip {index}",
+                "params": { "tokenPath": "tips.[].token", "nativeCurrencyAddress": "$.metadata.constants.nativeAssetAddress" },
+                "visible": "always"
+              },
+              {
+                "path": "tips.[].recipient",
+                "label": "Tip to",
+                "format": "addressName",
+                "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+                "visible": "always"
+              },
+              { "path": "tips.[].token", "label": "Tip token", "visible": "never" },
+              { "path": "tips.[].identifier", "label": "Tip identifier", "visible": { "mustBe": ["0"] } }
+            ]
+          },
+          {
+            "path": "fulfiller",
+            "label": "Tip from",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "deadline", "label": "Expires", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" },
+          { "path": "orderHash", "label": "Order hash", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
