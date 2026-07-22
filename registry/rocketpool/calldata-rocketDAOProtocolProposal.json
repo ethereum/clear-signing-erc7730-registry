@@ -1,0 +1,74 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "rocketDAOProtocolProposal",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x2D627A50Dc1C4EDa73E42858E8460b0eCF300b25" },
+        { "chainId": 560048, "address": "0x17Cf2c5d69E4F222bcaDD86d210FE9dc8BadA60B" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Rocket Pool",
+    "info": { "url": "https://rocketpool.net" },
+    "enums": { "voteDirection": { "0": "No vote", "1": "Abstain", "2": "For", "3": "Against" } },
+    "contractName": "rocketDAOProtocolProposal"
+  },
+  "display": {
+    "formats": {
+      "propose(string _proposalMessage, bytes _payload, uint32 _blockNumber, (uint256 sum, bytes32 hash)[] _treeNodes)": {
+        "intent": "Submit pDAO proposal",
+        "fields": [
+          { "label": "Message", "format": "raw", "path": "#._proposalMessage", "visible": "always" },
+          { "label": "Block number", "format": "raw", "path": "#._blockNumber", "visible": "always" },
+          { "label": "Payload", "path": "#._payload", "visible": "never" },
+          { "label": "Tree node sum", "path": "#._treeNodes.[].sum", "visible": "never" },
+          { "label": "Tree node hash", "path": "#._treeNodes.[].hash", "visible": "never" }
+        ]
+      },
+      "vote(uint256 _proposalID, uint8 _voteDirection, uint256 _votingPower, uint256 _nodeIndex, (uint256 sum, bytes32 hash)[] _witness)": {
+        "intent": "Vote on pDAO proposal",
+        "fields": [
+          { "label": "Proposal ID", "format": "raw", "path": "#._proposalID", "visible": "always" },
+          {
+            "label": "Vote",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.voteDirection" },
+            "path": "#._voteDirection",
+            "visible": "always"
+          },
+          { "label": "Voting power", "format": "raw", "path": "#._votingPower", "visible": "always" },
+          { "label": "Node index", "path": "#._nodeIndex", "visible": "never" },
+          { "label": "Witness sum", "path": "#._witness.[].sum", "visible": "never" },
+          { "label": "Witness hash", "path": "#._witness.[].hash", "visible": "never" }
+        ]
+      },
+      "overrideVote(uint256 _proposalID, uint8 _voteDirection)": {
+        "intent": "Override delegate vote",
+        "fields": [
+          { "label": "Proposal ID", "format": "raw", "path": "#._proposalID", "visible": "always" },
+          {
+            "label": "Vote",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.voteDirection" },
+            "path": "#._voteDirection",
+            "visible": "always"
+          }
+        ]
+      },
+      "finalise(uint256 _proposalID)": {
+        "intent": "Finalise pDAO proposal",
+        "fields": [{ "label": "Proposal ID", "format": "raw", "path": "#._proposalID", "visible": "always" }]
+      },
+      "execute(uint256 _proposalID)": {
+        "intent": "Execute pDAO proposal",
+        "fields": [{ "label": "Proposal ID", "format": "raw", "path": "#._proposalID", "visible": "always" }]
+      },
+      "destroy(uint256 _proposalID)": {
+        "intent": "Destroy pDAO proposal",
+        "fields": [{ "label": "Proposal ID", "format": "raw", "path": "#._proposalID", "visible": "always" }]
+      }
+    }
+  }
+}

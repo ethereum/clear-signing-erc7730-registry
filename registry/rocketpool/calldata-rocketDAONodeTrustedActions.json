@@ -1,0 +1,91 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "rocketDAONodeTrustedActions",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x029d946F28F93399a5b0D09c879FC8c94E596AEb" },
+        { "chainId": 560048, "address": "0xa0f327589B08CEB824c21CDe8eaD5a3e6ca9edF7" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Rocket Pool",
+    "info": { "url": "https://rocketpool.net" },
+    "constants": { "RPLaddress": "0xD33526068D116cE69F19A9ee46F0bd304F21A51f" },
+    "contractName": "rocketDAONodeTrustedActions"
+  },
+  "display": {
+    "formats": {
+      "actionJoin()": { "intent": "Join oracle DAO", "fields": [] },
+      "actionJoinRequired(address _nodeAddress)": {
+        "intent": "Join oracle DAO",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          }
+        ]
+      },
+      "actionLeave(address _rplBondRefundAddress)": {
+        "intent": "Leave oracle DAO",
+        "fields": [
+          {
+            "label": "Refund address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._rplBondRefundAddress",
+            "visible": "always"
+          }
+        ]
+      },
+      "actionChallengeMake(address _nodeAddress)": {
+        "intent": "Challenge oracle DAO member",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          { "label": "Challenge cost", "format": "amount", "path": "@.value", "visible": "always" }
+        ]
+      },
+      "actionChallengeDecide(address _nodeAddress)": {
+        "intent": "Decide oracle DAO challenge",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          }
+        ]
+      },
+      "actionKick(address _nodeAddress, uint256 _rplFine)": {
+        "intent": "Kick oracle DAO member",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          {
+            "label": "RPL fine",
+            "format": "tokenAmount",
+            "path": "#._rplFine",
+            "params": { "token": "$.metadata.constants.RPLaddress" },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

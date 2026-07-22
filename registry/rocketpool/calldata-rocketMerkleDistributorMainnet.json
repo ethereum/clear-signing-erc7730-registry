@@ -1,0 +1,76 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "rocketMerkleDistributorMainnet",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xE4E2612EE8d7fdc8518Faea85770A3b9c886E2f5" },
+        { "chainId": 560048, "address": "0xcAFb9B62579d1a12207d642d644808E7e97ed910" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Rocket Pool",
+    "info": { "url": "https://rocketpool.net" },
+    "constants": { "RPLaddress": "0xD33526068D116cE69F19A9ee46F0bd304F21A51f" },
+    "contractName": "rocketMerkleDistributorMainnet"
+  },
+  "display": {
+    "formats": {
+      "claim(address _nodeAddress, (uint256 rewardIndex, uint256 amountRPL, uint256 amountSmoothingPoolETH, uint256 amountVoterETH, bytes32[] merkleProof)[] _claims)": {
+        "intent": "Claim rewards",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          {
+            "label": "RPL claimed",
+            "format": "tokenAmount",
+            "path": "#._claims.[].amountRPL",
+            "params": { "token": "$.metadata.constants.RPLaddress" },
+            "visible": "always"
+          },
+          { "label": "Smoothing pool ETH", "format": "amount", "path": "#._claims.[].amountSmoothingPoolETH", "visible": "always" },
+          { "label": "Voter ETH", "format": "amount", "path": "#._claims.[].amountVoterETH", "visible": "always" },
+          { "label": "Reward index", "path": "#._claims.[].rewardIndex", "visible": "never" },
+          { "label": "Merkle proof", "path": "#._claims.[].merkleProof.[]", "visible": "never" }
+        ]
+      },
+      "claimAndStake(address _nodeAddress, (uint256 rewardIndex, uint256 amountRPL, uint256 amountSmoothingPoolETH, uint256 amountVoterETH, bytes32[] merkleProof)[] _claims, uint256 _stakeAmount)": {
+        "intent": "Claim and stake rewards",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          {
+            "label": "RPL claimed",
+            "format": "tokenAmount",
+            "path": "#._claims.[].amountRPL",
+            "params": { "token": "$.metadata.constants.RPLaddress" },
+            "visible": "always"
+          },
+          {
+            "label": "RPL re-staked",
+            "format": "tokenAmount",
+            "path": "#._stakeAmount",
+            "params": { "token": "$.metadata.constants.RPLaddress" },
+            "visible": "always"
+          },
+          { "label": "Smoothing pool ETH", "format": "amount", "path": "#._claims.[].amountSmoothingPoolETH", "visible": "always" },
+          { "label": "Voter ETH", "format": "amount", "path": "#._claims.[].amountVoterETH", "visible": "always" },
+          { "label": "Reward index", "path": "#._claims.[].rewardIndex", "visible": "never" },
+          { "label": "Merkle proof", "path": "#._claims.[].merkleProof.[]", "visible": "never" }
+        ]
+      },
+      "claimOutstandingEth()": { "intent": "Claim outstanding ETH", "fields": [] }
+    }
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "rocketNodeManager",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xcf2d76A7499d3acB5A22ce83c027651e8d76e250" },
+        { "chainId": 560048, "address": "0xa9115EfdA9c4DceEf1321153561dCb375d13B07A" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Rocket Pool",
+    "info": { "url": "https://rocketpool.net" },
+    "contractName": "rocketNodeManager"
+  },
+  "display": {
+    "formats": {
+      "registerNode(string _timezoneLocation)": {
+        "intent": "Register node",
+        "fields": [{ "label": "Timezone", "format": "raw", "path": "#._timezoneLocation", "visible": "always" }]
+      },
+      "setTimezoneLocation(string _timezoneLocation)": {
+        "intent": "Set node timezone",
+        "fields": [{ "label": "Timezone", "format": "raw", "path": "#._timezoneLocation", "visible": "always" }]
+      },
+      "setRPLWithdrawalAddress(address _nodeAddress, address _newRPLWithdrawalAddress, bool _confirm)": {
+        "intent": "Set RPL withdrawal address",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          {
+            "label": "Withdrawal address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._newRPLWithdrawalAddress",
+            "visible": "always"
+          },
+          { "label": "Confirm", "format": "raw", "path": "#._confirm", "visible": "always" }
+        ]
+      },
+      "confirmRPLWithdrawalAddress(address _nodeAddress)": {
+        "intent": "Confirm RPL withdrawal address",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          }
+        ]
+      },
+      "unsetRPLWithdrawalAddress(address _nodeAddress)": {
+        "intent": "Unset RPL withdrawal address",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          }
+        ]
+      },
+      "setRewardNetwork(address _nodeAddress, uint256 _network)": {
+        "intent": "Set node reward network",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          { "label": "Reward network", "format": "raw", "path": "#._network", "visible": "always" }
+        ]
+      },
+      "setSmoothingPoolRegistrationState(bool _state)": {
+        "intent": "Set smoothing pool opt-in",
+        "fields": [{ "label": "Opted in", "format": "raw", "path": "#._state", "visible": "always" }]
+      },
+      "initialiseFeeDistributor()": { "intent": "Initialise fee distributor", "fields": [] },
+      "deployMegapool()": { "intent": "Deploy megapool", "fields": [] },
+      "claimUnclaimedRewards(address _nodeAddress)": {
+        "intent": "Claim unclaimed rewards",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
