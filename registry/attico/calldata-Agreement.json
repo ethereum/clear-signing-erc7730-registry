@@ -1,0 +1,59 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "$id": "Attico Agreement",
+    "contract": {
+      "abi": [
+        { "type": "function", "name": "accept", "inputs": [], "outputs": [], "stateMutability": "nonpayable" },
+        { "type": "function", "name": "pay", "inputs": [], "outputs": [], "stateMutability": "nonpayable" },
+        { "type": "function", "name": "terminate", "inputs": [], "outputs": [], "stateMutability": "nonpayable" },
+        {
+          "type": "function", "name": "review",
+          "inputs": [
+            { "name": "rating", "type": "uint8" },
+            { "name": "commentHash", "type": "bytes32" }
+          ],
+          "outputs": [], "stateMutability": "nonpayable"
+        }
+      ],
+      "deployments": [
+        { "chainId": 11142220, "address": "0x62877deddd09350f8b571e3bc91342fd062fddf2" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Attico",
+    "info": {
+      "legalName": "Attico",
+      "url": "https://attico.xyz",
+      "lastUpdate": "2026-04-04T00:00:00Z"
+    }
+  },
+  "display": {
+    "formats": {
+      "accept()": {
+        "intent": "Accept Rental Agreement",
+        "fields": [],
+        "required": []
+      },
+      "pay()": {
+        "intent": "Pay Rent",
+        "fields": [],
+        "required": []
+      },
+      "terminate()": {
+        "intent": "Terminate Agreement Early",
+        "fields": [],
+        "required": []
+      },
+      "review(uint8,bytes32)": {
+        "intent": "Leave Review",
+        "fields": [
+          { "path": "#.rating", "label": "Rating (1-5)", "format": "raw" }
+        ],
+        "required": ["#.rating"],
+        "excluded": ["#.commentHash"]
+      }
+    }
+  }
+}
