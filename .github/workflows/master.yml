@@ -41,8 +41,8 @@ jobs:
         env:
           ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
         run: |
-          # Lint only root descriptors. Exclude the tests/ and testsv2/ fixtures,
+          # Lint only root descriptors. Exclude the *.tests.json fixtures,
           # which are not ERC-7730 descriptors and fail descriptor validation.
           FILES=$(find registry -type f \( -name 'calldata-*.json' -o -name 'eip712-*.json' \) \
-            -not -path '*/tests/*' -not -path '*/testsv2/*')
+            -not -name '*.tests.json')
           erc7730 lint $FILES --gha
