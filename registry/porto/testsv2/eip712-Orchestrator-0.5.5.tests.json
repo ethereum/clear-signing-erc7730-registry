@@ -1,0 +1,249 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-Orchestrator-0.5.5.json",
+  "dataProvider": {
+    "tokens": {
+      "0x0000000000000000000000000000000000000000": {
+        "symbol": "ETH",
+        "decimals": 18,
+        "name": "Ether"
+      },
+      "0xaf88d065e77c8cc2239327c5edb3a432268e5831": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      }
+    },
+    "addressNames": {
+      "0x2222222222222222222222222222222222222222": "Cloaked account",
+      "0x4444444444444444444444444444444444444444": "Example target"
+    }
+  },
+  "tests": [
+    {
+      "description": "Prepare a Cloaked account on Arbitrum with a USDC fee",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Intent": [
+            { "name": "multichain", "type": "bool" },
+            { "name": "eoa", "type": "address" },
+            { "name": "calls", "type": "Call[]" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "payer", "type": "address" },
+            { "name": "paymentToken", "type": "address" },
+            { "name": "paymentMaxAmount", "type": "uint256" },
+            { "name": "combinedGas", "type": "uint256" },
+            { "name": "encodedPreCalls", "type": "bytes[]" },
+            { "name": "encodedFundTransfers", "type": "bytes[]" },
+            { "name": "settler", "type": "address" },
+            { "name": "expiry", "type": "uint256" }
+          ],
+          "Call": [
+            { "name": "to", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "data", "type": "bytes" }
+          ]
+        },
+        "primaryType": "Intent",
+        "domain": {
+          "name": "Orchestrator",
+          "version": "0.5.5",
+          "chainId": 42161,
+          "verifyingContract": "0x36A7Cd5b1F475122A2b52580FC8e170A2Cd312eF"
+        },
+        "message": {
+          "multichain": false,
+          "eoa": "0x2222222222222222222222222222222222222222",
+          "calls": [],
+          "nonce": "0",
+          "payer": "0x0000000000000000000000000000000000000000",
+          "paymentToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          "paymentMaxAmount": "125000",
+          "combinedGas": "250000",
+          "encodedPreCalls": [],
+          "encodedFundTransfers": [],
+          "settler": "0x0000000000000000000000000000000000000000",
+          "expiry": "0"
+        }
+      },
+      "expected": {
+        "intent": "Execute account actions",
+        "owner": "Porto",
+        "fields": [
+          { "label": "Multiple networks", "value": "false" },
+          { "label": "Account", "value": "Cloaked account" },
+          { "label": "Maximum payment", "value": "0.125 USDC" },
+          { "label": "Payment token", "value": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831" },
+          { "label": "Payer", "value": "0x0000000000000000000000000000000000000000" },
+          { "label": "Combined gas limit", "value": "250000" },
+          { "label": "Settler", "value": "0x0000000000000000000000000000000000000000" },
+          { "label": "Expiry", "value": "0" },
+          { "label": "Nonce", "value": "0" }
+        ]
+      }
+    },
+    {
+      "description": "Display one Porto account action and a USDC fee",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Intent": [
+            { "name": "multichain", "type": "bool" },
+            { "name": "eoa", "type": "address" },
+            { "name": "calls", "type": "Call[]" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "payer", "type": "address" },
+            { "name": "paymentToken", "type": "address" },
+            { "name": "paymentMaxAmount", "type": "uint256" },
+            { "name": "combinedGas", "type": "uint256" },
+            { "name": "encodedPreCalls", "type": "bytes[]" },
+            { "name": "encodedFundTransfers", "type": "bytes[]" },
+            { "name": "settler", "type": "address" },
+            { "name": "expiry", "type": "uint256" }
+          ],
+          "Call": [
+            { "name": "to", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "data", "type": "bytes" }
+          ]
+        },
+        "primaryType": "Intent",
+        "domain": {
+          "name": "Orchestrator",
+          "version": "0.5.5",
+          "chainId": 1,
+          "verifyingContract": "0x36A7Cd5b1F475122A2b52580FC8e170A2Cd312eF"
+        },
+        "message": {
+          "multichain": false,
+          "eoa": "0x2222222222222222222222222222222222222222",
+          "calls": [
+            {
+              "to": "0x4444444444444444444444444444444444444444",
+              "value": "500000000000000000",
+              "data": "0x12345678"
+            }
+          ],
+          "nonce": "7",
+          "payer": "0x0000000000000000000000000000000000000000",
+          "paymentToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "paymentMaxAmount": "3000",
+          "combinedGas": "180000",
+          "encodedPreCalls": [],
+          "encodedFundTransfers": [],
+          "settler": "0x0000000000000000000000000000000000000000",
+          "expiry": "0"
+        }
+      },
+      "expected": {
+        "intent": "Execute account actions",
+        "owner": "Porto",
+        "fields": [
+          { "label": "Multiple networks", "value": "false" },
+          { "label": "Account", "value": "Cloaked account" },
+          { "label": "Target", "value": "Example target" },
+          { "label": "Native value", "value": "500000000000000000" },
+          { "label": "Call", "value": "0x12345678" },
+          { "label": "Maximum payment", "value": "0.003 USDC" },
+          { "label": "Payment token", "value": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" },
+          { "label": "Payer", "value": "0x0000000000000000000000000000000000000000" },
+          { "label": "Combined gas limit", "value": "180000" },
+          { "label": "Settler", "value": "0x0000000000000000000000000000000000000000" },
+          { "label": "Expiry", "value": "0" },
+          { "label": "Nonce", "value": "7" }
+        ]
+      }
+    },
+    {
+      "description": "Display signed pre-calls, fund transfers, settlement, and expiry",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Intent": [
+            { "name": "multichain", "type": "bool" },
+            { "name": "eoa", "type": "address" },
+            { "name": "calls", "type": "Call[]" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "payer", "type": "address" },
+            { "name": "paymentToken", "type": "address" },
+            { "name": "paymentMaxAmount", "type": "uint256" },
+            { "name": "combinedGas", "type": "uint256" },
+            { "name": "encodedPreCalls", "type": "bytes[]" },
+            { "name": "encodedFundTransfers", "type": "bytes[]" },
+            { "name": "settler", "type": "address" },
+            { "name": "expiry", "type": "uint256" }
+          ],
+          "Call": [
+            { "name": "to", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "data", "type": "bytes" }
+          ]
+        },
+        "primaryType": "Intent",
+        "domain": {
+          "name": "Orchestrator",
+          "version": "0.5.5",
+          "chainId": 8453,
+          "verifyingContract": "0x36A7Cd5b1F475122A2b52580FC8e170A2Cd312eF"
+        },
+        "message": {
+          "multichain": false,
+          "eoa": "0x2222222222222222222222222222222222222222",
+          "calls": [],
+          "nonce": "12",
+          "payer": "0x1111111111111111111111111111111111111111",
+          "paymentToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "paymentMaxAmount": "0",
+          "combinedGas": "500000",
+          "encodedPreCalls": ["0x010203"],
+          "encodedFundTransfers": ["0x040506"],
+          "settler": "0x3333333333333333333333333333333333333333",
+          "expiry": "1893456000"
+        }
+      },
+      "expected": {
+        "intent": "Execute account actions",
+        "owner": "Porto",
+        "fields": [
+          { "label": "Multiple networks", "value": "false" },
+          { "label": "Account", "value": "Cloaked account" },
+          { "label": "Maximum payment", "value": "0 USDC" },
+          { "label": "Payment token", "value": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" },
+          { "label": "Payer", "value": "0x1111111111111111111111111111111111111111" },
+          { "label": "Combined gas limit", "value": "500000" },
+          { "label": "Pre-call", "value": "0x010203" },
+          { "label": "Fund transfer", "value": "0x040506" },
+          { "label": "Settler", "value": "0x3333333333333333333333333333333333333333" },
+          { "label": "Expiry", "value": "1893456000" },
+          { "label": "Nonce", "value": "12" }
+        ]
+      }
+    }
+  ]
+}
