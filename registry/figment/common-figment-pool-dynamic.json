@@ -1,0 +1,42 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "metadata": {
+    "owner": "Figment",
+    "info": { "url": "https://figment.io/" }
+  },
+  "display": {
+    "formats": {
+      "deposit(uint256 assets, address lender)": {
+        "intent": "Deposit into Stablecoin Vault",
+        "fields": [
+          {
+            "path": "assets",
+            "label": "Amount to deposit",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
+          },
+          {
+            "path": "lender",
+            "label": "Depositing wallet",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "requestRedeem(uint256 shares)": {
+        "intent": "Redeem from Stablecoin Vault",
+        "fields": [
+          {
+            "path": "shares",
+            "label": "Shares to redeem",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
