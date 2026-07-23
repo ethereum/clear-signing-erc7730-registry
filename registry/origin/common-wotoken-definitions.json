@@ -1,0 +1,53 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",  
+  "context": {
+    "contract": {
+      "abi": [
+        {
+          "inputs": [{ "name": "assets", "type": "uint256" }, { "name": "receiver", "type": "address" }],
+          "name": "deposit",
+          "type": "function"
+        },
+        {
+          "inputs": [{ "name": "shares", "type": "uint256" }, { "name": "receiver", "type": "address" }, { "name": "owner", "type": "address" }],
+          "name": "redeem",
+          "type": "function"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Origin Protocol",
+    "info": { "legalName": "Origin Protocol", "url": "https://www.originprotocol.com" },
+    "constants": { "underlyingToken": "0x0", "vaultTicker": "wToken" }
+  },
+  "display": {
+    "formats": {
+      "deposit(uint256 assets, address receiver)": {
+        "intent": "Wrap",
+        "fields": [
+          {
+            "path": "assets",
+            "label": "Deposit",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" }
+          },
+          { "label": "Receive", "format": "raw", "value": "$.metadata.constants.vaultTicker" },
+          { "path": "receiver", "label": "Send shares to", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
+        ],
+        "required": ["assets", "receiver"],
+        "excluded": []
+      },
+      "redeem(uint256 shares, address receiver, address owner)": {
+        "intent": "Unwrap",
+        "fields": [
+          { "path": "shares", "label": "Redeem", "format": "tokenAmount", "params": { "tokenPath": "@.to" } },
+          { "path": "receiver", "label": "To", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "owner", "label": "Owner", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
+        ],
+        "required": ["shares", "receiver", "owner"],
+        "excluded": []
+      }
+    }
+  }
+}

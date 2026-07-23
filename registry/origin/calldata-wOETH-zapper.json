@@ -1,0 +1,77 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [{ "chainId": 1, "address": "0xDA0485c1E74A7ef690E99D8286C243942eDAa07B" }],
+      "abi": [
+        {
+          "inputs": [],
+          "name": "deposit",
+          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+          "stateMutability": "payable",
+          "type": "function"
+        },
+        {
+          "inputs": [{ "internalType": "uint256", "name": "minReceived", "type": "uint256" }],
+          "name": "depositETHForWrappedTokens",
+          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+          "stateMutability": "payable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "wethAmount", "type": "uint256" },
+            { "internalType": "uint256", "name": "minReceived", "type": "uint256" }
+          ],
+          "name": "depositWETHForWrappedTokens",
+          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Origin Protocol",
+    "info": { "legalName": "Origin Protocol", "url": "https://www.originprotocol.com" },
+    "constants": { "wrappedToken": "0xD8724322f44E5c58D7A815F542036fb17DbbF839" }
+  },
+  "display": {
+    "formats": {
+      "deposit()": {
+        "intent": "Deposit",
+        "fields": [{ "label": "Amount", "format": "amount", "path": "@.value" }],
+        "required": ["@.value"],
+        "excluded": []
+      },
+      "depositETHForWrappedTokens(uint256 minReceived)": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Amount", "format": "amount", "path": "@.value" },
+          {
+            "label": "Minimum Received",
+            "format": "tokenAmount",
+            "path": "minReceived",
+            "params": { "token": "$.metadata.constants.wrappedToken" }
+          }
+        ],
+        "required": ["@.value", "minReceived"],
+        "excluded": []
+      },
+      "depositWETHForWrappedTokens(uint256 wethAmount, uint256 minReceived)": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Amount", "format": "amount", "path": "wethAmount" },
+          {
+            "label": "Minimum Received",
+            "format": "tokenAmount",
+            "path": "minReceived",
+            "params": { "token": "$.metadata.constants.wrappedToken" }
+          }
+        ],
+        "required": ["wethAmount", "minReceived"],
+        "excluded": []
+      }
+    }
+  }
+}
