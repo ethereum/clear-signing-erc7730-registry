@@ -1,0 +1,82 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Atomic x402 Purchase V2",
+    "contract": {
+      "abi": [
+        {
+          "inputs": [
+            { "internalType": "address", "name": "payer", "type": "address" },
+            { "internalType": "address", "name": "recipient", "type": "address" },
+            { "internalType": "uint256", "name": "amount", "type": "uint256" },
+            { "internalType": "uint256", "name": "validAfter", "type": "uint256" },
+            { "internalType": "uint256", "name": "validBefore", "type": "uint256" },
+            { "internalType": "bytes32", "name": "nonce", "type": "bytes32" },
+            { "internalType": "uint8", "name": "v", "type": "uint8" },
+            { "internalType": "bytes32", "name": "r", "type": "bytes32" },
+            { "internalType": "bytes32", "name": "s", "type": "bytes32" }
+          ],
+          "name": "atomicX402Purchase",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ],
+      "deployments": [{ "chainId": 137, "address": "0x481F9616BA4bFb6066Bc5ECAf8fB76F94A18Cd47" }]
+    }
+  },
+  "metadata": {
+    "owner": "DeFi Oracle Meta",
+    "info": { "url": "https://d-bis.org" },
+    "contractName": "Atomic x402 cWUSDC to USDC Purchase V2",
+    "constants": {
+      "inputToken": "cWUSDC_V2",
+      "outputToken": "USDC",
+      "fixedUsdValue": "1.000000 USD per cWUSDC_V2"
+    }
+  },
+  "display": {
+    "formats": {
+      "atomicX402Purchase(address payer,address recipient,uint256 amount,uint256 validAfter,uint256 validBefore,bytes32 nonce,uint8 v,bytes32 r,bytes32 s)": {
+        "$id": "atomicX402Purchase",
+        "intent": "Atomic x402 purchase",
+        "fields": [
+          {
+            "path": "#.payer",
+            "label": "Payer",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.recipient",
+            "label": "USDC recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.amount",
+            "label": "cWUSDC_V2 payment",
+            "format": "unit",
+            "params": { "base": "cWUSDC_V2", "decimals": 6, "prefix": false },
+            "visible": "always"
+          },
+          {
+            "path": "#.amount",
+            "label": "USDC delivered",
+            "format": "unit",
+            "params": { "base": "USDC", "decimals": 6, "prefix": false },
+            "visible": "always"
+          },
+          {
+            "path": "#.validBefore",
+            "label": "Valid before",
+            "format": "raw",
+            "visible": "optional"
+          }
+        ]
+      }
+    }
+  }
+}
