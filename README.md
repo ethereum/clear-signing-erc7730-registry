@@ -200,4 +200,4 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
 - `index.calldata.json` maps each identifier to the path of the descriptor for that contract.
 - `index.eip712.json` maps each identifier to its EIP-712 primary types, and each primary type to the descriptors defining it. Every entry also carries the keccak256 hashes of the `encodeType` strings it covers, so consumers can pick the right descriptor when several define the same primary type for the same contract.
 
-Both files are **generated** from the descriptors under `registry/` — do not edit them by hand. A weekly CI job regenerates them and opens a pull request when they change, so contributors do not need to update them. To regenerate locally, run `npm ci && npm run generate-index`.
+Both files are **generated** from the descriptors under `registry/` — do not edit them by hand. A CI job regenerates them on every change to `master` and opens a pull request when they change, so contributors do not need to update them. To regenerate locally, run `npm ci && npm run generate-index`.

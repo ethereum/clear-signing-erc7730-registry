@@ -2,8 +2,13 @@
 name: 🔄 sync index files
 
 on:
-  schedule:
-    - cron: "0 3 * * 1"
+  push:
+    branches: [master]
+    # Only the descriptors feed the index; the index files themselves live at the
+    # repo root, so the PR this opens (index-only) never re-triggers this workflow.
+    paths:
+      - "registry/**"
+      - "ercs/**"
   workflow_dispatch:
 
 permissions:
