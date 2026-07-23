@@ -1,0 +1,401 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "$id": "Hadron Token Common",
+    "contract": {
+      "abi": [
+        {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            { "name": "spender", "type": "address", "internalType": "address" },
+            { "name": "amount", "type": "uint256", "internalType": "uint256" }
+          ],
+          "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "transfer",
+          "inputs": [
+            { "name": "to", "type": "address", "internalType": "address" },
+            { "name": "amount", "type": "uint256", "internalType": "uint256" }
+          ],
+          "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "transferFrom",
+          "inputs": [
+            { "name": "_sender", "type": "address", "internalType": "address" },
+            { "name": "_recipient", "type": "address", "internalType": "address" },
+            { "name": "_amount", "type": "uint256", "internalType": "uint256" }
+          ],
+          "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "increaseAllowance",
+          "inputs": [
+            { "name": "spender", "type": "address", "internalType": "address" },
+            { "name": "addedValue", "type": "uint256", "internalType": "uint256" }
+          ],
+          "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "decreaseAllowance",
+          "inputs": [
+            { "name": "spender", "type": "address", "internalType": "address" },
+            { "name": "subtractedValue", "type": "uint256", "internalType": "uint256" }
+          ],
+          "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "mint",
+          "inputs": [
+            { "name": "_destination", "type": "address", "internalType": "address" },
+            { "name": "_amount", "type": "uint256", "internalType": "uint256" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "redeem",
+          "inputs": [
+            { "name": "_amount", "type": "uint256", "internalType": "uint256" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "multiTransfer",
+          "inputs": [
+            { "name": "_recipients", "type": "address[]", "internalType": "address[]" },
+            { "name": "_values", "type": "uint256[]", "internalType": "uint256[]" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "addToBlockedList",
+          "inputs": [
+            { "name": "_user", "type": "address", "internalType": "address" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "removeFromBlockedList",
+          "inputs": [
+            { "name": "_user", "type": "address", "internalType": "address" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "addMultipleToBlockedList",
+          "inputs": [
+            { "name": "_users", "type": "address[]", "internalType": "address[]" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "removeMultipleFromBlockedList",
+          "inputs": [
+            { "name": "_users", "type": "address[]", "internalType": "address[]" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "destroyBlockedFunds",
+          "inputs": [
+            { "name": "_blockedUser", "type": "address", "internalType": "address" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "transferOwnership",
+          "inputs": [
+            { "name": "newOwner", "type": "address", "internalType": "address" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "renounceOwnership",
+          "inputs": [],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Hadron by Tether",
+    "info": {
+      "legalName": "Tether Operations, S.A. de C.V.",
+      "url": "https://hadron.tether.to/"
+    }
+  },
+  "display": {
+    "definitions": {
+      "approve": {
+        "label": "Spender",
+        "format": "addressName",
+        "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+      },
+      "recipient": {
+        "label": "Recipient",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+      },
+      "user": {
+        "label": "User",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+      }
+    },
+    "formats": {
+      "approve(address,uint256)": {
+        "intent": "Approve token spending",
+        "fields": [
+          {
+            "path": "#.spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#.amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to", "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000", "message": "Unlimited" }
+          }
+        ],
+        "required": ["#.spender", "#.amount"]
+      },
+      "transfer(address,uint256)": {
+        "intent": "Transfer tokens",
+        "fields": [
+          {
+            "path": "#.to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#.amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" }
+          }
+        ],
+        "required": ["#.to", "#.amount"]
+      },
+      "transferFrom(address,address,uint256)": {
+        "intent": "Transfer tokens from",
+        "fields": [
+          {
+            "path": "#._sender",
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#._recipient",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#._amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" }
+          }
+        ],
+        "required": ["#._sender", "#._recipient", "#._amount"]
+      },
+      "increaseAllowance(address,uint256)": {
+        "intent": "Increase spending allowance",
+        "fields": [
+          {
+            "path": "#.spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#.addedValue",
+            "label": "Increase by",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" }
+          }
+        ],
+        "required": ["#.spender", "#.addedValue"]
+      },
+      "decreaseAllowance(address,uint256)": {
+        "intent": "Decrease spending allowance",
+        "fields": [
+          {
+            "path": "#.spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#.subtractedValue",
+            "label": "Decrease by",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" }
+          }
+        ],
+        "required": ["#.spender", "#.subtractedValue"]
+      },
+      "mint(address,uint256)": {
+        "intent": "Mint tokens",
+        "fields": [
+          {
+            "path": "#._destination",
+            "label": "Mint to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#._amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" }
+          }
+        ],
+        "required": ["#._destination", "#._amount"]
+      },
+      "redeem(uint256)": {
+        "intent": "Redeem tokens",
+        "fields": [
+          {
+            "path": "#._amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" }
+          }
+        ],
+        "required": ["#._amount"]
+      },
+      "multiTransfer(address[],uint256[])": {
+        "intent": "Transfer to multiple recipients",
+        "fields": [
+          {
+            "path": "#._recipients.[]",
+            "label": "Recipients",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#._values.[]",
+            "label": "Amounts",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" }
+          }
+        ],
+        "required": ["#._recipients", "#._values"]
+      },
+      "addToBlockedList(address)": {
+        "intent": "Block user",
+        "fields": [
+          {
+            "path": "#._user",
+            "label": "User to block",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          }
+        ],
+        "required": ["#._user"]
+      },
+      "removeFromBlockedList(address)": {
+        "intent": "Unblock user",
+        "fields": [
+          {
+            "path": "#._user",
+            "label": "User to unblock",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          }
+        ],
+        "required": ["#._user"]
+      },
+      "addMultipleToBlockedList(address[])": {
+        "intent": "Block multiple users",
+        "fields": [
+          {
+            "path": "#._users.[]",
+            "label": "Users to block",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          }
+        ],
+        "required": ["#._users"]
+      },
+      "removeMultipleFromBlockedList(address[])": {
+        "intent": "Unblock multiple users",
+        "fields": [
+          {
+            "path": "#._users.[]",
+            "label": "Users to unblock",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          }
+        ],
+        "required": ["#._users"]
+      },
+      "destroyBlockedFunds(address)": {
+        "intent": "Destroy blocked user's funds",
+        "fields": [
+          {
+            "path": "#._blockedUser",
+            "label": "Blocked user",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          }
+        ],
+        "required": ["#._blockedUser"]
+      },
+      "transferOwnership(address)": {
+        "intent": "Transfer contract ownership",
+        "fields": [
+          {
+            "path": "#.newOwner",
+            "label": "New owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          }
+        ],
+        "required": ["#.newOwner"]
+      },
+      "renounceOwnership()": {
+        "intent": "Renounce contract ownership",
+        "fields": [],
+        "required": []
+      }
+    }
+  }
+}
+
