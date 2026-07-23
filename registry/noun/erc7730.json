@@ -1,0 +1,196 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "$id": "Nouns ERC721 Token contract",
+    "contract": {
+      "abi": "https://api.etherscan.io/api?module=contract&action=getabi&address=0x9C8fF314C9Bc7F6e59A9d9225Fb22946427eDC03",
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x9C8fF314C9Bc7F6e59A9d9225Fb22946427eDC03"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Nouns Foundation",
+    "info": {
+      "url": "https://nouns.wtf/",
+      "legalName": "Nouns DAO",
+      "lastUpdate": "2024-11-17T01:19:28.387Z"
+    }
+  },
+  "display": {
+    "formats": {
+      "approve(address,uint256)": {
+        "$id": "approve",
+        "intent": "Approve",
+        "fields": [
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": ["token"]
+            },
+            "description": "Address being approved to transfer the Noun"
+          },
+          {
+            "path": "tokenId",
+            "label": "Noun ID",
+            "format": "amount",
+            "description": "The ID of the Noun NFT"
+          }
+        ],
+        "required": ["to", "tokenId"]
+      },
+      "setApprovalForAll(address,bool)": {
+        "$id": "setApprovalForAll",
+        "intent": "Approve",
+        "fields": [
+          {
+            "path": "operator",
+            "label": "Operator",
+            "format": "addressName",
+            "params": {
+              "types": ["token"]
+            },
+            "description": "Address to approve for all Nouns"
+          },
+          {
+            "path": "approved",
+            "label": "Approved",
+            "format": "boolean",
+            "description": "True to approve, false to revoke"
+          }
+        ],
+        "required": ["operator", "approved"],
+        "warning": "This will affect ALL your Nouns"
+      },
+      "safeTransferFrom(address,address,uint256)": {
+        "$id": "safeTransferFrom",
+        "intent": "Transfer",
+        "description": "Safely transfer a Noun NFT",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": ["token"]
+            },
+            "description": "Current owner of the Noun"
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": ["token"]
+            },
+            "description": "New owner receiving the Noun"
+          },
+          {
+            "path": "tokenId",
+            "label": "Noun ID",
+            "format": "amount",
+            "description": "The ID of the Noun being transferred"
+          }
+        ],
+        "required": ["from", "to", "tokenId"]
+      },
+      "transferFrom(address,address,uint256)": {
+        "$id": "transferFrom",
+        "intent": "Transfer",
+        "description": "Transfer a Noun NFT",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": ["token"]
+            },
+            "description": "Current owner of the Noun"
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": ["token"]
+            },
+            "description": "New owner receiving the Noun"
+          },
+          {
+            "path": "tokenId",
+            "label": "Noun ID",
+            "format": "amount",
+            "description": "The ID of the Noun being transferred"
+          }
+        ],
+        "required": ["from", "to", "tokenId"]
+      },
+      "delegate(address)": {
+        "$id": "delegate",
+        "intent": "Delegate",
+        "description": "Delegate your Nouns voting power",
+        "fields": [
+          {
+            "path": "delegatee",
+            "label": "Delegate To",
+            "format": "addressName",
+            "params": {
+              "types": ["token"]
+            },
+            "description": "Address to delegate voting power to"
+          }
+        ],
+        "required": ["delegatee"]
+      },
+      "burn(uint256)": {
+        "$id": "burn",
+        "intent": "Burn",
+        "description": "Burn a Noun NFT",
+        "fields": [
+          {
+            "path": "nounId",
+            "label": "Noun ID",
+            "format": "amount",
+            "description": "The ID of the Noun to burn"
+          }
+        ],
+        "required": ["nounId"],
+        "warning": "This action is irreversible"
+      }
+    }
+  },
+  "translations": {
+    "en": {
+      "approve": {
+        "summary": "Approve transfer of Noun #{tokenId}",
+        "description": "Allow {to} to transfer your Noun #{tokenId}"
+      },
+      "setApprovalForAll": {
+        "summary": "{approved|true:Approve|false:Revoke} all Nouns",
+        "description": "{approved|true:Grant|false:Revoke} permission for {operator} to transfer all your Nouns"
+      },
+      "safeTransferFrom": {
+        "summary": "Transfer Noun #{tokenId}",
+        "description": "Safely send Noun #{tokenId} from {from} to {to}"
+      },
+      "transferFrom": {
+        "summary": "Transfer Noun #{tokenId}",
+        "description": "Send Noun #{tokenId} from {from} to {to}"
+      },
+      "delegate": {
+        "summary": "Delegate voting power",
+        "description": "Delegate your Nouns voting power to {delegatee}"
+      },
+      "burn": {
+        "summary": "Burn Noun #{nounId}",
+        "description": "Permanently destroy Noun #{nounId}"
+      }
+    }
+  }
+}
