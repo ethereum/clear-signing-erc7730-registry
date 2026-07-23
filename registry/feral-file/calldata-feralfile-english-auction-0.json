@@ -1,0 +1,205 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "feralfile-auction",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0xCE85Fa385A6d6F6c3B709cD7aa2DB116d3e1Ac6D"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Feral File",
+    "info": {
+      "url": "https://feralfile.com"
+    },
+    "contractName": "Feral File English Auction"
+  },
+  "display": {
+    "formats": {
+      "placeBid(uint256 auctionID_)": {
+        "intent": "Place auction bid",
+        "interpolatedIntent": "Bid on auction {auctionID_}",
+        "fields": [
+          {
+            "path": "auctionID_",
+            "label": "Auction ID",
+            "format": "raw"
+          },
+          {
+            "path": "@.value",
+            "label": "Bid amount",
+            "format": "amount"
+          }
+        ]
+      },
+      "placeSignedBid(uint256 auctionID_,address bidder_,uint256 amount_,uint256 expiryTime_,bytes32 r_,bytes32 s_,uint8 v_)": {
+        "intent": "Place signed auction bid",
+        "interpolatedIntent": "Bid {amount_} on auction {auctionID_} for {bidder_}",
+        "fields": [
+          {
+            "path": "auctionID_",
+            "label": "Auction ID",
+            "format": "raw"
+          },
+          {
+            "path": "bidder_",
+            "label": "Bidder",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "amount_",
+            "label": "Bid amount",
+            "format": "amount"
+          },
+          {
+            "path": "expiryTime_",
+            "label": "Signature expires",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          }
+        ]
+      },
+      "registerAuctions((uint256 id,uint256 startAt,uint256 endAt,uint256 extendDuration,uint256 extendThreshold,uint256 minIncreaseFactor,uint256 minIncreaseAmount,uint256 minPrice,bool isSettled)[] auctions_)": {
+        "intent": "Register auctions",
+        "fields": [
+          {
+            "path": "auctions_.[].id",
+            "label": "Auction ID",
+            "format": "raw"
+          },
+          {
+            "path": "auctions_.[].minPrice",
+            "label": "Minimum price",
+            "format": "amount"
+          },
+          {
+            "path": "auctions_.[].startAt",
+            "label": "Starts",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "auctions_.[].endAt",
+            "label": "Ends",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          }
+        ]
+      },
+      "settleAuction(uint256 auctionID_,address tokenAddr_,address vaultAddr_,(uint256 price,uint256 cost,uint256 expiryTime,address destination,uint256[] tokenIds,(address recipient,uint256 bps)[][] revenueShares,bool payByVaultContract) saleData_,bytes32 r_,bytes32 s_,uint8 v_)": {
+        "intent": "Settle auction and deliver artworks",
+        "fields": [
+          {
+            "path": "auctionID_",
+            "label": "Auction ID",
+            "format": "raw"
+          },
+          {
+            "path": "tokenAddr_",
+            "label": "Exhibition contract",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "vaultAddr_",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "saleData_.destination",
+            "label": "Winner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "saleData_.price",
+            "label": "Sale price",
+            "format": "amount"
+          },
+          {
+            "path": "saleData_.cost",
+            "label": "Platform cost",
+            "format": "amount"
+          },
+          {
+            "path": "saleData_.tokenIds.[]",
+            "label": "Artworks",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "tokenAddr_"
+            }
+          },
+          {
+            "path": "saleData_.revenueShares.[].[].recipient",
+            "label": "Revenue recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "saleData_.revenueShares.[].[].bps",
+            "label": "Revenue share (basis points)",
+            "format": "raw"
+          }
+        ]
+      },
+      "settleAuctionFund(uint256 auctionID_,address vaultAddr_)": {
+        "intent": "Settle auction funds",
+        "fields": [
+          {
+            "path": "auctionID_",
+            "label": "Auction ID",
+            "format": "raw"
+          },
+          {
+            "path": "vaultAddr_",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

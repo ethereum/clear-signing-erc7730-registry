@@ -1,0 +1,211 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-feralfile-airdrop-v1-0.json",
+  "dataProvider": {
+    "addressNames": {
+      "0x0000000000000000000000000000000000000001": "Sender",
+      "0x0000000000000000000000000000000000000003": "Receiver",
+      "0x0000000000000000000000000000000000000002": "Test Operator"
+    },
+    "nftCollectionNames": {
+      "0x051e50d8465417e58899fd48c3b0fc0ca3dd4b6a": "Feral File Airdrop V1"
+    }
+  },
+  "tests": [
+    {
+      "description": "Transfer airdrop token - ERC1155 safeTransferFrom",
+      "rawTx": "0x02f8ee0180843b9aca008504a817c80083030d4094051e50d8465417e58899fd48c3b0fc0ca3dd4b6a80b8c4f242432a0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000003e9000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Transfer airdrop token",
+        "interpolatedIntent": "Transfer 1 of token Feral File Airdrop V1 #1001 to Receiver",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "From",
+            "value": "Sender"
+          },
+          {
+            "label": "To",
+            "value": "Receiver"
+          },
+          {
+            "label": "Artwork",
+            "value": "Feral File Airdrop V1 #1001"
+          },
+          {
+            "label": "Amount",
+            "value": "1"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Batch transfer airdrop tokens - safeBatchTransferFrom",
+      "rawTx": "0x02f9016f0180843b9aca008504a817c80083030d4094051e50d8465417e58899fd48c3b0fc0ca3dd4b6a80b901442eb2c2d60000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003e9000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Batch transfer airdrop tokens",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "From",
+            "value": "Sender"
+          },
+          {
+            "label": "To",
+            "value": "Receiver"
+          },
+          {
+            "label": "Artworks",
+            "value": "Feral File Airdrop V1 #1001"
+          },
+          {
+            "label": "Amounts",
+            "value": "1"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set operator approval - grant all",
+      "rawTx": "0x02f86e0180843b9aca008504a817c80083030d4094051e50d8465417e58899fd48c3b0fc0ca3dd4b6a80b844a22cb46500000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001c0",
+      "expected": {
+        "intent": "Set operator approval",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "Operator",
+            "value": "Test Operator"
+          },
+          {
+            "label": "Approved",
+            "value": "true"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set operator approval - revoke all",
+      "rawTx": "0x02f86e0180843b9aca008504a817c80083030d4094051e50d8465417e58899fd48c3b0fc0ca3dd4b6a80b844a22cb46500000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Set operator approval",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "Operator",
+            "value": "Test Operator"
+          },
+          {
+            "label": "Approved",
+            "value": "false"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Burn airdrop token",
+      "rawTx": "0x02f86e0180843b9aca008504a817c80083030d4094051e50d8465417e58899fd48c3b0fc0ca3dd4b6a80b844b390c0ab00000000000000000000000000000000000000000000000000000000000003e90000000000000000000000000000000000000000000000000000000000000003c0",
+      "expected": {
+        "intent": "Burn airdrop token",
+        "interpolatedIntent": "Destroy 3 of token Feral File Airdrop V1 #1001",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "Artwork",
+            "value": "Feral File Airdrop V1 #1001"
+          },
+          {
+            "label": "Amount",
+            "value": "3"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint airdrop tokens to contract",
+      "rawTx": "0x02f86e0180843b9aca008504a817c80083030d4094051e50d8465417e58899fd48c3b0fc0ca3dd4b6a80b8441b2ef1ca00000000000000000000000000000000000000000000000000000000000007d10000000000000000000000000000000000000000000000000000000000000064c0",
+      "expected": {
+        "intent": "Mint airdrop tokens to contract",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "Artwork",
+            "value": "Feral File Airdrop V1 #2001"
+          },
+          {
+            "label": "Amount",
+            "value": "100"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Airdrop tokens to recipients",
+      "rawTx": "0x02f8ae0180843b9aca008504a817c80083030d4094051e50d8465417e58899fd48c3b0fc0ca3dd4b6a80b884bdf7a8e600000000000000000000000000000000000000000000000000000000000003e9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000003c0",
+      "expected": {
+        "intent": "Airdrop tokens to recipients",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "Artwork",
+            "value": "Feral File Airdrop V1 #1001"
+          },
+          {
+            "label": "Recipients",
+            "value": "0x0000000000000000000000000000000000000003"
+          }
+        ]
+      }
+    },
+    {
+      "description": "End airdrop",
+      "rawTx": "0x02ed0180843b9aca008504a817c80083030d4094051e50d8465417e58899fd48c3b0fc0ca3dd4b6a8084efbe1c1cc0",
+      "expected": {
+        "intent": "End airdrop",
+        "owner": "Feral File",
+        "fields": []
+      }
+    },
+    {
+      "description": "Set token URI",
+      "rawTx": "0x02f88e0180843b9aca008504a817c80083030d4094051e50d8465417e58899fd48c3b0fc0ca3dd4b6a80b86402fe530500000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000015697066733a2f2f516d546573744d657461646174610000000000000000000000c0",
+      "expected": {
+        "intent": "Set token URI",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "URI",
+            "value": "ipfs://QmTestMetadata"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set contract URI",
+      "rawTx": "0x02f8ae0180843b9aca008504a817c80083030d4094051e50d8465417e58899fd48c3b0fc0ca3dd4b6a80b884938e3d7b0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002268747470733a2f2f666572616c66696c652e636f6d2f6170692f636f6e7472616374000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Set contract URI",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "Contract URI",
+            "value": "https://feralfile.com/api/contract"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Burn remaining airdrop supply",
+      "rawTx": "0x02f84d0180843b9aca008504a817c80083030d4094051e50d8465417e58899fd48c3b0fc0ca3dd4b6a80a496d6708200000000000000000000000000000000000000000000000000000000000003e9c0",
+      "expected": {
+        "intent": "Burn remaining airdrop supply",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "Artwork",
+            "value": "Feral File Airdrop V1 #1001"
+          }
+        ]
+      }
+    }
+  ]
+}
