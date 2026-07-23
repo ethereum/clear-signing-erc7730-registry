@@ -1,0 +1,93 @@
+---
+name: 🔄 sync index files
+
+on:
+  push:
+    branches: [master]
+    # Only the descriptors feed the index; the index files themselves live at the
+    # repo root, so the PR this opens (index-only) never re-triggers this workflow.
+    paths:
+      - "registry/**"
+      - "ercs/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BRANCH: "master"
+
+jobs:
+  sync-indexes:
+    name: sync index files
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        timeout-minutes: 10
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Get date
+        timeout-minutes: 10
+        run: echo "CURRENT_DATE=$(date +"%Y-%m-%d %H:%M")" >> $GITHUB_ENV
+
+      - name: Setup node
+        timeout-minutes: 10
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        timeout-minutes: 10
+        run: npm ci
+
+      - name: Generate index files
+        timeout-minutes: 10
+        run: npm run generate-index
+
+      - name: Check changes
+        id: changes
+        timeout-minutes: 10
+        shell: bash
+        run: |
+          # Only the index files are regenerated, so list exactly the ones that
+          # actually changed — the PR body is built from this.
+          CHANGED=$(git status --porcelain -- index.calldata.json index.eip712.json | awk '{print $NF}')
+          if [ -z "$CHANGED" ]; then
+            echo "Index files already up to date."
+            exit 0
+          fi
+          echo "changes=true" >> "$GITHUB_OUTPUT"
+          {
+            echo "updated_files<<EOF_FILES"
+            printf -- '- `%s`\n' $CHANGED
+            echo "EOF_FILES"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open pull request
+        if: ${{ !cancelled() && steps.changes.outputs.changes == 'true' }}
+        timeout-minutes: 10
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          branch: ${{ env.BRANCH }}-sync-indexes
+          base: ${{ env.BRANCH }}
+          delete-branch: false
+          commit-message: "chore: update index files - ${{ env.CURRENT_DATE }}"
+          title: "chore: update index files - ${{ env.CURRENT_DATE }}"
+          body: |
+            Automated regeneration of the registry index files from the
+            descriptors under `registry/`.
+
+            Files updated:
+            ${{ steps.changes.outputs.updated_files }}
+          draft: false
+          signoff: false
