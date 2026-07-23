@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - master
-      - demo
-    paths-ignore:
-      - "developer-preview/**"
 
 permissions:
   id-token: write
@@ -14,10 +11,6 @@ permissions:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
-#env:
-#  ETHERSCAN_API_HOST: <set this secret to define a custom Etherscan API host>
-#  ETHERSCAN_API_KEY: <set this secret to inject Etherscan API key>
 
 jobs:
   validate_descriptors:
@@ -42,28 +35,11 @@ jobs:
 
       - name: Validate ERC-7730 descriptors
         timeout-minutes: 10
-        run: erc7730 lint registry --gha
-
-  # TODO: To be removed once the registry ownership is transferred
-  update_cal:
-    name: 🔁 trigger updates
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - name: Trigger update on LedgerHQ/crypto-assets
-        if: ${{ !cancelled() }}
-        timeout-minutes: 60
-        uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4
-        with:
-          token: ${{ secrets.CI_BOT_TOKEN }}
-          repository: LedgerHQ/crypto-assets
-          event-type: submodules
-
-      - name: Trigger update on LedgerHQ/python-erc7730
-        if: ${{ !cancelled() }}
-        timeout-minutes: 60
-        uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4
-        with:
-          token: ${{ secrets.CI_BOT_TOKEN }}
-          repository: LedgerHQ/python-erc7730
-          event-type: submodules
+        env:
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+        run: |
+          # Lint only root descriptors. Exclude the *.tests.json fixtures,
+          # which are not ERC-7730 descriptors and fail descriptor validation.
+          FILES=$(find registry -type f \( -name 'calldata-*.json' -o -name 'eip712-*.json' \) \
+            -not -name '*.tests.json')
+          erc7730 lint $FILES --gha

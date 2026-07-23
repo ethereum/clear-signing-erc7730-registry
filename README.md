@@ -51,11 +51,11 @@ The `erc7730` Python package is available for validating and formatting ERC-7730
 # Install the erc7730 package (requires Python 3.12+)
 pip install erc7730
 
-# Validate all descriptors
-erc7730 lint registry/**/eip712-*.json registry/**/calldata-*.json
-
 # Validate a specific file
-erc7730 lint registry/entity/calldata-Contract.json
+erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
+
+# Validate all descriptors (exclude the *.tests.json fixtures, which are not descriptors)
+erc7730 lint $(find registry -type f \( -name 'calldata-*.json' -o -name 'eip712-*.json' \) -not -name '*.tests.json')
 
 # Format all descriptors
 erc7730 format
@@ -70,7 +70,7 @@ If you have [uv](https://docs.astral.sh/uv/) installed, you can skip the install
 
 ```bash
 # Run any erc7730 command without installing it first
-uvx erc7730 lint registry/**/eip712-*.json registry/**/calldata-*.json
+uvx erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
 uvx erc7730 format
 ```
 
@@ -78,7 +78,7 @@ Or install it as a persistent uv-managed tool:
 
 ```bash
 uv tool install erc7730
-erc7730 lint registry/
+erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
 ```
 
 For more information about the ERC-7730 tools, visit the [erc7730 package on PyPI](https://pypi.org/project/erc7730/).
