@@ -146,3 +146,91 @@ jobs:
             echo "::error::One or more files failed JSON schema validation"
             exit 1
           fi
+
+  validate_selectors_warning:
+    # Warning-only: this job never fails the PR — it surfaces likely on-chain
+    # selector drift via the job summary so reviewers can spot it. The
+    # authoritative gate is the nightly drift workflow.
+    name: ⚠️ on-chain selector check (warning)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    env:
+      ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+    steps:
+      - name: Skip when no Etherscan API key
+        if: ${{ env.ETHERSCAN_API_KEY == '' }}
+        run: |
+          echo "::notice::ETHERSCAN_API_KEY secret not available (typical for fork PRs); skipping selector check."
+
+      - name: Checkout
+        if: ${{ env.ETHERSCAN_API_KEY != '' }}
+        uses: actions/checkout@v6.0.2
+
+      - name: Get changed calldata descriptors
+        if: ${{ env.ETHERSCAN_API_KEY != '' }}
+        id: changed-calldata
+        uses: tj-actions/changed-files@v47.0.5
+        with:
+          files: |
+            registry/**/calldata-*.json
+            ercs/calldata-*.json
+          files_ignore: registry/**/tests/**
+
+      - name: Setup Node
+        if: ${{ env.ETHERSCAN_API_KEY != '' && steps.changed-calldata.outputs.any_changed == 'true' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install JS deps
+        if: ${{ env.ETHERSCAN_API_KEY != '' && steps.changed-calldata.outputs.any_changed == 'true' }}
+        run: npm ci --no-audit --no-fund
+
+      - name: Validate selectors for changed calldata descriptors
+        if: ${{ env.ETHERSCAN_API_KEY != '' && steps.changed-calldata.outputs.any_changed == 'true' }}
+        env:
+          CHANGED_FILES: ${{ steps.changed-calldata.outputs.all_changed_files }}
+        run: |
+          set +e
+          FAIL=0
+          {
+            echo "# On-chain selector check (warning-only)"
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+          for file in $CHANGED_FILES; do
+            OUT=$(node tools/scripts/check-contract-functions.js "$file" 2>&1)
+            STATUS=$?
+            case $STATUS in
+              0)
+                echo "✅ \`$file\`" >> "$GITHUB_STEP_SUMMARY"
+                ;;
+              2)
+                FAIL=1
+                echo "::warning file=$file::Selector mismatch with on-chain ABI (see job summary)"
+                {
+                  echo "<details><summary>⚠️ \`$file\` — selector mismatch</summary>"
+                  echo
+                  echo '```'
+                  echo "$OUT"
+                  echo '```'
+                  echo "</details>"
+                } >> "$GITHUB_STEP_SUMMARY"
+                ;;
+              *)
+                FAIL=1
+                echo "::warning file=$file::Selector check errored (exit $STATUS)"
+                {
+                  echo "<details><summary>⚠️ \`$file\` — errored (exit $STATUS)</summary>"
+                  echo
+                  echo '```'
+                  echo "$OUT"
+                  echo '```'
+                  echo "</details>"
+                } >> "$GITHUB_STEP_SUMMARY"
+                ;;
+            esac
+          done
+          # Warning-only: never fail the job. The nightly drift workflow is
+          # the authoritative gate.
+          exit 0
