@@ -1,0 +1,84 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [{ "chainId": 42161, "address": "0x7a72E7ceFD61b82bBc8D76520B737A29B71Aad0E" }]
+    },
+    "$id": "CosmiX Prediction Market"
+  },
+  "metadata": {
+    "owner": "CosmiX DAO",
+    "info": { "url": "https://cosmixdao.xyz" },
+    "constants": { "csmxa": "0x5e9692B45B7B47566F64acD312C0293F8acecbC5" }
+  },
+  "display": {
+    "formats": {
+      "buyShares(bytes32,uint8,uint256)": {
+        "intent": "Place bet",
+        "fields": [
+          { "path": "marketId", "label": "Market ID", "format": "raw" },
+          { "path": "option", "label": "Option index", "format": "raw" },
+          { "path": "amount", "label": "Bet amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.csmxa" } }
+        ]
+      },
+      "claimWinnings(bytes32)": { "intent": "Claim winnings", "fields": [{ "path": "marketId", "label": "Market ID", "format": "raw" }] },
+      "refundBet(bytes32)": { "intent": "Refund bet", "fields": [{ "path": "marketId", "label": "Market ID", "format": "raw" }] },
+      "withdrawFees(bytes32)": { "intent": "Withdraw fees", "fields": [{ "path": "marketId", "label": "Market ID", "format": "raw" }] },
+      "updateCreatorFee(bytes32,uint256)": {
+        "intent": "Update creator fee",
+        "fields": [
+          { "path": "marketId", "label": "Market ID", "format": "raw" },
+          { "path": "newFeeBps", "label": "New fee", "format": "unit", "params": { "base": "%", "decimals": 2 } }
+        ]
+      },
+      "createMarket(bytes32,address,string,uint8,uint256,uint256)": {
+        "intent": "Create market",
+        "fields": [
+          { "path": "marketId", "label": "Market ID", "format": "raw" },
+          { "path": "creator", "label": "Creator", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] } },
+          { "path": "title", "label": "Title" },
+          { "path": "optionCount", "label": "Options", "format": "raw" },
+          { "path": "endTime", "label": "Ends", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "creatorFeeBps", "label": "Creator fee", "format": "unit", "params": { "base": "%", "decimals": 2 } }
+        ]
+      },
+      "resolveMarket(bytes32,uint8)": {
+        "intent": "Resolve market",
+        "fields": [
+          { "path": "marketId", "label": "Market ID", "format": "raw" },
+          { "path": "winningOption", "label": "Winning option", "format": "raw" }
+        ]
+      },
+      "cancelMarket(bytes32)": { "intent": "Cancel market", "fields": [{ "path": "marketId", "label": "Market ID", "format": "raw" }] },
+      "expireUnclaimed(bytes32,address)": {
+        "intent": "Expire unclaimed",
+        "fields": [
+          { "path": "marketId", "label": "Market ID", "format": "raw" },
+          { "path": "user", "label": "User", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] } }
+        ]
+      },
+      "setPlatformFee(uint256)": {
+        "intent": "Set platform fee",
+        "fields": [{ "path": "bps", "label": "Platform fee", "format": "unit", "params": { "base": "%", "decimals": 2 } }]
+      },
+      "setTreasury(address)": {
+        "intent": "Set treasury",
+        "fields": [{ "path": "_treasury", "label": "Treasury", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] } }]
+      },
+      "addResolver(address)": {
+        "intent": "Add resolver",
+        "fields": [{ "path": "resolver", "label": "Resolver", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] } }]
+      },
+      "removeResolver(address)": {
+        "intent": "Remove resolver",
+        "fields": [{ "path": "resolver", "label": "Resolver", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] } }]
+      },
+      "transferOwnership(address)": {
+        "intent": "Transfer ownership",
+        "fields": [{ "path": "newOwner", "label": "New owner", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] } }]
+      },
+      "pause()": { "intent": "Pause contract", "fields": [] },
+      "unpause()": { "intent": "Unpause contract", "fields": [] }
+    }
+  }
+}
