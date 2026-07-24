@@ -1,0 +1,496 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "$id": "LineaRollup",
+    "contract": {
+      "deployments": [{ "chainId": 1, "address": "0xd19d4B5d358258f05D7B411E21A1460D11B0876F" }],
+      "abi": [
+        {
+          "type": "function",
+          "name": "sendMessage",
+          "inputs": [
+            { "name": "_to", "type": "address", "internalType": "address" },
+            { "name": "_fee", "type": "uint256", "internalType": "uint256" },
+            { "name": "_calldata", "type": "bytes", "internalType": "bytes" }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        {
+          "type": "function",
+          "name": "claimMessage",
+          "inputs": [
+            { "name": "_from", "type": "address", "internalType": "address" },
+            { "name": "_to", "type": "address", "internalType": "address" },
+            { "name": "_fee", "type": "uint256", "internalType": "uint256" },
+            { "name": "_value", "type": "uint256", "internalType": "uint256" },
+            { "name": "_feeRecipient", "type": "address", "internalType": "address payable" },
+            { "name": "_calldata", "type": "bytes", "internalType": "bytes" },
+            { "name": "_nonce", "type": "uint256", "internalType": "uint256" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "claimMessageWithProof",
+          "inputs": [
+            {
+              "name": "_params",
+              "type": "tuple",
+              "internalType": "struct IL1MessageService.ClaimMessageWithProofParams",
+              "components": [
+                { "name": "proof", "type": "bytes32[]", "internalType": "bytes32[]" },
+                { "name": "messageNumber", "type": "uint256", "internalType": "uint256" },
+                { "name": "leafIndex", "type": "uint32", "internalType": "uint32" },
+                { "name": "from", "type": "address", "internalType": "address" },
+                { "name": "to", "type": "address", "internalType": "address" },
+                { "name": "fee", "type": "uint256", "internalType": "uint256" },
+                { "name": "value", "type": "uint256", "internalType": "uint256" },
+                { "name": "feeRecipient", "type": "address", "internalType": "address payable" },
+                { "name": "merkleRoot", "type": "bytes32", "internalType": "bytes32" },
+                { "name": "data", "type": "bytes", "internalType": "bytes" }
+              ]
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "claimMessageWithProofAndWithdrawLST",
+          "inputs": [
+            {
+              "name": "_params",
+              "type": "tuple",
+              "internalType": "struct IL1MessageService.ClaimMessageWithProofParams",
+              "components": [
+                { "name": "proof", "type": "bytes32[]", "internalType": "bytes32[]" },
+                { "name": "messageNumber", "type": "uint256", "internalType": "uint256" },
+                { "name": "leafIndex", "type": "uint32", "internalType": "uint32" },
+                { "name": "from", "type": "address", "internalType": "address" },
+                { "name": "to", "type": "address", "internalType": "address" },
+                { "name": "fee", "type": "uint256", "internalType": "uint256" },
+                { "name": "value", "type": "uint256", "internalType": "uint256" },
+                { "name": "feeRecipient", "type": "address", "internalType": "address payable" },
+                { "name": "merkleRoot", "type": "bytes32", "internalType": "bytes32" },
+                { "name": "data", "type": "bytes", "internalType": "bytes" }
+              ]
+            },
+            { "name": "_yieldProvider", "type": "address", "internalType": "address" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "fund",
+          "inputs": [],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        {
+          "type": "function",
+          "name": "pauseByType",
+          "inputs": [{ "name": "_pauseType", "type": "uint8", "internalType": "enum IPauseManager.PauseType" }],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "unPauseByType",
+          "inputs": [{ "name": "_pauseType", "type": "uint8", "internalType": "enum IPauseManager.PauseType" }],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "setVerifierAddress",
+          "inputs": [
+            { "name": "_newVerifierAddress", "type": "address", "internalType": "address" },
+            { "name": "_proofType", "type": "uint256", "internalType": "uint256" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "resetRateLimitAmount",
+          "inputs": [{ "name": "_amount", "type": "uint256", "internalType": "uint256" }],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "grantRole",
+          "inputs": [
+            { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+            { "name": "account", "type": "address", "internalType": "address" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "revokeRole",
+          "inputs": [
+            { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+            { "name": "account", "type": "address", "internalType": "address" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "renounceRole",
+          "inputs": [
+            { "name": "_role", "type": "bytes32", "internalType": "bytes32" },
+            { "name": "_account", "type": "address", "internalType": "address" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "setFallbackOperator",
+          "inputs": [
+            { "name": "_messageNumber", "type": "uint256", "internalType": "uint256" },
+            { "name": "_rollingHash", "type": "bytes32", "internalType": "bytes32" },
+            { "name": "_lastFinalizedTimestamp", "type": "uint256", "internalType": "uint256" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "unsetVerifierAddress",
+          "inputs": [{ "name": "_proofType", "type": "uint256", "internalType": "uint256" }],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "setYieldManager",
+          "inputs": [{ "name": "_newYieldManager", "type": "address", "internalType": "address" }],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "reportNativeYield",
+          "inputs": [
+            { "name": "_amount", "type": "uint256", "internalType": "uint256" },
+            { "name": "_l2YieldRecipient", "type": "address", "internalType": "address" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "resetAmountUsedInPeriod",
+          "inputs": [],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "transferFundsForNativeYield",
+          "inputs": [{ "name": "_amount", "type": "uint256", "internalType": "uint256" }],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "updatePauseTypeRole",
+          "inputs": [
+            { "name": "_pauseType", "type": "uint8", "internalType": "enum IPauseManager.PauseType" },
+            { "name": "_newRole", "type": "bytes32", "internalType": "bytes32" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "updateUnpauseTypeRole",
+          "inputs": [
+            { "name": "_pauseType", "type": "uint8", "internalType": "enum IPauseManager.PauseType" },
+            { "name": "_newRole", "type": "bytes32", "internalType": "bytes32" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Linea",
+    "info": { "url": "https://linea.build", "legalName": "Linea" },
+    "enums": {
+      "pauseType": {
+        "1": "General",
+        "2": "L1 to L2",
+        "3": "L2 to L1",
+        "4": "Blob submission",
+        "5": "Calldata submission",
+        "6": "Finalization",
+        "7": "Initiate token bridging",
+        "8": "Complete token bridging",
+        "9": "Native yield staking",
+        "10": "Native yield unstaking",
+        "11": "Native yield permissionless actions",
+        "12": "Native yield reporting",
+        "13": "State data submission"
+      }
+    }
+  },
+  "display": {
+    "definitions": {
+      "addressNameRecipient": {
+        "label": "Recipient",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      },
+      "addressNameSender": {
+        "label": "Sender",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      },
+      "addressNameAccount": {
+        "label": "Account",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      },
+      "addressNameL2YieldRecipient": {
+        "label": "L2 Yield Recipient",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      },
+      "addressNameFeeRecipient": {
+        "label": "Fee Recipient",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+      },
+      "addressNameYieldProvider": {
+        "label": "Yield Provider",
+        "format": "addressName",
+        "params": { "types": ["contract"], "sources": ["local"] }
+      },
+      "addressNameVerifierAddress": {
+        "label": "Verifier Address",
+        "format": "addressName",
+        "params": { "types": ["contract"], "sources": ["local"] }
+      },
+      "addressNameYieldManager": {
+        "label": "Yield Manager",
+        "format": "addressName",
+        "params": { "types": ["contract"], "sources": ["local"] }
+      }
+    },
+    "formats": {
+      "sendMessage(address _to, uint256 _fee, bytes _calldata)": {
+        "$id": "sendMessage",
+        "intent": "Send Message to L2",
+        "fields": [
+          { "path": "_to", "$ref": "$.display.definitions.addressNameRecipient" },
+          { "path": "_fee", "label": "Fee", "format": "amount" },
+          { "path": "@.value", "label": "Value", "format": "amount" },
+          { "path": "_calldata", "label": "Calldata", "format": "raw", "visible": "never" },
+          { "path": "_calldata.[]", "label": "Calldata", "format": "raw", "visible": "never" }
+        ]
+      },
+      "claimMessage(address _from, address _to, uint256 _fee, uint256 _value, address _feeRecipient, bytes _calldata, uint256 _nonce)": {
+        "$id": "claimMessage",
+        "intent": "Claim Message",
+        "fields": [
+          { "path": "_from", "$ref": "$.display.definitions.addressNameSender" },
+          { "path": "_to", "$ref": "$.display.definitions.addressNameRecipient" },
+          { "path": "_fee", "label": "Fee", "format": "amount" },
+          { "path": "_value", "label": "Value", "format": "amount" },
+          { "path": "_feeRecipient", "$ref": "$.display.definitions.addressNameFeeRecipient" },
+          { "path": "_nonce", "label": "Nonce", "format": "raw" },
+          { "path": "_calldata", "label": "Calldata", "format": "raw", "visible": "never" },
+          { "path": "_calldata.[]", "label": "Calldata", "format": "raw", "visible": "never" }
+        ]
+      },
+      "claimMessageWithProof((bytes32[],uint256,uint32,address,address,uint256,uint256,address,bytes32,bytes))": {
+        "$id": "claimMessageWithProof",
+        "intent": "Claim Message With Proof",
+        "fields": [
+          { "path": "_params.from", "$ref": "$.display.definitions.addressNameSender" },
+          { "path": "_params.to", "$ref": "$.display.definitions.addressNameRecipient" },
+          { "path": "_params.fee", "label": "Fee", "format": "amount" },
+          { "path": "_params.value", "label": "Value", "format": "amount" },
+          { "path": "_params.feeRecipient", "$ref": "$.display.definitions.addressNameFeeRecipient" },
+          { "path": "_params.messageNumber", "label": "Message Number", "format": "raw" },
+          { "path": "_params.proof.[]", "label": "Proof", "format": "raw", "visible": "never" },
+          { "path": "_params.leafIndex", "label": "Leaf Index", "format": "raw", "visible": "never" },
+          { "path": "_params.merkleRoot", "label": "Merkle Root", "format": "raw", "visible": "never" },
+          { "path": "_params.data", "label": "Data", "format": "raw", "visible": "never" },
+          { "path": "_params.data.[]", "label": "Data", "format": "raw", "visible": "never" }
+        ]
+      },
+      "claimMessageWithProofAndWithdrawLST((bytes32[],uint256,uint32,address,address,uint256,uint256,address,bytes32,bytes),address)": {
+        "$id": "claimProofAndWithdrawLST",
+        "intent": "Claim and Withdraw LST",
+        "fields": [
+          { "path": "_params.from", "$ref": "$.display.definitions.addressNameSender" },
+          { "path": "_params.to", "$ref": "$.display.definitions.addressNameRecipient" },
+          { "path": "_params.fee", "label": "Fee", "format": "amount" },
+          { "path": "_params.value", "label": "Value", "format": "amount" },
+          { "path": "_params.feeRecipient", "$ref": "$.display.definitions.addressNameFeeRecipient" },
+          { "path": "_yieldProvider", "$ref": "$.display.definitions.addressNameYieldProvider" },
+          { "path": "_params.proof.[]", "label": "Proof", "format": "raw", "visible": "never" },
+          { "path": "_params.messageNumber", "label": "Message Number", "format": "raw", "visible": "never" },
+          { "path": "_params.leafIndex", "label": "Leaf Index", "format": "raw", "visible": "never" },
+          { "path": "_params.merkleRoot", "label": "Merkle Root", "format": "raw", "visible": "never" },
+          { "path": "_params.data", "label": "Data", "format": "raw", "visible": "never" },
+          { "path": "_params.data.[]", "label": "Data", "format": "raw", "visible": "never" }
+        ]
+      },
+      "fund()": {
+        "$id": "fund",
+        "intent": "Fund",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount" }
+        ]
+      },
+      "pauseByType(uint8 _pauseType)": {
+        "$id": "pauseByType",
+        "intent": "Pause",
+        "fields": [
+          {
+            "path": "_pauseType",
+            "label": "Pause Type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.pauseType" }
+          }
+        ]
+      },
+      "unPauseByType(uint8 _pauseType)": {
+        "$id": "unPauseByType",
+        "intent": "Unpause",
+        "fields": [
+          {
+            "path": "_pauseType",
+            "label": "Pause Type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.pauseType" }
+          }
+        ]
+      },
+      "setVerifierAddress(address _newVerifierAddress, uint256 _proofType)": {
+        "$id": "setVerifierAddress",
+        "intent": "Set Verifier",
+        "fields": [
+          { "path": "_newVerifierAddress", "$ref": "$.display.definitions.addressNameVerifierAddress" },
+          { "path": "_proofType", "label": "Proof Type", "format": "raw" }
+        ]
+      },
+      "resetRateLimitAmount(uint256 _amount)": {
+        "$id": "resetRateLimitAmount",
+        "intent": "Reset Rate Limit",
+        "fields": [
+          { "path": "_amount", "label": "New Limit", "format": "amount" }
+        ]
+      },
+      "grantRole(bytes32 role, address account)": {
+        "$id": "grantRole",
+        "intent": "Grant Role",
+        "fields": [
+          { "path": "role", "label": "Role", "format": "raw" },
+          { "path": "account", "$ref": "$.display.definitions.addressNameAccount" }
+        ]
+      },
+      "revokeRole(bytes32 role, address account)": {
+        "$id": "revokeRole",
+        "intent": "Revoke Role",
+        "fields": [
+          { "path": "role", "label": "Role", "format": "raw" },
+          { "path": "account", "$ref": "$.display.definitions.addressNameAccount" }
+        ]
+      },
+      "renounceRole(bytes32 _role, address _account)": {
+        "$id": "renounceRole",
+        "intent": "Renounce Role",
+        "fields": [
+          { "path": "_role", "label": "Role", "format": "raw" },
+          { "path": "_account", "$ref": "$.display.definitions.addressNameAccount" }
+        ]
+      },
+      "setFallbackOperator(uint256 _messageNumber, bytes32 _rollingHash, uint256 _lastFinalizedTimestamp)": {
+        "$id": "setFallbackOperator",
+        "intent": "Set Fallback Operator",
+        "fields": [
+          { "path": "_messageNumber", "label": "Message Number", "format": "raw" },
+          { "path": "_rollingHash", "label": "Rolling Hash", "format": "raw" },
+          {
+            "path": "_lastFinalizedTimestamp",
+            "label": "Last Finalized Time",
+            "format": "date",
+            "params": { "encoding": "timestamp" }
+          }
+        ]
+      },
+      "unsetVerifierAddress(uint256 _proofType)": {
+        "$id": "unsetVerifierAddress",
+        "intent": "Unset Verifier",
+        "fields": [
+          { "path": "_proofType", "label": "Proof Type", "format": "raw" }
+        ]
+      },
+      "setYieldManager(address _newYieldManager)": {
+        "$id": "setYieldManager",
+        "intent": "Set Yield Manager",
+        "fields": [
+          { "path": "_newYieldManager", "$ref": "$.display.definitions.addressNameYieldManager" }
+        ]
+      },
+      "reportNativeYield(uint256 _amount, address _l2YieldRecipient)": {
+        "$id": "reportNativeYield",
+        "intent": "Report Native Yield",
+        "fields": [
+          { "path": "_amount", "label": "Amount", "format": "amount" },
+          { "path": "_l2YieldRecipient", "$ref": "$.display.definitions.addressNameL2YieldRecipient" }
+        ]
+      },
+      "resetAmountUsedInPeriod()": {
+        "$id": "resetAmountUsedInPeriod",
+        "intent": "Reset Period Usage",
+        "fields": []
+      },
+      "transferFundsForNativeYield(uint256 _amount)": {
+        "$id": "transferFundsForYield",
+        "intent": "Transfer For Yield",
+        "fields": [
+          { "path": "_amount", "label": "Amount", "format": "amount" }
+        ]
+      },
+      "updatePauseTypeRole(uint8 _pauseType, bytes32 _newRole)": {
+        "$id": "updatePauseTypeRole",
+        "intent": "Update Pause Role",
+        "fields": [
+          {
+            "path": "_pauseType",
+            "label": "Pause Type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.pauseType" }
+          },
+          { "path": "_newRole", "label": "New Role", "format": "raw" }
+        ]
+      },
+      "updateUnpauseTypeRole(uint8 _pauseType, bytes32 _newRole)": {
+        "$id": "updateUnpauseTypeRole",
+        "intent": "Update Unpause Role",
+        "fields": [
+          {
+            "path": "_pauseType",
+            "label": "Pause Type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.pauseType" }
+          },
+          { "path": "_newRole", "label": "New Role", "format": "raw" }
+        ]
+      }
+    }
+  }
+}
