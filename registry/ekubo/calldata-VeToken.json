@@ -1,0 +1,654 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        { "chainId": 4663, "address": "0x9d7008E169D040B6c0140eb92E7cA82B12643497" },
+        { "chainId": 46630, "address": "0x9d7008E169D040B6c0140eb92E7cA82B12643497" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Ekubo Protocol",
+    "contractName": "Ekubo Vote-Escrow Token",
+    "info": { "url": "https://ekubo.org" },
+    "constants": { "stakeToken": "0x570C5aa79c798E7A418412cC8399ae5bcCe570C5" }
+  },
+  "display": {
+    "formats": {
+      "stake(uint128 amount, uint64 end)": {
+        "intent": "Create vote-escrow stake",
+        "interpolatedIntent": "Stake {amount}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.stakeToken" },
+            "visible": "always"
+          },
+          { "path": "end", "label": "Stake end", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" }
+        ]
+      },
+      "stake(uint128 amount, uint64 end, bytes32 salt)": {
+        "intent": "Create vote-escrow stake",
+        "interpolatedIntent": "Stake {amount}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.stakeToken" },
+            "visible": "always"
+          },
+          { "path": "end", "label": "Stake end", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" },
+          { "path": "salt", "label": "Salt", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "stakeForDuration(uint128 amount, uint32 duration)": {
+        "intent": "Create vote-escrow stake",
+        "interpolatedIntent": "Stake {amount}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.stakeToken" },
+            "visible": "always"
+          },
+          { "path": "duration", "label": "Stake duration", "format": "duration", "visible": "always" }
+        ]
+      },
+      "stakeForDuration(uint128 amount, uint32 duration, bytes32 salt)": {
+        "intent": "Create vote-escrow stake",
+        "interpolatedIntent": "Stake {amount}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.stakeToken" },
+            "visible": "always"
+          },
+          { "path": "duration", "label": "Stake duration", "format": "duration", "visible": "always" },
+          { "path": "salt", "label": "Salt", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "stakeMaxDuration(uint128 amount)": {
+        "intent": "Create maximum stake",
+        "interpolatedIntent": "Stake {amount}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.stakeToken" },
+            "visible": "always"
+          }
+        ]
+      },
+      "stakeMaxDuration(uint128 amount, bytes32 salt)": {
+        "intent": "Create maximum stake",
+        "interpolatedIntent": "Stake {amount}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.stakeToken" },
+            "visible": "always"
+          },
+          { "path": "salt", "label": "Salt", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "stakeAndVote(uint128 amount, uint64 end, bytes32 salt, (address token0, address token1, bytes32 config) poolKey, uint64 swapFee)": {
+        "intent": "Stake and vote",
+        "interpolatedIntent": "Stake {amount} and vote",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.stakeToken" },
+            "visible": "always"
+          },
+          { "path": "end", "label": "Stake end", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" },
+          {
+            "path": "poolKey.token0",
+            "label": "Pool token 0",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token1",
+            "label": "Pool token 1",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" },
+          { "path": "swapFee", "label": "Swap fee (Q64)", "format": "raw", "visible": "always" },
+          { "path": "salt", "label": "Salt", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "increaseStakeAmount(uint256 veId, uint128 amount)": {
+        "intent": "Increase vote-escrow stake",
+        "interpolatedIntent": "Add {amount} to stake",
+        "fields": [
+          { "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" },
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.stakeToken" },
+            "visible": "always"
+          }
+        ]
+      },
+      "extendStake(uint256 veId, uint64 end)": {
+        "intent": "Extend vote-escrow stake",
+        "interpolatedIntent": "Extend stake {veId}",
+        "fields": [
+          { "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" },
+          { "path": "end", "label": "New stake end", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" }
+        ]
+      },
+      "extendStakeForDuration(uint256 veId, uint32 duration)": {
+        "intent": "Extend vote-escrow stake",
+        "interpolatedIntent": "Extend stake {veId}",
+        "fields": [
+          { "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" },
+          { "path": "duration", "label": "New stake duration", "format": "duration", "visible": "always" }
+        ]
+      },
+      "extendStakeMaxDuration(uint256 veId)": {
+        "intent": "Extend vote-escrow stake",
+        "interpolatedIntent": "Extend stake {veId}",
+        "fields": [{ "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" }]
+      },
+      "claimPoolFeesAndExtendStake(uint256 veId, uint64 end, (address token0, address token1, bytes32 config) poolKey, address recipient)": {
+        "intent": "Claim fees and extend",
+        "interpolatedIntent": "Claim fees + extend {veId}",
+        "fields": [
+          { "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" },
+          { "path": "end", "label": "New stake end", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token0",
+            "label": "Pool token 0",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token1",
+            "label": "Pool token 1",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "claimPoolFeesAndExtendStakeForDuration(uint256 veId, uint32 duration, (address token0, address token1, bytes32 config) poolKey, address recipient)": {
+        "intent": "Claim fees and extend",
+        "interpolatedIntent": "Claim fees + extend {veId}",
+        "fields": [
+          { "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" },
+          { "path": "duration", "label": "New stake duration", "format": "duration", "visible": "always" },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token0",
+            "label": "Pool token 0",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token1",
+            "label": "Pool token 1",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "claimPoolFeesAndExtendStakeMaxDuration(uint256 veId, (address token0, address token1, bytes32 config) poolKey, address recipient)": {
+        "intent": "Claim fees and extend",
+        "interpolatedIntent": "Claim fees + extend {veId}",
+        "fields": [
+          { "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token0",
+            "label": "Pool token 0",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token1",
+            "label": "Pool token 1",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "claimPoolFeesAndExtendStakeToSelf(uint256 veId, uint64 end, (address token0, address token1, bytes32 config) poolKey)": {
+        "intent": "Claim fees and extend",
+        "interpolatedIntent": "Claim fees + extend {veId}",
+        "fields": [
+          { "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" },
+          { "path": "end", "label": "New stake end", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" },
+          {
+            "path": "poolKey.token0",
+            "label": "Pool token 0",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token1",
+            "label": "Pool token 1",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "claimPoolFeesAndExtendStakeToSelfForDuration(uint256 veId, uint32 duration, (address token0, address token1, bytes32 config) poolKey)": {
+        "intent": "Claim fees and extend",
+        "interpolatedIntent": "Claim fees + extend {veId}",
+        "fields": [
+          { "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" },
+          { "path": "duration", "label": "New stake duration", "format": "duration", "visible": "always" },
+          {
+            "path": "poolKey.token0",
+            "label": "Pool token 0",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token1",
+            "label": "Pool token 1",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "claimPoolFeesAndExtendStakeToSelfMaxDuration(uint256 veId, (address token0, address token1, bytes32 config) poolKey)": {
+        "intent": "Claim fees and extend",
+        "interpolatedIntent": "Claim fees + extend {veId}",
+        "fields": [
+          { "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" },
+          {
+            "path": "poolKey.token0",
+            "label": "Pool token 0",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token1",
+            "label": "Pool token 1",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "splitStake(uint256 veId, uint128 amount)": {
+        "intent": "Split vote-escrow stake",
+        "interpolatedIntent": "Split {amount}",
+        "fields": [
+          { "path": "veId", "label": "Source stake ID", "format": "raw", "visible": "always" },
+          {
+            "path": "amount",
+            "label": "Amount to split",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.stakeToken" },
+            "visible": "always"
+          }
+        ]
+      },
+      "splitStake(uint256 veId, uint128 amount, bytes32 salt)": {
+        "intent": "Split vote-escrow stake",
+        "interpolatedIntent": "Split {amount}",
+        "fields": [
+          { "path": "veId", "label": "Source stake ID", "format": "raw", "visible": "always" },
+          {
+            "path": "amount",
+            "label": "Amount to split",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.stakeToken" },
+            "visible": "always"
+          },
+          { "path": "salt", "label": "New stake salt", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "mergeStakes(uint256 fromVeId, uint256 toVeId)": {
+        "intent": "Merge vote-escrow stakes",
+        "interpolatedIntent": "Merge stake {fromVeId}",
+        "fields": [
+          { "path": "fromVeId", "label": "Source stake ID", "format": "raw", "visible": "always" },
+          { "path": "toVeId", "label": "Destination stake ID", "format": "raw", "visible": "always" }
+        ]
+      },
+      "claimPoolFeesAndMergeStakes(uint256 fromVeId, uint256 toVeId, (address token0, address token1, bytes32 config) poolKey, address recipient)": {
+        "intent": "Claim fees and merge",
+        "interpolatedIntent": "Claim fees + merge {fromVeId}",
+        "fields": [
+          { "path": "fromVeId", "label": "Source stake ID", "format": "raw", "visible": "always" },
+          { "path": "toVeId", "label": "Destination stake ID", "format": "raw", "visible": "always" },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token0",
+            "label": "Pool token 0",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token1",
+            "label": "Pool token 1",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "claimPoolFeesAndMergeStakesToSelf(uint256 fromVeId, uint256 toVeId, (address token0, address token1, bytes32 config) poolKey)": {
+        "intent": "Claim fees and merge",
+        "interpolatedIntent": "Claim fees + merge {fromVeId}",
+        "fields": [
+          { "path": "fromVeId", "label": "Source stake ID", "format": "raw", "visible": "always" },
+          { "path": "toVeId", "label": "Destination stake ID", "format": "raw", "visible": "always" },
+          {
+            "path": "poolKey.token0",
+            "label": "Pool token 0",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token1",
+            "label": "Pool token 1",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "withdrawStake(uint256 veId, address recipient)": {
+        "intent": "Withdraw expired stake",
+        "interpolatedIntent": "Withdraw stake {veId}",
+        "fields": [
+          { "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdrawStakeToSelf(uint256 veId)": {
+        "intent": "Withdraw expired stake",
+        "interpolatedIntent": "Withdraw stake {veId}",
+        "fields": [{ "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" }]
+      },
+      "burn(uint256 veId)": {
+        "intent": "Burn empty vote-escrow NFT",
+        "interpolatedIntent": "Burn vote-escrow NFT {veId}",
+        "fields": [{ "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" }]
+      },
+      "vote(uint256 veId, (address token0, address token1, bytes32 config) poolKey, uint64 swapFee)": {
+        "intent": "Vote for pool fee",
+        "interpolatedIntent": "Vote stake {veId}",
+        "fields": [
+          { "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" },
+          {
+            "path": "poolKey.token0",
+            "label": "Pool token 0",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token1",
+            "label": "Pool token 1",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" },
+          { "path": "swapFee", "label": "Swap fee (Q64)", "format": "raw", "visible": "always" }
+        ]
+      },
+      "clearVote(uint256 veId)": {
+        "intent": "Clear pool vote",
+        "interpolatedIntent": "Clear vote for stake {veId}",
+        "fields": [{ "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" }]
+      },
+      "claimPoolFees(uint256 veId, (address token0, address token1, bytes32 config) poolKey, address recipient)": {
+        "intent": "Claim voter fees",
+        "interpolatedIntent": "Claim fees for {veId}",
+        "fields": [
+          { "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token0",
+            "label": "Pool token 0",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token1",
+            "label": "Pool token 1",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "claimPoolFeesToSelf(uint256 veId, (address token0, address token1, bytes32 config) poolKey)": {
+        "intent": "Claim voter fees",
+        "interpolatedIntent": "Claim fees for {veId}",
+        "fields": [
+          { "path": "veId", "label": "Stake ID", "format": "raw", "visible": "always" },
+          {
+            "path": "poolKey.token0",
+            "label": "Pool token 0",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token1",
+            "label": "Pool token 1",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "maybeInitializePool((address token0, address token1, bytes32 config) poolKey, int32 tick)": {
+        "intent": "Initialize Ve33 pool if needed",
+        "interpolatedIntent": "Initialize Ve33 pool",
+        "fields": [
+          {
+            "path": "poolKey.token0",
+            "label": "Pool token 0",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "poolKey.token1",
+            "label": "Pool token 1",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          { "path": "poolKey.config", "label": "Pool config", "format": "raw", "visible": "optional" },
+          { "path": "tick", "label": "Initial tick", "format": "raw", "visible": "always" }
+        ]
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Batch vote-escrow actions",
+        "interpolatedIntent": "Vote-escrow batch",
+        "fields": [{ "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to" }, "visible": "always" }]
+      },
+      "refundNativeToken()": {
+        "intent": "Refund unused native token",
+        "interpolatedIntent": "Refund native token",
+        "fields": [
+          {
+            "path": "@.from",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "approve(address account, uint256 id)": {
+        "intent": "Approve Stake NFT",
+        "interpolatedIntent": "Approve NFT {id}",
+        "fields": [
+          {
+            "path": "account",
+            "label": "Approved account",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "id", "label": "Stake ID", "format": "raw", "visible": "always" }
+        ]
+      },
+      "setApprovalForAll(address operator, bool isApproved)": {
+        "intent": "Set Stake operator",
+        "interpolatedIntent": "Set NFT operator",
+        "fields": [
+          {
+            "path": "operator",
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "isApproved", "label": "Approved", "format": "raw", "visible": "always" }
+        ]
+      },
+      "transferFrom(address from, address to, uint256 id)": {
+        "intent": "Transfer Stake NFT",
+        "interpolatedIntent": "Transfer NFT {id}",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "id", "label": "Stake ID", "format": "raw", "visible": "always" }
+        ]
+      },
+      "safeTransferFrom(address from, address to, uint256 id)": {
+        "intent": "Transfer Stake NFT",
+        "interpolatedIntent": "Transfer NFT {id}",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "id", "label": "Stake ID", "format": "raw", "visible": "always" }
+        ]
+      },
+      "safeTransferFrom(address from, address to, uint256 id, bytes data)": {
+        "intent": "Transfer Stake NFT",
+        "interpolatedIntent": "Transfer NFT {id}",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "id", "label": "Stake ID", "format": "raw", "visible": "always" },
+          { "path": "data", "label": "Transfer data", "format": "raw", "visible": "optional" }
+        ]
+      }
+    }
+  }
+}
