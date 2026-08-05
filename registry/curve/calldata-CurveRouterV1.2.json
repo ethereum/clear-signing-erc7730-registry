@@ -1,0 +1,70 @@
+{
+    "$schema": "../../specs/erc7730-v1.schema.json",
+    "context": {
+        "$id": "Curve Router v1.2",
+        "contract": {
+            "abi": "https://api.etherscan.io/api?module=contract&action=getabi&address=0x45312ea0eFf7E09C83CBE249fa1d7598c4C8cd4e",
+            "deployments": [
+                {
+                    "chainId": 1,
+                    "address": "0x45312ea0eFf7E09C83CBE249fa1d7598c4C8cd4e"
+                }
+            ]
+        }
+    },
+    "metadata": {
+        "owner": "Curve Finance",
+        "info": {
+            "legalName": "Curve DAO Ltd.",
+            "url": "https://curve.fi",
+            "deploymentDate": "2024-11-08T00:00:00Z"
+        }
+    },
+    "display": {
+    "formats": {
+
+
+      "0xc872a3c5": {
+        "$id": "multiSwapFull",
+        "intent": "Multi-hop swap / zap",
+        "fields": [
+          { "path": "_route.[]",        "label": "Route (tokens / pools)", "format": "raw" },
+          { "path": "_swap_params.[]",  "label": "Swap parameters",        "format": "raw" },
+          { "path": "_amount",          "label": "Amount sent",            "format": "tokenAmount",   "params": { "tokenPath": "_route.[0]" } },
+          { "path": "_min_dy",          "label": "Minimum amount received","format": "tokenAmount",   "params": { "tokenPath": "_route.[-1]" } },
+          { "path": "_pools.[]",        "label": "Zap pools",              "format": "raw" },
+          { "path": "_receiver",        "label": "Beneficiary",            "format": "addressName",   "params": { "types": ["eoa", "contract"] }  }
+        ],
+        "required": [ "_amount", "_min_dy", "_receiver" ],
+        "excluded": [ "_route", "_swap_params.[]", "_pools.[]" ]
+      },
+
+      "0x5c9c18e2": {
+        "$id": "multiSwapNoReceiver",
+        "intent": "Multi-hop swap / zap (dest. = msg.sender)",
+        "fields": [
+          { "path": "_route.[]",        "label": "Route (tokens / pools)", "format": "raw" },
+          { "path": "_swap_params.[]",  "label": "Swap parameters",        "format": "raw" },
+          { "path": "_amount",          "label": "Amount sent",            "format": "tokenAmount",   "params": { "tokenPath": "_route.[0]" } },
+          { "path": "_min_dy",          "label": "Minimum amount received","format": "tokenAmount",   "params": { "tokenPath": "_route.[-1]" } }, 
+          { "path": "_pools.[]",        "label": "Zap pools",              "format": "raw" }
+        ],
+        "required": [ "_amount", "_min_dy" ],
+        "excluded": [ "_route", "_swap_params.[]", "_pools.[]" ]
+      },
+
+      "0x371dc447": {
+        "$id": "multiSwapSimple",
+        "intent": "Multi-hop swap / zap (auto-pools, dest. = msg.sender)",
+        "fields": [
+          { "path": "_route.[]",        "label": "Route (tokens / pools)", "format": "raw" },
+          { "path": "_swap_params.[]",  "label": "Swap parameters",        "format": "raw" },
+          { "path": "_amount",          "label": "Amount sent",            "format": "tokenAmount",   "params": { "tokenPath": "_route.[0]" } },
+          { "path": "_min_dy",          "label": "Minimum amount received","format": "tokenAmount",   "params": { "tokenPath": "_route.[-1]" } }
+        ],
+        "required": [ "_amount", "_min_dy" ],
+        "excluded": [ "_route", "_swap_params.[]" ]
+      }
+    }
+  }
+}
