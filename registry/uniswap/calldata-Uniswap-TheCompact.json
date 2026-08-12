@@ -1,0 +1,1619 @@
+{
+    "$schema": "../../specs/erc7730-v1.schema.json",
+    "context": {
+        "$id": "TheCompact",
+        "contract": {
+            "deployments": [
+                {
+                    "chainId": 1,
+                    "address": "0x00000000000000171ede64904551eeDF3C6C9788"
+                }
+            ]
+        }
+    },
+    "metadata": {
+        "owner": "Uniswap Labs",
+        "info": {
+            "legalName": "Uniswap Labs",
+            "url": "https://uniswap.org/"
+        },
+        "enums": {
+            "compactCategory": {
+                "0": "Compact",
+                "1": "BatchCompact",
+                "2": "MultichainCompact"
+            }
+        }
+    },
+    "display": {
+        "definitions": {
+            "recipient": {
+                "label": "Recipient",
+                "format": "addressName",
+                "params": {
+                    "types": [
+                        "eoa",
+                        "contract"
+                    ]
+                }
+            },
+            "arbiter": {
+                "label": "Arbiter",
+                "format": "addressName",
+                "params": {
+                    "types": [
+                        "contract",
+                        "eoa"
+                    ]
+                }
+            },
+            "sponsor": {
+                "label": "Sponsor",
+                "format": "addressName",
+                "params": {
+                    "types": [
+                        "eoa",
+                        "contract"
+                    ]
+                }
+            },
+            "depositor": {
+                "label": "Depositor",
+                "format": "addressName",
+                "params": {
+                    "types": [
+                        "eoa",
+                        "contract"
+                    ]
+                }
+            },
+            "erc20Token": {
+                "label": "Token",
+                "format": "addressName"
+            },
+            "lockId": {
+                "label": "Resource Lock ID",
+                "format": "raw"
+            },
+            "lockTag": {
+                "label": "Lock Tag",
+                "format": "raw"
+            },
+            "claimHash": {
+                "label": "Claim Hash",
+                "format": "raw"
+            },
+            "typehash": {
+                "label": "Type Hash",
+                "format": "raw"
+            },
+            "nonce": {
+                "label": "Nonce",
+                "format": "raw"
+            },
+            "expires": {
+                "label": "Expires At",
+                "format": "date",
+                "params": {
+                    "encoding": "timestamp"
+                }
+            },
+            "deadline": {
+                "label": "Deadline",
+                "format": "date",
+                "params": {
+                    "encoding": "timestamp"
+                }
+            }
+        },
+        "formats": {
+            "depositNative(bytes12 lockTag,address recipient)": {
+                "$id": "depositNative",
+                "intent": "Deposit Native Tokens",
+                "interpolatedIntent": "Deposit {@.value} to resource lock for {recipient}",
+                "fields": [
+                    {
+                        "path": "@.value",
+                        "label": "Amount",
+                        "format": "amount"
+                    },
+                    {
+                        "path": "lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    },
+                    {
+                        "path": "recipient",
+                        "$ref": "$.display.definitions.recipient"
+                    }
+                ],
+                "required": [
+                    "@.value",
+                    "recipient"
+                ],
+                "excluded": [
+                    "lockTag"
+                ]
+            },
+            "depositERC20(address token,bytes12 lockTag,uint256 amount,address recipient)": {
+                "$id": "depositERC20",
+                "intent": "Deposit ERC20 Tokens",
+                "interpolatedIntent": "Deposit {amount} to resource lock for {recipient}",
+                "fields": [
+                    {
+                        "path": "token",
+                        "$ref": "$.display.definitions.erc20Token"
+                    },
+                    {
+                        "path": "lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    },
+                    {
+                        "path": "amount",
+                        "label": "Amount",
+                        "format": "tokenAmount",
+                        "params": {
+                            "tokenPath": "token"
+                        }
+                    },
+                    {
+                        "path": "recipient",
+                        "$ref": "$.display.definitions.recipient"
+                    }
+                ],
+                "required": [
+                    "token",
+                    "amount",
+                    "recipient"
+                ],
+                "excluded": [
+                    "lockTag"
+                ]
+            },
+            "batchDeposit(uint256[2][] idsAndAmounts,address recipient)": {
+                "$id": "batchDeposit",
+                "intent": "Batch Deposit Tokens",
+                "fields": [
+                    {
+                        "path": "idsAndAmounts.[].[0]",
+                        "label": "ID",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "idsAndAmounts.[].[1]",
+                        "label": "Amount",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "recipient",
+                        "$ref": "$.display.definitions.recipient"
+                    }
+                ],
+                "required": [
+                    "idsAndAmounts.[].[0]",
+                    "idsAndAmounts.[].[1]",
+                    "recipient"
+                ]
+            },
+            "depositERC20ViaPermit2(((address token,uint256 amount) permitted,uint256 nonce,uint256 deadline) permit,address depositor,bytes12 lockTag,address recipient,bytes signature)": {
+                "$id": "depositERC20ViaPermit2",
+                "intent": "Deposit ERC20 via Permit2",
+                "interpolatedIntent": "Deposit {permit.permitted.amount} of {permit.permitted.token} via Permit2 for {recipient}",
+                "fields": [
+                    {
+                        "path": "permit.permitted.token",
+                        "$ref": "$.display.definitions.erc20Token"
+                    },
+                    {
+                        "path": "permit.permitted.amount",
+                        "label": "Amount",
+                        "format": "tokenAmount",
+                        "params": {
+                            "tokenPath": "permit.permitted.token"
+                        }
+                    },
+                    {
+                        "path": "permit.nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "permit.deadline",
+                        "$ref": "$.display.definitions.deadline"
+                    },
+                    {
+                        "path": "depositor",
+                        "$ref": "$.display.definitions.depositor"
+                    },
+                    {
+                        "path": "lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    },
+                    {
+                        "path": "recipient",
+                        "$ref": "$.display.definitions.recipient"
+                    },
+                    {
+                        "path": "signature",
+                        "label": "Signature",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "permit.permitted.token",
+                    "permit.permitted.amount",
+                    "permit.deadline",
+                    "recipient"
+                ],
+                "excluded": [
+                    "permit.nonce",
+                    "depositor",
+                    "lockTag",
+                    "signature"
+                ]
+            },
+            "batchDepositViaPermit2(address depositor,(address token,uint256 amount)[] permitted,(uint256 nonce,uint256 deadline,bytes12 lockTag) details,address recipient,bytes signature)": {
+                "$id": "batchDepositViaPermit2",
+                "intent": "Batch Deposit via Permit2",
+                "fields": [
+                    {
+                        "path": "depositor",
+                        "$ref": "$.display.definitions.depositor"
+                    },
+                    {
+                        "path": "permitted.[].token",
+                        "$ref": "$.display.definitions.erc20Token"
+                    },
+                    {
+                        "path": "permitted.[].amount",
+                        "label": "Amount",
+                        "format": "tokenAmount",
+                        "params": {
+                            "tokenPath": "permitted.[].token"
+                        }
+                    },
+                    {
+                        "path": "details.nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "details.deadline",
+                        "$ref": "$.display.definitions.deadline"
+                    },
+                    {
+                        "path": "details.lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    },
+                    {
+                        "path": "recipient",
+                        "$ref": "$.display.definitions.recipient"
+                    },
+                    {
+                        "path": "signature",
+                        "label": "Signature",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "permitted.[].token",
+                    "permitted.[].amount",
+                    "recipient"
+                ],
+                "excluded": [
+                    "depositor",
+                    "details.nonce",
+                    "details.deadline",
+                    "details.lockTag",
+                    "signature"
+                ]
+            },
+            "allocatedTransfer((bytes allocatorData,uint256 nonce,uint256 expires,uint256 id,(uint256 claimant,uint256 amount)[] recipients) transfer)": {
+                "$id": "allocatedTransfer",
+                "intent": "Transfer Resource Lock",
+                "fields": [
+                    {
+                        "path": "transfer.allocatorData",
+                        "label": "Allocator Data",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "transfer.nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "transfer.expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "transfer.id",
+                        "$ref": "$.display.definitions.lockId"
+                    },
+                    {
+                        "path": "transfer.recipients.[].claimant",
+                        "label": "Claimant",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "transfer.recipients.[].amount",
+                        "label": "Amount",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "transfer.id",
+                    "transfer.recipients.[].claimant",
+                    "transfer.recipients.[].amount"
+                ],
+                "excluded": [
+                    "transfer.allocatorData",
+                    "transfer.nonce",
+                    "transfer.expires"
+                ]
+            },
+            "allocatedBatchTransfer((bytes allocatorData,uint256 nonce,uint256 expires,(uint256 id,(uint256 claimant,uint256 amount)[] portions)[] transfers) transfer)": {
+                "$id": "allocatedBatchTransfer",
+                "intent": "Batch Transfer Resource Locks",
+                "fields": [
+                    {
+                        "path": "transfer.allocatorData",
+                        "label": "Allocator Data",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "transfer.nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "transfer.expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "transfer.transfers.[].id",
+                        "$ref": "$.display.definitions.lockId"
+                    },
+                    {
+                        "path": "transfer.transfers.[].portions.[].claimant",
+                        "label": "Claimant",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "transfer.transfers.[].portions.[].amount",
+                        "label": "Amount",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "transfer.transfers.[].id",
+                    "transfer.transfers.[].portions.[].claimant",
+                    "transfer.transfers.[].portions.[].amount"
+                ],
+                "excluded": [
+                    "transfer.allocatorData",
+                    "transfer.nonce",
+                    "transfer.expires"
+                ]
+            },
+            "register(bytes32 claimHash,bytes32 typehash)": {
+                "$id": "register",
+                "intent": "Register Compact",
+                "interpolatedIntent": "Register compact with claim hash {claimHash}",
+                "fields": [
+                    {
+                        "path": "claimHash",
+                        "$ref": "$.display.definitions.claimHash"
+                    },
+                    {
+                        "path": "typehash",
+                        "$ref": "$.display.definitions.typehash"
+                    }
+                ],
+                "required": [
+                    "claimHash",
+                    "typehash"
+                ]
+            },
+            "registerMultiple(bytes32[2][] claimHashesAndTypehashes)": {
+                "$id": "registerMultiple",
+                "intent": "Register Multiple Compacts",
+                "fields": [
+                    {
+                        "path": "claimHashesAndTypehashes.[].[0]",
+                        "$ref": "$.display.definitions.claimHash"
+                    },
+                    {
+                        "path": "claimHashesAndTypehashes.[].[1]",
+                        "$ref": "$.display.definitions.typehash"
+                    }
+                ],
+                "required": [
+                    "claimHashesAndTypehashes.[].[0]",
+                    "claimHashesAndTypehashes.[].[1]"
+                ]
+            },
+            "registerFor(bytes32 typehash,address arbiter,address sponsor,uint256 nonce,uint256 expires,bytes12 lockTag,address token,uint256 amount,bytes32 witness,bytes sponsorSignature)": {
+                "$id": "registerFor",
+                "intent": "Register Compact For Sponsor",
+                "interpolatedIntent": "Register compact for {sponsor} with typehash {typehash}",
+                "fields": [
+                    {
+                        "path": "typehash",
+                        "$ref": "$.display.definitions.typehash"
+                    },
+                    {
+                        "path": "arbiter",
+                        "$ref": "$.display.definitions.arbiter"
+                    },
+                    {
+                        "path": "sponsor",
+                        "$ref": "$.display.definitions.sponsor"
+                    },
+                    {
+                        "path": "nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    },
+                    {
+                        "path": "token",
+                        "$ref": "$.display.definitions.erc20Token"
+                    },
+                    {
+                        "path": "amount",
+                        "label": "Amount",
+                        "format": "tokenAmount",
+                        "params": {
+                            "tokenPath": "token"
+                        }
+                    },
+                    {
+                        "path": "witness",
+                        "label": "Witness",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "sponsorSignature",
+                        "label": "Sponsor Signature",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "typehash",
+                    "sponsor"
+                ],
+                "excluded": [
+                    "arbiter",
+                    "nonce",
+                    "expires",
+                    "lockTag",
+                    "token",
+                    "amount",
+                    "witness",
+                    "sponsorSignature"
+                ]
+            },
+            "registerBatchFor(bytes32 typehash,address arbiter,address sponsor,uint256 nonce,uint256 expires,bytes32 commitmentsHash,bytes32 witness,bytes sponsorSignature)": {
+                "$id": "registerBatchFor",
+                "intent": "Register Batch Compact For Sponsor",
+                "interpolatedIntent": "Register batch compact for {sponsor}",
+                "fields": [
+                    {
+                        "path": "typehash",
+                        "$ref": "$.display.definitions.typehash"
+                    },
+                    {
+                        "path": "arbiter",
+                        "$ref": "$.display.definitions.arbiter"
+                    },
+                    {
+                        "path": "sponsor",
+                        "$ref": "$.display.definitions.sponsor"
+                    },
+                    {
+                        "path": "nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "commitmentsHash",
+                        "label": "Commitments Hash",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "witness",
+                        "label": "Witness",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "sponsorSignature",
+                        "label": "Sponsor Signature",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "typehash",
+                    "sponsor"
+                ],
+                "excluded": [
+                    "arbiter",
+                    "nonce",
+                    "expires",
+                    "commitmentsHash",
+                    "witness",
+                    "sponsorSignature"
+                ]
+            },
+            "registerMultichainFor(bytes32 typehash,address sponsor,uint256 nonce,uint256 expires,bytes32 elementsHash,uint256 notarizedChainId,bytes sponsorSignature)": {
+                "$id": "registerMultichainFor",
+                "intent": "Register Multichain Compact For Sponsor",
+                "interpolatedIntent": "Register multichain compact for {sponsor} on chain {notarizedChainId}",
+                "fields": [
+                    {
+                        "path": "typehash",
+                        "$ref": "$.display.definitions.typehash"
+                    },
+                    {
+                        "path": "sponsor",
+                        "$ref": "$.display.definitions.sponsor"
+                    },
+                    {
+                        "path": "nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "elementsHash",
+                        "label": "Elements Hash",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "notarizedChainId",
+                        "label": "Notarized Chain ID",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "sponsorSignature",
+                        "label": "Sponsor Signature",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "typehash",
+                    "sponsor",
+                    "notarizedChainId"
+                ],
+                "excluded": [
+                    "nonce",
+                    "expires",
+                    "elementsHash",
+                    "sponsorSignature"
+                ]
+            },
+            "depositNativeAndRegister(bytes12 lockTag,bytes32 claimHash,bytes32 typehash)": {
+                "$id": "depositNativeAndRegister",
+                "intent": "Deposit and Register",
+                "interpolatedIntent": "Deposit {@.value} and register compact",
+                "fields": [
+                    {
+                        "path": "@.value",
+                        "label": "Amount",
+                        "format": "amount"
+                    },
+                    {
+                        "path": "lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    },
+                    {
+                        "path": "claimHash",
+                        "$ref": "$.display.definitions.claimHash"
+                    },
+                    {
+                        "path": "typehash",
+                        "$ref": "$.display.definitions.typehash"
+                    }
+                ],
+                "required": [
+                    "@.value"
+                ],
+                "excluded": [
+                    "lockTag",
+                    "claimHash",
+                    "typehash"
+                ]
+            },
+            "depositNativeAndRegisterFor(address recipient,bytes12 lockTag,address arbiter,uint256 nonce,uint256 expires,bytes32 typehash,bytes32 witness)": {
+                "$id": "depositNativeAndRegisterFor",
+                "intent": "Deposit Native and Register For Recipient",
+                "interpolatedIntent": "Deposit {@.value} for {recipient} and register with arbiter {arbiter}",
+                "fields": [
+                    {
+                        "path": "@.value",
+                        "label": "Amount",
+                        "format": "amount"
+                    },
+                    {
+                        "path": "recipient",
+                        "$ref": "$.display.definitions.recipient"
+                    },
+                    {
+                        "path": "arbiter",
+                        "$ref": "$.display.definitions.arbiter"
+                    },
+                    {
+                        "path": "nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "typehash",
+                        "$ref": "$.display.definitions.typehash"
+                    },
+                    {
+                        "path": "witness",
+                        "label": "Witness",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "@.value",
+                    "recipient"
+                ],
+                "excluded": [
+                    "arbiter",
+                    "nonce",
+                    "expires",
+                    "typehash",
+                    "witness"
+                ]
+            },
+            "depositERC20AndRegister(address token,bytes12 lockTag,uint256 amount,bytes32 claimHash,bytes32 typehash)": {
+                "$id": "depositERC20AndRegister",
+                "intent": "Deposit ERC20 and Register",
+                "interpolatedIntent": "Deposit {amount} and register compact",
+                "fields": [
+                    {
+                        "path": "token",
+                        "$ref": "$.display.definitions.erc20Token"
+                    },
+                    {
+                        "path": "lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    },
+                    {
+                        "path": "amount",
+                        "label": "Amount",
+                        "format": "tokenAmount",
+                        "params": {
+                            "tokenPath": "token"
+                        }
+                    },
+                    {
+                        "path": "claimHash",
+                        "$ref": "$.display.definitions.claimHash"
+                    },
+                    {
+                        "path": "typehash",
+                        "$ref": "$.display.definitions.typehash"
+                    }
+                ],
+                "required": [
+                    "token",
+                    "amount"
+                ],
+                "excluded": [
+                    "lockTag",
+                    "claimHash",
+                    "typehash"
+                ]
+            },
+            "depositERC20AndRegisterFor(address recipient,address token,bytes12 lockTag,uint256 amount,address arbiter,uint256 nonce,uint256 expires,bytes32 typehash,bytes32 witness)": {
+                "$id": "depositERC20AndRegisterFor",
+                "intent": "Deposit ERC20 and Register For Recipient",
+                "interpolatedIntent": "Deposit {amount} for {recipient} and register with arbiter {arbiter}",
+                "fields": [
+                    {
+                        "path": "recipient",
+                        "$ref": "$.display.definitions.recipient"
+                    },
+                    {
+                        "path": "token",
+                        "$ref": "$.display.definitions.erc20Token"
+                    },
+                    {
+                        "path": "lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    },
+                    {
+                        "path": "amount",
+                        "label": "Amount",
+                        "format": "tokenAmount",
+                        "params": {
+                            "tokenPath": "token"
+                        }
+                    },
+                    {
+                        "path": "arbiter",
+                        "$ref": "$.display.definitions.arbiter"
+                    },
+                    {
+                        "path": "nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "typehash",
+                        "$ref": "$.display.definitions.typehash"
+                    },
+                    {
+                        "path": "witness",
+                        "label": "Witness",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "recipient",
+                    "token",
+                    "amount"
+                ],
+                "excluded": [
+                    "lockTag",
+                    "arbiter",
+                    "nonce",
+                    "expires",
+                    "typehash",
+                    "witness"
+                ]
+            },
+            "batchDepositAndRegisterMultiple(uint256[2][] idsAndAmounts,bytes32[2][] claimHashesAndTypehashes)": {
+                "$id": "batchDepositAndRegisterMultiple",
+                "intent": "Batch Deposit and Register Multiple",
+                "fields": [
+                    {
+                        "path": "idsAndAmounts.[].[0]",
+                        "label": "Id",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "idsAndAmounts.[].[1]",
+                        "label": "Amount",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimHashesAndTypehashes.[].[0]",
+                        "$ref": "$.display.definitions.claimHash"
+                    },
+                    {
+                        "path": "claimHashesAndTypehashes.[].[1]",
+                        "$ref": "$.display.definitions.typehash"
+                    }
+                ],
+                "required": [
+                    "idsAndAmounts.[].[0]",
+                    "idsAndAmounts.[].[1]"
+                ],
+                "excluded": [
+                    "claimHashesAndTypehashes.[].[0]",
+                    "claimHashesAndTypehashes.[].[1]"
+                ]
+            },
+            "batchDepositAndRegisterFor(address recipient,uint256[2][] idsAndAmounts,address arbiter,uint256 nonce,uint256 expires,bytes32 typehash,bytes32 witness)": {
+                "$id": "batchDepositAndRegisterFor",
+                "intent": "Batch Deposit and Register For Recipient",
+                "interpolatedIntent": "Batch deposit for {recipient} and register with arbiter {arbiter}",
+                "fields": [
+                    {
+                        "path": "recipient",
+                        "$ref": "$.display.definitions.recipient"
+                    },
+                    {
+                        "path": "idsAndAmounts.[].[0]",
+                        "label": "Id",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "idsAndAmounts.[].[1]",
+                        "label": "Amount",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "arbiter",
+                        "$ref": "$.display.definitions.arbiter"
+                    },
+                    {
+                        "path": "nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "typehash",
+                        "$ref": "$.display.definitions.typehash"
+                    },
+                    {
+                        "path": "witness",
+                        "label": "Witness",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "recipient",
+                    "idsAndAmounts.[].[0]",
+                    "idsAndAmounts.[].[1]"
+                ],
+                "excluded": [
+                    "arbiter",
+                    "nonce",
+                    "expires",
+                    "typehash",
+                    "witness"
+                ]
+            },
+            "depositERC20AndRegisterViaPermit2(((address token,uint256 amount) permitted,uint256 nonce,uint256 deadline) permit,address depositor,bytes12 lockTag,bytes32 claimHash,uint8 compactCategory,string witness,bytes signature)": {
+                "$id": "depositERC20AndRegisterViaPermit2",
+                "intent": "Deposit ERC20 and Register via Permit2",
+                "fields": [
+                    {
+                        "path": "permit.permitted.token",
+                        "$ref": "$.display.definitions.erc20Token"
+                    },
+                    {
+                        "path": "permit.permitted.amount",
+                        "label": "Amount",
+                        "format": "tokenAmount",
+                        "params": {
+                            "tokenPath": "permit.permitted.token"
+                        }
+                    },
+                    {
+                        "path": "permit.nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "permit.deadline",
+                        "$ref": "$.display.definitions.deadline"
+                    },
+                    {
+                        "path": "depositor",
+                        "$ref": "$.display.definitions.depositor"
+                    },
+                    {
+                        "path": "lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    },
+                    {
+                        "path": "claimHash",
+                        "$ref": "$.display.definitions.claimHash"
+                    },
+                    {
+                        "path": "compactCategory",
+                        "format": "enum",
+                        "label": "Compact Category",
+                        "params": {
+                            "$ref": "$.metadata.enums.compactCategory"
+                        }
+                    },
+                    {
+                        "path": "witness",
+                        "label": "Witness",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "signature",
+                        "label": "Signature",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "permit.permitted.token",
+                    "permit.permitted.amount",
+                    "depositor"
+                ],
+                "excluded": [
+                    "permit.nonce",
+                    "permit.deadline",
+                    "lockTag",
+                    "claimHash",
+                    "compactCategory",
+                    "witness",
+                    "signature"
+                ]
+            },
+            "batchDepositAndRegisterViaPermit2(address depositor,(address token,uint256 amount)[] permitted,(uint256 nonce,uint256 deadline,bytes12 lockTag) details,bytes32 claimHash,uint8 compactCategory,string witness,bytes signature)": {
+                "$id": "batchDepositAndRegisterViaPermit2",
+                "intent": "Batch Deposit and Register via Permit2",
+                "interpolatedIntent": "Batch deposit via Permit2 and register compact for {depositor}",
+                "fields": [
+                    {
+                        "path": "depositor",
+                        "$ref": "$.display.definitions.depositor"
+                    },
+                    {
+                        "path": "permitted.[].token",
+                        "$ref": "$.display.definitions.erc20Token"
+                    },
+                    {
+                        "path": "permitted.[].amount",
+                        "label": "Amount",
+                        "format": "tokenAmount",
+                        "params": {
+                            "tokenPath": "permitted.[].token"
+                        }
+                    },
+                    {
+                        "path": "details.nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "details.deadline",
+                        "$ref": "$.display.definitions.deadline"
+                    },
+                    {
+                        "path": "details.lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    },
+                    {
+                        "path": "claimHash",
+                        "$ref": "$.display.definitions.claimHash"
+                    },
+                    {
+                        "path": "compactCategory",
+                        "format": "enum",
+                        "label": "Compact Category",
+                        "params": {
+                            "$ref": "$.metadata.enums.compactCategory"
+                        }
+                    },
+                    {
+                        "path": "witness",
+                        "label": "Witness",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "signature",
+                        "label": "Signature",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "depositor",
+                    "permitted.[].token",
+                    "permitted.[].amount",
+                    "details.deadline"
+                ],
+                "excluded": [
+                    "details.nonce",
+                    "details.lockTag",
+                    "claimHash",
+                    "compactCategory",
+                    "witness",
+                    "signature"
+                ]
+            },
+            "enableForcedWithdrawal(uint256 id)": {
+                "$id": "enableForcedWithdrawal",
+                "intent": "Enable Forced Withdrawal",
+                "interpolatedIntent": "Enable forced withdrawal for lock {id}",
+                "fields": [
+                    {
+                        "path": "id",
+                        "$ref": "$.display.definitions.lockId"
+                    }
+                ],
+                "required": [
+                    "id"
+                ]
+            },
+            "disableForcedWithdrawal(uint256 id)": {
+                "$id": "disableForcedWithdrawal",
+                "intent": "Disable Forced Withdrawal",
+                "interpolatedIntent": "Disable forced withdrawal for lock {id}",
+                "fields": [
+                    {
+                        "path": "id",
+                        "$ref": "$.display.definitions.lockId"
+                    }
+                ],
+                "required": [
+                    "id"
+                ]
+            },
+            "forcedWithdrawal(uint256 id,address recipient,uint256 amount)": {
+                "$id": "forcedWithdrawal",
+                "intent": "Execute Forced Withdrawal",
+                "interpolatedIntent": "Withdraw {amount} from lock {id} to {recipient}",
+                "fields": [
+                    {
+                        "path": "id",
+                        "$ref": "$.display.definitions.lockId"
+                    },
+                    {
+                        "path": "recipient",
+                        "$ref": "$.display.definitions.recipient"
+                    },
+                    {
+                        "path": "amount",
+                        "label": "Amount",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "id",
+                    "recipient",
+                    "amount"
+                ]
+            },
+            "assignEmissary(bytes12 lockTag,address emissary)": {
+                "$id": "assignEmissary",
+                "intent": "Assign Emissary",
+                "interpolatedIntent": "Assign {emissary} as emissary for lock tag {lockTag}",
+                "fields": [
+                    {
+                        "path": "lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    },
+                    {
+                        "path": "emissary",
+                        "label": "Emissary",
+                        "format": "addressName",
+                        "params": {
+                            "types": [
+                                "contract",
+                                "eoa"
+                            ]
+                        }
+                    }
+                ],
+                "required": [
+                    "lockTag",
+                    "emissary"
+                ]
+            },
+            "scheduleEmissaryAssignment(bytes12 lockTag)": {
+                "$id": "scheduleEmissaryAssignment",
+                "intent": "Schedule Emissary Assignment",
+                "interpolatedIntent": "Schedule emissary assignment for lock tag {lockTag}",
+                "fields": [
+                    {
+                        "path": "lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    }
+                ],
+                "required": [
+                    "lockTag"
+                ]
+            },
+            "consume(uint256[] nonces)": {
+                "$id": "consume",
+                "intent": "Consume Nonces",
+                "fields": [
+                    {
+                        "path": "nonces",
+                        "label": "Nonces",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "nonces"
+                ]
+            },
+            "__registerAllocator(address allocator,bytes proof)": {
+                "$id": "__registerAllocator",
+                "intent": "Register Allocator",
+                "fields": [
+                    {
+                        "path": "allocator",
+                        "$ref": "$.display.definitions.allocator"
+                    },
+                    {
+                        "path": "proof",
+                        "label": "Proof",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "allocator"
+                ],
+                "excluded": [
+                    "proof"
+                ]
+            },
+            "claim((bytes allocatorData,bytes sponsorSignature,address sponsor,uint256 nonce,uint256 expires,bytes32 witness,string witnessTypestring,uint256 id,uint256 allocatedAmount,(uint256 claimant,uint256 amount)[] claimants) claimPayload)": {
+                "$id": "claim",
+                "intent": "Process Claim",
+                "fields": [
+                    {
+                        "path": "claimPayload.allocatorData",
+                        "label": "Allocator Data",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.sponsorSignature",
+                        "label": "Sponsor Signature",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.sponsor",
+                        "$ref": "$.display.definitions.sponsor"
+                    },
+                    {
+                        "path": "claimPayload.nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "claimPayload.expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "claimPayload.witness",
+                        "label": "Witness",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.witnessTypestring",
+                        "label": "Witness Typestring",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.id",
+                        "$ref": "$.display.definitions.lockId"
+                    },
+                    {
+                        "path": "claimPayload.allocatedAmount",
+                        "label": "Allocated Amount",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claimants.[].claimant",
+                        "label": "Claimant",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claimants.[].amount",
+                        "label": "Amount",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "claimPayload.sponsor",
+                    "claimPayload.id",
+                    "claimPayload.allocatedAmount",
+                    "claimPayload.claimants.[].claimant",
+                    "claimPayload.claimants.[].amount"
+                ],
+                "excluded": [
+                    "claimPayload.allocatorData",
+                    "claimPayload.sponsorSignature",
+                    "claimPayload.nonce",
+                    "claimPayload.expires",
+                    "claimPayload.witness",
+                    "claimPayload.witnessTypestring"
+                ]
+            },
+            "batchClaim((bytes allocatorData,bytes sponsorSignature,address sponsor,uint256 nonce,uint256 expires,bytes32 witness,string witnessTypestring,(uint256 id,uint256 allocatedAmount,(uint256 claimant,uint256 amount)[] portions)[] claims) claimPayload)": {
+                "$id": "batchClaim",
+                "intent": "Process Batch Claim",
+                "fields": [
+                    {
+                        "path": "claimPayload.allocatorData",
+                        "label": "Allocator Data",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.sponsorSignature",
+                        "label": "Sponsor Signature",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.sponsor",
+                        "$ref": "$.display.definitions.sponsor"
+                    },
+                    {
+                        "path": "claimPayload.nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "claimPayload.expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "claimPayload.witness",
+                        "label": "Witness",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.witnessTypestring",
+                        "label": "Witness Typestring",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claims.[].id",
+                        "$ref": "$.display.definitions.lockId"
+                    },
+                    {
+                        "path": "claimPayload.claims.[].allocatedAmount",
+                        "label": "Allocated Amount",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claims.[].portions.[].claimant",
+                        "label": "Claimant",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claims.[].portions.[].amount",
+                        "label": "Amount",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "claimPayload.sponsor",
+                    "claimPayload.claims.[].id",
+                    "claimPayload.claims.[].allocatedAmount",
+                    "claimPayload.claims.[].portions.[].claimant",
+                    "claimPayload.claims.[].portions.[].amount"
+                ],
+                "excluded": [
+                    "claimPayload.allocatorData",
+                    "claimPayload.sponsorSignature",
+                    "claimPayload.nonce",
+                    "claimPayload.expires",
+                    "claimPayload.witness",
+                    "claimPayload.witnessTypestring"
+                ]
+            },
+            "multichainClaim((bytes allocatorData,bytes sponsorSignature,address sponsor,uint256 nonce,uint256 expires,bytes32 witness,string witnessTypestring,uint256 id,uint256 allocatedAmount,(uint256 claimant,uint256 amount)[] claimants,bytes32[] additionalChains) claimPayload)": {
+                "$id": "multichainClaim",
+                "intent": "Process Multichain Claim",
+                "fields": [
+                    {
+                        "path": "claimPayload.allocatorData",
+                        "label": "Allocator Data",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.sponsorSignature",
+                        "label": "Sponsor Signature",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.sponsor",
+                        "$ref": "$.display.definitions.sponsor"
+                    },
+                    {
+                        "path": "claimPayload.nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "claimPayload.expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "claimPayload.witness",
+                        "label": "Witness",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.witnessTypestring",
+                        "label": "Witness Typestring",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.id",
+                        "$ref": "$.display.definitions.lockId"
+                    },
+                    {
+                        "path": "claimPayload.allocatedAmount",
+                        "label": "Allocated Amount",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claimants.[].claimant",
+                        "label": "Claimant",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claimants.[].amount",
+                        "label": "Amount",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.additionalChains.[]",
+                        "label": "Additional Chains",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "claimPayload.sponsor",
+                    "claimPayload.id",
+                    "claimPayload.allocatedAmount",
+                    "claimPayload.claimants.[].claimant",
+                    "claimPayload.claimants.[].amount",
+                    "claimPayload.additionalChains.[]"
+                ],
+                "excluded": [
+                    "claimPayload.allocatorData",
+                    "claimPayload.sponsorSignature",
+                    "claimPayload.nonce",
+                    "claimPayload.expires",
+                    "claimPayload.witness",
+                    "claimPayload.witnessTypestring"
+                ]
+            },
+            "exogenousClaim((bytes allocatorData,bytes sponsorSignature,address sponsor,uint256 nonce,uint256 expires,bytes32 witness,string witnessTypestring,uint256 id,uint256 allocatedAmount,(uint256 claimant,uint256 amount)[] claimants,bytes32[] additionalChains,uint256 chainIndex,uint256 notarizedChainId) claimPayload)": {
+                "$id": "exogenousClaim",
+                "intent": "Process Exogenous Claim",
+                "fields": [
+                    {
+                        "path": "claimPayload.allocatorData",
+                        "label": "Allocator Data",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.sponsorSignature",
+                        "label": "Sponsor Signature",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.sponsor",
+                        "$ref": "$.display.definitions.sponsor"
+                    },
+                    {
+                        "path": "claimPayload.nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "claimPayload.expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "claimPayload.witness",
+                        "label": "Witness",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.witnessTypestring",
+                        "label": "Witness Typestring",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.id",
+                        "$ref": "$.display.definitions.lockId"
+                    },
+                    {
+                        "path": "claimPayload.allocatedAmount",
+                        "label": "Allocated Amount",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claimants.[].claimant",
+                        "label": "Claimant",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claimants.[].amount",
+                        "label": "Amount",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.additionalChains.[]",
+                        "label": "Additional Chains",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.chainIndex",
+                        "label": "Chain Index",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.notarizedChainId",
+                        "label": "Notarized Chain ID",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "claimPayload.sponsor",
+                    "claimPayload.id",
+                    "claimPayload.allocatedAmount",
+                    "claimPayload.claimants.[].claimant",
+                    "claimPayload.claimants.[].amount",
+                    "claimPayload.additionalChains.[]",
+                    "claimPayload.chainIndex",
+                    "claimPayload.notarizedChainId"
+                ],
+                "excluded": [
+                    "claimPayload.allocatorData",
+                    "claimPayload.sponsorSignature",
+                    "claimPayload.nonce",
+                    "claimPayload.expires",
+                    "claimPayload.witness",
+                    "claimPayload.witnessTypestring"
+                ]
+            },
+            "batchMultichainClaim((bytes allocatorData,bytes sponsorSignature,address sponsor,uint256 nonce,uint256 expires,bytes32 witness,string witnessTypestring,(uint256 id,uint256 allocatedAmount,(uint256 claimant,uint256 amount)[] portions)[] claims,bytes32[] additionalChains) claimPayload)": {
+                "$id": "batchMultichainClaim",
+                "intent": "Process Batch Multichain Claim",
+                "fields": [
+                    {
+                        "path": "claimPayload.allocatorData",
+                        "label": "Allocator Data",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.sponsorSignature",
+                        "label": "Sponsor Signature",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.sponsor",
+                        "$ref": "$.display.definitions.sponsor"
+                    },
+                    {
+                        "path": "claimPayload.nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "claimPayload.expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "claimPayload.witness",
+                        "label": "Witness",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.witnessTypestring",
+                        "label": "Witness Typestring",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claims.[].id",
+                        "$ref": "$.display.definitions.lockId"
+                    },
+                    {
+                        "path": "claimPayload.claims.[].allocatedAmount",
+                        "label": "Allocated Amount",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claims.[].portions.[].claimant",
+                        "label": "Claimant",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claims.[].portions.[].amount",
+                        "label": "Amount",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.additionalChains",
+                        "label": "Additional Chains",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "claimPayload.sponsor",
+                    "claimPayload.claims.[].id",
+                    "claimPayload.claims.[].allocatedAmount",
+                    "claimPayload.claims.[].portions.[].claimant",
+                    "claimPayload.claims.[].portions.[].amount",
+                    "claimPayload.additionalChains.[]"
+                ],
+                "excluded": [
+                    "claimPayload.allocatorData",
+                    "claimPayload.sponsorSignature",
+                    "claimPayload.nonce",
+                    "claimPayload.expires",
+                    "claimPayload.witness",
+                    "claimPayload.witnessTypestring"
+                ]
+            },
+            "exogenousBatchClaim((bytes allocatorData,bytes sponsorSignature,address sponsor,uint256 nonce,uint256 expires,bytes32 witness,string witnessTypestring,(uint256 id,uint256 allocatedAmount,(uint256 claimant,uint256 amount)[] portions)[] claims,bytes32[] additionalChains,uint256 chainIndex,uint256 notarizedChainId) claimPayload)": {
+                "$id": "exogenousBatchClaim",
+                "intent": "Process Exogenous Batch Claim",
+                "fields": [
+                    {
+                        "path": "claimPayload.allocatorData",
+                        "label": "Allocator Data",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.sponsorSignature",
+                        "label": "Sponsor Signature",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.sponsor",
+                        "$ref": "$.display.definitions.sponsor"
+                    },
+                    {
+                        "path": "claimPayload.nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "claimPayload.expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "claimPayload.witness",
+                        "label": "Witness",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.witnessTypestring",
+                        "label": "Witness Typestring",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claims.[].id",
+                        "$ref": "$.display.definitions.lockId"
+                    },
+                    {
+                        "path": "claimPayload.claims.[].allocatedAmount",
+                        "label": "Allocated Amount",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claims.[].portions.[].claimant",
+                        "label": "Claimant",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.claims.[].portions.[].amount",
+                        "label": "Amount",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.additionalChains.[]",
+                        "label": "Additional Chains",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.chainIndex",
+                        "label": "Chain Index",
+                        "format": "raw"
+                    },
+                    {
+                        "path": "claimPayload.notarizedChainId",
+                        "label": "Notarized Chain ID",
+                        "format": "raw"
+                    }
+                ],
+                "required": [
+                    "claimPayload.sponsor",
+                    "claimPayload.claims.[].id",
+                    "claimPayload.claims.[].allocatedAmount",
+                    "claimPayload.claims.[].portions.[].claimant",
+                    "claimPayload.claims.[].portions.[].amount",
+                    "claimPayload.additionalChains.[]",
+                    "claimPayload.chainIndex",
+                    "claimPayload.notarizedChainId"
+                ],
+                "excluded": [
+                    "claimPayload.allocatorData",
+                    "claimPayload.sponsorSignature",
+                    "claimPayload.nonce",
+                    "claimPayload.expires",
+                    "claimPayload.witness",
+                    "claimPayload.witnessTypestring"
+                ]
+            }
+        }
+    }
+}

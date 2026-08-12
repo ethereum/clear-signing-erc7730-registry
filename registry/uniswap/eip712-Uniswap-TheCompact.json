@@ -1,0 +1,416 @@
+{
+    "$schema": "../../specs/erc7730-v1.schema.json",
+    "context": {
+        "$id": "TheCompact",
+        "eip712": {
+            "schemas": [
+                {
+                    "types": {
+                        "EIP712Domain": [
+                            {
+                                "name": "name",
+                                "type": "string"
+                            },
+                            {
+                                "name": "version",
+                                "type": "string"
+                            },
+                            {
+                                "name": "chainId",
+                                "type": "uint256"
+                            },
+                            {
+                                "name": "verifyingContract",
+                                "type": "address"
+                            }
+                        ],
+                        "Compact": [
+                            {
+                                "name": "arbiter",
+                                "type": "address"
+                            },
+                            {
+                                "name": "sponsor",
+                                "type": "address"
+                            },
+                            {
+                                "name": "nonce",
+                                "type": "uint256"
+                            },
+                            {
+                                "name": "expires",
+                                "type": "uint256"
+                            },
+                            {
+                                "name": "lockTag",
+                                "type": "bytes12"
+                            },
+                            {
+                                "name": "token",
+                                "type": "address"
+                            },
+                            {
+                                "name": "amount",
+                                "type": "uint256"
+                            }
+                        ]
+                    },
+                    "primaryType": "Compact"
+                },
+                {
+                    "types": {
+                        "EIP712Domain": [
+                            {
+                                "name": "name",
+                                "type": "string"
+                            },
+                            {
+                                "name": "version",
+                                "type": "string"
+                            },
+                            {
+                                "name": "chainId",
+                                "type": "uint256"
+                            },
+                            {
+                                "name": "verifyingContract",
+                                "type": "address"
+                            }
+                        ],
+                        "Lock": [
+                            {
+                                "name": "lockTag",
+                                "type": "bytes12"
+                            },
+                            {
+                                "name": "token",
+                                "type": "address"
+                            },
+                            {
+                                "name": "amount",
+                                "type": "uint256"
+                            }
+                        ],
+                        "BatchCompact": [
+                            {
+                                "name": "arbiter",
+                                "type": "address"
+                            },
+                            {
+                                "name": "sponsor",
+                                "type": "address"
+                            },
+                            {
+                                "name": "nonce",
+                                "type": "uint256"
+                            },
+                            {
+                                "name": "expires",
+                                "type": "uint256"
+                            },
+                            {
+                                "name": "commitments",
+                                "type": "Lock[]"
+                            }
+                        ]
+                    },
+                    "primaryType": "BatchCompact"
+                },
+                {
+                    "types": {
+                        "EIP712Domain": [
+                            {
+                                "name": "name",
+                                "type": "string"
+                            },
+                            {
+                                "name": "version",
+                                "type": "string"
+                            },
+                            {
+                                "name": "chainId",
+                                "type": "uint256"
+                            },
+                            {
+                                "name": "verifyingContract",
+                                "type": "address"
+                            }
+                        ],
+                        "Lock": [
+                            {
+                                "name": "lockTag",
+                                "type": "bytes12"
+                            },
+                            {
+                                "name": "token",
+                                "type": "address"
+                            },
+                            {
+                                "name": "amount",
+                                "type": "uint256"
+                            }
+                        ],
+                        "Element": [
+                            {
+                                "name": "arbiter",
+                                "type": "address"
+                            },
+                            {
+                                "name": "chainId",
+                                "type": "uint256"
+                            },
+                            {
+                                "name": "commitments",
+                                "type": "Lock[]"
+                            }
+                        ],
+                        "MultichainCompact": [
+                            {
+                                "name": "sponsor",
+                                "type": "address"
+                            },
+                            {
+                                "name": "nonce",
+                                "type": "uint256"
+                            },
+                            {
+                                "name": "expires",
+                                "type": "uint256"
+                            },
+                            {
+                                "name": "elements",
+                                "type": "Element[]"
+                            }
+                        ]
+                    },
+                    "primaryType": "MultichainCompact"
+                }
+            ],
+            "domain": {
+                "name": "The Compact",
+                "version": "1"
+            },
+            "deployments": [
+                {
+                    "chainId": 1,
+                    "address": "0x00000000000000171ede64904551eeDF3C6C9788"
+                }
+            ]
+        }
+    },
+    "metadata": {
+        "owner": "Uniswap Labs",
+        "info": {
+            "legalName": "Uniswap Labs",
+            "url": "https://uniswap.org/"
+        }
+    },
+    "display": {
+        "definitions": {
+            "arbiter": {
+                "label": "Arbiter",
+                "format": "addressName",
+                "params": {
+                    "types": [
+                        "contract",
+                        "eoa"
+                    ]
+                }
+            },
+            "sponsor": {
+                "label": "Sponsor",
+                "format": "addressName",
+                "params": {
+                    "types": [
+                        "eoa",
+                        "contract"
+                    ]
+                }
+            },
+            "erc20Token": {
+                "label": "Token",
+                "format": "addressName",
+                "params": {
+                    "types": [
+                        "token",
+                        "contract"
+                    ]
+                }
+            },
+            "nonce": {
+                "label": "Nonce",
+                "format": "raw"
+            },
+            "expires": {
+                "label": "Expires At",
+                "format": "date",
+                "params": {
+                    "encoding": "timestamp"
+                }
+            },
+            "lockTag": {
+                "label": "Resource Lock Identifier",
+                "format": "raw"
+            },
+            "chainId": {
+                "label": "Chain ID",
+                "format": "raw"
+            }
+        },
+        "formats": {
+            "Compact": {
+                "$id": "Compact",
+                "intent": "Sign Compact",
+                "interpolatedIntent": "Authorize {arbiter} to claim {amount} until {expires}",
+                "fields": [
+                    {
+                        "path": "arbiter",
+                        "$ref": "$.display.definitions.arbiter"
+                    },
+                    {
+                        "path": "sponsor",
+                        "$ref": "$.display.definitions.sponsor"
+                    },
+                    {
+                        "path": "nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    },
+                    {
+                        "path": "token",
+                        "$ref": "$.display.definitions.erc20Token"
+                    },
+                    {
+                        "path": "amount",
+                        "label": "Amount",
+                        "format": "tokenAmount",
+                        "params": {
+                            "tokenPath": "token"
+                        }
+                    }
+                ],
+                "required": [
+                    "arbiter",
+                    "sponsor",
+                    "expires",
+                    "token",
+                    "amount"
+                ],
+                "excluded": [
+                    "nonce",
+                    "lockTag"
+                ]
+            },
+            "BatchCompact": {
+                "$id": "BatchCompact",
+                "intent": "Sign Batch Compact",
+                "fields": [
+                    {
+                        "path": "arbiter",
+                        "$ref": "$.display.definitions.arbiter"
+                    },
+                    {
+                        "path": "sponsor",
+                        "$ref": "$.display.definitions.sponsor"
+                    },
+                    {
+                        "path": "nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "commitments.[].lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    },
+                    {
+                        "path": "commitments.[].token",
+                        "$ref": "$.display.definitions.erc20Token"
+                    },
+                    {
+                        "path": "commitments.[].amount",
+                        "label": "Amount",
+                        "format": "tokenAmount",
+                        "params": {
+                            "tokenPath": "commitments.[].token"
+                        }
+                    }
+                ],
+                "required": [
+                    "arbiter",
+                    "sponsor",
+                    "expires",
+                    "commitments.[].token",
+                    "commitments.[].amount"
+                ],
+                "excluded": [
+                    "nonce",
+                    "commitments.[].lockTag"
+                ]
+            },
+            "MultichainCompact": {
+                "$id": "MultichainCompact",
+                "intent": "Sign Multichain Compact",
+                "fields": [
+                    {
+                        "path": "sponsor",
+                        "$ref": "$.display.definitions.sponsor"
+                    },
+                    {
+                        "path": "nonce",
+                        "$ref": "$.display.definitions.nonce"
+                    },
+                    {
+                        "path": "expires",
+                        "$ref": "$.display.definitions.expires"
+                    },
+                    {
+                        "path": "elements.[].arbiter",
+                        "$ref": "$.display.definitions.arbiter"
+                    },
+                    {
+                        "path": "elements.[].chainId",
+                        "$ref": "$.display.definitions.chainId"
+                    },
+                    {
+                        "path": "elements.[].commitments.[].lockTag",
+                        "$ref": "$.display.definitions.lockTag"
+                    },
+                    {
+                        "path": "elements.[].commitments.[].token",
+                        "$ref": "$.display.definitions.erc20Token"
+                    },
+                    {
+                        "path": "elements.[].commitments.[].amount",
+                        "label": "Amount",
+                        "format": "tokenAmount",
+                        "params": {
+                            "tokenPath": "elements.[].commitments.[].token"
+                        }
+                    }
+                ],
+                "required": [
+                    "sponsor",
+                    "expires",
+                    "elements.[].arbiter",
+                    "elements.[].chainId",
+                    "elements.[].commitments.[].token",
+                    "elements.[].commitments.[].amount"
+                ],
+                "excluded": [
+                    "nonce",
+                    "elements.[].commitments.[].lockTag"
+                ]
+            }
+        }
+    }
+}
