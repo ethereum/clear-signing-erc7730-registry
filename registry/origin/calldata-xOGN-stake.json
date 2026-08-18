@@ -1,0 +1,60 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [{ "chainId": 1, "address": "0x63898b3b6ef3d39332082178656e9862bee45c57" }],
+      "abi": [
+        { "inputs": [], "name": "collectRewards", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+            { "internalType": "uint256", "name": "duration", "type": "uint256" },
+            { "internalType": "address", "name": "to", "type": "address" },
+            { "internalType": "bool", "name": "stakeRewards", "type": "bool" },
+            { "internalType": "int256", "name": "lockupId", "type": "int256" }
+          ],
+          "name": "stake",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [{ "internalType": "uint256", "name": "lockupId", "type": "uint256" }],
+          "name": "unstake",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Origin Protocol",
+    "info": { "legalName": "Origin Protocol", "url": "https://www.originprotocol.com" },
+    "constants": { "ognAddress": "0x8207c1FfC5B6804F6024322CcF34F29c3541Ae26" },
+    "enums": { "stakeRewards": { "0": "No", "1": "Yes" } }
+  },
+  "display": {
+    "formats": {
+      "collectRewards()": { "intent": "Collect Rewards", "fields": [], "required": [], "excluded": [] },
+      "stake(uint256 amountIn, uint256 duration, address to, bool stakeRewards, int256 lockupId)": {
+        "intent": "Stake",
+        "fields": [
+          { "label": "Amount", "format": "tokenAmount", "path": "amountIn", "params": { "token": "$.metadata.constants.ognAddress" } },
+          { "label": "Duration", "format": "duration", "path": "duration" },
+          { "label": "To", "format": "addressName", "path": "to", "params": { "types": ["eoa", "wallet"] } },
+          { "label": "Stake Rewards", "format": "enum", "path": "stakeRewards", "params": { "$ref": "$.metadata.enums.stakeRewards" } },
+          { "label": "Lockup ID", "format": "raw", "path": "lockupId" }
+        ],
+        "required": ["amountIn", "duration", "to", "stakeRewards", "lockupId"],
+        "excluded": []
+      },
+      "unstake(uint256 lockupId)": {
+        "intent": "Unstake",
+        "fields": [{ "label": "Lockup ID", "format": "raw", "path": "lockupId" }],
+        "required": ["lockupId"],
+        "excluded": []
+      }
+    }
+  }
+}

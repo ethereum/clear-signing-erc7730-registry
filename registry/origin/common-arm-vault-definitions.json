@@ -1,0 +1,67 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "contract": {
+      "abi": [
+        {
+          "inputs": [{ "internalType": "uint256", "name": "requestId", "type": "uint256" }],
+          "name": "claimRedeem",
+          "outputs": [{ "internalType": "uint256", "name": "assets", "type": "uint256" }],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [{ "internalType": "uint256", "name": "assets", "type": "uint256" }],
+          "name": "deposit",
+          "outputs": [{ "internalType": "uint256", "name": "shares", "type": "uint256" }],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [{ "internalType": "uint256", "name": "shares", "type": "uint256" }],
+          "name": "requestRedeem",
+          "outputs": [
+            { "internalType": "uint256", "name": "requestId", "type": "uint256" },
+            { "internalType": "uint256", "name": "assets", "type": "uint256" }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Origin Protocol",
+    "info": { "legalName": "Origin Protocol", "url": "https://www.originprotocol.com" },
+    "constants": { "underlyingToken": "0x0" }
+  },
+  "display": {
+    "formats": {
+      "claimRedeem(uint256 requestId)": {
+        "intent": "Claim request",
+        "fields": [{ "label": "Request Id", "format": "raw", "path": "requestId" }],
+        "required": ["requestId"],
+        "excluded": []
+      },
+      "deposit(uint256 assets)": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "assets",
+            "params": { "token": "$.metadata.constants.underlyingToken" }
+          }
+        ],
+        "required": ["assets"],
+        "excluded": []
+      },
+      "requestRedeem(uint256 shares)": {
+        "intent": "Request redemption",
+        "fields": [{ "label": "Amount of shares", "format": "tokenAmount", "path": "shares", "params": { "tokenPath": "@.to" } }],
+        "required": ["shares"],
+        "excluded": []
+      }
+    }
+  }
+}
