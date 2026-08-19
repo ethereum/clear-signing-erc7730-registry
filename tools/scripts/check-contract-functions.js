@@ -24,13 +24,17 @@
 
 const fs = require("fs");
 const path = require("path");
-const https = require("https");
-const http = require("http");
 const { keccak256 } = require("js-sha3");
+const {
+  PROVIDERS,
+  MIN_REQUEST_INTERVAL_MS,
+  setLogger: setAbiFetcherLogger,
+  isNonZeroAddress,
+  fetchAbiFromExplorer,
+  fetchContractSourceMetadata,
+} = require("./lib/abi-fetcher");
 
 const ROOT_DIR = path.join(__dirname, "..", "..");
-const MIN_REQUEST_INTERVAL_MS = 380;
-let _lastExplorerRequestAt = 0;
 const LOGS_DIR = path.join(__dirname, "logs");
 const DEFAULT_LOG_FILE = path.join(LOGS_DIR, `check-contract-functions-${new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)}.verbose.log`);
 const LOG_FILE_PATH = getLogFilePath();
@@ -43,20 +47,6 @@ const CONFIG = {
   chainExplicit: process.argv.includes("--chain"),
   chainId: getArgValue("--chain", 1),
   filePath: getFilePathArg(),
-};
-
-/**
- * Provider registry using Etherscan V2 API.
- * Same supported chain set as tools/scripts/generate-tests.js.
- */
-const PROVIDERS = {
-  1: { name: "Etherscan", baseUrl: "api.etherscan.io", apiKeyEnv: "ETHERSCAN_API_KEY" },
-  10: { name: "Optimism Etherscan", baseUrl: "api.etherscan.io", apiKeyEnv: "ETHERSCAN_API_KEY" },
-  56: { name: "BSCScan", baseUrl: "api.etherscan.io", apiKeyEnv: "ETHERSCAN_API_KEY" },
-  137: { name: "Polygonscan", baseUrl: "api.etherscan.io", apiKeyEnv: "ETHERSCAN_API_KEY" },
-  8453: { name: "Basescan", baseUrl: "api.etherscan.io", apiKeyEnv: "ETHERSCAN_API_KEY" },
-  42161: { name: "Arbiscan", baseUrl: "api.etherscan.io", apiKeyEnv: "ETHERSCAN_API_KEY" },
-  43114: { name: "Snowtrace", baseUrl: "api.etherscan.io", apiKeyEnv: "ETHERSCAN_API_KEY" },
 };
 
 function getArgValue(flag, defaultValue) {
@@ -154,6 +144,8 @@ function log(msg) {
   }
 }
 
+setAbiFetcherLogger(log);
+
 function printHelp(exitCode = 0, errorMessage = null) {
   const write = exitCode === 0 ? console.log : console.error;
   if (errorMessage) {
@@ -182,58 +174,6 @@ function printHelp(exitCode = 0, errorMessage = null) {
 
 if (process.argv.includes("--help") || process.argv.includes("-h")) {
   printHelp(0);
-}
-
-function httpsGet(url) {
-  return new Promise((resolve, reject) => {
-    const parsed = new URL(url);
-    const client = parsed.protocol === "https:" ? https : http;
-    client
-      .get(url, (res) => {
-        let data = "";
-        res.on("data", (chunk) => {
-          data += chunk;
-        });
-        res.on("end", () => {
-          try {
-            resolve(JSON.parse(data));
-          } catch {
-            resolve(data);
-          }
-        });
-      })
-      .on("error", reject);
-  });
-}
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function rateLimitedHttpsGet(url) {
-  const now = Date.now();
-  const elapsed = now - _lastExplorerRequestAt;
-  if (elapsed < MIN_REQUEST_INTERVAL_MS) {
-    await sleep(MIN_REQUEST_INTERVAL_MS - elapsed);
-  }
-  _lastExplorerRequestAt = Date.now();
-  return httpsGet(url);
-}
-
-async function callExplorerWithRetry(url, retries = 4) {
-  let lastError = null;
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      const response = await rateLimitedHttpsGet(url);
-      return response;
-    } catch (e) {
-      lastError = e;
-    }
-    if (attempt < retries) {
-      await sleep((attempt + 1) * 600);
-    }
-  }
-  throw lastError || new Error("Unknown explorer request failure");
 }
 
 function findMatchingParen(str, start) {
@@ -435,80 +375,6 @@ function pickBestByName(candidates, targetName) {
     }
   }
   return best;
-}
-
-async function fetchAbiFromExplorer(chainId, address) {
-  const provider = PROVIDERS[chainId];
-  if (!provider) {
-    throw new Error(`No supported explorer provider configured for chain ${chainId}`);
-  }
-
-  const apiKey = process.env[provider.apiKeyEnv];
-  if (!apiKey) {
-    throw new Error(`Missing API key env var: ${provider.apiKeyEnv}`);
-  }
-
-  const url =
-    `https://${provider.baseUrl}/v2/api` +
-    `?chainid=${chainId}` +
-    `&module=contract&action=getabi` +
-    `&address=${address}` +
-    `&apikey=${apiKey}`;
-
-  log(`  📡 Fetching ABI: chain=${chainId}, address=${address}`);
-  const response = await callExplorerWithRetry(url);
-  if (!response || typeof response !== "object") {
-    throw new Error("Explorer response is not JSON");
-  }
-  if (response.status !== "1" || typeof response.result !== "string") {
-    throw new Error(`Explorer error: ${response.message || "unknown"} (${response.result || "no result"})`);
-  }
-
-  let abi;
-  try {
-    abi = JSON.parse(response.result);
-  } catch (e) {
-    throw new Error(`Failed to parse ABI JSON from explorer: ${e.message}`);
-  }
-  return abi;
-}
-
-async function fetchContractSourceMetadata(chainId, address) {
-  const provider = PROVIDERS[chainId];
-  if (!provider) {
-    throw new Error(`No supported explorer provider configured for chain ${chainId}`);
-  }
-  const apiKey = process.env[provider.apiKeyEnv];
-  if (!apiKey) {
-    throw new Error(`Missing API key env var: ${provider.apiKeyEnv}`);
-  }
-
-  const url =
-    `https://${provider.baseUrl}/v2/api` +
-    `?chainid=${chainId}` +
-    `&module=contract&action=getsourcecode` +
-    `&address=${address}` +
-    `&apikey=${apiKey}`;
-
-  const response = await callExplorerWithRetry(url);
-  if (!response || typeof response !== "object") {
-    throw new Error("Explorer response is not JSON");
-  }
-  if (response.status !== "1" || !Array.isArray(response.result)) {
-    throw new Error(`Explorer getsourcecode error: ${response.message || "unknown"} (${response.result || "no result"})`);
-  }
-  const meta = response.result[0];
-  if (!meta || typeof meta !== "object") {
-    throw new Error("Explorer getsourcecode returned no metadata");
-  }
-  return meta;
-}
-
-function isNonZeroAddress(addr) {
-  if (typeof addr !== "string") return false;
-  const cleaned = addr.trim();
-  if (!/^0x[0-9a-fA-F]{40}$/.test(cleaned)) return false;
-  return cleaned.toLowerCase() !== "0x0000000000000000000000000000000000000000";
 }
 
 function getTargetChains(deployments) {
