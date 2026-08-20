@@ -51,6 +51,8 @@ ercs/
 - Do not use the `calldata` or `eip712` prefixes for common files which are included by the ERC-7730 files and placed at the top level of the entity folder. Name them `common-*.json` instead.
 - Each descriptor added or changed is accompanied by a test file so descriptors can be verified against the formatter implementations. See [Reference test cases](#reference-test-cases).
 
+Reviewers check each PR against the [review guidelines](docs/REVIEWING.md).
+
 ## How to validate
 
 The `erc7730` Python package is available for validating and formatting ERC-7730 descriptors:
