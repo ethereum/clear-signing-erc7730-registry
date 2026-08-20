@@ -1,0 +1,110 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-InheritanceVault.json",
+  "dataProvider": {
+    "addressNames": {
+      "0x4a3c2f1b8d5e6a7c9b0d1e2f3a4b5c6d7e8f9012": "Heir wallet",
+      "0x7bd3c2a1e5f49b8c0d6e2a3f4b5c6d7e8f901234": "Guardian wallet"
+    }
+  },
+  "tests": [
+    {
+      "description": "Send heartbeat",
+      "rawTx": "0x02f083aa36a70184773594008506fc23ac008301d4c094f957cda1f676b9eae65ab99982caa3a31a193cb780843defb962c0",
+      "expected": {
+        "intent": "Send heartbeat",
+        "interpolatedIntent": "Send vault heartbeat",
+        "owner": "DeadSwitch",
+        "fields": []
+      }
+    },
+    {
+      "description": "Claim inheritance with a World ID nullifier",
+      "rawTx": "0x02f85083aa36a70284773594008506fc23ac008301d4c094f957cda1f676b9eae65ab99982caa3a31a193cb780a4bd66528a2a1f0f3e6c1b4d5a7e9c0b2d4f6a8c1e3b5d7f9a0c2e4b6d8f1a3c5e7b9d0f2ac0",
+      "expected": {
+        "intent": "Claim inheritance",
+        "interpolatedIntent": "Claim the vault funds",
+        "owner": "DeadSwitch",
+        "fields": [
+          {
+            "label": "World ID proof",
+            "value": "0x2a1f0f3e6c1b4d5a7e9c0b2d4f6a8c1e3b5d7f9a0c2e4b6d8f1a3c5e7b9d0f2a"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Cancel the vault and withdraw",
+      "rawTx": "0x02f083aa36a70384773594008506fc23ac008301d4c094f957cda1f676b9eae65ab99982caa3a31a193cb78084ea8a1af0c0",
+      "expected": {
+        "intent": "Cancel vault & withdraw",
+        "interpolatedIntent": "Cancel vault, withdraw all",
+        "owner": "DeadSwitch",
+        "fields": []
+      }
+    },
+    {
+      "description": "Update the heir to a named wallet",
+      "rawTx": "0x02f8d183aa36a70484773594008506fc23ac008301d4c094f957cda1f676b9eae65ab99982caa3a31a193cb780b8a426a06c390000000000000000000000004a3c2f1b8d5e6a7c9b0d1e2f3a4b5c6d7e8f90122a1f0f3e6c1b4d5a7e9c0b2d4f6a8c1e3b5d7f9a0c2e4b6d8f1a3c5e7b9d0f2a00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000009616c6963652e6574680000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Update heir",
+        "interpolatedIntent": "New heir Heir wallet",
+        "owner": "DeadSwitch",
+        "fields": [
+          { "label": "New heir address", "value": "Heir wallet" },
+          { "label": "Heir ENS name", "value": "alice.eth" }
+        ]
+      }
+    },
+    {
+      "description": "Set the heartbeat interval to 30 days",
+      "rawTx": "0x02f85083aa36a70584773594008506fc23ac008301d4c094f957cda1f676b9eae65ab99982caa3a31a193cb780a4d0f079260000000000000000000000000000000000000000000000000000000000278d00c0",
+      "expected": {
+        "intent": "Update heartbeat interval",
+        "interpolatedIntent": "New interval 720:00:00",
+        "owner": "DeadSwitch",
+        "fields": [{ "label": "New interval", "value": "720:00:00" }]
+      }
+    },
+    {
+      "description": "Set a guardian",
+      "rawTx": "0x02f85083aa36a70684773594008506fc23ac008301d4c094f957cda1f676b9eae65ab99982caa3a31a193cb780a48a0dac4a0000000000000000000000007bd3c2a1e5f49b8c0d6e2a3f4b5c6d7e8f901234c0",
+      "expected": {
+        "intent": "Set guardian",
+        "interpolatedIntent": "Set guardian Guardian wallet",
+        "owner": "DeadSwitch",
+        "fields": [{ "label": "Guardian address", "value": "Guardian wallet" }]
+      }
+    },
+    {
+      "description": "Pause recovery mode",
+      "rawTx": "0x02f083aa36a70784773594008506fc23ac008301d4c094f957cda1f676b9eae65ab99982caa3a31a193cb780847ef73896c0",
+      "expected": {
+        "intent": "Pause recovery mode",
+        "interpolatedIntent": "Pause recovery, stay active",
+        "owner": "DeadSwitch",
+        "fields": []
+      }
+    },
+    {
+      "description": "Resume the vault from recovery mode",
+      "rawTx": "0x02f083aa36a70884773594008506fc23ac008301d4c094f957cda1f676b9eae65ab99982caa3a31a193cb780843d3b3388c0",
+      "expected": {
+        "intent": "Resume from recovery",
+        "interpolatedIntent": "Resume vault from recovery",
+        "owner": "DeadSwitch",
+        "fields": []
+      }
+    },
+    {
+      "description": "Extend the heartbeat deadline by 7 days",
+      "rawTx": "0x02f85083aa36a70984773594008506fc23ac008301d4c094f957cda1f676b9eae65ab99982caa3a31a193cb780a47b29dcf00000000000000000000000000000000000000000000000000000000000093a80c0",
+      "expected": {
+        "intent": "Extend heartbeat deadline",
+        "interpolatedIntent": "Extend 168:00:00",
+        "owner": "DeadSwitch",
+        "fields": [{ "label": "Additional time", "value": "168:00:00" }]
+      }
+    }
+  ]
+}

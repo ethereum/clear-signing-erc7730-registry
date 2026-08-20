@@ -1,0 +1,65 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "InheritanceVault",
+    "contract": { "deployments": [{ "chainId": 11155111, "address": "0xF957cDA1f676B9EAE65Ab99982CAa3a31A193CB7" }] }
+  },
+  "metadata": { "owner": "DeadSwitch", "contractName": "InheritanceVault", "info": { "url": "https://deadswitch.online" } },
+  "display": {
+    "formats": {
+      "heartbeat()": { "$id": "heartbeat", "intent": "Send heartbeat", "interpolatedIntent": "Send vault heartbeat", "fields": [] },
+      "claim(bytes32 _worldIdNullifier)": {
+        "$id": "claim",
+        "intent": "Claim inheritance",
+        "interpolatedIntent": "Claim the vault funds",
+        "fields": [{ "path": "#._worldIdNullifier", "label": "World ID proof", "format": "raw" }]
+      },
+      "cancel()": { "$id": "cancel", "intent": "Cancel vault & withdraw", "interpolatedIntent": "Cancel vault, withdraw all", "fields": [] },
+      "updateBeneficiary(address _newBeneficiary, bytes32 _newWorldIdNullifier, string _newENS)": {
+        "$id": "updateBeneficiary",
+        "intent": "Update heir",
+        "interpolatedIntent": "New heir {#._newBeneficiary}",
+        "fields": [
+          {
+            "path": "#._newBeneficiary",
+            "label": "New heir address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          },
+          { "path": "#._newENS", "label": "Heir ENS name", "format": "raw" },
+          { "path": "#._newWorldIdNullifier", "label": "Heir World ID", "format": "raw", "visible": "never" }
+        ]
+      },
+      "updateInterval(uint256 _newInterval)": {
+        "$id": "updateInterval",
+        "intent": "Update heartbeat interval",
+        "interpolatedIntent": "New interval {#._newInterval}",
+        "fields": [{ "path": "#._newInterval", "label": "New interval", "format": "duration" }]
+      },
+      "setGuardian(address _guardian)": {
+        "$id": "setGuardian",
+        "intent": "Set guardian",
+        "interpolatedIntent": "Set guardian {#._guardian}",
+        "fields": [{ "path": "#._guardian", "label": "Guardian address", "format": "addressName", "params": { "types": ["eoa"] } }]
+      },
+      "pauseRecovery()": {
+        "$id": "pauseRecovery",
+        "intent": "Pause recovery mode",
+        "interpolatedIntent": "Pause recovery, stay active",
+        "fields": []
+      },
+      "resumeFromRecovery()": {
+        "$id": "resumeFromRecovery",
+        "intent": "Resume from recovery",
+        "interpolatedIntent": "Resume vault from recovery",
+        "fields": []
+      },
+      "extendHeartbeat(uint256 _additionalSeconds)": {
+        "$id": "extendHeartbeat",
+        "intent": "Extend heartbeat deadline",
+        "interpolatedIntent": "Extend {#._additionalSeconds}",
+        "fields": [{ "path": "#._additionalSeconds", "label": "Additional time", "format": "duration" }]
+      }
+    }
+  }
+}
