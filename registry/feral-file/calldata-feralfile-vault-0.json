@@ -1,0 +1,85 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "feralfile-vault",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x455464F0d369dAC13002e81e9fAB857f6aD21795"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Feral File",
+    "info": {
+      "url": "https://feralfile.com"
+    },
+    "contractName": "Feral File Vault"
+  },
+  "display": {
+    "formats": {
+      "payForSale(bytes32 r_,bytes32 s_,uint8 v_,(uint256 price,uint256 cost,uint256 expiryTime,address destination,uint256[] tokenIds,(address recipient,uint256 bps)[][] revenueShares,bool payByVaultContract) saleData_)": {
+        "intent": "Pay for artwork sale",
+        "fields": [
+          {
+            "path": "saleData_.price",
+            "label": "Price",
+            "format": "amount"
+          },
+          {
+            "path": "saleData_.cost",
+            "label": "Platform cost",
+            "format": "amount"
+          },
+          {
+            "path": "saleData_.destination",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "saleData_.tokenIds.[]",
+            "label": "Artworks",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            }
+          },
+          {
+            "path": "saleData_.revenueShares.[].[].recipient",
+            "label": "Revenue recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "saleData_.revenueShares.[].[].bps",
+            "label": "Revenue share (basis points)",
+            "format": "raw"
+          }
+        ]
+      },
+      "withdrawFund(uint256 weiAmount)": {
+        "intent": "Withdraw vault funds",
+        "fields": [
+          {
+            "path": "weiAmount",
+            "label": "Amount",
+            "format": "amount"
+          }
+        ]
+      }
+    }
+  }
+}
