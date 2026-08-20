@@ -465,7 +465,7 @@
       "deployments": [{ "chainId": 8453, "address": "0xD5667AcB0Ac8108B45f6CDD4774559264098f8de" }]
     }
   },
-  "metadata": { "owner": "ALIA Quality Network", "info": { "url": "https://avvatar.io", "deploymentDate": "2026-04-06T10:46:58Z" } },
+  "metadata": { "owner": "ALIA Quality Network", "info": { "url": "https://avvatar.io", "deploymentDate": "2026-04-06T10:46:58Z" }, "enums": { "agentStatus": { "0": "Pending", "1": "Active", "2": "Suspended", "3": "Revoked" }, "agentType": { "0": "Digital", "1": "Physical", "2": "Hybrid" } } },
   "display": {
     "formats": {
       "recordDecision(address _agent, string _action, address _assetInvolved, uint256 _value, bool _success, bytes32 _txHash)": {
@@ -494,7 +494,7 @@
         "fields": [
           { "path": "_agentWallet", "label": "Agent Wallet", "format": "addressName", "params": { "types": ["eoa", "wallet"] } },
           { "path": "_ownerWallet", "label": "Owner Wallet", "format": "addressName", "params": { "types": ["eoa", "wallet"] } },
-          { "path": "_agentType", "label": "Agent Type", "format": "raw" },
+          { "path": "_agentType", "label": "Agent Type", "format": "enum", "params": { "$ref": "$.metadata.enums.agentType" } },
           { "path": "_name", "label": "Name", "format": "raw" },
           { "path": "_version", "label": "Version", "format": "raw" },
           { "path": "_manufacturer", "label": "Manufacturer", "format": "raw" },
@@ -508,7 +508,7 @@
         "intent": "Update agent status",
         "fields": [
           { "path": "_agent", "label": "Agent", "format": "addressName", "params": { "types": ["eoa", "wallet"] } },
-          { "path": "_newStatus", "label": "Status", "format": "raw" },
+          { "path": "_newStatus", "label": "Status", "format": "enum", "params": { "$ref": "$.metadata.enums.agentStatus" } },
           { "path": "_reason", "label": "Reason", "format": "raw" }
         ]
       },
