@@ -1,0 +1,79 @@
+{
+  "$schema": "https://eips.ethereum.org/assets/eip-7730/erc7730-v1.schema.json",
+  "context": {
+    "eip712": {
+      "schemas": [
+        {
+          "types": {
+            "EIP712Domain": [
+              { "name": "name", "type": "string" },
+              { "name": "version", "type": "string" },
+              { "name": "chainId", "type": "uint256" },
+              { "name": "verifyingContract", "type": "address" }
+            ],
+            "VaultCommit": [
+              { "name": "vaultId", "type": "bytes16" },
+              { "name": "cipherHash", "type": "bytes32" },
+              { "name": "contentType", "type": "string" },
+              { "name": "size", "type": "uint256" },
+              { "name": "createdAt", "type": "uint256" },
+              { "name": "arweaveTxId", "type": "bytes32" }
+            ]
+          },
+          "primaryType": "VaultCommit"
+        }
+      ],
+      "deployments": [
+        { "chainId": 42161, "address": "0x0000000000000000000000000000000000000000" }
+      ],
+      "domain": {
+        "name": "RULL.justice",
+        "version": "1"
+      }
+    }
+  },
+  "metadata": {
+    "owner": "RULL",
+    "info": {
+      "legalName": "RULL Justice",
+      "url": "https://rull.com"
+    }
+  },
+  "display": {
+    "formats": {
+      "VaultCommit": {
+        "intent": "Commit data to RULL vault",
+        "fields": [
+          {
+            "path": "vaultId",
+            "label": "Vault",
+            "format": "raw"
+          },
+          {
+            "path": "cipherHash",
+            "label": "Data hash",
+            "format": "raw"
+          },
+          {
+            "path": "contentType",
+            "label": "Content type",
+            "format": "raw"
+          },
+          {
+            "path": "size",
+            "label": "Size (bytes)",
+            "format": "raw"
+          },
+          {
+            "path": "createdAt",
+            "label": "Created at",
+            "format": "date",
+            "params": { "encoding": "timestamp" }
+          }
+        ],
+        "required": ["vaultId", "cipherHash", "contentType", "size", "createdAt"],
+        "excluded": ["arweaveTxId"]
+      }
+    }
+  }
+}
