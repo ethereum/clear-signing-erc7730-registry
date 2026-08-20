@@ -1,0 +1,77 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "USD8BoosterClaim",
+    "eip712": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x6f74ce39bb1d75c56e2fe5f349a6a5f51ce6f12d"
+        }
+      ],
+      "domain": {
+        "name": "USD8Booster",
+        "version": "1",
+        "chainId": 1,
+        "verifyingContract": "0x6f74ce39bb1d75c56e2fe5f349a6a5f51ce6f12d"
+      },
+      "schemas": [
+        {
+          "primaryType": "Claim",
+          "types": {
+            "Claim": [
+              { "name": "receiver", "type": "address" },
+              { "name": "nonce", "type": "uint256" },
+              { "name": "tokenId", "type": "uint256" },
+              { "name": "amount", "type": "uint256" }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "USD8",
+    "info": {
+      "legalName": "USD8 (usd8.fi)",
+      "url": "https://usd8.fi"
+    },
+    "enums": {
+      "tokenId": {
+        "1": "1% Cover Booster"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "Claim": {
+        "$id": "claim",
+        "intent": "Authorize USD8 Booster claim",
+        "fields": [
+          {
+            "label": "Receiver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "receiver"
+          },
+          {
+            "label": "Booster type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.tokenId" },
+            "path": "tokenId"
+          },
+          {
+            "label": "Amount",
+            "format": "raw",
+            "path": "amount"
+          },
+          {
+            "label": "Nonce",
+            "format": "raw",
+            "path": "nonce"
+          }
+        ]
+      }
+    }
+  }
+}
