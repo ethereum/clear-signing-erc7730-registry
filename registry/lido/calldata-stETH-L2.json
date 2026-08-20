@@ -1,0 +1,162 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "stETH-L2",
+    "contract": {
+      "deployments": [
+        { "chainId": 10, "address": "0x76A50b8c7349cCDDb7578c6627e79b5d99D24138" },
+        { "chainId": 130, "address": "0x81f2508AAC59757EF7425DDc9717AB5c2AA0A84F" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Lido DAO", "info": { "url": "https://lido.fi" }, "contractName": "stETH" },
+  "display": {
+    "formats": {
+      "approve(address spender, uint256 amount)": {
+        "intent": "Approve stETH",
+        "interpolatedIntent": "Allow to spend {amount}",
+        "fields": [
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#.spender",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.amount",
+            "params": {
+              "tokenPath": "@.to",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "unwrap(uint256 stETHAmount)": {
+        "intent": "Wrap stETH",
+        "interpolatedIntent": "Wrap {stETHAmount}",
+        "fields": [
+          {
+            "label": "stETH amount",
+            "format": "tokenAmount",
+            "path": "#.stETHAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          }
+        ]
+      },
+      "wrap(uint256 wstETHAmount)": {
+        "intent": "Unwrap wstETH to stETH",
+        "interpolatedIntent": "Unwrap {wstETHAmount}",
+        "fields": [
+          {
+            "label": "wstETH amount",
+            "format": "unit",
+            "path": "#.wstETHAmount",
+            "params": { "base": " wstETH", "decimals": 18 },
+            "visible": "always"
+          }
+        ]
+      },
+      "unwrapShares(uint256 wstETHAmount)": {
+        "intent": "Wrap stETH",
+        "interpolatedIntent": "Wrap stETH for {wstETHAmount}",
+        "fields": [
+          {
+            "label": "wstETH to receive",
+            "format": "unit",
+            "path": "#.wstETHAmount",
+            "params": { "base": " wstETH", "decimals": 18 },
+            "visible": "always"
+          }
+        ]
+      },
+      "transfer(address recipient, uint256 amount)": {
+        "intent": "Transfer stETH",
+        "interpolatedIntent": "Send {amount} to {recipient}",
+        "fields": [
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.recipient",
+            "visible": "always"
+          },
+          { "label": "Amount", "format": "tokenAmount", "path": "#.amount", "params": { "tokenPath": "@.to" }, "visible": "always" }
+        ]
+      },
+      "transferFrom(address sender, address recipient, uint256 amount)": {
+        "intent": "Transfer stETH",
+        "interpolatedIntent": "Send {amount} to {recipient}",
+        "fields": [
+          {
+            "label": "Sender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.sender",
+            "visible": "always"
+          },
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.recipient",
+            "visible": "always"
+          },
+          { "label": "Amount", "format": "tokenAmount", "path": "#.amount", "params": { "tokenPath": "@.to" }, "visible": "always" }
+        ]
+      },
+      "transferShares(address recipient, uint256 sharesAmount)": {
+        "intent": "Transfer stETH shares",
+        "interpolatedIntent": "Send {sharesAmount} to {recipient}",
+        "fields": [
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.recipient",
+            "visible": "always"
+          },
+          {
+            "label": "Shares amount",
+            "format": "unit",
+            "path": "#.sharesAmount",
+            "params": { "base": " shares", "decimals": 18 },
+            "visible": "always"
+          }
+        ]
+      },
+      "transferSharesFrom(address sender, address recipient, uint256 sharesAmount)": {
+        "intent": "Transfer stETH shares",
+        "interpolatedIntent": "Send {sharesAmount} to {recipient}",
+        "fields": [
+          {
+            "label": "Sender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.sender",
+            "visible": "always"
+          },
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.recipient",
+            "visible": "always"
+          },
+          {
+            "label": "Shares amount",
+            "format": "unit",
+            "path": "#.sharesAmount",
+            "params": { "base": " shares", "decimals": 18 },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
