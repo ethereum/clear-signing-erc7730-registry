@@ -1,0 +1,192 @@
+{
+    "$schema": "https://eips.ethereum.org/assets/eip-7730/erc7730-v1.schema.json",
+    "context": {
+      "$id": "JAW Permissions Manager",
+      "contract": {
+        "abi": [
+          {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "permission",
+                "type": "tuple",
+                "components": [
+                  { "name": "account", "type": "address" },
+                  { "name": "spender", "type": "address" },
+                  { "name": "start", "type": "uint48" },
+                  { "name": "end", "type": "uint48" },
+                  { "name": "salt", "type": "uint256" },
+                  {
+                    "name": "calls",
+                    "type": "tuple[]",
+                    "components": [{ "name": "target", "type": "address" }, { "name": "selector", "type": "bytes4" }, { "name": "checker", "type": "address" }]
+                  },
+                  {
+                    "name": "spends",
+                    "type": "tuple[]",
+                    "components": [
+                      { "name": "token", "type": "address" },
+                      { "name": "allowance", "type": "uint160" },
+                      { "name": "unit", "type": "uint8" },
+                      { "name": "multiplier", "type": "uint16" }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "outputs": [{ "name": "", "type": "bool" }],
+            "stateMutability": "nonpayable"
+          },
+          {
+            "type": "function",
+            "name": "revoke",
+            "inputs": [
+              {
+                "name": "permission",
+                "type": "tuple",
+                "components": [
+                  { "name": "account", "type": "address" },
+                  { "name": "spender", "type": "address" },
+                  { "name": "start", "type": "uint48" },
+                  { "name": "end", "type": "uint48" },
+                  { "name": "salt", "type": "uint256" },
+                  {
+                    "name": "calls",
+                    "type": "tuple[]",
+                    "components": [{ "name": "target", "type": "address" }, { "name": "selector", "type": "bytes4" }, { "name": "checker", "type": "address" }]
+                  },
+                  {
+                    "name": "spends",
+                    "type": "tuple[]",
+                    "components": [
+                      { "name": "token", "type": "address" },
+                      { "name": "allowance", "type": "uint160" },
+                      { "name": "unit", "type": "uint8" },
+                      { "name": "multiplier", "type": "uint16" }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          },
+          {
+            "type": "function",
+            "name": "executeBatch",
+            "inputs": [
+              {
+                "name": "permission",
+                "type": "tuple",
+                "components": [
+                  { "name": "account", "type": "address" },
+                  { "name": "spender", "type": "address" },
+                  { "name": "start", "type": "uint48" },
+                  { "name": "end", "type": "uint48" },
+                  { "name": "salt", "type": "uint256" },
+                  {
+                    "name": "calls",
+                    "type": "tuple[]",
+                    "components": [{ "name": "target", "type": "address" }, { "name": "selector", "type": "bytes4" }, { "name": "checker", "type": "address" }]
+                  },
+                  {
+                    "name": "spends",
+                    "type": "tuple[]",
+                    "components": [
+                      { "name": "token", "type": "address" },
+                      { "name": "allowance", "type": "uint160" },
+                      { "name": "unit", "type": "uint8" },
+                      { "name": "multiplier", "type": "uint16" }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "calls",
+                "type": "tuple[]",
+                "components": [{ "name": "target", "type": "address" }, { "name": "value", "type": "uint256" }, { "name": "data", "type": "bytes" }]
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        ],
+        "deployments": [{ "chainId": 84532, "address": "0xf1b40E3D5701C04d86F7828f0EB367B9C90901D8" }]
+      }
+    },
+    "metadata": {
+      "owner": "JAW",
+      "info": { "legalName": "JustAName Ltd", "url": "https://jaw.id" },
+      "enums": { "spendPeriod": { "0": "Per Minute", "1": "Per Hour", "2": "Per Day", "3": "Per Week", "4": "Per Month", "5": "Forever" } },
+      "constants": { "nativeToken": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", "noChecker": "0x0000000000000000000000000000000000000000" }
+    },
+    "display": {
+      "formats": {
+        "approve((address account,address spender,uint48 start,uint48 end,uint256 salt,(address target,bytes4 selector,address checker)[] calls,(address token,uint160 allowance,uint8 unit,uint16 multiplier)[] spends) permission)": {
+          "$id": "grant-permission",
+          "intent": "Grant Permission to Agent",
+          "fields": [
+            { "path": "permission.account", "label": "Account", "format": "addressName", "params": { "types": ["wallet", "contract"] } },
+            { "path": "permission.spender", "label": "Agent", "format": "addressName", "params": { "types": ["wallet", "eoa"] } },
+            { "path": "permission.start", "label": "Valid from", "format": "date", "params": { "encoding": "timestamp" } },
+            { "path": "permission.end", "label": "Expires", "format": "date", "params": { "encoding": "timestamp" } },
+            {
+              "path": "permission.calls.[]",
+              "fields": [
+                { "path": "target", "label": "Allowed contract", "format": "addressName", "params": { "types": ["contract"] } },
+                { "path": "selector", "label": "Function selector", "format": "raw" }
+              ]
+            },
+            {
+              "path": "permission.spends.[]",
+              "fields": [
+                { "path": "token", "label": "Token", "format": "addressName", "params": { "types": ["token"] } },
+                { "path": "allowance", "label": "Spending limit", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+                { "path": "unit", "label": "Spending period", "format": "enum", "params": { "$ref": "$.metadata.enums.spendPeriod" } },
+                { "path": "multiplier", "label": "Period multiplier", "format": "raw" }
+              ]
+            }
+          ],
+          "required": [
+            "permission.account",
+            "permission.spender",
+            "permission.start",
+            "permission.end",
+            "permission.calls",
+            "permission.spends"
+          ],
+          "excluded": ["permission.salt", "permission.calls.[].checker"]
+        },
+        "revoke((address account,address spender,uint48 start,uint48 end,uint256 salt,(address target,bytes4 selector,address checker)[] calls,(address token,uint160 allowance,uint8 unit,uint16 multiplier)[] spends) permission)": {
+          "$id": "revoke-permission",
+          "intent": "Revoke Agent Permission",
+          "fields": [
+            { "path": "permission.account", "label": "Account", "format": "addressName", "params": { "types": ["wallet", "contract"] } },
+            { "path": "permission.spender", "label": "Agent", "format": "addressName", "params": { "types": ["wallet", "eoa"] } }
+          ],
+          "required": ["permission.account", "permission.spender"],
+          "excluded": ["permission.salt", "permission.start", "permission.end", "permission.calls", "permission.spends"]
+        },
+        "executeBatch((address account,address spender,uint48 start,uint48 end,uint256 salt,(address target,bytes4 selector,address checker)[] calls,(address token,uint160 allowance,uint8 unit,uint16 multiplier)[] spends) permission,(address target,uint256 value,bytes data)[] calls)": {
+          "$id": "execute-with-permission",
+          "intent": "Execute with Permission",
+          "fields": [
+            { "path": "permission.account", "label": "Account", "format": "addressName", "params": { "types": ["wallet", "contract"] } },
+            { "path": "permission.spender", "label": "Agent", "format": "addressName", "params": { "types": ["wallet", "eoa"] } },
+            { "path": "permission.end", "label": "Permission expires", "format": "date", "params": { "encoding": "timestamp" } },
+            {
+              "path": "calls.[]",
+              "fields": [
+                { "path": "target", "label": "To", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] } },
+                { "path": "value", "label": "Value", "format": "amount" },
+                { "path": "data", "label": "Call", "format": "calldata", "params": { "calleePath": "target" } }
+              ]
+            }
+          ],
+          "required": ["permission.account", "permission.spender", "calls"],
+          "excluded": ["permission.salt", "permission.start", "permission.calls", "permission.spends", "calls.[].data.[]"]
+        }
+      }
+    }
+  }
