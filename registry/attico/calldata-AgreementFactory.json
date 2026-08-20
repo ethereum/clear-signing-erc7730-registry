@@ -1,0 +1,77 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "$id": "Attico AgreementFactory",
+    "contract": {
+      "abi": [
+        {
+          "type": "function",
+          "name": "createAgreement",
+          "inputs": [
+            { "name": "clientNullifier", "type": "bytes32" },
+            { "name": "token", "type": "address" },
+            { "name": "amount", "type": "uint256" },
+            { "name": "totalPayments", "type": "uint256" },
+            { "name": "paymentInterval", "type": "uint256" },
+            { "name": "propertyHash", "type": "bytes32" }
+          ],
+          "outputs": [{ "name": "agreementId", "type": "uint256" }],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "createAgreementByHandle",
+          "inputs": [
+            { "name": "clientHandle", "type": "string" },
+            { "name": "token", "type": "address" },
+            { "name": "amount", "type": "uint256" },
+            { "name": "totalPayments", "type": "uint256" },
+            { "name": "paymentInterval", "type": "uint256" },
+            { "name": "propertyHash", "type": "bytes32" }
+          ],
+          "outputs": [{ "name": "agreementId", "type": "uint256" }],
+          "stateMutability": "nonpayable"
+        }
+      ],
+      "deployments": [
+        { "chainId": 11142220, "address": "0xa0c8008d8f15fc5b2849af61d0b926c16dd1ac96" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Attico",
+    "info": {
+      "legalName": "Attico",
+      "url": "https://attico.xyz",
+      "lastUpdate": "2026-04-04T00:00:00Z"
+    }
+  },
+  "display": {
+    "formats": {
+      "createAgreement(bytes32,address,uint256,uint256,uint256,bytes32)": {
+        "intent": "Create Rental Agreement",
+        "fields": [
+          { "path": "#.clientNullifier", "label": "Tenant Identity", "format": "raw" },
+          { "path": "#.token", "label": "Payment Token", "format": "addressName", "params": { "types": ["token"], "sources": ["local"] } },
+          { "path": "#.amount", "label": "Rent per Period", "format": "tokenAmount", "params": { "tokenPath": "#.token" } },
+          { "path": "#.totalPayments", "label": "Number of Payments", "format": "raw" },
+          { "path": "#.paymentInterval", "label": "Payment Interval", "format": "duration" }
+        ],
+        "required": ["#.clientNullifier", "#.token", "#.amount", "#.totalPayments", "#.paymentInterval"],
+        "excluded": ["#.propertyHash"]
+      },
+      "createAgreementByHandle(string,address,uint256,uint256,uint256,bytes32)": {
+        "intent": "Create Rental Agreement",
+        "fields": [
+          { "path": "#.clientHandle", "label": "Tenant Handle", "format": "raw" },
+          { "path": "#.token", "label": "Payment Token", "format": "addressName", "params": { "types": ["token"], "sources": ["local"] } },
+          { "path": "#.amount", "label": "Rent per Period", "format": "tokenAmount", "params": { "tokenPath": "#.token" } },
+          { "path": "#.totalPayments", "label": "Number of Payments", "format": "raw" },
+          { "path": "#.paymentInterval", "label": "Payment Interval", "format": "duration" }
+        ],
+        "required": ["#.clientHandle", "#.token", "#.amount", "#.totalPayments", "#.paymentInterval"],
+        "excluded": ["#.propertyHash"]
+      }
+    }
+  }
+}
