@@ -1,13 +1,21 @@
 {
   "$schema": "../../specs/erc7730-v2.schema.json",
   "context": { "eip712": {} },
+  "metadata": {
+    "enums": {
+      "daiPermitAllowed": {
+        "true": "Unlimited",
+        "false": "Revoke to zero"
+      }
+    }
+  },
   "display": {
     "formats": {
       "Permit(address holder,address spender,uint256 nonce,uint256 expiry,bool allowed)": {
         "intent": "Authorize spending of tokens",
         "fields": [
           { "path": "spender", "label": "Spender", "format": "raw", "visible": "always" },
-          { "path": "allowed", "label": "Unlimited spending", "format": "raw", "visible": "always" },
+          { "path": "allowed", "label": "Allowance", "format": "enum", "params": { "$ref": "$.metadata.enums.daiPermitAllowed" }, "visible": "always" },
           { "path": "expiry", "label": "Valid until", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" },
           { "label": "Holder", "path": "holder", "visible": "never" },
           { "label": "Nonce", "path": "nonce", "visible": "never" }
