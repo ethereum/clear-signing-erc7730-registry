@@ -1,0 +1,167 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "MonadStakingPrecompile",
+    "contract": {
+      "deployments": [
+        { "chainId": 143, "address": "0x0000000000000000000000000000000000001000" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Monad",
+    "contractName": "MonadStakingPrecompile",
+    "info": { "url": "https://monad.xyz" },
+    "constants": {
+      "nativeTokenTicker": "MON",
+      "nativeDecimals": 18
+    }
+  },
+  "display": {
+    "formats": {
+      "addValidator(bytes payload, bytes signedSecpMessage, bytes signedBlsMessage)": {
+        "intent": "Create validator",
+        "fields": [
+          {
+            "path": "#.payload",
+            "label": "Validator payload",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.signedSecpMessage",
+            "label": "Secp signature",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.signedBlsMessage",
+            "label": "BLS signature",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Self stake amount",
+            "format": "amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "delegate(uint64 validatorId)": {
+        "intent": "Delegate",
+        "fields": [
+          {
+            "path": "#.validatorId",
+            "label": "Validator ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Amount",
+            "format": "amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "undelegate(uint64 validatorId, uint256 amount, uint8 withdrawId)": {
+        "intent": "Undelegate",
+        "fields": [
+          {
+            "path": "#.validatorId",
+            "label": "Validator ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.amount",
+            "label": "Amount",
+            "format": "unit",
+            "params": { "base": "MON", "decimals": 18 },
+            "visible": "always"
+          },
+          {
+            "path": "#.withdrawId",
+            "label": "Withdraw ID",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "withdraw(uint64 validatorId, uint8 withdrawId)": {
+        "intent": "Withdraw undelegated stake",
+        "fields": [
+          {
+            "path": "#.validatorId",
+            "label": "Validator ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.withdrawId",
+            "label": "Withdraw ID",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "compound(uint64 validatorId)": {
+        "intent": "Compound rewards",
+        "fields": [
+          {
+            "path": "#.validatorId",
+            "label": "Validator ID",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "claimRewards(uint64 validatorId)": {
+        "intent": "Claim rewards",
+        "fields": [
+          {
+            "path": "#.validatorId",
+            "label": "Validator ID",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "changeCommission(uint64 validatorId, uint256 commission)": {
+        "intent": "Change commission",
+        "fields": [
+          {
+            "path": "#.validatorId",
+            "label": "Validator ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.commission",
+            "label": "New commission",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "externalReward(uint64 validatorId)": {
+        "intent": "Send external reward",
+        "fields": [
+          {
+            "path": "#.validatorId",
+            "label": "Validator ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Reward amount",
+            "format": "amount",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
