@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-rocketTokenRPLFixedSupply.json",
+  "dataProvider": {
+    "tokens": {
+      "0xb4efd85c19999d84251304bda99e90b92300bd93": { "symbol": "RPL", "decimals": 18, "name": "Rocket Pool" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Approve unlimited legacy RPL - chain 1",
+      "rawTx": "0x02f86e0180843b9aca008506fc23ac008303d09094b4efd85c19999d84251304bda99e90b92300bd9380b844095ea7b300000000000000000000000090f79bf6eb2c4f870365e785982e1f101e93b906ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Approve legacy RPL",
+        "interpolatedIntent": "Approve Unlimited RPL",
+        "owner": "Rocket Pool",
+        "fields": [
+          { "label": "Spender", "value": "0x90F79bf6EB2c4f870365E785982E1f101E93b906" },
+          { "label": "Amount", "value": "Unlimited RPL" }
+        ]
+      }
+    },
+    {
+      "description": "Transfer 1.5 legacy RPL - chain 1",
+      "rawTx": "0x02f86e0180843b9aca008506fc23ac008303d09094b4efd85c19999d84251304bda99e90b92300bd9380b844a9059cbb00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c800000000000000000000000000000000000000000000000014d1120d7b160000c0",
+      "expected": {
+        "intent": "Transfer legacy RPL",
+        "interpolatedIntent": "Send 1.5 RPL to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "owner": "Rocket Pool",
+        "fields": [
+          { "label": "Recipient", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" },
+          { "label": "Amount", "value": "1.5 RPL" }
+        ]
+      }
+    },
+    {
+      "description": "Transfer 25 legacy RPL from another account - chain 1",
+      "rawTx": "0x02f88e0180843b9aca008506fc23ac008303d09094b4efd85c19999d84251304bda99e90b92300bd9380b86423b872dd00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc0000000000000000000000000000000000000000000000015af1d78b58c40000c0",
+      "expected": {
+        "intent": "Transfer legacy RPL",
+        "interpolatedIntent": "Send 25 RPL to 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "owner": "Rocket Pool",
+        "fields": [
+          { "label": "From", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" },
+          { "label": "To", "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" },
+          { "label": "Amount", "value": "25 RPL" }
+        ]
+      }
+    }
+  ]
+}
