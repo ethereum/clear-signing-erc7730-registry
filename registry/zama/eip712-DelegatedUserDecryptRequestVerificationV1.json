@@ -1,0 +1,30 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "eip712": {
+      "deployments": [
+        { "chainId": 1, "address": "0x0f6024a97684f7d90ddb0fAAD79cB15F2C888D24" },
+        { "chainId": 11155111, "address": "0x5D8BD78e2ea6bbE41f26dFe9fdaEAa349e077478" }
+      ],
+      "domain": { "name": "Decryption", "version": "1" }
+    }
+  },
+  "metadata": {},
+  "display": {
+    "formats": {
+      "DelegatedUserDecryptRequestVerification(bytes publicKey,address[] contractAddresses,address delegatorAddress,uint256 startTimestamp,uint256 durationDays,bytes extraData)": {
+        "$id": "delegatedUserDecryptRequestV1",
+        "intent": "Authorize delegated decryption on behalf of another account",
+        "interpolatedIntent": "Authorize decryption on behalf of {delegatorAddress} for {contractAddresses.[]} for {durationDays} days",
+        "fields": [
+          { "path": "delegatorAddress", "label": "Decrypt on behalf of", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "contractAddresses.[]", "label": "Authorized contracts", "format": "addressName", "params": { "types": ["contract"] } },
+          { "path": "startTimestamp", "label": "Valid from", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "durationDays", "label": "Valid for (days)", "format": "raw" },
+          { "path": "publicKey", "label": "Public key", "format": "raw", "visible": "never" },
+          { "path": "extraData", "label": "Extra data", "format": "raw", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-DelegatedUserDecryptRequestVerificationV1.json",
+  "tests": [
+    {
+      "description": "Authorize delegated user decryption for a single contract on mainnet",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "DelegatedUserDecryptRequestVerification": [
+            { "name": "publicKey", "type": "bytes" },
+            { "name": "contractAddresses", "type": "address[]" },
+            { "name": "delegatorAddress", "type": "address" },
+            { "name": "startTimestamp", "type": "uint256" },
+            { "name": "durationDays", "type": "uint256" },
+            { "name": "extraData", "type": "bytes" }
+          ]
+        },
+        "primaryType": "DelegatedUserDecryptRequestVerification",
+        "domain": {
+          "name": "Decryption",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0x0f6024a97684f7d90ddb0fAAD79cB15F2C888D24"
+        },
+        "message": {
+          "publicKey": "0x2000000000000000000000000000000000000000000000000000000000000001",
+          "contractAddresses": ["0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"],
+          "delegatorAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+          "startTimestamp": 1751328000,
+          "durationDays": 10,
+          "extraData": "0x"
+        }
+      },
+      "expected": {
+        "intent": "Authorize delegated decryption on behalf of another account",
+        "interpolatedIntent": "Authorize decryption on behalf of 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 for 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC for 10 days",
+        "fields": [
+          { "label": "Decrypt on behalf of", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" },
+          { "label": "Authorized contracts", "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" },
+          { "label": "Valid from", "value": "2025-07-01 00:00:00Z" },
+          { "label": "Valid for (days)", "value": "10" }
+        ]
+      }
+    }
+  ]
+}
