@@ -196,6 +196,7 @@
       "acrossBridge((address spokePoolAddress, address depositor, address exclusiveRelayer, address outputToken, uint32 fillDeadline, uint32 exclusivityDeadline, address recipient, uint256 destinationChainId, uint256 totalRelayFeeAmount, uint32 quoteTimestamp, bytes message) request, (address requestId, address token, uint256 amount, uint256 platformFee, uint256 affiliateFee, address affiliatorAddress, uint256 destinationExecutorFee, uint16 dAppTag, string dAppName) bridgeRequest)": {
         "$id": "acrossBridge",
         "intent": "Bridge",
+        "interpolatedIntent": "Bridge {bridgeRequest.amount} to {request.recipient}",
         "fields": [
           {
             "path": "bridgeRequest.amount",
@@ -308,6 +309,7 @@
       "acrossSwapAndBridge((address requestId, address fromToken, address toToken, uint256 amountIn, uint256 platformFee, uint256 destinationExecutorFee, uint256 affiliateFee, address affiliatorAddress, uint256 minimumAmountExpected, bool feeFromInputToken, uint16 dAppTag, string dAppName) request, (address spender, address target, address swapFromToken, address swapToToken, bool needsTransferFromUser, uint256 amount, bytes callData)[] calls, (address spokePoolAddress, address depositor, address exclusiveRelayer, address outputToken, uint32 fillDeadline, uint32 exclusivityDeadline, address recipient, uint256 destinationChainId, uint256 totalRelayFeeAmount, uint32 quoteTimestamp, bytes message) bridgeRequest)": {
         "$id": "acrossSwapAndBridge",
         "intent": "Swap and Bridge",
+        "interpolatedIntent": "Swap {request.amountIn} for at least {request.minimumAmountExpected} and bridge to {bridgeRequest.recipient}",
         "fields": [
           {
             "path": "request.amountIn",
@@ -471,6 +473,7 @@
       "allbridgeBridge((bytes32 recipient, uint256 destinationChainId, bytes32 receiveTokenAddress, uint256 nonce, uint8 messenger, uint256 transferFee, uint256 feeTokenAmount) request, (address requestId, address token, uint256 amount, uint256 platformFee, uint256 affiliateFee, address affiliatorAddress, uint256 destinationExecutorFee, uint16 dAppTag, string dAppName) bridgeRequest)": {
         "$id": "allbridgeBridge",
         "intent": "Bridge",
+        "interpolatedIntent": "Bridge {bridgeRequest.amount}",
         "fields": [
           {
             "path": "bridgeRequest.amount",
@@ -558,6 +561,7 @@
       "allbridgeSwapAndBridge((address requestId, address fromToken, address toToken, uint256 amountIn, uint256 platformFee, uint256 destinationExecutorFee, uint256 affiliateFee, address affiliatorAddress, uint256 minimumAmountExpected, bool feeFromInputToken, uint16 dAppTag, string dAppName) request, (address spender, address target, address swapFromToken, address swapToToken, bool needsTransferFromUser, uint256 amount, bytes callData)[] calls, (bytes32 recipient, uint256 destinationChainId, bytes32 receiveTokenAddress, uint256 nonce, uint8 messenger, uint256 transferFee, uint256 feeTokenAmount) bridgeRequest)": {
         "$id": "allbridgeSwapAndBridge",
         "intent": "Swap and Bridge",
+        "interpolatedIntent": "Swap {request.amountIn} for at least {request.minimumAmountExpected} and bridge",
         "fields": [
           {
             "path": "request.amountIn",
@@ -696,6 +700,7 @@
       "genericBridge((uint8 bridgeId, (address target, address spender, bytes data, uint256 startIndexForAmount, uint256 nativeValueToSend, bool valueIsBridgeAmount)[] calls, address recipient, uint256 dstChainId, bool hasInterchainMessage, bool hasDestinationSwap, uint256 extraFee, uint256 extraERC20Fee) bridgeRequest, (address requestId, address token, uint256 amount, (address affiliatorAddress, uint256 amount, uint8 feeType)[] affiliateFees, uint256 totalAffiliateFee, uint16 dAppTag, string dAppName) request)": {
         "$id": "genericBridge",
         "intent": "Bridge",
+        "interpolatedIntent": "Bridge {request.amount} to {bridgeRequest.recipient}",
         "fields": [
           {
             "path": "request.amount",
@@ -818,6 +823,7 @@
       "genericSwapAndBridge((address requestId, address fromToken, address toToken, uint256 amountIn, (address affiliatorAddress, uint256 amount, uint8 feeType)[] affiliateFees, uint256 totalAffiliateFee, uint256 minimumAmountExpected, bool feeFromInputToken, uint16 dAppTag, string dAppName) request, (address spender, address target, address swapFromToken, address swapToToken, bool needsTransferFromUser, uint256 amount, bytes callData)[] calls, (uint8 bridgeId, (address target, address spender, bytes data, uint256 startIndexForAmount, uint256 nativeValueToSend, bool valueIsBridgeAmount)[] calls, address recipient, uint256 dstChainId, bool hasInterchainMessage, bool hasDestinationSwap, uint256 extraFee, uint256 extraERC20Fee) bridgeRequest)": {
         "$id": "genericSwapAndBridge",
         "intent": "Swap and Bridge",
+        "interpolatedIntent": "Swap {request.amountIn} for at least {request.minimumAmountExpected} and bridge to {bridgeRequest.recipient}",
         "fields": [
           {
             "path": "request.amountIn",
@@ -991,6 +997,7 @@
       "onChainSwaps((address requestId, address fromToken, address toToken, uint256 amountIn, (address affiliatorAddress, uint256 amount, uint8 feeType)[] affiliateFees, uint256 totalAffiliateFee, uint256 minimumAmountExpected, bool feeFromInputToken, uint16 dAppTag, string dAppName) request, (address spender, address target, address swapFromToken, address swapToToken, bool needsTransferFromUser, uint256 amount, bytes callData)[] calls, address receiver)": {
         "$id": "onChainSwaps",
         "intent": "Swap",
+        "interpolatedIntent": "Swap {request.amountIn} for at least {request.minimumAmountExpected} to {receiver}",
         "fields": [
           {
             "path": "request.amountIn",
@@ -1104,6 +1111,7 @@
       "satelliteBridge((uint8 bridgeType, string receiver, uint256 toChainId, string toChain, string symbol, uint256 relayerGas, address srcGasRefundAddress, bytes imMessage) request, (address requestId, address token, uint256 amount, uint256 platformFee, uint256 affiliateFee, address affiliatorAddress, uint256 destinationExecutorFee, uint16 dAppTag, string dAppName) bridgeRequest)": {
         "$id": "satelliteBridge",
         "intent": "Bridge",
+        "interpolatedIntent": "Bridge {bridgeRequest.amount} to {request.receiver}",
         "fields": [
           {
             "path": "bridgeRequest.amount",
@@ -1196,6 +1204,7 @@
       "satelliteSwapAndBridge((address requestId, address fromToken, address toToken, uint256 amountIn, uint256 platformFee, uint256 destinationExecutorFee, uint256 affiliateFee, address affiliatorAddress, uint256 minimumAmountExpected, bool feeFromInputToken, uint16 dAppTag, string dAppName) request, (address spender, address target, address swapFromToken, address swapToToken, bool needsTransferFromUser, uint256 amount, bytes callData)[] calls, (uint8 bridgeType, string receiver, uint256 toChainId, string toChain, string symbol, uint256 relayerGas, address srcGasRefundAddress, bytes imMessage) bridgeRequest)": {
         "$id": "satelliteSwapAndBridge",
         "intent": "Swap and Bridge",
+        "interpolatedIntent": "Swap {request.amountIn} for at least {request.minimumAmountExpected} and bridge to {bridgeRequest.receiver}",
         "fields": [
           {
             "path": "request.amountIn",
@@ -1339,6 +1348,7 @@
       "stargateBridge((uint8 bridgeType, uint16 dstChainId, uint256 srcPoolId, uint256 dstPoolId, address srcGasRefundAddress, uint256 minAmountLD, uint256 dstGasForCall, uint256 dstNativeAmount, bytes dstNativeAddr, bytes to, uint256 stgFee, bytes imMessage) stargateRequest, (address requestId, address token, uint256 amount, uint256 platformFee, uint256 affiliateFee, address affiliatorAddress, uint256 destinationExecutorFee, uint16 dAppTag, string dAppName) bridgeRequest)": {
         "$id": "stargateBridge",
         "intent": "Bridge",
+        "interpolatedIntent": "Bridge {bridgeRequest.amount}",
         "fields": [
           {
             "path": "bridgeRequest.amount",
@@ -1451,6 +1461,7 @@
       "stargateSwapAndBridge((address requestId, address fromToken, address toToken, uint256 amountIn, uint256 platformFee, uint256 destinationExecutorFee, uint256 affiliateFee, address affiliatorAddress, uint256 minimumAmountExpected, bool feeFromInputToken, uint16 dAppTag, string dAppName) request, (address spender, address target, address swapFromToken, address swapToToken, bool needsTransferFromUser, uint256 amount, bytes callData)[] calls, (uint8 bridgeType, uint16 dstChainId, uint256 srcPoolId, uint256 dstPoolId, address srcGasRefundAddress, uint256 minAmountLD, uint256 dstGasForCall, uint256 dstNativeAmount, bytes dstNativeAddr, bytes to, uint256 stgFee, bytes imMessage) stargateRequest)": {
         "$id": "stargateSwapAndBridge",
         "intent": "Swap and Bridge",
+        "interpolatedIntent": "Swap {request.amountIn} for at least {request.minimumAmountExpected} and bridge",
         "fields": [
           {
             "path": "request.amountIn",
@@ -1610,6 +1621,7 @@
       "stargateV2Bridge((address poolContract, uint32 dstEid, uint16 dstChainId, bytes32 recipientAddress, uint256 minAmountLD, address refundAddress, uint256 nativeFee, bytes extraOptions, bytes composeMsg, bytes oftCmd) stargateRequest, (address requestId, address token, uint256 amount, uint256 platformFee, uint256 affiliateFee, address affiliatorAddress, uint256 destinationExecutorFee, uint16 dAppTag, string dAppName) bridgeRequest)": {
         "$id": "stargateV2Bridge",
         "intent": "Bridge",
+        "interpolatedIntent": "Bridge {bridgeRequest.amount}",
         "fields": [
           {
             "path": "bridgeRequest.amount",
@@ -1716,6 +1728,7 @@
       "stargateV2SwapAndBridge((address requestId, address fromToken, address toToken, uint256 amountIn, uint256 platformFee, uint256 destinationExecutorFee, uint256 affiliateFee, address affiliatorAddress, uint256 minimumAmountExpected, bool feeFromInputToken, uint16 dAppTag, string dAppName) request, (address spender, address target, address swapFromToken, address swapToToken, bool needsTransferFromUser, uint256 amount, bytes callData)[] calls, (address poolContract, uint32 dstEid, uint16 dstChainId, bytes32 recipientAddress, uint256 minAmountLD, address refundAddress, uint256 nativeFee, bytes extraOptions, bytes composeMsg, bytes oftCmd) stargateV2Request)": {
         "$id": "stargateV2SwapAndBridge",
         "intent": "Swap and Bridge",
+        "interpolatedIntent": "Swap {request.amountIn} for at least {request.minimumAmountExpected} and bridge",
         "fields": [
           {
             "path": "request.amountIn",
@@ -1869,6 +1882,7 @@
       "onChainSwaps((address requestId, address fromToken, address toToken, uint256 amountIn, uint256 platformFee, uint256 destinationExecutorFee, uint256 affiliateFee, address affiliatorAddress, uint256 minimumAmountExpected, bool feeFromInputToken, uint16 dAppTag, string dAppName) request, (address spender, address target, address swapFromToken, address swapToToken, bool needsTransferFromUser, uint256 amount, bytes callData)[] calls, address receiver)": {
         "$id": "onChainSwaps",
         "intent": "Swap",
+        "interpolatedIntent": "Swap {request.amountIn} for at least {request.minimumAmountExpected} to {receiver}",
         "fields": [
           {
             "path": "request.amountIn",
@@ -1982,6 +1996,7 @@
       "symbiosisBridge((uint8 bridgeType, (bytes firstSwapCalldata, bytes secondSwapCalldata, address[] approvedTokens, address firstDexRouter, address secondDexRouter, uint256 amount, bool nativeIn, address relayRecipient, bytes otherSideCalldata) metaRouteTransaction, address receiver, uint256 toChainId) symbiosisRequest, (address requestId, address token, uint256 amount, uint256 platformFee, uint256 affiliateFee, address affiliatorAddress, uint256 destinationExecutorFee, uint16 dAppTag, string dAppName) bridgeRequest)": {
         "$id": "symbiosisBridge",
         "intent": "Bridge",
+        "interpolatedIntent": "Bridge {bridgeRequest.amount} to {symbiosisRequest.receiver}",
         "fields": [
           {
             "path": "bridgeRequest.amount",
@@ -2103,6 +2118,7 @@
       "symbiosisSwapAndBridge((address requestId, address fromToken, address toToken, uint256 amountIn, uint256 platformFee, uint256 destinationExecutorFee, uint256 affiliateFee, address affiliatorAddress, uint256 minimumAmountExpected, bool feeFromInputToken, uint16 dAppTag, string dAppName) request, (address spender, address target, address swapFromToken, address swapToToken, bool needsTransferFromUser, uint256 amount, bytes callData)[] calls, (uint8 bridgeType, (bytes firstSwapCalldata, bytes secondSwapCalldata, address[] approvedTokens, address firstDexRouter, address secondDexRouter, uint256 amount, bool nativeIn, address relayRecipient, bytes otherSideCalldata) metaRouteTransaction, address receiver, uint256 toChainId) bridgeRequest)": {
         "$id": "symbiosisSwapAndBridge",
         "intent": "Swap and Bridge",
+        "interpolatedIntent": "Swap {request.amountIn} for at least {request.minimumAmountExpected} and bridge to {bridgeRequest.receiver}",
         "fields": [
           {
             "path": "request.amountIn",
@@ -2271,6 +2287,7 @@
       "acrossBridge((address spokePoolAddress, address depositor, address exclusiveRelayer, address outputToken, uint32 fillDeadline, uint32 exclusivityDeadline, address recipient, uint256 destinationChainId, uint256 decimalsAdjustedTotalRelayFeePct, uint32 quoteTimestamp, bytes message) request, (address requestId, address token, uint256 amount, (address affiliatorAddress, uint256 amount, uint8 feeType)[] affiliateFees, uint256 totalAffiliateFee, uint16 dAppTag, string dAppName) bridgeRequest)": {
         "$id": "acrossBridge",
         "intent": "Bridge",
+        "interpolatedIntent": "Bridge {bridgeRequest.amount} to {request.recipient}",
         "fields": [
           {
             "path": "bridgeRequest.amount",
@@ -2383,6 +2400,7 @@
       "acrossSwapAndBridge((address requestId, address fromToken, address toToken, uint256 amountIn, (address affiliatorAddress, uint256 amount, uint8 feeType)[] affiliateFees, uint256 totalAffiliateFee, uint256 minimumAmountExpected, bool feeFromInputToken, uint16 dAppTag, string dAppName) request, (address spender, address target, address swapFromToken, address swapToToken, bool needsTransferFromUser, uint256 amount, bytes callData)[] calls, (address spokePoolAddress, address depositor, address exclusiveRelayer, address outputToken, uint32 fillDeadline, uint32 exclusivityDeadline, address recipient, uint256 destinationChainId, uint256 decimalsAdjustedTotalRelayFeePct, uint32 quoteTimestamp, bytes message) bridgeRequest)": {
         "$id": "acrossSwapAndBridge",
         "intent": "Swap and Bridge",
+        "interpolatedIntent": "Swap {request.amountIn} for at least {request.minimumAmountExpected} and bridge to {bridgeRequest.recipient}",
         "fields": [
           {
             "path": "request.amountIn",
