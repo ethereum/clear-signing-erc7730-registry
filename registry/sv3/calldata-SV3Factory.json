@@ -1,0 +1,345 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "SV3Factory",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 46630,
+          "address": "0xB8f03F80389361F14b340a5C3584E0E85dAD01E1"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "SV3 Protocol",
+    "contractName": "SV3 Factory",
+    "constants": {
+      "reserveToken": "0xeE7EaAB23A33d5e269de697E5403837F414184F4"
+    }
+  },
+  "display": {
+    "formats": {
+      "createMarket((bytes32 presetId, string tokenName, string tokenSymbol, address creator, address creatorFeeRecipient, uint64 creatorGroupShareMicroBps, bytes32 metadataContentHash, uint256 maxLaunchFeeRaw, uint256 deadline) params)": {
+        "intent": "Create SV3 market",
+        "fields": [
+          { "path": "#.params", "label": "Market configuration", "visible": "never" },
+          {
+            "path": "#.params.tokenName",
+            "label": "Token name",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.params.tokenSymbol",
+            "label": "Token symbol",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.params.creator",
+            "label": "Creator",
+            "format": "addressName",
+            "params": { "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.creatorFeeRecipient",
+            "label": "Fee recipient",
+            "format": "addressName",
+            "params": { "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.creatorGroupShareMicroBps",
+            "label": "Creator fee share",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 6 },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.maxLaunchFeeRaw",
+            "label": "Maximum launch fee",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.reserveToken", "chainId": 46630 },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.deadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.presetId",
+            "label": "Curve preset",
+            "format": "raw",
+            "visible": "always"
+          },
+          { "path": "#.params.metadataContentHash", "label": "Metadata hash", "visible": "never" }
+        ]
+      },
+      "createMarketWithPermit((bytes32 presetId, string tokenName, string tokenSymbol, address creator, address creatorFeeRecipient, uint64 creatorGroupShareMicroBps, bytes32 metadataContentHash, uint256 maxLaunchFeeRaw, uint256 deadline) params, (uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) permit)": {
+        "intent": "Create SV3 market",
+        "fields": [
+          { "path": "#.params", "label": "Market configuration", "visible": "never" },
+          {
+            "path": "#.params.tokenName",
+            "label": "Token name",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.params.tokenSymbol",
+            "label": "Token symbol",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.params.creator",
+            "label": "Creator",
+            "format": "addressName",
+            "params": { "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.creatorFeeRecipient",
+            "label": "Fee recipient",
+            "format": "addressName",
+            "params": { "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.creatorGroupShareMicroBps",
+            "label": "Creator fee share",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 6 },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.maxLaunchFeeRaw",
+            "label": "Maximum launch fee",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.reserveToken", "chainId": 46630 },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.deadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.presetId",
+            "label": "Curve preset",
+            "format": "raw",
+            "visible": "optional"
+          },
+          { "path": "#.params.metadataContentHash", "label": "Metadata hash", "visible": "never" },
+          { "path": "#.permit", "label": "Permit", "visible": "never" },
+          {
+            "path": "#.permit.value",
+            "label": "Permit amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.reserveToken", "chainId": 46630 },
+            "visible": "always"
+          },
+          {
+            "path": "#.permit.deadline",
+            "label": "Permit deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "#.permit.v", "label": "Permit v", "visible": "never" },
+          { "path": "#.permit.r", "label": "Permit r", "visible": "never" },
+          { "path": "#.permit.s", "label": "Permit s", "visible": "never" }
+        ]
+      },
+      "createMarketAndInitialBuy((bytes32 presetId, string tokenName, string tokenSymbol, address creator, address creatorFeeRecipient, uint64 creatorGroupShareMicroBps, bytes32 metadataContentHash, uint256 maxLaunchFeeRaw, uint256 deadline) params, (uint256 grossReserveInRaw, uint256 minAvmOut, address receiver) buy)": {
+        "intent": "Create market and buy",
+        "fields": [
+          { "path": "#.params", "label": "Market configuration", "visible": "never" },
+          {
+            "path": "#.params.tokenName",
+            "label": "Token name",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.params.tokenSymbol",
+            "label": "Token symbol",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.params.creator",
+            "label": "Creator",
+            "format": "addressName",
+            "params": { "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.creatorFeeRecipient",
+            "label": "Fee recipient",
+            "format": "addressName",
+            "params": { "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.creatorGroupShareMicroBps",
+            "label": "Creator fee share",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 6 },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.maxLaunchFeeRaw",
+            "label": "Maximum launch fee",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.reserveToken", "chainId": 46630 },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.deadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.presetId",
+            "label": "Curve preset",
+            "format": "raw",
+            "visible": "optional"
+          },
+          { "path": "#.params.metadataContentHash", "label": "Metadata hash", "visible": "never" },
+          { "path": "#.buy", "label": "Initial buy", "visible": "never" },
+          {
+            "path": "#.buy.grossReserveInRaw",
+            "label": "Initial buy",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.reserveToken", "chainId": 46630 },
+            "visible": "always"
+          },
+          {
+            "path": "#.buy.minAvmOut",
+            "label": "Minimum tokens",
+            "format": "unit",
+            "params": { "base": "AVM", "decimals": 18 },
+            "visible": "always"
+          },
+          {
+            "path": "#.buy.receiver",
+            "label": "Token receiver",
+            "format": "addressName",
+            "params": { "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "createMarketAndInitialBuyWithPermit((bytes32 presetId, string tokenName, string tokenSymbol, address creator, address creatorFeeRecipient, uint64 creatorGroupShareMicroBps, bytes32 metadataContentHash, uint256 maxLaunchFeeRaw, uint256 deadline) params, (uint256 grossReserveInRaw, uint256 minAvmOut, address receiver) buy, (uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) permit)": {
+        "intent": "Create market and buy",
+        "fields": [
+          { "path": "#.params", "label": "Market configuration", "visible": "never" },
+          {
+            "path": "#.params.tokenName",
+            "label": "Token name",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.params.tokenSymbol",
+            "label": "Token symbol",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.params.creator",
+            "label": "Creator",
+            "format": "addressName",
+            "params": { "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.creatorFeeRecipient",
+            "label": "Fee recipient",
+            "format": "addressName",
+            "params": { "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.creatorGroupShareMicroBps",
+            "label": "Creator fee share",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 6 },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.maxLaunchFeeRaw",
+            "label": "Maximum launch fee",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.reserveToken", "chainId": 46630 },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.deadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          {
+            "path": "#.params.presetId",
+            "label": "Curve preset",
+            "format": "raw",
+            "visible": "optional"
+          },
+          { "path": "#.params.metadataContentHash", "label": "Metadata hash", "visible": "never" },
+          { "path": "#.buy", "label": "Initial buy", "visible": "never" },
+          {
+            "path": "#.buy.grossReserveInRaw",
+            "label": "Initial buy",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.reserveToken", "chainId": 46630 },
+            "visible": "always"
+          },
+          {
+            "path": "#.buy.minAvmOut",
+            "label": "Minimum tokens",
+            "format": "unit",
+            "params": { "base": "AVM", "decimals": 18 },
+            "visible": "always"
+          },
+          {
+            "path": "#.buy.receiver",
+            "label": "Token receiver",
+            "format": "addressName",
+            "params": { "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.permit", "label": "Permit", "visible": "never" },
+          {
+            "path": "#.permit.value",
+            "label": "Permit amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.reserveToken", "chainId": 46630 },
+            "visible": "always"
+          },
+          {
+            "path": "#.permit.deadline",
+            "label": "Permit deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "#.permit.v", "label": "Permit v", "visible": "never" },
+          { "path": "#.permit.r", "label": "Permit r", "visible": "never" },
+          { "path": "#.permit.s", "label": "Permit s", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,1062 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "SV3FloorMarket",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 46630,
+          "address": "0x3e3e4dE1D18A2929177cbd77932654411e45657d"
+        }
+      ],
+      "factory": {
+        "deployments": [
+          {
+            "chainId": 46630,
+            "address": "0xB8f03F80389361F14b340a5C3584E0E85dAD01E1"
+          }
+        ],
+        "deployEvent": "MarketCreated(address,bytes32,address,(uint256,bytes32,address,address,address,bytes32,bytes32,bytes32,bytes32,address,address,uint64,bytes32,uint256,uint256,uint256,address,(uint64,uint64,bytes32,bytes,uint256,int256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,int256,int256,uint256,uint48,uint48,bool,bool)))"
+      }
+    }
+  },
+  "metadata": {
+    "owner": "SV3 Protocol",
+    "contractName": "SV3 Floor Market",
+    "constants": {
+      "reserveToken": "0xeE7EaAB23A33d5e269de697E5403837F414184F4"
+    }
+  },
+  "display": {
+    "formats": {
+      "buyWithExactReserveTokensIn(uint256 grossReserveIn, uint256 minAvmOut, address receiver, uint256 deadline)": {
+        "intent": "Buy market tokens",
+        "fields": [
+          {
+            "label": "Maximum USDC spend",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.grossReserveIn",
+            "visible": "always"
+          },
+          {
+            "label": "Minimum tokens",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.minAvmOut",
+            "visible": "always"
+          },
+          {
+            "label": "Token receiver",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.receiver",
+            "visible": "always"
+          },
+          {
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          }
+        ]
+      },
+      "buyWithExactReserveTokensInWithPermit(uint256 grossReserveIn, uint256 minAvmOut, address receiver, uint256 deadline, (uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) permit)": {
+        "intent": "Buy market tokens",
+        "fields": [
+          {
+            "label": "Maximum USDC spend",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.grossReserveIn",
+            "visible": "always"
+          },
+          {
+            "label": "Minimum tokens",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.minAvmOut",
+            "visible": "always"
+          },
+          {
+            "label": "Token receiver",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.receiver",
+            "visible": "always"
+          },
+          {
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          },
+          {
+            "path": "#.permit",
+            "label": "Permit",
+            "visible": "never"
+          },
+          {
+            "label": "Permit amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.permit.value",
+            "visible": "always"
+          },
+          {
+            "label": "Permit deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.permit.deadline",
+            "visible": "always"
+          },
+          {
+            "path": "#.permit.v",
+            "label": "Permit v",
+            "visible": "never"
+          },
+          {
+            "path": "#.permit.r",
+            "label": "Permit r",
+            "visible": "never"
+          },
+          {
+            "path": "#.permit.s",
+            "label": "Permit s",
+            "visible": "never"
+          }
+        ]
+      },
+      "buyWithExactAvmTokensOut(uint256 avmOut, uint256 maxGrossReserveIn, address receiver, uint256 deadline)": {
+        "intent": "Buy exact market tokens",
+        "fields": [
+          {
+            "label": "Market tokens",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.avmOut",
+            "visible": "always"
+          },
+          {
+            "label": "Maximum USDC spend",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.maxGrossReserveIn",
+            "visible": "always"
+          },
+          {
+            "label": "Token receiver",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.receiver",
+            "visible": "always"
+          },
+          {
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          }
+        ]
+      },
+      "buyWithExactAvmTokensOutWithPermit(uint256 avmOut, uint256 maxGrossReserveIn, address receiver, uint256 deadline, (uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) permit)": {
+        "intent": "Buy exact market tokens",
+        "fields": [
+          {
+            "label": "Market tokens",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.avmOut",
+            "visible": "always"
+          },
+          {
+            "label": "Maximum USDC spend",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.maxGrossReserveIn",
+            "visible": "always"
+          },
+          {
+            "label": "Token receiver",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.receiver",
+            "visible": "always"
+          },
+          {
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          },
+          {
+            "path": "#.permit",
+            "label": "Permit",
+            "visible": "never"
+          },
+          {
+            "label": "Permit amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.permit.value",
+            "visible": "always"
+          },
+          {
+            "label": "Permit deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.permit.deadline",
+            "visible": "always"
+          },
+          {
+            "path": "#.permit.v",
+            "label": "Permit v",
+            "visible": "never"
+          },
+          {
+            "path": "#.permit.r",
+            "label": "Permit r",
+            "visible": "never"
+          },
+          {
+            "path": "#.permit.s",
+            "label": "Permit s",
+            "visible": "never"
+          }
+        ]
+      },
+      "sellWithExactAvmTokensIn(uint256 avmIn, uint256 minNetReserveOut, address receiver, uint256 deadline)": {
+        "intent": "Sell market tokens",
+        "fields": [
+          {
+            "label": "Market tokens sold",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.avmIn",
+            "visible": "always"
+          },
+          {
+            "label": "Minimum USDC",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.minNetReserveOut",
+            "visible": "always"
+          },
+          {
+            "label": "USDC receiver",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.receiver",
+            "visible": "always"
+          },
+          {
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          }
+        ]
+      },
+      "sellWithExactReserveTokensOut(uint256 netReserveOut, uint256 maxAvmIn, address receiver, uint256 deadline)": {
+        "intent": "Sell for exact USDC",
+        "fields": [
+          {
+            "label": "USDC received",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.netReserveOut",
+            "visible": "always"
+          },
+          {
+            "label": "Max tokens sold",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.maxAvmIn",
+            "visible": "always"
+          },
+          {
+            "label": "USDC receiver",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.receiver",
+            "visible": "always"
+          },
+          {
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          }
+        ]
+      },
+      "redeemAtFloorWithExactAvmTokensIn(uint256 avmIn, uint256 minNetReserveOut, address receiver, uint256 deadline)": {
+        "intent": "Redeem at floor",
+        "fields": [
+          {
+            "label": "Market tokens burned",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.avmIn",
+            "visible": "always"
+          },
+          {
+            "label": "Minimum USDC",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.minNetReserveOut",
+            "visible": "always"
+          },
+          {
+            "label": "USDC receiver",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.receiver",
+            "visible": "always"
+          },
+          {
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          }
+        ]
+      },
+      "depositCollateral(uint256 amount, address onBehalfOf)": {
+        "intent": "Deposit collateral",
+        "fields": [
+          {
+            "label": "Collateral",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.amount",
+            "visible": "always"
+          },
+          {
+            "label": "Position owner",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.onBehalfOf",
+            "visible": "always"
+          }
+        ]
+      },
+      "depositCollateralWithPermit(uint256 amount, address onBehalfOf, (uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) permit)": {
+        "intent": "Deposit collateral",
+        "fields": [
+          {
+            "label": "Collateral",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.amount",
+            "visible": "always"
+          },
+          {
+            "label": "Position owner",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.onBehalfOf",
+            "visible": "always"
+          },
+          {
+            "path": "#.permit",
+            "label": "Permit",
+            "visible": "never"
+          },
+          {
+            "label": "Permit amount",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.permit.value",
+            "visible": "always"
+          },
+          {
+            "label": "Permit deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.permit.deadline",
+            "visible": "always"
+          },
+          {
+            "path": "#.permit.v",
+            "label": "Permit v",
+            "visible": "never"
+          },
+          {
+            "path": "#.permit.r",
+            "label": "Permit r",
+            "visible": "never"
+          },
+          {
+            "path": "#.permit.s",
+            "label": "Permit s",
+            "visible": "never"
+          }
+        ]
+      },
+      "withdrawCollateral(uint256 amount, address receiver)": {
+        "intent": "Withdraw collateral",
+        "fields": [
+          {
+            "label": "Collateral",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.amount",
+            "visible": "always"
+          },
+          {
+            "label": "Token receiver",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.receiver",
+            "visible": "always"
+          }
+        ]
+      },
+      "borrow(uint256 grossDebtIncrease, uint256 minNetReserveOut, address receiver, uint256 deadline)": {
+        "intent": "Borrow USDC",
+        "fields": [
+          {
+            "label": "Debt increase",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.grossDebtIncrease",
+            "visible": "always"
+          },
+          {
+            "label": "Minimum USDC",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.minNetReserveOut",
+            "visible": "always"
+          },
+          {
+            "label": "USDC receiver",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.receiver",
+            "visible": "always"
+          },
+          {
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          }
+        ]
+      },
+      "repay(uint256 amount, address onBehalfOf)": {
+        "intent": "Repay USDC debt",
+        "fields": [
+          {
+            "label": "USDC repaid",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.amount",
+            "visible": "always"
+          },
+          {
+            "label": "Position owner",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.onBehalfOf",
+            "visible": "always"
+          }
+        ]
+      },
+      "repayWithPermit(uint256 amount, address onBehalfOf, (uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) permit)": {
+        "intent": "Repay USDC debt",
+        "fields": [
+          {
+            "label": "USDC repaid",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.amount",
+            "visible": "always"
+          },
+          {
+            "label": "Position owner",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.onBehalfOf",
+            "visible": "always"
+          },
+          {
+            "path": "#.permit",
+            "label": "Permit",
+            "visible": "never"
+          },
+          {
+            "label": "Permit amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.permit.value",
+            "visible": "always"
+          },
+          {
+            "label": "Permit deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.permit.deadline",
+            "visible": "always"
+          },
+          {
+            "path": "#.permit.v",
+            "label": "Permit v",
+            "visible": "never"
+          },
+          {
+            "path": "#.permit.r",
+            "label": "Permit r",
+            "visible": "never"
+          },
+          {
+            "path": "#.permit.s",
+            "label": "Permit s",
+            "visible": "never"
+          }
+        ]
+      },
+      "expandWithExactReserveIn(uint256 reserveFromUser, uint256 grossDebtIncrease, uint256 minCollateral, uint256 deadline)": {
+        "intent": "Expand position",
+        "fields": [
+          {
+            "label": "USDC from wallet",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.reserveFromUser",
+            "visible": "always"
+          },
+          {
+            "label": "Debt increase",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.grossDebtIncrease",
+            "visible": "always"
+          },
+          {
+            "label": "Min added collateral",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.minCollateral",
+            "visible": "always"
+          },
+          {
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          }
+        ]
+      },
+      "expandWithExactReserveInWithPermit(uint256 reserveFromUser, uint256 grossDebtIncrease, uint256 minCollateral, uint256 deadline, (uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) permit)": {
+        "intent": "Expand position",
+        "fields": [
+          {
+            "label": "USDC from wallet",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.reserveFromUser",
+            "visible": "always"
+          },
+          {
+            "label": "Debt increase",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.grossDebtIncrease",
+            "visible": "always"
+          },
+          {
+            "label": "Min added collateral",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.minCollateral",
+            "visible": "always"
+          },
+          {
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          },
+          {
+            "path": "#.permit",
+            "label": "Permit",
+            "visible": "never"
+          },
+          {
+            "label": "Permit amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.permit.value",
+            "visible": "always"
+          },
+          {
+            "label": "Permit deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.permit.deadline",
+            "visible": "always"
+          },
+          {
+            "path": "#.permit.v",
+            "label": "Permit v",
+            "visible": "never"
+          },
+          {
+            "path": "#.permit.r",
+            "label": "Permit r",
+            "visible": "never"
+          },
+          {
+            "path": "#.permit.s",
+            "label": "Permit s",
+            "visible": "never"
+          }
+        ]
+      },
+      "expandWithExactAvmOut(uint256 collateralAdded, uint256 grossDebtIncrease, uint256 maxReserveFromUser, uint256 deadline)": {
+        "intent": "Expand exact collateral",
+        "fields": [
+          {
+            "label": "Collateral added",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.collateralAdded",
+            "visible": "always"
+          },
+          {
+            "label": "Debt increase",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.grossDebtIncrease",
+            "visible": "always"
+          },
+          {
+            "label": "Max wallet USDC",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.maxReserveFromUser",
+            "visible": "always"
+          },
+          {
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          }
+        ]
+      },
+      "shrinkWithExactAvmIn(uint256 collateralRemoved, uint256 debtDecrease, uint256 minReserveToUser, uint256 deadline)": {
+        "intent": "Sell collateral to repay",
+        "fields": [
+          {
+            "label": "Collateral sold",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.collateralRemoved",
+            "visible": "always"
+          },
+          {
+            "label": "Debt repaid",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.debtDecrease",
+            "visible": "always"
+          },
+          {
+            "label": "Min residual USDC",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.minReserveToUser",
+            "visible": "always"
+          },
+          {
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          }
+        ]
+      },
+      "shrinkWithExactReserveOut(uint256 netReserveToUser, uint256 debtDecrease, uint256 maxCollateralRemoved, uint256 deadline)": {
+        "intent": "Sell collateral to repay",
+        "fields": [
+          {
+            "label": "Residual USDC",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.netReserveToUser",
+            "visible": "always"
+          },
+          {
+            "label": "Debt repaid",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.debtDecrease",
+            "visible": "always"
+          },
+          {
+            "label": "Max collateral sold",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.maxCollateralRemoved",
+            "visible": "always"
+          },
+          {
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          }
+        ]
+      },
+      "surrenderCollateralForDebt(uint256 debtToCancel, uint256 maxCollateralToBurn, uint256 deadline)": {
+        "intent": "Surrender collateral",
+        "fields": [
+          {
+            "label": "Debt cancelled",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.debtToCancel",
+            "visible": "always"
+          },
+          {
+            "label": "Max collateral burn",
+            "format": "unit",
+            "params": {
+              "base": "AVM",
+              "decimals": 18
+            },
+            "path": "#.maxCollateralToBurn",
+            "visible": "always"
+          },
+          {
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          }
+        ]
+      },
+      "donateLiquidity(uint256 amount)": {
+        "intent": "Donate market liquidity",
+        "fields": [
+          {
+            "label": "USDC donated",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "claimCreatorRevenue(uint256 amount)": {
+        "intent": "Claim creator revenue",
+        "fields": [
+          {
+            "label": "USDC claimed",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.reserveToken",
+              "chainId": 46630
+            },
+            "path": "#.amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "claimAllCreatorRevenue()": {
+        "intent": "Claim all creator revenue",
+        "fields": []
+      },
+      "setCreatorFeeRecipient(address recipient)": {
+        "intent": "Change fee recipient",
+        "fields": [
+          {
+            "label": "New fee recipient",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.recipient",
+            "visible": "always"
+          }
+        ]
+      },
+      "proposeCreator(address proposed)": {
+        "intent": "Propose new creator",
+        "fields": [
+          {
+            "label": "Proposed creator",
+            "format": "addressName",
+            "params": {
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#.proposed",
+            "visible": "always"
+          }
+        ]
+      },
+      "acceptCreator()": {
+        "intent": "Accept creator role",
+        "fields": []
+      },
+      "syncDonatedLiquidity()": {
+        "intent": "Sync donated liquidity",
+        "fields": []
+      }
+    }
+  }
+}
