@@ -1,0 +1,74 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-DiggersRouter.json",
+  "dataProvider": {
+    "tokens": {
+      "0xfb1bcb6817f7b8fa86896d3253b16aeb7bd6a5a8": {
+        "symbol": "WORTH",
+        "decimals": 18,
+        "name": "one life, its worth an attempt"
+      },
+      "0x7e86381a763f0ecca2bdf27c54eac403ddd48123": {
+        "symbol": "GME",
+        "decimals": 18,
+        "name": "GameStop"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Buy WORTH via external venue",
+      "rawTx": "0x02f901338212371580840c55035083029f1c947fafa1ad0bf1ec4516b5724a12e4154a2a68514b8701ecf8f164b191b90104c3a8cc13000000000000000000000000fb1bcb6817f7b8fa86896d3253b16aeb7bd6a5a8000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000041d951a04495335c6d000000000000000000000000000000000000000000000000000000006a5b57a5000000000000000000000000ee8ba7cdb23f00f23cb9718c2c604ba8b9c2b6410000000000000000000000000000000000000000000000000000000000000020000000000000000000000000191ae9cde295b1a568164a078bcd8ce8d338fe6dc0",
+      "txHash": "0xbd24cb5404a1559ef16fe071d15f5057eea69ba53cad4e9dae139c7424a068db",
+      "expected": {
+        "intent": "Buy token",
+        "owner": "Diggers",
+        "fields": [
+          {
+            "label": "You pay",
+            "value": "0.000542028922663313 ETH"
+          },
+          {
+            "label": "Minimum received",
+            "value": "1214.697838386886171757 WORTH"
+          },
+          {
+            "label": "Expires",
+            "value": "2026-07-18 10:38:29Z"
+          },
+          {
+            "label": "Recipient",
+            "value": "0xee8ba7cdb23F00f23cb9718c2C604BA8B9C2b641"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Sell GME via external venue",
+      "rawTx": "0x02f9014c8212371080840ca3bf90830316e4947fafa1ad0bf1ec4516b5724a12e4154a2a68514b80b901249f98939d0000000000000000000000007e86381a763f0ecca2bdf27c54eac403ddd48123000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000002426fbd631700bade30000000000000000000000000000000000000000000000000001dcc8792313d5000000000000000000000000000000000000000000000000000000006a5b44d5000000000000000000000000ee8ba7cdb23f00f23cb9718c2c604ba8b9c2b641000000000000000000000000000000000000000000000000000000000000002000000000000000000000000090c8c09dd4a6bf3b0a2dcf179c72a2c8c6e09feec0",
+      "txHash": "0x8bd6086dc2e7c9aacabadf0a9d3e3f61be6a313b57c673829515f3f307d22817",
+      "expected": {
+        "intent": "Sell token",
+        "owner": "Diggers",
+        "fields": [
+          {
+            "label": "You sell",
+            "value": "666.891860953961049571 GME"
+          },
+          {
+            "label": "Minimum ETH received",
+            "value": "0.000524228560622549 ETH"
+          },
+          {
+            "label": "Expires",
+            "value": "2026-07-18 09:18:13Z"
+          },
+          {
+            "label": "Recipient",
+            "value": "0xee8ba7cdb23F00f23cb9718c2C604BA8B9C2b641"
+          }
+        ]
+      }
+    }
+  ]
+}
