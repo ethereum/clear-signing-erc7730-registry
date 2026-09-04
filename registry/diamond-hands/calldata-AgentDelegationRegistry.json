@@ -1,0 +1,85 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "AgentDelegationRegistry",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x54853b7E91ce2Be34ce65655D80c4447e67187Fa" }] }
+  },
+  "metadata": {
+    "owner": "Diamond Hands",
+    "contractName": "Agent Delegation",
+    "info": { "url": "https://diamondhands.credit", "deploymentDate": "2026-06-16T16:40:50Z" }
+  },
+  "display": {
+    "definitions": {
+      "positionId": { "label": "Loan", "format": "raw" },
+      "agentAddress": { "label": "Agent", "format": "addressName", "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] } },
+      "validUntil": { "label": "Expires", "format": "date", "params": { "encoding": "timestamp" } },
+      "collateralFloor": { "label": "Collateral floor", "format": "unit", "params": { "base": "%", "decimals": 2 } }
+    },
+    "formats": {
+      "registerAgent(address user, address agent, uint64 validUntil)": {
+        "intent": "Authorize agent",
+        "fields": [
+          { "path": "#.agent", "$ref": "$.display.definitions.agentAddress" },
+          { "path": "#.validUntil", "$ref": "$.display.definitions.validUntil" },
+          { "path": "#.user", "label": "Account", "visible": "never" }
+        ]
+      },
+      "rotateAgent(address user, address newAgent, uint64 validUntil)": {
+        "intent": "Replace agent",
+        "fields": [
+          { "path": "#.newAgent", "$ref": "$.display.definitions.agentAddress" },
+          { "path": "#.validUntil", "$ref": "$.display.definitions.validUntil" },
+          { "path": "#.user", "label": "Account", "visible": "never" }
+        ]
+      },
+      "revokeAgent(address user, bytes32 reason)": {
+        "intent": "Revoke agent",
+        "fields": [
+          {
+            "path": "#.user",
+            "label": "Account",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.reason", "label": "Reason", "format": "raw", "visible": "optional" }
+        ]
+      },
+      "enableAutoRenew(bytes32 positionId)": {
+        "intent": "Let agent renew loan",
+        "fields": [{ "path": "#.positionId", "$ref": "$.display.definitions.positionId", "visible": "optional" }]
+      },
+      "disableAutoRenew(bytes32 positionId)": {
+        "intent": "Stop agent renewals",
+        "fields": [{ "path": "#.positionId", "$ref": "$.display.definitions.positionId", "visible": "optional" }]
+      },
+      "enableAutoRepay(bytes32 positionId)": {
+        "intent": "Let agent repay loan",
+        "fields": [{ "path": "#.positionId", "$ref": "$.display.definitions.positionId", "visible": "optional" }]
+      },
+      "disableAutoRepay(bytes32 positionId)": {
+        "intent": "Stop agent repayments",
+        "fields": [{ "path": "#.positionId", "$ref": "$.display.definitions.positionId", "visible": "optional" }]
+      },
+      "enableAutoMint(bytes32 positionId, uint32 minCollateralRatioBps)": {
+        "intent": "Let agent borrow UCD",
+        "interpolatedIntent": "Let agent borrow above {#.minCollateralRatioBps}",
+        "fields": [
+          { "path": "#.minCollateralRatioBps", "$ref": "$.display.definitions.collateralFloor" },
+          { "path": "#.positionId", "$ref": "$.display.definitions.positionId", "visible": "optional" }
+        ]
+      },
+      "disableAutoMint(bytes32 positionId)": {
+        "intent": "Stop agent borrowing",
+        "fields": [{ "path": "#.positionId", "$ref": "$.display.definitions.positionId", "visible": "optional" }]
+      },
+      "setMintCollateralFloor(bytes32 positionId, uint32 newFloorBps)": {
+        "intent": "Set agent borrow floor",
+        "fields": [
+          { "path": "#.newFloorBps", "$ref": "$.display.definitions.collateralFloor" },
+          { "path": "#.positionId", "$ref": "$.display.definitions.positionId", "visible": "optional" }
+        ]
+      }
+    }
+  }
+}
