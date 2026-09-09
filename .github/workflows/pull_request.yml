@@ -214,6 +214,67 @@ jobs:
         # sync-indexes workflow — by then the conflict is already on master.
         run: node tools/scripts/generate-index.js --validate
 
+  validate_test_coverage:
+    name: 🔎 validate test coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        timeout-minutes: 10
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Get all changed descriptor, shared and testsv2 files
+        timeout-minutes: 5
+        id: changed-files
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
+        with:
+          files: |
+            registry/**/*.json
+            ercs/**/*.json
+          files_ignore: |
+            registry/**/tests/**
+            registry/**/sigs/**
+
+      - name: Resolve affected descriptors
+        timeout-minutes: 5
+        id: affected-descriptors
+        if: steps.changed-files.outputs.any_changed == 'true'
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          DELETED_FILES: ${{ steps.changed-files.outputs.deleted_files }}
+        run: |
+          # A changed shared file or testsv2 file affects the descriptors that
+          # include it or that it tests, so those are checked too.
+          RESULT=$(CHANGED_FILES="$CHANGED_FILES $DELETED_FILES" \
+            node .github/scripts/list-affected-descriptors.js)
+          echo "$RESULT" | jq .
+          echo "descriptors=$(echo "$RESULT" | jq -r '.affected_descriptors | join(" ")')" >> $GITHUB_OUTPUT
+          echo "any_affected=$(echo "$RESULT" | jq -r '.has_affected')" >> $GITHUB_OUTPUT
+
+      - name: Setup node
+        timeout-minutes: 10
+        if: steps.affected-descriptors.outputs.any_affected == 'true'
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        timeout-minutes: 10
+        if: steps.affected-descriptors.outputs.any_affected == 'true'
+        run: npm ci
+
+      - name: Check that every function of an affected descriptor has a test
+        timeout-minutes: 5
+        if: steps.affected-descriptors.outputs.any_affected == 'true'
+        # The runners only exercise the functions that a fixture calls, so a
+        # format without a test is never checked against an implementation.
+        # The script derives the selector of each display format and looks
+        # for it in the first 4 bytes of the calldata of the testsv2 cases.
+        env:
+          AFFECTED_FILES: ${{ steps.affected-descriptors.outputs.descriptors }}
+        run: node .github/scripts/check-selector-coverage.js $AFFECTED_FILES
+
   validate_file_names:
     name: 🔎 validate file names
     runs-on: ubuntu-latest

@@ -195,7 +195,7 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
 
 ### Best practices
 
-1. **Include at least one test per function/message type** defined in your descriptor
+1. **Include at least one test per function/message type** defined in your descriptor. For calldata descriptors CI enforces this: it computes the 4-byte selector of every key in `display.formats` and compares it with the first 4 bytes of the calldata of each test case's `rawTx`. A function whose selector no test case contains fails the check.
 2. **Use real transactions** when possible - they provide the most realistic test cases
 3. **Add descriptive labels** to help reviewers understand what each test validates
 4. **Test edge cases** like maximum values, zero values, and special addresses
