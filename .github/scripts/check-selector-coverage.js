@@ -107,9 +107,9 @@ function checkDescriptor(descriptorAbs) {
   if (selectors.size === 0 && errors.length === 0) return null;
 
   const testFile = `${path.posix.dirname(descriptor)}/testsv2/${path.posix.basename(descriptor, '.json')}.tests.json`;
-  let tests;
+  let fixture;
   try {
-    tests = JSON.parse(fs.readFileSync(path.join(repoRoot, testFile), 'utf8')).tests;
+    fixture = JSON.parse(fs.readFileSync(path.join(repoRoot, testFile), 'utf8'));
   } catch (error) {
     if (error.code === 'ENOENT') {
       // require-testsv2 reports the missing file; it is a different fix.
@@ -119,6 +119,21 @@ function checkDescriptor(descriptorAbs) {
     errors.push(`Cannot read ${testFile}: ${error.message}`);
     return errors;
   }
+
+  // The file name pairs the fixture with the descriptor, and the "descriptor"
+  // field must agree. A fixture copied from another descriptor without
+  // updating the field would otherwise count the shared functions as covered.
+  const named = typeof fixture.descriptor === 'string'
+    ? path.resolve(repoRoot, path.dirname(testFile), fixture.descriptor)
+    : null;
+  if (named !== descriptorAbs) {
+    errors.push(
+      `${testFile} names ${JSON.stringify(fixture.descriptor ?? null)} as its descriptor, but its file name pairs it with ${descriptor}`,
+    );
+    return errors;
+  }
+
+  const tests = fixture.tests;
   if (!Array.isArray(tests)) {
     errors.push(`${testFile} has no "tests" array`);
     return errors;
