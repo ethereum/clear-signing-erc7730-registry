@@ -394,9 +394,7 @@ jobs:
   check-test-coverage:
     name: Check test coverage
     needs: detect-testsv2
-    # The script comes from the base, like the other scripts of this workflow,
-    # so the job is skipped until the script is on the base branch.
-    if: needs.detect-testsv2.outputs.has_tests == 'true' && hashFiles('base-scripts/.github/scripts/check-selector-coverage.js') != ''
+    if: needs.detect-testsv2.outputs.has_tests == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -426,6 +424,10 @@ jobs:
         run: npm ci
 
       - name: Check that every function of an affected descriptor has a test
+        # The script comes from the base, like the other scripts of this
+        # workflow. hashFiles only works in a step condition, so the step, not
+        # the job, is skipped until the script is on the base branch.
+        if: hashFiles('base-scripts/.github/scripts/check-selector-coverage.js') != ''
         env:
           TEST_MATRIX: ${{ needs.detect-testsv2.outputs.test_matrix }}
         run: |
@@ -434,7 +436,7 @@ jobs:
             $(echo "$TEST_MATRIX" | jq -r '.[].descriptor')
 
       - name: Upload the coverage report
-        if: always()
+        if: always() && hashFiles('base-scripts/.github/scripts/check-selector-coverage.js') != ''
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: test-coverage
