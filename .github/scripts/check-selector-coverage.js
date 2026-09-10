@@ -11,9 +11,10 @@
  * selector no test calls is an error. EIP-712 descriptors have no selector
  * and are skipped.
  *
- * Usage: node check-selector-coverage.js <descriptor.json|directory>...
+ * Usage: node check-selector-coverage.js [--report <file>] <descriptor.json|directory>...
  *   A directory is walked for calldata-*.json descriptors, skipping the
- *   tests/, testsv2/ and sigs/ folders.
+ *   tests/, testsv2/ and sigs/ folders. With --report, the errors are also
+ *   written to <file> as JSON, keyed by descriptor, for the results comment.
  *
  * Prints GitHub Actions annotations, and exits 1 when a function has no test,
  * a format key is not a function signature, or a test cannot be decoded.
@@ -21,6 +22,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { parseArgs } = require('util');
 const { parseAbiItem, parseTransaction, slice, toFunctionSelector } = require('viem');
 const { resolveDescriptor } = require('./resolve-erc7730-includes');
 
@@ -76,11 +78,7 @@ function testSelector(test) {
 
 // --- Check -------------------------------------------------------------------
 
-/**
- * The errors of one descriptor, or null when there is nothing to check: the
- * descriptor formats no function, or it has no test file (the require-testsv2
- * job reports it).
- */
+/** The errors of one descriptor, or null when it formats no function. */
 function checkDescriptor(descriptorAbs) {
   const descriptor = rel(descriptorAbs);
   const errors = [];
@@ -111,12 +109,7 @@ function checkDescriptor(descriptorAbs) {
   try {
     fixture = JSON.parse(fs.readFileSync(path.join(repoRoot, testFile), 'utf8'));
   } catch (error) {
-    if (error.code === 'ENOENT') {
-      // require-testsv2 reports the missing file; it is a different fix.
-      process.stderr.write(`warning: ${descriptor} has no test file ${testFile}\n`);
-      return errors.length > 0 ? errors : null;
-    }
-    errors.push(`Cannot read ${testFile}: ${error.message}`);
+    errors.push(`Cannot read ${testFile}: ${error.code === 'ENOENT' ? 'no such file' : error.message}`);
     return errors;
   }
 
@@ -167,15 +160,19 @@ function checkDescriptor(descriptorAbs) {
 }
 
 function main() {
-  const targets = process.argv.slice(2);
+  const { values, positionals: targets } = parseArgs({
+    options: { report: { type: 'string' } },
+    allowPositionals: true,
+  });
   if (targets.length === 0) {
-    process.stderr.write('Usage: node check-selector-coverage.js <descriptor.json|directory>...\n');
+    process.stderr.write('Usage: node check-selector-coverage.js [--report <file>] <descriptor.json|directory>...\n');
     process.exit(2);
   }
 
   const descriptors = [...new Set(targets.flatMap((t) => collectDescriptors(path.resolve(t), [])))].sort();
   let checked = 0;
   let failed = 0;
+  const report = {};
   for (const descriptorAbs of descriptors) {
     const descriptor = rel(descriptorAbs);
     if (!/^calldata-/.test(path.basename(descriptor))) continue;
@@ -190,7 +187,12 @@ function main() {
       continue;
     }
     failed++;
+    report[descriptor] = result;
     for (const message of result) console.log(`::error file=${descriptor},line=1::${message}`);
+  }
+  if (values.report) {
+    fs.mkdirSync(path.dirname(values.report), { recursive: true });
+    fs.writeFileSync(values.report, JSON.stringify(report, null, 2));
   }
 
   const summary = `${failed} of ${checked} descriptor(s) failed the check.`;
