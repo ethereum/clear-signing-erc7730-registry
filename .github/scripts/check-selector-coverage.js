@@ -141,12 +141,19 @@ function checkDescriptor(descriptorAbs) {
 
   const covered = new Set();
   tests.forEach((test, i) => {
+    const name = test?.description ? JSON.stringify(test.description) : `#${i + 1}`;
+    let selector;
     try {
-      covered.add(testSelector(test));
+      selector = testSelector(test);
     } catch (error) {
-      const name = test?.description ? JSON.stringify(test.description) : `#${i + 1}`;
       errors.push(`Test ${name} in ${testFile} has a rawTx that cannot be decoded: ${reason(error)}`);
+      return;
     }
+    if (!selectors.has(selector)) {
+      errors.push(`Test ${name} in ${testFile} calls ${selector}, which no format of the descriptor matches`);
+      return;
+    }
+    covered.add(selector);
   });
 
   const uncovered = [...selectors].filter(([selector]) => !covered.has(selector));
