@@ -1,0 +1,513 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "weETH",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Ether.fi",
+    "info": {
+      "url": "https://ether.fi"
+    },
+    "constants": {
+      "weETHaddress": "0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee",
+      "eETHaddress": "0x35fA164735182de50811E8e2E824cFb9B6118ac2"
+    },
+    "contractName": "weETH"
+  },
+  "display": {
+    "formats": {
+      "wrap(uint256 _eETHAmount)": {
+        "intent": "Wrap eETH",
+        "interpolatedIntent": "Wrap {_eETHAmount}",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#._eETHAmount",
+            "params": {
+              "token": "$.metadata.constants.eETHaddress"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "unwrap(uint256 _weETHAmount)": {
+        "intent": "Unwrap weETH",
+        "interpolatedIntent": "Unwrap {_weETHAmount}",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#._weETHAmount",
+            "params": {
+              "token": "$.metadata.constants.weETHaddress"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "wrapWithPermit(uint256 _eETHAmount, (uint256,uint256,uint8,bytes32,bytes32) _permit)": {
+        "intent": "Wrap eETH",
+        "interpolatedIntent": "Wrap {_eETHAmount}",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#._eETHAmount",
+            "params": {
+              "token": "$.metadata.constants.eETHaddress"
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Permit",
+            "path": "#._permit",
+            "visible": "never"
+          }
+        ]
+      },
+      "approve(address spender, uint256 amount)": {
+        "intent": "Approve weETH",
+        "interpolatedIntent": "Allow to spend {amount}",
+        "fields": [
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "path": "#.spender",
+            "params": {
+              "types": [
+                "contract"
+              ],
+              "sources": [
+                "local"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.amount",
+            "params": {
+              "token": "$.metadata.constants.weETHaddress",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "transfer(address to, uint256 amount)": {
+        "intent": "Transfer weETH",
+        "interpolatedIntent": "Send {amount} to {to}",
+        "fields": [
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "path": "#.to",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.amount",
+            "params": {
+              "token": "$.metadata.constants.weETHaddress"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "transferFrom(address from, address to, uint256 amount)": {
+        "intent": "Transfer weETH",
+        "interpolatedIntent": "Send {amount} to {to}",
+        "fields": [
+          {
+            "label": "Sender",
+            "format": "addressName",
+            "path": "#.from",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "path": "#.to",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.amount",
+            "params": {
+              "token": "$.metadata.constants.weETHaddress"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "increaseAllowance(address spender, uint256 addedValue)": {
+        "intent": "Increase weETH allowance",
+        "interpolatedIntent": "Increase by {addedValue}",
+        "fields": [
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "path": "#.spender",
+            "params": {
+              "types": [
+                "contract"
+              ],
+              "sources": [
+                "local"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.addedValue",
+            "params": {
+              "token": "$.metadata.constants.weETHaddress"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "decreaseAllowance(address spender, uint256 subtractedValue)": {
+        "intent": "Decrease weETH allowance",
+        "interpolatedIntent": "Reduce by {subtractedValue}",
+        "fields": [
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "path": "#.spender",
+            "params": {
+              "types": [
+                "contract"
+              ],
+              "sources": [
+                "local"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.subtractedValue",
+            "params": {
+              "token": "$.metadata.constants.weETHaddress"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s)": {
+        "intent": "Approve weETH",
+        "interpolatedIntent": "Allow to spend {value}",
+        "fields": [
+          {
+            "label": "Owner",
+            "format": "addressName",
+            "path": "#.owner",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "path": "#.spender",
+            "params": {
+              "types": [
+                "contract"
+              ],
+              "sources": [
+                "local"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.value",
+            "params": {
+              "token": "$.metadata.constants.weETHaddress",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Expires",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.deadline",
+            "visible": "always"
+          },
+          {
+            "label": "v",
+            "path": "#.v",
+            "visible": "never"
+          },
+          {
+            "label": "r",
+            "path": "#.r",
+            "visible": "never"
+          },
+          {
+            "label": "s",
+            "path": "#.s",
+            "visible": "never"
+          }
+        ]
+      },
+      "recoverERC20(address token, address to, uint256 amount)": {
+        "intent": "Recover ERC-20 tokens",
+        "interpolatedIntent": "Recover {amount} tokens",
+        "fields": [
+          {
+            "label": "Token",
+            "format": "addressName",
+            "path": "#.token",
+            "params": {
+              "types": [
+                "token"
+              ],
+              "sources": [
+                "local"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "path": "#.to",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "raw",
+            "path": "#.amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "recoverERC721(address token, address to, uint256 tokenId)": {
+        "intent": "Recover NFT",
+        "interpolatedIntent": "Recover NFT #{tokenId}",
+        "fields": [
+          {
+            "label": "Collection",
+            "format": "addressName",
+            "path": "#.token",
+            "params": {
+              "types": [
+                "collection"
+              ],
+              "sources": [
+                "local"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "path": "#.to",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Token ID",
+            "format": "raw",
+            "path": "#.tokenId",
+            "visible": "always"
+          }
+        ]
+      },
+      "recoverETH(address to, uint256 amount)": {
+        "intent": "Recover ETH",
+        "interpolatedIntent": "Recover {amount}",
+        "fields": [
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "path": "#.to",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "amount",
+            "path": "#.amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "setPauseUntilDuration(uint256 _pauseUntilDuration)": {
+        "intent": "Set pause duration",
+        "interpolatedIntent": "Pause {_pauseUntilDuration}",
+        "fields": [
+          {
+            "label": "Duration",
+            "format": "duration",
+            "path": "#._pauseUntilDuration",
+            "visible": "always"
+          }
+        ]
+      },
+      "upgradeTo(address newImplementation)": {
+        "intent": "Upgrade contract",
+        "interpolatedIntent": "Upgrade to {newImplementation}",
+        "fields": [
+          {
+            "label": "Implementation",
+            "format": "addressName",
+            "path": "#.newImplementation",
+            "params": {
+              "types": [
+                "contract"
+              ],
+              "sources": [
+                "local"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "upgradeToAndCall(address newImplementation, bytes data)": {
+        "intent": "Upgrade contract",
+        "interpolatedIntent": "Upgrade to {newImplementation}",
+        "fields": [
+          {
+            "label": "Implementation",
+            "format": "addressName",
+            "path": "#.newImplementation",
+            "params": {
+              "types": [
+                "contract"
+              ],
+              "sources": [
+                "local"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Call data",
+            "format": "raw",
+            "path": "#.data",
+            "visible": "always"
+          }
+        ]
+      },
+      "pause()": {
+        "intent": "Pause weETH",
+        "fields": [],
+        "interpolatedIntent": "Pause weETH transfers"
+      },
+      "unpause()": {
+        "intent": "Unpause weETH",
+        "fields": [],
+        "interpolatedIntent": "Resume weETH transfers"
+      },
+      "pauseUntil()": {
+        "intent": "Pause weETH temporarily",
+        "fields": [],
+        "interpolatedIntent": "Pause weETH temporarily"
+      },
+      "unpauseUntil()": {
+        "intent": "Unpause weETH temporarily",
+        "fields": [],
+        "interpolatedIntent": "Resume weETH temporarily"
+      },
+      "initialize()": {
+        "intent": "Initialize contract",
+        "fields": [],
+        "interpolatedIntent": "Initialize weETH contract"
+      }
+    }
+  }
+}
