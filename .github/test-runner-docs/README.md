@@ -20,10 +20,12 @@ Write a single `results.json` per descriptor to the working directory.
 {
   "runner": "@ethereum-sourcify/clear-signing-test-runner",
   "implementation": "@ethereum-sourcify/clear-signing@0.1.1",
+  "descriptor": "registry/example/calldata-SmartAccount.json",
   "cases": [
     {
       "description": "Smart account execute: approve 100 USDC",
       "status": "pass",
+      "format": "execute(address target, uint256 value, bytes data)",
       "rendered": {
         "intent": "Execute call",
         "interpolatedIntent": "Execute call on USDC",
@@ -55,11 +57,13 @@ Write a single `results.json` per descriptor to the working directory.
 | --------------------- | ----------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `runner`              | yes         | string | Identifier of the test runner harness emitting this file. Always `@ethereum-sourcify/clear-signing-test-runner`                                                                                                                                             |
 | `implementation`      | yes         | string | Identifier of the clear-signing implementation under test, in `package@version` form                                                                                                                                                                        |
+| `descriptor`          | yes         | string | Path of the descriptor under test, relative to the repository root, e.g. `registry/aave/calldata-lpv3.json`. The pull request comment reads the descriptor from it                                                                                        |
 | `cases`               | yes         | array  | One entry per test case from the `.tests.json` input                                                                                                                                                                                                        |
 | `cases[].description` | yes         | string | Copied verbatim from the `description` field of the source test case — used to join back to the fixture. Fixtures must keep descriptions unique within a file; runners can rely on that to key results without collision                                    |
 | `cases[].status`      | yes         | enum   | One of `pass`, `fail`, `error`, `skipped` (see below)                                                                                                                                                                                                       |
 | `cases[].rendered`    | conditional | object | What the runner produced. Same shape as `expected` in the test data file — see [The `expected` block](../../README.md#the-expected-block) in the main README for the field-level breakdown. Required on `pass` and `fail`; omitted on `error` and `skipped` |
 | `cases[].message`     | optional    | string | Human-readable note. Required on `error` and `skipped`; optional on `fail`                                                                                                                                                                                  |
+| `cases[].format`      | conditional | string | The key of the descriptor's `display.formats` that the implementation matched for the case: the function signature of a calldata descriptor, or the primary type of an EIP-712 descriptor. Required on `pass` and `fail`; omitted on `error` and `skipped`. The pull request comment shows the declared format next to the rendered fields |
 
 **Calldata formatters.** Fields that use a calldata formatter (the field's value is itself an encoded inner call) appear as a nested `rendered`-shaped object in `fields`; nesting is recursive.
 

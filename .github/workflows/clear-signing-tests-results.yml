@@ -34,6 +34,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      # The rendering script comes from the default branch, because a
+      # workflow_run event runs there. A fork cannot change it.
+      - name: Checkout the scripts
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          sparse-checkout: .github/scripts
+          persist-credentials: false
+
       - name: Download the pull request context
         id: context
         continue-on-error: true
@@ -63,29 +71,32 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Render the results comment
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}
+          TESTED_SHA: ${{ github.event.workflow_run.head_sha }}
+          COMMIT_URL: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.event.workflow_run.head_sha }}
+          RUN_STARTED_AT: ${{ github.event.workflow_run.run_started_at }}
+          RUN_COMPLETED_AT: ${{ github.event.workflow_run.updated_at }}
+        # The commit under test, and the start and end time of the run, come
+        # from the workflow_run event, not from the artifact, so a fork cannot
+        # change them. A reviewer can therefore see if the results belong to
+        # the head of the pull request or to an older commit.
+        run: node .github/scripts/render-test-results.js --context pr-context --artifacts artifacts --coverage test-coverage > results.md
+
       - name: Post PR comment
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
-          RUN_ID: ${{ github.event.workflow_run.id }}
           RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
           RUN_HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
           RUN_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
-          RUN_STARTED_AT: ${{ github.event.workflow_run.run_started_at }}
-          RUN_COMPLETED_AT: ${{ github.event.workflow_run.updated_at }}
         with:
           script: |
             const fs = require('fs');
             const path = require('path');
 
-            const STATUS_ICONS = { pass: '✅', fail: '❌', error: '⚠️', skipped: '⏭️' };
-            const icon = (s) => (Object.hasOwn(STATUS_ICONS, s) ? STATUS_ICONS[s] : '—');
-            // GitHub rejects a comment body above 65536 characters.
-            const MAX_BODY = 60000;
             const { owner, repo } = context.repo;
-            const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${process.env.RUN_ID}`;
             const workspace = process.env.GITHUB_WORKSPACE;
-            const artifactsRoot = path.join(workspace, 'artifacts');
-            const contextRoot = path.join(workspace, 'pr-context');
 
             // A fork wrote the artifact, so the pull request must come from
             // the event, which a fork cannot change.
@@ -102,51 +113,6 @@ jobs:
               return;
             }
             const issue_number = pr.number;
-
-            // The artifact can be absent when the test run failed early. Say so,
-            // instead of leaving the "in progress" note on the pull request.
-            let ctx;
-            try {
-              ctx = JSON.parse(fs.readFileSync(path.join(contextRoot, 'context.json'), 'utf8'));
-            } catch (e) {
-              core.warning(`No usable pull request context: ${e.message}`);
-              ctx = null;
-            }
-
-            // Runner strings are untrusted. Keep them inside one line.
-            const line = (v) =>
-              String(v ?? '')
-                .replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))
-                .replace(/\|/g, '\\|')
-                .replace(/[\r\n]+/g, ' ');
-            // And inside one table cell.
-            const cell = (v) => line(v).slice(0, 200);
-            const block = (v) => {
-              const text = v != null ? JSON.stringify(v, null, 2) : '(none)';
-              return text.length > 4000 ? `${text.slice(0, 4000)}\n… truncated` : text;
-            };
-
-            // Each artifact is a single file named
-            // `<slug>__<entity>__<descriptor>.json`. With merge-multiple: true
-            // they all land flat in artifactsRoot, with no collisions.
-            let resultFiles = [];
-            try {
-              resultFiles = fs.readdirSync(artifactsRoot).filter(f => f.endsWith('.json'));
-            } catch (e) {
-              core.warning(`Could not read ${artifactsRoot}: ${e.message}`);
-            }
-            core.info(`Matched ${resultFiles.length} result JSON files`);
-
-            // The commit under test, and the start and end time of the run.
-            // All three come from the workflow_run event, not from the
-            // artifact, so a fork cannot change them. A reviewer can therefore
-            // see if the results belong to the head of the pull request or to
-            // an older commit.
-            const testedSha = process.env.RUN_HEAD_SHA;
-            const utc = (value) =>
-              Number.isNaN(Date.parse(value))
-                ? 'an unknown time'
-                : `${new Date(value).toISOString().slice(0, 16).replace('T', ' ')} UTC`;
 
             // Writes, replaces or removes one comment. An empty text removes it.
             const RESULTS = '## Clear Signing Tests';
@@ -170,158 +136,15 @@ jobs:
             };
 
             // A separate comment, and not part of the results, because it never
-            // blocks the pull request. It is written before the branches below,
-            // which return early.
+            // blocks the pull request.
             let recommendations = '';
             try {
-              recommendations = fs.readFileSync(path.join(contextRoot, 'recommendations.md'), 'utf8').trim();
+              recommendations = fs.readFileSync(path.join(workspace, 'pr-context', 'recommendations.md'), 'utf8').trim();
             } catch {
               // The test run failed before it could collect them.
             }
             await upsert(recommendations, RECOMMENDATIONS);
 
-            let body = '## Clear Signing Tests\n\n';
-            body += `Tested [\`${testedSha.slice(0, 7)}\`](${context.serverUrl}/${owner}/${repo}/commit/${testedSha})`;
-            body += ` · started ${utc(process.env.RUN_STARTED_AT)}`;
-            body += ` · finished ${utc(process.env.RUN_COMPLETED_AT)}\n\n`;
-
-            // The test run failed before it could describe itself.
-            if (ctx === null) {
-              body += `> The test run produced no results. See the [run](${runUrl}).\n`;
-              await upsert(body);
-              return;
-            }
-
-            // Nothing was affected, so there is nothing to report.
-            if (!ctx.has_affected) {
-              await upsert('');
-              return;
-            }
-
-            // require-testsv2 already failed the run, but the annotations do
-            // not explain how to fix it.
-            const missing = ctx.missing_tests ?? [];
-            if (missing.length > 0) {
-              body += `❌ ${missing.length} affected descriptor(s) have no test file:\n\n`;
-              for (const descriptor of missing) body += `- \`${cell(descriptor)}\`\n`;
-              body +=
-                '\nCreate a test file at `registry/<entity>/testsv2/<descriptor-name>.tests.json`. ' +
-                'See [testing documentation](../blob/master/README.md#reference-test-cases) for details.\n\n';
-            }
-
-            // check-test-coverage already failed the run, like require-testsv2.
-            let coverage = {};
-            try {
-              coverage = JSON.parse(fs.readFileSync(path.join(workspace, 'test-coverage', 'coverage.json'), 'utf8'));
-            } catch {
-              // The job did not run, or the run failed before it.
-            }
-            const gaps = Object.entries(coverage);
-            if (gaps.length > 0) {
-              body += `❌ ${gaps.length} affected descriptor(s) failed the test coverage check:\n\n`;
-              for (const [descriptor, messages] of gaps) {
-                body += `- \`${cell(descriptor)}\`\n`;
-                for (const message of messages) body += `  - ${line(message).slice(0, 1000)}\n`;
-              }
-              body += '\n';
-            }
-
-            // No descriptor had a test file, so no runner produced anything.
-            if (!ctx.has_tests) {
-              await upsert(body);
-              return;
-            }
-
-            if (resultFiles.length === 0) {
-              body += `> No implementation test results were uploaded. See the [run](${runUrl}).\n`;
-            } else {
-              // rows: keyed by entity|descriptor|description
-              // each row stores per-impl status + rendered (for diff blocks) + message
-              const rows = new Map();
-              const impls = new Set();
-
-              // The test files travel in the pr-context artifact, so the
-              // expected output is available without a checkout of the head.
-              const testFileCache = new Map();
-              const loadExpected = (entity, descriptor, description) => {
-                const key = `${entity}__${descriptor}`;
-                if (!testFileCache.has(key)) {
-                  const testPath = path.join(contextRoot, 'tests', `${key}.tests.json`);
-                  try {
-                    testFileCache.set(key, JSON.parse(fs.readFileSync(testPath, 'utf8')));
-                  } catch (e) {
-                    core.warning(`Could not read ${testPath}: ${e.message}`);
-                    testFileCache.set(key, null);
-                  }
-                }
-                const doc = testFileCache.get(key);
-                if (!doc || !Array.isArray(doc.tests)) return null;
-                const t = doc.tests.find(t => t.description === description);
-                return t ? t.expected : null;
-              };
-
-              for (const file of resultFiles) {
-                let data;
-                try { data = JSON.parse(fs.readFileSync(path.join(artifactsRoot, file), 'utf8')); }
-                catch (e) { core.warning(`Could not parse ${file}: ${e.message}`); continue; }
-                const impl = data.implementation || file;
-                impls.add(impl);
-                // filename: <slug>__<entity>__<descriptor>.json
-                const parts = file.replace(/\.json$/, '').split('__');
-                const entity = parts[1];
-                const descriptor = parts[2];
-                for (const c of data.cases || []) {
-                  const key = `${entity}|${descriptor}|${c.description}`;
-                  if (!rows.has(key)) rows.set(key, { entity, descriptor, description: c.description, byImpl: {} });
-                  rows.get(key).byImpl[impl] = {
-                    status: c.status,
-                    rendered: c.rendered,
-                    message: c.message,
-                  };
-                }
-              }
-
-              const implList = [...impls].sort();
-
-              // --- Compact status table ---
-              const header = ['Entity', 'Descriptor', 'Case', ...implList.map(cell)].join(' | ');
-              const sep = ['---', '---', '---', ...implList.map(() => ':---:')].join(' | ');
-              body += `| ${header} |\n| ${sep} |\n`;
-              for (const r of rows.values()) {
-                const cells = implList.map(i => icon((r.byImpl[i] || {}).status));
-                body += `| ${cell(r.entity)} | ${cell(r.descriptor)} | ${cell(r.description)} | ${cells.join(' | ')} |\n`;
-              }
-              body += '\n✅ pass · ❌ fail · ⚠️ error · ⏭️ skipped · — not run\n';
-
-              // --- Details for non-pass cases ---
-              const details = [];
-              for (const r of rows.values()) {
-                for (const impl of implList) {
-                  const result = r.byImpl[impl];
-                  if (!result || result.status === 'pass') continue;
-                  const summary = `${icon(result.status)} ${cell(r.entity)}/${cell(r.descriptor)} · ${cell(r.description)} · \`${cell(impl)}\``;
-                  let block_ = `<details>\n<summary>${summary}</summary>\n\n`;
-                  if (result.message) {
-                    block_ += `> ${cell(result.message)}\n\n`;
-                  }
-                  if (result.status === 'fail') {
-                    const expected = loadExpected(r.entity, r.descriptor, r.description);
-                    block_ += `**Expected:**\n\n\`\`\`json\n${block(expected)}\n\`\`\`\n\n`;
-                    block_ += `**Got:**\n\n\`\`\`json\n${block(result.rendered)}\n\`\`\`\n`;
-                  }
-                  block_ += '\n</details>\n';
-                  details.push(block_);
-                }
-              }
-              if (details.length > 0) {
-                body += '\n### Details\n\n' + details.join('\n');
-              }
-
-              body += `\n📋 [View test details](${runUrl})\n`;
-            }
-
-            if (body.length > MAX_BODY) {
-              body = `${body.slice(0, MAX_BODY)}\n\n… truncated. See the [run](${runUrl}).\n`;
-            }
-
-            await upsert(body);
+            // The results, rendered by the step above. An empty file means
+            // that the run affected no descriptor, so the comment goes away.
+            await upsert(fs.readFileSync(path.join(workspace, 'results.md'), 'utf8'));
