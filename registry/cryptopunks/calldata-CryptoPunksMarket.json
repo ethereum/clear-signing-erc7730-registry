@@ -1,0 +1,92 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "CryptoPunksMarket",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB" }] }
+  },
+  "metadata": {
+    "owner": "CryptoPunks",
+    "contractName": "CryptoPunksMarket",
+    "info": { "url": "https://cryptopunks.app", "deploymentDate": "2017-06-22T19:40:00Z" }
+  },
+  "display": {
+    "formats": {
+      "buyPunk(uint256 punkIndex)": {
+        "intent": "Buy Punk",
+        "interpolatedIntent": "Buy Punk #{#.punkIndex}",
+        "fields": [{ "path": "#.punkIndex", "label": "Punk", "format": "raw" }, { "path": "@.value", "label": "Price", "format": "amount" }]
+      },
+      "enterBidForPunk(uint256 punkIndex)": {
+        "intent": "Bid on Punk",
+        "interpolatedIntent": "Bid on Punk #{#.punkIndex}",
+        "fields": [
+          { "path": "#.punkIndex", "label": "Punk", "format": "raw" },
+          { "path": "@.value", "label": "Bid Amount", "format": "amount" }
+        ]
+      },
+      "withdrawBidForPunk(uint256 punkIndex)": {
+        "intent": "Withdraw Bid",
+        "interpolatedIntent": "Withdraw Bid on #{#.punkIndex}",
+        "fields": [{ "path": "#.punkIndex", "label": "Punk", "format": "raw" }]
+      },
+      "acceptBidForPunk(uint256 punkIndex, uint256 minPrice)": {
+        "intent": "Accept Bid",
+        "interpolatedIntent": "Accept Bid on #{#.punkIndex}",
+        "fields": [
+          { "path": "#.punkIndex", "label": "Punk", "format": "raw" },
+          { "path": "#.minPrice", "label": "Minimum Price", "format": "amount" }
+        ]
+      },
+      "offerPunkForSale(uint256 punkIndex, uint256 minSalePriceInWei)": {
+        "intent": "List Punk for Sale",
+        "interpolatedIntent": "List Punk #{#.punkIndex}",
+        "fields": [
+          { "path": "#.punkIndex", "label": "Punk", "format": "raw" },
+          { "path": "#.minSalePriceInWei", "label": "Price", "format": "amount" }
+        ]
+      },
+      "offerPunkForSaleToAddress(uint256 punkIndex, uint256 minSalePriceInWei, address toAddress)": {
+        "intent": "List Punk for Private Sale",
+        "interpolatedIntent": "Offer Punk #{#.punkIndex}",
+        "fields": [
+          { "path": "#.punkIndex", "label": "Punk", "format": "raw" },
+          { "path": "#.minSalePriceInWei", "label": "Price", "format": "amount" },
+          {
+            "path": "#.toAddress",
+            "label": "Buyer",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "punkNoLongerForSale(uint256 punkIndex)": {
+        "intent": "Remove Punk Listing",
+        "interpolatedIntent": "Delist Punk #{#.punkIndex}",
+        "fields": [{ "path": "#.punkIndex", "label": "Punk", "format": "raw" }]
+      },
+      "transferPunk(address to, uint256 punkIndex)": {
+        "intent": "Transfer Punk",
+        "interpolatedIntent": "Transfer Punk #{#.punkIndex}",
+        "fields": [
+          { "path": "#.punkIndex", "label": "Punk", "format": "raw" },
+          {
+            "path": "#.to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "withdraw()": {
+        "intent": "Withdraw ETH Balance",
+        "interpolatedIntent": "Withdraw your ETH balance from the CryptoPunks market",
+        "fields": []
+      },
+      "getPunk(uint256 punkIndex)": {
+        "intent": "Claim Punk",
+        "interpolatedIntent": "Claim Punk #{#.punkIndex}",
+        "fields": [{ "path": "#.punkIndex", "label": "Punk", "format": "raw" }]
+      }
+    }
+  }
+}

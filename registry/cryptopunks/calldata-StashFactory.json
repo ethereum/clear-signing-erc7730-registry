@@ -1,0 +1,120 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "StashFactory",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x000000000000A6fA31F5fC51c1640aAc76866750" }] }
+  },
+  "metadata": {
+    "owner": "CryptoPunks",
+    "contractName": "Stash Factory",
+    "info": { "url": "https://cryptopunks.app", "deploymentDate": "2024-01-17T22:48:35Z" }
+  },
+  "display": {
+    "formats": {
+      "deployStash(address _owner)": {
+        "intent": "Create Stash",
+        "interpolatedIntent": "Create Stash for {#._owner}",
+        "fields": [
+          {
+            "path": "#._owner",
+            "label": "Stash Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "upgradeStash()": { "intent": "Upgrade Stash", "interpolatedIntent": "Upgrade your Stash to the latest version", "fields": [] },
+      "setAuction(address auction, bool _isAuction)": {
+        "intent": "Set Marketplace Status",
+        "interpolatedIntent": "Set marketplace {#.auction} enabled: {#._isAuction}",
+        "fields": [
+          {
+            "path": "#.auction",
+            "label": "Marketplace",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#._isAuction", "label": "Enabled", "format": "raw" }
+        ]
+      },
+      "addVersion(address implementation)": {
+        "intent": "Add Stash Implementation",
+        "interpolatedIntent": "Add Stash implementation {#.implementation}",
+        "fields": [
+          {
+            "path": "#.implementation",
+            "label": "Implementation",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "transferOwnership(address newOwner)": {
+        "intent": "Transfer Factory Ownership",
+        "interpolatedIntent": "Transfer factory ownership to {#.newOwner}",
+        "fields": [
+          {
+            "path": "#.newOwner",
+            "label": "New Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "renounceOwnership()": { "intent": "Renounce Factory Ownership", "interpolatedIntent": "Renounce ownership of the Stash factory", "fields": [] },
+      "requestOwnershipHandover()": {
+        "intent": "Request Ownership Handover",
+        "interpolatedIntent": "Request a handover of the Stash factory ownership",
+        "fields": []
+      },
+      "completeOwnershipHandover(address pendingOwner)": {
+        "intent": "Complete Ownership Handover",
+        "interpolatedIntent": "Hand over factory ownership to {#.pendingOwner}",
+        "fields": [
+          {
+            "path": "#.pendingOwner",
+            "label": "New Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "cancelOwnershipHandover()": {
+        "intent": "Cancel Ownership Handover",
+        "interpolatedIntent": "Cancel your pending factory ownership handover",
+        "fields": []
+      },
+      "grantRoles(address user, uint256 roles)": {
+        "intent": "Grant Roles",
+        "interpolatedIntent": "Grant roles {#.roles} to {#.user}",
+        "fields": [
+          {
+            "path": "#.user",
+            "label": "Account",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.roles", "label": "Roles", "format": "raw" }
+        ]
+      },
+      "revokeRoles(address user, uint256 roles)": {
+        "intent": "Revoke Roles",
+        "interpolatedIntent": "Revoke roles {#.roles} from {#.user}",
+        "fields": [
+          {
+            "path": "#.user",
+            "label": "Account",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.roles", "label": "Roles", "format": "raw" }
+        ]
+      },
+      "renounceRoles(uint256 roles)": {
+        "intent": "Renounce Roles",
+        "interpolatedIntent": "Renounce roles {#.roles}",
+        "fields": [{ "path": "#.roles", "label": "Roles", "format": "raw" }]
+      }
+    }
+  }
+}
