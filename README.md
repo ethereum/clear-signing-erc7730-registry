@@ -49,7 +49,7 @@ ercs/
 - All ERC-7730 compatible files are prefixed with either `calldata` for smart contracts or `eip712` for EIP-712 messages.
 - All ERC-7730 compatible files are correctly validated against the schema file located at `specs/erc7730-v2.schema.json`.
 - Do not use the `calldata` or `eip712` prefixes for common files which are included by the ERC-7730 files and placed at the top level of the entity folder. Name them `common-*.json` instead.
-- Each descriptor added or changed is accompanied by a test file so descriptors can be verified against the formatter implementations. See [Reference test cases](#reference-test-cases).
+- Each descriptor added or changed is accompanied by a test file so descriptors can be verified against the formatter implementations. For a calldata descriptor, the test file has at least one test case for every function in `display.formats`: CI derives the selector of each format and looks for it in the calldata of the test cases. See [Reference test cases](#reference-test-cases).
 
 Reviewers check each PR against the [review guidelines](docs/REVIEWING.md).
 
@@ -195,7 +195,7 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
 
 ### Best practices
 
-1. **Include at least one test per function/message type** defined in your descriptor. For calldata descriptors CI enforces this: it computes the 4-byte selector of every key in `display.formats` and compares it with the first 4 bytes of the calldata of each test case's `rawTx`. A function whose selector no test case contains fails the check.
+1. **Include at least one test per function/message type** defined in your descriptor
 2. **Use real transactions** when possible - they provide the most realistic test cases
 3. **Add descriptive labels** to help reviewers understand what each test validates
 4. **Test edge cases** like maximum values, zero values, and special addresses
