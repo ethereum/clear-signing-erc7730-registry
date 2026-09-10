@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-rocketTokenRETH.json",
+  "dataProvider": {
+    "tokens": {
+      "0xae78736cd615f374d3085123a210448e74fc6393": { "symbol": "rETH", "decimals": 18, "name": "Rocket Pool ETH" },
+      "0x7322c24752f79c05ffd1e2a6fcb97020c1c264f1": { "symbol": "rETH", "decimals": 18, "name": "Rocket Pool ETH" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Transfer 1.5 rETH - chain 1",
+      "rawTx": "0x02f86e0180843b9aca008506fc23ac008303d09094ae78736cd615f374d3085123a210448e74fc639380b844a9059cbb00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c800000000000000000000000000000000000000000000000014d1120d7b160000c0",
+      "expected": {
+        "intent": "Transfer rETH",
+        "interpolatedIntent": "Send 1.5 rETH to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "owner": "Rocket Pool",
+        "fields": [
+          { "label": "Recipient", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" },
+          { "label": "Amount", "value": "1.5 rETH" }
+        ]
+      }
+    },
+    {
+      "description": "Transfer 1.5 rETH - Hoodi",
+      "rawTx": "0x02f87183088bb080843b9aca008506fc23ac008303d090947322c24752f79c05ffd1e2a6fcb97020c1c264f180b844a9059cbb00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c800000000000000000000000000000000000000000000000014d1120d7b160000c0",
+      "expected": {
+        "intent": "Transfer rETH",
+        "interpolatedIntent": "Send 1.5 rETH to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "owner": "Rocket Pool",
+        "fields": [
+          { "label": "Recipient", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" },
+          { "label": "Amount", "value": "1.5 rETH" }
+        ]
+      }
+    },
+    {
+      "description": "Approve unlimited rETH - chain 1",
+      "rawTx": "0x02f86e0180843b9aca008506fc23ac008303d09094ae78736cd615f374d3085123a210448e74fc639380b844095ea7b300000000000000000000000090f79bf6eb2c4f870365e785982e1f101e93b906ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Approve rETH",
+        "interpolatedIntent": "Approve Unlimited rETH",
+        "owner": "Rocket Pool",
+        "fields": [
+          { "label": "Spender", "value": "0x90F79bf6EB2c4f870365E785982E1f101E93b906" },
+          { "label": "Amount", "value": "Unlimited rETH" }
+        ]
+      }
+    },
+    {
+      "description": "Redeem 0.5 rETH for ETH - chain 1",
+      "rawTx": "0x02f84d0180843b9aca008506fc23ac008303d09094ae78736cd615f374d3085123a210448e74fc639380a442966c6800000000000000000000000000000000000000000000000006f05b59d3b20000c0",
+      "expected": {
+        "intent": "Redeem rETH for ETH",
+        "interpolatedIntent": "Redeem 0.5 rETH",
+        "owner": "Rocket Pool",
+        "fields": [
+          { "label": "Amount", "value": "0.5 rETH" }
+        ]
+      }
+    }
+  ]
+}
