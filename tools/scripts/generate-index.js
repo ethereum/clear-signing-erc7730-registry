@@ -79,6 +79,21 @@ function caip(chainId, address) {
 }
 
 /**
+ * A salt-based EIP-712 domain, EIP712Domain(string name,string version,address
+ * verifyingContract,bytes32 salt), carries the chain id in `salt` and has no
+ * `chainId` member. Per the specification, an eip712.deployments constraint
+ * requires the message to have one, so such a descriptor cannot declare
+ * deployments and therefore has no (chainId, address) key. It binds through
+ * eip712.domainSeparator instead, so it is keyed by that separator.
+ *
+ * The prefix keeps these keys disjoint from the eip155: ones, so a consumer
+ * that only understands deployment keys skips them rather than mis-resolving.
+ */
+function domainSeparatorKey(domainSeparator) {
+  return `eip712-domain-separator:${domainSeparator.trim().toLowerCase()}`;
+}
+
+/**
  * Indexes one already-include-resolved descriptor.
  *
  * Descriptors routinely inherit half their content through "includes" — some
@@ -112,9 +127,8 @@ function indexDescriptor(descriptor, descriptorPath, index) {
   }
 
   if (!context.eip712) return;
-  const deployments = context.eip712.deployments ?? [];
   const formats = descriptor.display?.formats;
-  if (!deployments.length || !formats) return;
+  if (!formats) return;
 
   // A descriptor may declare several formats sharing one primary type, so the
   // hashes are grouped per primary type. Consumers match a message by hashing
@@ -129,10 +143,18 @@ function indexDescriptor(descriptor, descriptorPath, index) {
   }
   if (hashesByPrimaryType.size === 0) return;
 
-  for (const deployment of deployments) {
+  const keys = [];
+  for (const deployment of context.eip712.deployments ?? []) {
     const { chainId, address } = deployment;
     if (chainId === undefined || !address) continue;
-    const key = caip(chainId, address);
+    keys.push(caip(chainId, address));
+  }
+  if (!keys.length && context.eip712.domainSeparator) {
+    keys.push(domainSeparatorKey(context.eip712.domainSeparator));
+  }
+  if (!keys.length) return;
+
+  for (const key of keys) {
     const byPrimaryType = (index.eip712[key] ??= {});
     for (const [primaryType, encodeTypeHashes] of hashesByPrimaryType) {
       const entries = (byPrimaryType[primaryType] ??= []);
@@ -254,4 +276,6 @@ function main() {
   }
 }
 
-main();
+if (require.main === module) main();
+
+module.exports = { caip, domainSeparatorKey, indexDescriptor };
