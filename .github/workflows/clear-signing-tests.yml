@@ -254,8 +254,8 @@ jobs:
 
       # clear-signing-tests-results.yml runs after this workflow and posts the
       # comment that a fork run cannot write. It learns the pull request and the
-      # tested descriptors from here, and it gets a copy of each test file, so
-      # it never has to check out the head of a fork.
+      # tested descriptors from here, and it gets a copy of each test file and
+      # of each descriptor, so it never has to check out the head of a fork.
       - name: Build the pull request context
         if: always()
         env:
@@ -272,7 +272,7 @@ jobs:
           TEST_MATRIX="${TEST_MATRIX:-[]}"
           MISSING_TESTS="${MISSING_TESTS:-[]}"
 
-          mkdir -p pr-context/tests
+          mkdir -p pr-context/tests pr-context/descriptors
           jq -n \
             --argjson pr_number "$PR_NUMBER" \
             --arg head_sha "$HEAD_SHA" \
@@ -287,9 +287,18 @@ jobs:
               matrix: $matrix, missing_tests: $missing}' \
             > pr-context/context.json
 
-          echo "$TEST_MATRIX" | jq -r '.[] | "\(.entity)\t\(.descriptor_name)\t\(.test_file)"' |
-            while IFS=$'\t' read -r entity descriptor test_file; do
+          echo "$TEST_MATRIX" | jq -r '.[] | "\(.entity)\t\(.descriptor_name)\t\(.test_file)\t\(.descriptor)"' |
+            while IFS=$'\t' read -r entity descriptor test_file descriptor_file; do
               cp "$test_file" "pr-context/tests/${entity}__${descriptor}.tests.json"
+              # The comment shows the format that the descriptor declares for
+              # each case, so it needs the descriptor with its includes
+              # resolved, under the path that the runner reports in its
+              # results. One that does not resolve is copied as it is; the
+              # schema check reports the cause.
+              mkdir -p "pr-context/descriptors/$(dirname "$descriptor_file")"
+              node base-scripts/.github/scripts/resolve-erc7730-includes.js \
+                "$descriptor_file" "pr-context/descriptors/$descriptor_file" ||
+                cp "$descriptor_file" "pr-context/descriptors/$descriptor_file"
             done
 
           cat pr-context/context.json
