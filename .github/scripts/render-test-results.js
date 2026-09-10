@@ -23,8 +23,7 @@
  * test file and the descriptor side by side.
  *
  * Every input can come from a fork, so every string that lands in the comment
- * goes through text(), cell() or block(). To preview the comment locally, see
- * .github/test-runner-docs/README.md.
+ * goes through text(), cell() or block().
  */
 
 const fs = require('fs');

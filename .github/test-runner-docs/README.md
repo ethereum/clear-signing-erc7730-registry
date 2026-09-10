@@ -88,19 +88,3 @@ Write a single `results.json` per descriptor to the working directory.
 Wrap the runner in a composite action under `.github/actions/run-<name>-tests/` and add a sibling job in [`clear-signing-tests.yml`](../workflows/clear-signing-tests.yml). The action should call [`upload-test-results`](../actions/upload-test-results/action.yml) to publish the artifact.
 
 See [`run-sourcify-tests`](../actions/run-sourcify-tests/action.yml) for a complete reference implementation.
-
-## Previewing the pull request comment
-
-[`clear-signing-tests-results.yml`](../workflows/clear-signing-tests-results.yml) builds the comment with [`render-test-results.js`](../scripts/render-test-results.js) from two directories: the `pr-context` artifact (`context.json`, the test files as `tests/<entity>__<descriptor>.tests.json`, the descriptors with their includes resolved under `descriptors/`, at their repository path) and the flat `results__*` artifacts (`<slug>__<entity>__<descriptor>.json`), plus, with `--coverage`, the `test-coverage` artifact (`coverage.json`, the report of the `check-test-coverage` job). The same script runs locally, so a change to the comment can be checked without a pull request. From the repository root, with one descriptor as an example:
-
-```bash
-mkdir -p preview/pr-context/tests preview/pr-context/descriptors/registry/ekubo preview/artifacts
-cp registry/ekubo/testsv2/calldata-Positions.tests.json preview/pr-context/tests/ekubo__calldata-Positions.tests.json
-node .github/scripts/resolve-erc7730-includes.js registry/ekubo/calldata-Positions.json preview/pr-context/descriptors/registry/ekubo/calldata-Positions.json
-echo '{"has_affected": true, "has_tests": true, "missing_tests": []}' > preview/pr-context/context.json
-# Put a results.json from a runner at preview/artifacts/<slug>__ekubo__calldata-Positions.json, then:
-# Optionally, node .github/scripts/check-selector-coverage.js --report preview/test-coverage/coverage.json registry/ekubo/calldata-Positions.json
-RUN_URL=https://example.test/run TESTED_SHA=0000000 node .github/scripts/render-test-results.js --context preview/pr-context --artifacts preview/artifacts --coverage preview/test-coverage > preview/results.md
-```
-
-`jq -n --rawfile t preview/results.md '{text: $t, mode: "gfm"}' | gh api -X POST /markdown --input - > preview/results.html` renders the body the way GitHub does.
