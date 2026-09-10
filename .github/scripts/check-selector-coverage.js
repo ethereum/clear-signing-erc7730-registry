@@ -78,8 +78,8 @@ function testSelector(test) {
 
 /**
  * The errors of one descriptor, or null when there is nothing to check: the
- * descriptor cannot be read (another job reports it), it formats no function,
- * or it has no test file (the require-testsv2 job reports it).
+ * descriptor formats no function, or it has no test file (the require-testsv2
+ * job reports it).
  */
 function checkDescriptor(descriptorAbs) {
   const descriptor = rel(descriptorAbs);
@@ -89,9 +89,7 @@ function checkDescriptor(descriptorAbs) {
   try {
     formats = resolveDescriptor(descriptorAbs).display?.formats ?? {};
   } catch (error) {
-    // Another job reports the malformed descriptor; there is nothing to cover.
-    process.stderr.write(`warning: cannot read ${descriptor}: ${error.message}\n`);
-    return null;
+    return [`Cannot read the descriptor: ${error.message}`];
   }
 
   const selectors = new Map(); // selector -> the keys that hash to it
@@ -173,7 +171,7 @@ function main() {
     for (const message of result) console.log(`::error file=${descriptor},line=1::${message}`);
   }
 
-  const summary = `${failed} of ${checked} descriptor(s) have a function without a test.`;
+  const summary = `${failed} of ${checked} descriptor(s) failed the check.`;
   console.log(summary);
   if (process.env.GITHUB_STEP_SUMMARY && failed > 0) {
     // GitHub shows 10 annotations per step, so give the total as well.
