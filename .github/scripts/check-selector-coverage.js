@@ -65,9 +65,10 @@ function selectorOf(key) {
   return toFunctionSelector(parseAbiItem(`function ${key.trim()}`));
 }
 
-/** The selector called by a test case, or null when the test is not a calldata test. */
+/** The selector called by a test case. */
 function testSelector(test) {
-  if (typeof test.rawTx !== 'string') return null;
+  // The schema allows an EIP-712 test in a calldata fixture; it covers nothing.
+  if (typeof test.rawTx !== 'string') throw new Error('test has no rawTx');
   const data = parseTransaction(test.rawTx).data ?? '0x';
   if (data.length < 10) throw new Error('calldata shorter than 4 bytes');
   return slice(data, 0, 4);
@@ -128,8 +129,7 @@ function checkDescriptor(descriptorAbs) {
   const covered = new Set();
   tests.forEach((test, i) => {
     try {
-      const selector = testSelector(test);
-      if (selector) covered.add(selector);
+      covered.add(testSelector(test));
     } catch (error) {
       const name = test?.description ? JSON.stringify(test.description) : `#${i + 1}`;
       errors.push(`Test ${name} in ${testFile} has a rawTx that cannot be decoded: ${reason(error)}`);
