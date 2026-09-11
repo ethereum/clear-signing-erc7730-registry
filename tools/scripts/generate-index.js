@@ -38,8 +38,14 @@ const EIP712_INDEX = 'index.eip712.json';
  */
 const EXCLUDED_DIRS = new Set(['tests', 'testsv2', 'sigs']);
 
+/** Repo-relative path with forward slashes. */
+function rel(absPath) {
+  return path.relative(REPO_ROOT, absPath).split(path.sep).join('/');
+}
+
 /**
- * Collects descriptor paths under registry/, repo-relative and sorted.
+ * Collects descriptor paths under registry/, repo-relative with forward
+ * slashes, and sorted.
  *
  * Only calldata-*.json / eip712-*.json files are descriptors. Shared files
  * pulled in via "includes" (common-*.json, *-common-*.json) do not match the
@@ -58,7 +64,7 @@ function findDescriptors(dir, found = []) {
       /^(calldata|eip712)-.*\.json$/.test(entry.name) &&
       !entry.name.endsWith('.tests.json')
     ) {
-      found.push(path.relative(REPO_ROOT, abs));
+      found.push(rel(abs));
     }
   }
   return found.sort();
