@@ -1,0 +1,95 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Simple7702Account",
+    "contract": {
+      "abi": [
+        {
+          "type": "function",
+          "name": "execute",
+          "inputs": [
+            { "name": "target", "type": "address", "internalType": "address" },
+            { "name": "value", "type": "uint256", "internalType": "uint256" },
+            { "name": "data", "type": "bytes", "internalType": "bytes" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "executeBatch",
+          "inputs": [
+            {
+              "name": "calls",
+              "type": "tuple[]",
+              "internalType": "struct BaseAccount.Call[]",
+              "components": [
+                { "name": "target", "type": "address", "internalType": "address" },
+                { "name": "value", "type": "uint256", "internalType": "uint256" },
+                { "name": "data", "type": "bytes", "internalType": "bytes" }
+              ]
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        }
+      ],
+      "deployments": [
+        { "chainId": 1, "address": "0x4Cd241E8d1510e30b2076397afc7508Ae59C66c9" },
+        { "chainId": 10, "address": "0x4Cd241E8d1510e30b2076397afc7508Ae59C66c9" },
+        { "chainId": 8453, "address": "0x4Cd241E8d1510e30b2076397afc7508Ae59C66c9" },
+        { "chainId": 42161, "address": "0x4Cd241E8d1510e30b2076397afc7508Ae59C66c9" },
+        { "chainId": 11155111, "address": "0x4Cd241E8d1510e30b2076397afc7508Ae59C66c9" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "eth-infinitism",
+    "info": { "url": "https://erc4337.io" },
+    "contractName": "Simple7702Account"
+  },
+  "display": {
+    "formats": {
+      "execute(address target, uint256 value, bytes data)": {
+        "$id": "execute",
+        "intent": "Run an action",
+        "fields": [
+          {
+            "path": "target",
+            "label": "Contract",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "data",
+            "label": "Action",
+            "format": "calldata",
+            "params": { "calleePath": "target", "amountPath": "value" },
+            "visible": "always"
+          }
+        ]
+      },
+      "executeBatch((address target, uint256 value, bytes data)[] calls)": {
+        "$id": "executeBatch",
+        "intent": "Run several actions at once",
+        "fields": [
+          {
+            "path": "calls.[].target",
+            "label": "Contract",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "calls.[].data",
+            "label": "Action",
+            "format": "calldata",
+            "params": { "calleePath": "calls.[].target", "amountPath": "calls.[].value" },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
