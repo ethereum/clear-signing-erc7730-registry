@@ -44,6 +44,15 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Download the test coverage report
+        continue-on-error: true
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: test-coverage
+          path: test-coverage
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Download the runner results
         continue-on-error: true
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -104,13 +113,14 @@ jobs:
               ctx = null;
             }
 
-            // Runner strings are untrusted. Keep them inside one table cell.
-            const cell = (v) =>
+            // Runner strings are untrusted. Keep them inside one line.
+            const line = (v) =>
               String(v ?? '')
                 .replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))
                 .replace(/\|/g, '\\|')
-                .replace(/[\r\n]+/g, ' ')
-                .slice(0, 200);
+                .replace(/[\r\n]+/g, ' ');
+            // And inside one table cell.
+            const cell = (v) => line(v).slice(0, 200);
             const block = (v) => {
               const text = v != null ? JSON.stringify(v, null, 2) : '(none)';
               return text.length > 4000 ? `${text.slice(0, 4000)}\n… truncated` : text;
@@ -197,6 +207,23 @@ jobs:
               body +=
                 '\nCreate a test file at `registry/<entity>/testsv2/<descriptor-name>.tests.json`. ' +
                 'See [testing documentation](../blob/master/README.md#reference-test-cases) for details.\n\n';
+            }
+
+            // check-test-coverage already failed the run, like require-testsv2.
+            let coverage = {};
+            try {
+              coverage = JSON.parse(fs.readFileSync(path.join(workspace, 'test-coverage', 'coverage.json'), 'utf8'));
+            } catch {
+              // The job did not run, or the run failed before it.
+            }
+            const gaps = Object.entries(coverage);
+            if (gaps.length > 0) {
+              body += `❌ ${gaps.length} affected descriptor(s) failed the test coverage check:\n\n`;
+              for (const [descriptor, messages] of gaps) {
+                body += `- \`${cell(descriptor)}\`\n`;
+                for (const message of messages) body += `  - ${line(message).slice(0, 1000)}\n`;
+              }
+              body += '\n';
             }
 
             // No descriptor had a test file, so no runner produced anything.
