@@ -1,0 +1,244 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "BondingManager",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 42161,
+          "address": "0x35Bcf3c30594191d53231E4FF333E8A770453e40"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Livepeer",
+    "info": {
+      "url": "https://livepeer.org"
+    },
+    "constants": {
+      "LPTaddress": "0x289ba1701C2F088cf0faf8B3705246331cB8A839"
+    },
+    "contractName": "BondingManager"
+  },
+  "display": {
+    "formats": {
+      "setRewardCaller(address _rewardCaller)": {
+        "intent": "Set or revoke reward caller",
+        "interpolatedIntent": "Reward caller {_rewardCaller}",
+        "fields": [
+          {
+            "label": "Reward caller",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._rewardCaller",
+            "visible": "always"
+          }
+        ]
+      },
+      "reward()": {
+        "intent": "Call reward",
+        "fields": []
+      },
+      "rewardWithHint(address _newPosPrev, address _newPosNext)": {
+        "intent": "Call reward",
+        "fields": [
+          {
+            "label": "List hint (prev)",
+            "path": "#._newPosPrev",
+            "visible": "never"
+          },
+          {
+            "label": "List hint (next)",
+            "path": "#._newPosNext",
+            "visible": "never"
+          }
+        ]
+      },
+      "rewardForTranscoder(address _transcoder)": {
+        "intent": "Call reward for orchestrator",
+        "interpolatedIntent": "Reward for {_transcoder}",
+        "fields": [
+          {
+            "label": "Orchestrator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._transcoder",
+            "visible": "always"
+          }
+        ]
+      },
+      "rewardForTranscoderWithHint(address _transcoder, address _newPosPrev, address _newPosNext)": {
+        "intent": "Call reward for orchestrator",
+        "interpolatedIntent": "Reward for {_transcoder}",
+        "fields": [
+          {
+            "label": "Orchestrator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._transcoder",
+            "visible": "always"
+          },
+          {
+            "label": "List hint (prev)",
+            "path": "#._newPosPrev",
+            "visible": "never"
+          },
+          {
+            "label": "List hint (next)",
+            "path": "#._newPosNext",
+            "visible": "never"
+          }
+        ]
+      },
+      "unbondWithHint(uint256 _amount, address _newPosPrev, address _newPosNext)": {
+        "intent": "Undelegate LPT",
+        "interpolatedIntent": "Undelegate {_amount}",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.LPTaddress"
+            },
+            "path": "#._amount",
+            "visible": "always"
+          },
+          {
+            "label": "List hint (prev)",
+            "path": "#._newPosPrev",
+            "visible": "never"
+          },
+          {
+            "label": "List hint (next)",
+            "path": "#._newPosNext",
+            "visible": "never"
+          }
+        ]
+      },
+      "withdrawFees(address _recipient, uint256 _amount)": {
+        "intent": "Withdraw fees",
+        "interpolatedIntent": "Withdraw {_amount}",
+        "fields": [
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._recipient",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "amount",
+            "path": "#._amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "withdrawStake(uint256 _unbondingLockId)": {
+        "intent": "Withdraw undelegated LPT",
+        "fields": [
+          {
+            "label": "Unbonding lock",
+            "format": "raw",
+            "path": "#._unbondingLockId",
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Withdraw #{_unbondingLockId}"
+      },
+      "bondWithHint(uint256 _amount, address _to, address _oldDelegateNewPosPrev, address _oldDelegateNewPosNext, address _currDelegateNewPosPrev, address _currDelegateNewPosNext)": {
+        "intent": "Delegate LPT",
+        "interpolatedIntent": "Delegate {_amount} to {_to}",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.LPTaddress"
+            },
+            "path": "#._amount",
+            "visible": "always"
+          },
+          {
+            "label": "Delegate",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._to",
+            "visible": "always"
+          },
+          {
+            "label": "List hint 1",
+            "path": "#._oldDelegateNewPosPrev",
+            "visible": "never"
+          },
+          {
+            "label": "List hint 2",
+            "path": "#._oldDelegateNewPosNext",
+            "visible": "never"
+          },
+          {
+            "label": "List hint 3",
+            "path": "#._currDelegateNewPosPrev",
+            "visible": "never"
+          },
+          {
+            "label": "List hint 4",
+            "path": "#._currDelegateNewPosNext",
+            "visible": "never"
+          }
+        ]
+      }
+    }
+  }
+}
