@@ -1,0 +1,52 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "FAsset-FXRP-Songbird",
+    "contract": { "deployments": [{ "chainId": 19, "address": "0xF9a84f4ec903F4EaB117A9c1098BeC078BA7027d" }] }
+  },
+  "metadata": {
+    "owner": "Flare Foundation",
+    "info": { "url": "https://flare.network/" },
+    "contractName": "FAsset-FXRP-Songbird",
+    "constants": { "fxrp": "0xF9a84f4ec903F4EaB117A9c1098BeC078BA7027d" }
+  },
+  "display": {
+    "formats": {
+      "transfer(address to, uint256 amount)": {
+        "intent": "Send FXRP",
+        "fields": [
+          { "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.fxrp" }, "path": "#.amount", "visible": "always" },
+          {
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "path": "#.to",
+            "visible": "always"
+          }
+        ]
+      },
+      "approve(address spender, uint256 amount)": {
+        "intent": "Approve FXRP",
+        "fields": [
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "path": "#.spender",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.fxrp",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000"
+            },
+            "path": "#.amount",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

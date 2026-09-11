@@ -4,30 +4,21 @@
     "$id": "RewardManager-Songbird",
     "contract": { "deployments": [{ "chainId": 19, "address": "0xE26AD68b17224951b5740F33926Cc438764eB9a7" }] }
   },
-  "metadata": { "owner": "Flare Labs", "info": { "url": "https://flare.network/" }, "contractName": "RewardManager-Songbird" },
+  "metadata": { "owner": "Flare Foundation", "info": { "url": "https://flare.network/" }, "contractName": "RewardManager-Songbird" },
   "display": {
     "formats": {
       "initialiseWeightBasedClaims((bytes32[] merkleProof, (uint24 rewardEpochId, bytes20 beneficiary, uint120 amount, uint8 claimType) body)[] _proofs)": {
         "intent": "initialise claims",
         "fields": [
           {
-            "path": "#._proofs.[]",
-            "fields": [
-              {
-                "path": "body",
-                "fields": [
-                  {
-                    "label": "Beneficiary",
-                    "format": "addressName",
-                    "params": { "types": ["eoa"], "sources": ["local", "ens"] },
-                    "path": "beneficiary"
-                  },
-                  { "label": "Amount", "format": "amount", "path": "amount" },
-                  { "label": "Claim Type", "format": "raw", "path": "claimType" }
-                ]
-              }
-            ]
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "path": "#._proofs.[].body.beneficiary",
+            "visible": "always"
           },
+          { "label": "Amount", "format": "amount", "path": "#._proofs.[].body.amount", "visible": "always" },
+          { "label": "Claim Type", "format": "raw", "path": "#._proofs.[].body.claimType", "visible": "always" },
           { "label": "Proofs Merkle Proof", "path": "#._proofs.[].merkleProof.[]", "visible": "never" },
           { "label": "Proofs Body Reward Epoch Id", "path": "#._proofs.[].body.rewardEpochId", "visible": "never" }
         ]
@@ -42,25 +33,16 @@
             "path": "#._rewardOwners.[]",
             "visible": "always"
           },
-          { "label": "Reward Epoch Id", "format": "raw", "path": "#._rewardEpochId" },
+          { "label": "Reward Epoch Id", "format": "raw", "path": "#._rewardEpochId", "visible": "always" },
           {
-            "path": "#._proofs.[]",
-            "fields": [
-              {
-                "path": "body",
-                "fields": [
-                  {
-                    "label": "Claim Owner",
-                    "format": "addressName",
-                    "params": { "types": ["eoa"], "sources": ["local", "ens"] },
-                    "path": "beneficiary"
-                  },
-                  { "label": "Amount", "format": "amount", "path": "amount" },
-                  { "label": "Claim Type", "format": "raw", "path": "claimType" }
-                ]
-              }
-            ]
+            "label": "Claim Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "path": "#._proofs.[].body.beneficiary",
+            "visible": "always"
           },
+          { "label": "Amount", "format": "amount", "path": "#._proofs.[].body.amount", "visible": "always" },
+          { "label": "Claim Type", "format": "raw", "path": "#._proofs.[].body.claimType", "visible": "always" },
           { "label": "Proofs Merkle Proof", "path": "#._proofs.[].merkleProof.[]", "visible": "never" },
           { "label": "Proofs Body Reward Epoch Id", "path": "#._proofs.[].body.rewardEpochId", "visible": "never" }
         ]

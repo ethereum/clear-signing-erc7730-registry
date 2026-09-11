@@ -1,0 +1,44 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-ValidatorRewardManager-Flare.json",
+  "dataProvider": {
+    "addressNames": {
+      "0x1111111111111111111111111111111111111111": "Reward Owner",
+      "0x2222222222222222222222222222222222222222": "Recipient"
+    }
+  },
+  "tests": [
+    {
+      "description": "Claim 1 FLR wrapped - chain 14",
+      "rawTx": "0x02f8ad0e01840f2f16ee8411807b358307a12094c0cf3aaf93bd978c5bc662564aa73e331f2ec0b580b884b2c12192000000000000000000000000111111111111111111111111111111111111111100000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000000000000000001c0",
+      "expected": {
+        "intent": "Claim/Wrap Reward",
+        "owner": "Flare Foundation",
+        "fields": [
+          { "label": "Reward Owner", "value": "Reward Owner" },
+          { "label": "Recipient", "value": "Recipient" },
+          { "label": "Reward Amount", "value": "1 FLR" },
+          { "label": "Wrap", "value": "true" }
+        ]
+      }
+    },
+    {
+      "description": "Set claim executor - chain 14",
+      "rawTx": "0x02f88d0e02840f2f16ee8411807b358307a12094c0cf3aaf93bd978c5bc662564aa73e331f2ec0b580b8649119c494000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000001111111111111111111111111111111111111111c0",
+      "expected": {
+        "intent": "set executors",
+        "owner": "Flare Foundation",
+        "fields": [{ "label": "Executor", "value": "Reward Owner" }]
+      }
+    },
+    {
+      "description": "Set allowed claim recipient - chain 14",
+      "rawTx": "0x02f88d0e03840f2f16ee8411807b358307a12094c0cf3aaf93bd978c5bc662564aa73e331f2ec0b580b864d2a4ac61000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "set recipients",
+        "owner": "Flare Foundation",
+        "fields": [{ "label": "Recipient", "value": "Recipient" }]
+      }
+    }
+  ]
+}
