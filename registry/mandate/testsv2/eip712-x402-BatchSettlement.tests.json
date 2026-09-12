@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-x402-BatchSettlement.json",
+  "tests": [
+    {
+      "description": "batch-settlement voucher on Base Sepolia",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Voucher": [
+            { "name": "channelId", "type": "bytes32" },
+            { "name": "maxClaimableAmount", "type": "uint128" }
+          ]
+        },
+        "primaryType": "Voucher",
+        "domain": {
+          "name": "x402 Batch Settlement",
+          "version": "1",
+          "chainId": 84532,
+          "verifyingContract": "0x4020074e9dF2ce1deE5A9C1b5c3f541D02a10003"
+        },
+        "message": {
+          "channelId": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "maxClaimableAmount": "5000000"
+        }
+      },
+      "expected": {
+        "intent": "Authorize a batch-settlement voucher",
+        "owner": "Mandate",
+        "fields": [
+          { "label": "Channel", "value": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+          { "label": "Max claimable", "value": "5000000" }
+        ]
+      }
+    }
+  ]
+}
