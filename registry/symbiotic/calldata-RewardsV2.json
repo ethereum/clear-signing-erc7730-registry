@@ -1,12 +1,7 @@
 {
   "$schema": "../../specs/erc7730-v2.schema.json",
   "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0xa13e65cA0FeFa52cCb9615108fF400EF4806866B" }] } },
-  "metadata": {
-    "owner": "Symbiotic",
-    "info": { "url": "https://symbiotic.fi" },
-    "contractName": "Rewards V2",
-    "enums": { "rewardType": { "0": "Vault snapshot", "1": "Cumulative Merkle" } }
-  },
+  "metadata": { "owner": "Symbiotic", "info": { "url": "https://symbiotic.fi" }, "contractName": "Rewards V2" },
   "display": {
     "formats": {
       "claimVaultSnapshotRewards(address recipient,address network,address token,address vault,uint256 lastUnclaimedRewards,uint256 firstRewardToClaim,uint256 rewardsToClaim,bytes[] activeSharesHints)": {
@@ -173,42 +168,6 @@
           { "path": "#.leaf.rewardeeDataHash", "label": "Reward data hash", "format": "raw", "visible": "always" },
           { "path": "#.merkleRoot", "label": "Merkle root", "format": "raw", "visible": "always" },
           { "path": "#.proof", "label": "Merkle proof", "format": "raw", "visible": "never" }
-        ]
-      },
-      "claimRewards(address recipient,address token,bytes data)": {
-        "intent": "Claim rewards",
-        "interpolatedIntent": "Claim {token} to {recipient}",
-        "fields": [
-          {
-            "path": "@.to",
-            "label": "Rewards contract",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          {
-            "path": "#.recipient",
-            "label": "Recipient",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          { "path": "#.token", "label": "Reward token", "format": "tokenTicker", "visible": "always" },
-          {
-            "path": "#.data.[0:8]",
-            "label": "Reward type",
-            "format": "enum",
-            "params": { "$ref": "$.metadata.enums.rewardType" },
-            "visible": "always"
-          },
-          {
-            "path": "#.data.[20:40]",
-            "label": "Network",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          { "path": "#.data", "label": "Claim data", "format": "raw", "visible": "always" }
         ]
       }
     }
