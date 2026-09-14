@@ -214,6 +214,49 @@ jobs:
         # sync-indexes workflow — by then the conflict is already on master.
         run: node tools/scripts/generate-index.js --validate
 
+  test_tools:
+    name: 🔎 test index generator
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        timeout-minutes: 10
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Get all changed tool files
+        timeout-minutes: 5
+        id: changed-files
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
+        with:
+          files: |
+            tools/scripts/**
+            .github/scripts/**
+            package.json
+            package-lock.json
+
+      - name: Setup node
+        timeout-minutes: 10
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        timeout-minutes: 10
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: npm ci
+
+      - name: Run tests
+        timeout-minutes: 10
+        if: steps.changed-files.outputs.any_changed == 'true'
+        # index.eip712.json keys are a tagged union of eip155: deployments and
+        # eip712-domain-separator: separators. Consumers that resolve only the
+        # first tag keep working while the namespaces stay disjoint, no
+        # descriptor lands in both, and keys stay normalized. None of that is
+        # visible in the generated index once a regression has flattened it.
+        run: npm test
+
   validate_file_names:
     name: 🔎 validate file names
     runs-on: ubuntu-latest
