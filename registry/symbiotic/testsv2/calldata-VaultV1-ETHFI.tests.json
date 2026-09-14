@@ -1,0 +1,138 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-VaultV1-ETHFI.json",
+  "dataProvider": {
+    "tokens": {
+      "0xfe0c30065b384f05761f15d0cc899d4f9f9cc0eb": {
+        "symbol": "ETHFI",
+        "decimals": 18,
+        "name": "ether.fi governance token"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit ETHFI into 0x2Bcfa0283C92b7845ECE12cEaDc521414BeF1067 (vault version 1)",
+      "rawTx": "0x02f869018001843b9aca00830f4240942bcfa0283c92b7845ece12ceadc521414bef106780b84447e7ef240000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000006ae6ff5fe56e50000c0",
+      "expected": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit 123.25 ETHFI",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x2Bcfa0283C92b7845ECE12cEaDc521414BeF1067"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "123.25 ETHFI"
+          },
+          {
+            "label": "Deposit beneficiary",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Request asset withdrawal for a different claim owner",
+      "rawTx": "0x02f869018001843b9aca00830f4240942bcfa0283c92b7845ece12ceadc521414bef106780b844f3fef3a3000000000000000000000000333333333333333333333333333333333333333300000000000000000000000000000000000000000000000022b1c8c1227a0000c0",
+      "expected": {
+        "intent": "Request withdrawal",
+        "interpolatedIntent": "Request 2.5 ETHFI withdrawal",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x2Bcfa0283C92b7845ECE12cEaDc521414BeF1067"
+          },
+          {
+            "label": "Requested assets",
+            "value": "2.5 ETHFI"
+          },
+          {
+            "label": "Claim owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Request withdrawal of accounting shares without assuming collateral units",
+      "rawTx": "0x02f869018001843b9aca00830f4240942bcfa0283c92b7845ece12ceadc521414bef106780b8441e9a695000000000000000000000000033333333333333333333333333333333333333330000000000000000000000000000000000000000000000000db4da5f4b717715c0",
+      "expected": {
+        "intent": "Queue share withdrawal",
+        "interpolatedIntent": "Queue 987654321123456789 raw shares",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x2Bcfa0283C92b7845ECE12cEaDc521414BeF1067"
+          },
+          {
+            "label": "Vault shares (raw)",
+            "value": "987654321123456789"
+          },
+          {
+            "label": "Claim owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim one epoch to a different recipient",
+      "rawTx": "0x02f869018001843b9aca00830f4240942bcfa0283c92b7845ece12ceadc521414bef106780b844aad3ec960000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000002ac0",
+      "expected": {
+        "intent": "Claim withdrawal",
+        "interpolatedIntent": "Claim epoch 42",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x2Bcfa0283C92b7845ECE12cEaDc521414BeF1067"
+          },
+          {
+            "label": "Epoch",
+            "value": "42"
+          },
+          {
+            "label": "Recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim multiple epochs with every epoch visible",
+      "rawTx": "0x02f8e9018001843b9aca00830f4240942bcfa0283c92b7845ece12ceadc521414bef106780b8c47c04c80a000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000002c0000000000000000000000000000000000000000000000000000000000000080c0",
+      "expected": {
+        "intent": "Claim withdrawals",
+        "interpolatedIntent": "Claim to 0x2222222222222222222222222222222222222222",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x2Bcfa0283C92b7845ECE12cEaDc521414BeF1067"
+          },
+          {
+            "label": "Epoch",
+            "value": "42"
+          },
+          {
+            "label": "Epoch",
+            "value": "44"
+          },
+          {
+            "label": "Epoch",
+            "value": "128"
+          },
+          {
+            "label": "Recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    }
+  ]
+}

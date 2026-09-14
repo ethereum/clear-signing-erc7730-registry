@@ -1,0 +1,161 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-VaultV1-SolvBTC.json",
+  "dataProvider": {
+    "tokens": {
+      "0x7a56e1c57c7475ccf742a1832b028f0456652f97": {
+        "symbol": "SolvBTC",
+        "decimals": 18,
+        "name": "Solv BTC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit SolvBTC into 0x249AE9d8a2FE33748884E401d964310C36c24e8A (vault version 1)",
+      "rawTx": "0x02f869018001843b9aca00830f424094249ae9d8a2fe33748884e401d964310c36c24e8a80b84447e7ef240000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000006ae6ff5fe56e50000c0",
+      "expected": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit 123.25 SolvBTC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x249AE9d8a2FE33748884E401d964310C36c24e8A"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "123.25 SolvBTC"
+          },
+          {
+            "label": "Deposit beneficiary",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deposit SolvBTC into 0x7797fFE875978F070523D0E126EA6C432F6C1548 (vault version 1)",
+      "rawTx": "0x02f869018001843b9aca00830f4240947797ffe875978f070523d0e126ea6c432f6c154880b84447e7ef240000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000006ae6ff5fe56e50000c0",
+      "expected": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit 123.25 SolvBTC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x7797fFE875978F070523D0E126EA6C432F6C1548"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "123.25 SolvBTC"
+          },
+          {
+            "label": "Deposit beneficiary",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Request asset withdrawal for a different claim owner",
+      "rawTx": "0x02f869018001843b9aca00830f424094249ae9d8a2fe33748884e401d964310c36c24e8a80b844f3fef3a3000000000000000000000000333333333333333333333333333333333333333300000000000000000000000000000000000000000000000022b1c8c1227a0000c0",
+      "expected": {
+        "intent": "Request withdrawal",
+        "interpolatedIntent": "Request 2.5 SolvBTC withdrawal",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x249AE9d8a2FE33748884E401d964310C36c24e8A"
+          },
+          {
+            "label": "Requested assets",
+            "value": "2.5 SolvBTC"
+          },
+          {
+            "label": "Claim owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Request withdrawal of accounting shares without assuming collateral units",
+      "rawTx": "0x02f869018001843b9aca00830f424094249ae9d8a2fe33748884e401d964310c36c24e8a80b8441e9a695000000000000000000000000033333333333333333333333333333333333333330000000000000000000000000000000000000000000000000db4da5f4b717715c0",
+      "expected": {
+        "intent": "Queue share withdrawal",
+        "interpolatedIntent": "Queue 987654321123456789 raw shares",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x249AE9d8a2FE33748884E401d964310C36c24e8A"
+          },
+          {
+            "label": "Vault shares (raw)",
+            "value": "987654321123456789"
+          },
+          {
+            "label": "Claim owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim one epoch to a different recipient",
+      "rawTx": "0x02f869018001843b9aca00830f424094249ae9d8a2fe33748884e401d964310c36c24e8a80b844aad3ec960000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000002ac0",
+      "expected": {
+        "intent": "Claim withdrawal",
+        "interpolatedIntent": "Claim epoch 42",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x249AE9d8a2FE33748884E401d964310C36c24e8A"
+          },
+          {
+            "label": "Epoch",
+            "value": "42"
+          },
+          {
+            "label": "Recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim multiple epochs with every epoch visible",
+      "rawTx": "0x02f8e9018001843b9aca00830f424094249ae9d8a2fe33748884e401d964310c36c24e8a80b8c47c04c80a000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000002c0000000000000000000000000000000000000000000000000000000000000080c0",
+      "expected": {
+        "intent": "Claim withdrawals",
+        "interpolatedIntent": "Claim to 0x2222222222222222222222222222222222222222",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x249AE9d8a2FE33748884E401d964310C36c24e8A"
+          },
+          {
+            "label": "Epoch",
+            "value": "42"
+          },
+          {
+            "label": "Epoch",
+            "value": "44"
+          },
+          {
+            "label": "Epoch",
+            "value": "128"
+          },
+          {
+            "label": "Recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    }
+  ]
+}
