@@ -1,0 +1,172 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Symbiotic RFQ Signatures",
+    "eip712": {
+      "domain": { "name": "Reactor", "version": "1" },
+      "deployments": [{ "chainId": 1, "address": "0xC323B898d7E4105E3980082B74CC5D4602996B10" }]
+    }
+  },
+  "metadata": { "owner": "Symbiotic", "info": { "url": "https://symbiotic.fi" }, "contractName": "RFQ Reactor" },
+  "display": {
+    "formats": {
+      "Request(address tokenIn,uint256 amountIn,Output[] outputs,uint256 deadline,uint256 nonce,address protocol)Output(address token,uint256 amount,address recipient)": {
+        "intent": "Authorize RFQ swap request",
+        "interpolatedIntent": "Swap {amountIn}",
+        "fields": [
+          {
+            "path": "#.tokenIn",
+            "label": "Input token",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.amountIn",
+            "label": "Exact input",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.tokenIn" },
+            "visible": "always"
+          },
+          {
+            "path": "#.outputs.[]",
+            "fields": [
+              {
+                "path": "amount",
+                "label": "Minimum output",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "token", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              {
+                "path": "token",
+                "label": "Output token",
+                "format": "addressName",
+                "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+                "visible": "always"
+              },
+              {
+                "path": "recipient",
+                "label": "Output recipient",
+                "format": "addressName",
+                "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+                "visible": "always"
+              }
+            ]
+          },
+          { "path": "#.deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" },
+          { "path": "#.nonce", "label": "Request nonce", "format": "raw", "visible": "always" },
+          {
+            "path": "#.protocol",
+            "label": "Protocol signer",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "Order(Request request,bytes swapperSignature,address swapper,address filler,Output[] outputs)Output(address token,uint256 amount,address recipient)Request(address tokenIn,uint256 amountIn,Output[] outputs,uint256 deadline,uint256 nonce,address protocol)": {
+        "intent": "Authorize RFQ order for filler",
+        "interpolatedIntent": "Authorize RFQ fill by {filler}",
+        "fields": [
+          {
+            "path": "#.swapper",
+            "label": "Swapper",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.filler",
+            "label": "Authorized filler",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.request.tokenIn",
+            "label": "Input token",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.request.amountIn",
+            "label": "Exact input",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.request.tokenIn" },
+            "visible": "always"
+          },
+          {
+            "path": "#.request.outputs.[]",
+            "fields": [
+              {
+                "path": "amount",
+                "label": "Minimum output",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "token", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              {
+                "path": "token",
+                "label": "Output token",
+                "format": "addressName",
+                "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+                "visible": "always"
+              },
+              {
+                "path": "recipient",
+                "label": "Output recipient",
+                "format": "addressName",
+                "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+                "visible": "always"
+              }
+            ]
+          },
+          {
+            "path": "#.request.deadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "#.request.nonce", "label": "Request nonce", "format": "raw", "visible": "always" },
+          {
+            "path": "#.request.protocol",
+            "label": "Protocol signer",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.outputs.[]",
+            "fields": [
+              {
+                "path": "amount",
+                "label": "Authorized output",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "token", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              {
+                "path": "token",
+                "label": "Output token",
+                "format": "addressName",
+                "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+                "visible": "always"
+              },
+              {
+                "path": "recipient",
+                "label": "Output recipient",
+                "format": "addressName",
+                "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+                "visible": "always"
+              }
+            ]
+          },
+          { "path": "#.swapperSignature", "label": "Swapper signature", "format": "raw", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

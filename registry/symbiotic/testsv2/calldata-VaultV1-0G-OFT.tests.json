@@ -1,0 +1,184 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-VaultV1-0G-OFT.json",
+  "dataProvider": {
+    "tokens": {
+      "0xe42215bd71e190b3864267569c2f66077260eae4": {
+        "symbol": "0G OFT",
+        "decimals": 18,
+        "name": "0G Vault OFT"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit 0G OFT into 0x0f1197c871A857982532Bd4069023434E6Bcf191 (vault version 1)",
+      "rawTx": "0x02f869018001843b9aca00830f4240940f1197c871a857982532bd4069023434e6bcf19180b84447e7ef240000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000006ae6ff5fe56e50000c0",
+      "expected": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit 123.25 0G OFT",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x0f1197c871A857982532Bd4069023434E6Bcf191"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "123.25 0G OFT"
+          },
+          {
+            "label": "Deposit beneficiary",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deposit 0G OFT into 0x3eFE40551A996e30e880D8c622E76EE194C3f0CF (vault version 1)",
+      "rawTx": "0x02f869018001843b9aca00830f4240943efe40551a996e30e880d8c622e76ee194c3f0cf80b84447e7ef240000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000006ae6ff5fe56e50000c0",
+      "expected": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit 123.25 0G OFT",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x3eFE40551A996e30e880D8c622E76EE194C3f0CF"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "123.25 0G OFT"
+          },
+          {
+            "label": "Deposit beneficiary",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deposit 0G OFT into 0x641A4f5993A8fc86fb1F26F448Ac0C0390B096B5 (vault version 1)",
+      "rawTx": "0x02f869018001843b9aca00830f424094641a4f5993a8fc86fb1f26f448ac0c0390b096b580b84447e7ef240000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000006ae6ff5fe56e50000c0",
+      "expected": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit 123.25 0G OFT",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x641A4f5993A8fc86fb1F26F448Ac0C0390B096B5"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "123.25 0G OFT"
+          },
+          {
+            "label": "Deposit beneficiary",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Request asset withdrawal for a different claim owner",
+      "rawTx": "0x02f869018001843b9aca00830f4240940f1197c871a857982532bd4069023434e6bcf19180b844f3fef3a3000000000000000000000000333333333333333333333333333333333333333300000000000000000000000000000000000000000000000022b1c8c1227a0000c0",
+      "expected": {
+        "intent": "Request withdrawal",
+        "interpolatedIntent": "Request 2.5 0G OFT withdrawal",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x0f1197c871A857982532Bd4069023434E6Bcf191"
+          },
+          {
+            "label": "Requested assets",
+            "value": "2.5 0G OFT"
+          },
+          {
+            "label": "Claim owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Request withdrawal of accounting shares without assuming collateral units",
+      "rawTx": "0x02f869018001843b9aca00830f4240940f1197c871a857982532bd4069023434e6bcf19180b8441e9a695000000000000000000000000033333333333333333333333333333333333333330000000000000000000000000000000000000000000000000db4da5f4b717715c0",
+      "expected": {
+        "intent": "Queue share withdrawal",
+        "interpolatedIntent": "Queue 987654321123456789 raw shares",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x0f1197c871A857982532Bd4069023434E6Bcf191"
+          },
+          {
+            "label": "Vault shares (raw)",
+            "value": "987654321123456789"
+          },
+          {
+            "label": "Claim owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim one epoch to a different recipient",
+      "rawTx": "0x02f869018001843b9aca00830f4240940f1197c871a857982532bd4069023434e6bcf19180b844aad3ec960000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000002ac0",
+      "expected": {
+        "intent": "Claim withdrawal",
+        "interpolatedIntent": "Claim epoch 42",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x0f1197c871A857982532Bd4069023434E6Bcf191"
+          },
+          {
+            "label": "Epoch",
+            "value": "42"
+          },
+          {
+            "label": "Recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim multiple epochs with every epoch visible",
+      "rawTx": "0x02f8e9018001843b9aca00830f4240940f1197c871a857982532bd4069023434e6bcf19180b8c47c04c80a000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000002c0000000000000000000000000000000000000000000000000000000000000080c0",
+      "expected": {
+        "intent": "Claim withdrawals",
+        "interpolatedIntent": "Claim to 0x2222222222222222222222222222222222222222",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x0f1197c871A857982532Bd4069023434E6Bcf191"
+          },
+          {
+            "label": "Epoch",
+            "value": "42"
+          },
+          {
+            "label": "Epoch",
+            "value": "44"
+          },
+          {
+            "label": "Epoch",
+            "value": "128"
+          },
+          {
+            "label": "Recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    }
+  ]
+}
