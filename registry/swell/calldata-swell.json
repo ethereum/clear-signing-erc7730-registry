@@ -23,7 +23,16 @@
         "intent": "Approve spender",
         "fields": [
           { "label": "Spender", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] }, "path": "#.spender" },
-          { "label": "Amount", "format": "tokenAmount", "path": "amount", "params": { "token": "$.metadata.constants.swellToken" } }
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "amount",
+            "params": {
+              "token": "$.metadata.constants.swellToken",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            }
+          }
         ]
       },
       "batchAddToWhitelist(address[] _addresses)": {
@@ -75,7 +84,16 @@
         "intent": "Increase allowance",
         "fields": [
           { "label": "Spender", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] }, "path": "#.spender" },
-          { "label": "Added Value", "format": "tokenAmount", "path": "#.addedValue", "params": { "tokenPath": "@.to" } }
+          {
+            "label": "Added Value",
+            "format": "tokenAmount",
+            "path": "#.addedValue",
+            "params": {
+              "tokenPath": "@.to",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            }
+          }
         ]
       },
       "removeFromWhitelist(address _address)": {
