@@ -1,0 +1,88 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-PunkBid.json",
+  "tests": [
+    {
+      "description": "Bid on a specific set of Punks - chain 1",
+      "data": {
+        "types": {
+          "EIP712Domain": [{ "name": "chainId", "type": "uint256" }, { "name": "verifyingContract", "type": "address" }],
+          "PunkBid": [
+            { "name": "order", "type": "Order" },
+            { "name": "accountNonce", "type": "uint256" },
+            { "name": "bidNonce", "type": "uint256" },
+            { "name": "expiration", "type": "uint256" },
+            { "name": "root", "type": "bytes32" }
+          ],
+          "Order": [
+            { "name": "numberOfUnits", "type": "uint16" },
+            { "name": "pricePerUnit", "type": "uint80" },
+            { "name": "auction", "type": "address" }
+          ]
+        },
+        "primaryType": "PunkBid",
+        "domain": { "chainId": 1, "verifyingContract": "0x00000000000060D035a8002956B5fb02e3968eec" },
+        "message": {
+          "order": { "numberOfUnits": 1, "pricePerUnit": "30500000000000000000", "auction": "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB" },
+          "accountNonce": "53",
+          "bidNonce": "1788468261098",
+          "expiration": "1788727461",
+          "root": "0xf05f250ff27e143e3a85f413a12177f65e92cbe53204a6aed1a14ae9830c1566"
+        }
+      },
+      "expected": {
+        "intent": "Place Punk Bid",
+        "interpolatedIntent": "Punk Bid: 30.5 ETH",
+        "owner": "CryptoPunks",
+        "fields": [
+          { "label": "Bid Amount", "value": "30.5 ETH" },
+          { "label": "Expires", "value": "2026-09-06 20:44:21Z" },
+          { "label": "Marketplace", "value": "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB" },
+          { "label": "Quantity", "value": "1" },
+          { "label": "Punk Set Root", "value": "0xf05f250ff27e143e3a85f413a12177f65e92cbe53204a6aed1a14ae9830c1566" }
+        ]
+      }
+    },
+    {
+      "description": "Collection-wide bid (zero root) - chain 1",
+      "data": {
+        "types": {
+          "EIP712Domain": [{ "name": "chainId", "type": "uint256" }, { "name": "verifyingContract", "type": "address" }],
+          "PunkBid": [
+            { "name": "order", "type": "Order" },
+            { "name": "accountNonce", "type": "uint256" },
+            { "name": "bidNonce", "type": "uint256" },
+            { "name": "expiration", "type": "uint256" },
+            { "name": "root", "type": "bytes32" }
+          ],
+          "Order": [
+            { "name": "numberOfUnits", "type": "uint16" },
+            { "name": "pricePerUnit", "type": "uint80" },
+            { "name": "auction", "type": "address" }
+          ]
+        },
+        "primaryType": "PunkBid",
+        "domain": { "chainId": 1, "verifyingContract": "0x00000000000060D035a8002956B5fb02e3968eec" },
+        "message": {
+          "order": { "numberOfUnits": 1, "pricePerUnit": "30500000000000000000", "auction": "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB" },
+          "accountNonce": "53",
+          "bidNonce": "1788468261099",
+          "expiration": "1788727461",
+          "root": "0x0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "expected": {
+        "intent": "Place Punk Bid",
+        "interpolatedIntent": "Punk Bid: 30.5 ETH",
+        "owner": "CryptoPunks",
+        "fields": [
+          { "label": "Bid Amount", "value": "30.5 ETH" },
+          { "label": "Expires", "value": "2026-09-06 20:44:21Z" },
+          { "label": "Marketplace", "value": "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB" },
+          { "label": "Quantity", "value": "1" },
+          { "label": "Punk Set Root", "value": "0x0000000000000000000000000000000000000000000000000000000000000000" }
+        ]
+      }
+    }
+  ]
+}
