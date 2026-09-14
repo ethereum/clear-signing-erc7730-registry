@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-WNat-Flare.json",
+  "dataProvider": {
+    "tokens": { "0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d": { "symbol": "WFLR", "decimals": 18, "name": "Wrapped Flare" } },
+    "addressNames": {
+      "0x1111111111111111111111111111111111111111": "Recipient",
+      "0x2222222222222222222222222222222222222222": "Spender",
+      "0x3333333333333333333333333333333333333333": "Provider",
+      "0x4444444444444444444444444444444444444444": "Owner",
+      "0x5555555555555555555555555555555555555555": "Provider B"
+    }
+  },
+  "tests": [
+    {
+      "description": "Wrap 1 FLR - chain 14",
+      "rawTx": "0x02f40e01840f2f16ee8411807b358307a120941d80c49bbbcd1c0911346656b529df9e5c2f783d880de0b6b3a764000084d0e30db0c0",
+      "expected": { "intent": "Wrap FLR", "owner": "Flare Foundation", "fields": [{ "label": "Amount", "value": "1 FLR" }] }
+    },
+    {
+      "description": "Wrap 1 FLR to recipient - chain 14",
+      "rawTx": "0x02f8540e02840f2f16ee8411807b358307a120941d80c49bbbcd1c0911346656b529df9e5c2f783d880de0b6b3a7640000a4b760faf90000000000000000000000001111111111111111111111111111111111111111c0",
+      "expected": {
+        "intent": "Wrap FLR",
+        "owner": "Flare Foundation",
+        "fields": [{ "label": "Amount", "value": "1 FLR" }, { "label": "To", "value": "Recipient" }]
+      }
+    },
+    {
+      "description": "Unwrap 1 WFLR - chain 14",
+      "rawTx": "0x02f84c0e03840f2f16ee8411807b358307a120941d80c49bbbcd1c0911346656b529df9e5c2f783d80a42e1a7d4d0000000000000000000000000000000000000000000000000de0b6b3a7640000c0",
+      "expected": { "intent": "Unwrap WFLR", "owner": "Flare Foundation", "fields": [{ "label": "Amount", "value": "1 WFLR" }] }
+    },
+    {
+      "description": "Unwrap 1 WFLR from owner - chain 14",
+      "rawTx": "0x02f86d0e04840f2f16ee8411807b358307a120941d80c49bbbcd1c0911346656b529df9e5c2f783d80b8449470b0bd00000000000000000000000044444444444444444444444444444444444444440000000000000000000000000000000000000000000000000de0b6b3a7640000c0",
+      "expected": {
+        "intent": "Unwrap WFLR",
+        "owner": "Flare Foundation",
+        "fields": [{ "label": "Owner", "value": "Owner" }, { "label": "Amount", "value": "1 WFLR" }]
+      }
+    },
+    {
+      "description": "Send 1 WFLR - chain 14",
+      "rawTx": "0x02f86d0e05840f2f16ee8411807b358307a120941d80c49bbbcd1c0911346656b529df9e5c2f783d80b844a9059cbb00000000000000000000000011111111111111111111111111111111111111110000000000000000000000000000000000000000000000000de0b6b3a7640000c0",
+      "expected": {
+        "intent": "Send WFLR",
+        "owner": "Flare Foundation",
+        "fields": [{ "label": "Amount", "value": "1 WFLR" }, { "label": "To", "value": "Recipient" }]
+      }
+    },
+    {
+      "description": "Approve 10 WFLR - chain 14",
+      "rawTx": "0x02f86d0e06840f2f16ee8411807b358307a120941d80c49bbbcd1c0911346656b529df9e5c2f783d80b844095ea7b300000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000008ac7230489e80000c0",
+      "expected": {
+        "intent": "Approve WFLR",
+        "owner": "Flare Foundation",
+        "fields": [{ "label": "Spender", "value": "Spender" }, { "label": "Amount", "value": "10 WFLR" }]
+      }
+    },
+    {
+      "description": "Delegate 100% FTSO vote power - chain 14",
+      "rawTx": "0x02f86d0e07840f2f16ee8411807b358307a120941d80c49bbbcd1c0911346656b529df9e5c2f783d80b844026e402b00000000000000000000000033333333333333333333333333333333333333330000000000000000000000000000000000000000000000000000000000002710c0",
+      "expected": {
+        "intent": "Delegate FTSO vote power",
+        "owner": "Flare Foundation",
+        "fields": [{ "label": "Provider", "value": "Provider" }, { "label": "Share", "value": "100%" }]
+      }
+    },
+    {
+      "description": "Delegate 1 WFLR explicitly - chain 14",
+      "rawTx": "0x02f86d0e08840f2f16ee8411807b358307a120941d80c49bbbcd1c0911346656b529df9e5c2f783d80b844d06dc3ad00000000000000000000000033333333333333333333333333333333333333330000000000000000000000000000000000000000000000000de0b6b3a7640000c0",
+      "expected": {
+        "intent": "Delegate FTSO vote power",
+        "owner": "Flare Foundation",
+        "fields": [{ "label": "Provider", "value": "Provider" }, { "label": "Amount", "value": "1 WFLR" }]
+      }
+    },
+    {
+      "description": "Batch delegate FTSO vote power - chain 14",
+      "rawTx": "0x02f9012e0e09840f2f16ee8411807b358307a120941d80c49bbbcd1c0911346656b529df9e5c2f783d80b90104dc4fcda7000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000200000000000000000000000033333333333333333333333333333333333333330000000000000000000000005555555555555555555555555555555555555555000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000017700000000000000000000000000000000000000000000000000000000000000fa0c0",
+      "expected": {
+        "intent": "Delegate FTSO vote power",
+        "owner": "Flare Foundation",
+        "fields": [
+          { "label": "Provider", "value": "Provider" },
+          { "label": "Provider", "value": "Provider B" },
+          { "label": "Share", "value": "60%" },
+          { "label": "Share", "value": "40%" }
+        ]
+      }
+    },
+    {
+      "description": "Undelegate FTSO vote power - chain 14",
+      "rawTx": "0x02ec0e0a840f2f16ee8411807b358307a120941d80c49bbbcd1c0911346656b529df9e5c2f783d8084b302f393c0",
+      "expected": { "intent": "Undelegate FTSO vote power", "owner": "Flare Foundation", "fields": [] }
+    },
+    {
+      "description": "Undelegate explicit providers - chain 14",
+      "rawTx": "0x02f88d0e0b840f2f16ee8411807b358307a120941d80c49bbbcd1c0911346656b529df9e5c2f783d80b8645d6d11eb000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000003333333333333333333333333333333333333333c0",
+      "expected": {
+        "intent": "Undelegate FTSO vote power",
+        "owner": "Flare Foundation",
+        "fields": [{ "label": "Provider", "value": "Provider" }]
+      }
+    }
+  ]
+}
