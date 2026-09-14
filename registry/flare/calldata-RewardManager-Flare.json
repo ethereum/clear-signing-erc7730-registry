@@ -4,7 +4,7 @@
     "$id": "RewardManager-Flare",
     "contract": { "deployments": [{ "chainId": 14, "address": "0xC8f55c5aA2C752eE285Bd872855C749f4ee6239B" }] }
   },
-  "metadata": { "owner": "Flare Foundation", "info": { "url": "https://flare.network/" }, "contractName": "RewardManager-Flare" },
+  "metadata": { "owner": "Flare Labs", "info": { "url": "https://flare.network/" }, "contractName": "RewardManager-Flare" },
   "display": {
     "formats": {
       "autoClaim(address[] _rewardOwners, uint24 _rewardEpochId, (bytes32[] merkleProof, (uint24 rewardEpochId, bytes20 beneficiary, uint120 amount, uint8 claimType) body)[] _proofs)": {
@@ -18,14 +18,23 @@
             "visible": "always"
           },
           {
-            "label": "Claim Owner",
-            "format": "addressName",
-            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
-            "path": "#._proofs.[].body.beneficiary",
-            "visible": "always"
+            "path": "#._proofs.[]",
+            "fields": [
+              {
+                "path": "body",
+                "fields": [
+                  {
+                    "label": "Claim Owner",
+                    "format": "addressName",
+                    "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+                    "path": "beneficiary"
+                  },
+                  { "label": "Amount", "format": "amount", "path": "amount" },
+                  { "label": "Claim Type", "format": "raw", "path": "claimType" }
+                ]
+              }
+            ]
           },
-          { "label": "Amount", "format": "amount", "path": "#._proofs.[].body.amount", "visible": "always" },
-          { "label": "Claim Type", "format": "raw", "path": "#._proofs.[].body.claimType", "visible": "always" },
           { "label": "Proofs Merkle Proof", "path": "#._proofs.[].merkleProof.[]", "visible": "never" },
           { "label": "Reward Epoch Id", "path": "#._rewardEpochId", "visible": "never" },
           { "label": "Proofs Body Reward Epoch Id", "path": "#._proofs.[].body.rewardEpochId", "visible": "never" }
@@ -35,14 +44,23 @@
         "intent": "initialise claims",
         "fields": [
           {
-            "label": "Beneficiary",
-            "format": "addressName",
-            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
-            "path": "#._proofs.[].body.beneficiary",
-            "visible": "always"
+            "path": "#._proofs.[]",
+            "fields": [
+              {
+                "path": "body",
+                "fields": [
+                  {
+                    "label": "Beneficiary",
+                    "format": "addressName",
+                    "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+                    "path": "beneficiary"
+                  },
+                  { "label": "Amount", "format": "amount", "path": "amount" },
+                  { "label": "Claim Type", "format": "raw", "path": "claimType" }
+                ]
+              }
+            ]
           },
-          { "label": "Amount", "format": "amount", "path": "#._proofs.[].body.amount", "visible": "always" },
-          { "label": "Claim Type", "format": "raw", "path": "#._proofs.[].body.claimType", "visible": "always" },
           { "label": "Proofs Merkle Proof", "path": "#._proofs.[].merkleProof.[]", "visible": "never" },
           { "label": "Proofs Body Reward Epoch Id", "path": "#._proofs.[].body.rewardEpochId", "visible": "never" }
         ]
