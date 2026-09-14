@@ -1,0 +1,61 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-WithdrawalQueue-krfUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0x007e0b8e99c6134e81a1eaae754460e3202cb671": {
+        "name": "Keyrock Flagship USDC",
+        "symbol": "krfUSDC",
+        "decimals": 18
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Queue vault shares for a separate withdrawal NFT recipient",
+      "rawTx": "0x02f869018001843b9aca00830f424094eafcb9c5f2138dd3ea3ad60c0e135c1b4afc6ff780b844107703ab00000000000000000000000000000000000000000000000014d1120d7b1600000000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Request queued withdrawal",
+        "interpolatedIntent": "Queue 1.5 krfUSDC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x007e0B8E99c6134E81A1eAAE754460E3202cB671"
+          },
+          {
+            "label": "Vault shares to queue",
+            "value": "1.5 krfUSDC"
+          },
+          {
+            "label": "NFT recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim withdrawal NFT to a separate collateral recipient",
+      "rawTx": "0x02f869018001843b9aca00830f424094eafcb9c5f2138dd3ea3ad60c0e135c1b4afc6ff780b844ddd5e1b2000000000000000000000000000000000000000000000000000000000000002a0000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Claim queued withdrawal",
+        "interpolatedIntent": "Claim NFT 42",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x007e0B8E99c6134E81A1eAAE754460E3202cB671"
+          },
+          {
+            "label": "Withdrawal NFT ID",
+            "value": "42"
+          },
+          {
+            "label": "Asset recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {}
+  },
+  "metadata": {
+    "owner": "Symbiotic",
+    "info": {
+      "url": "https://symbiotic.fi"
+    }
+  },
+  "display": {
+    "formats": {
+      "requestRedeem(uint256 shares,address receiver)": {
+        "intent": "Request queued withdrawal",
+        "interpolatedIntent": "Queue {shares}",
+        "fields": [
+          {
+            "value": "$.metadata.constants.vault",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.shares",
+            "label": "Vault shares to queue",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.vault"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "NFT recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "claim(uint256 tokenId,address receiver)": {
+        "intent": "Claim queued withdrawal",
+        "interpolatedIntent": "Claim NFT {tokenId}",
+        "fields": [
+          {
+            "value": "$.metadata.constants.vault",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.tokenId",
+            "label": "Withdrawal NFT ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "Asset recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

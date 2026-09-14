@@ -1,0 +1,554 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-VaultV2-USDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0x007e0b8e99c6134e81a1eaae754460e3202cb671": {
+        "name": "Keyrock Flagship USDC",
+        "symbol": "krfUSDC",
+        "decimals": 18
+      },
+      "0x4f7ea018239ffbdcf52133b9e98a498b2b4b9f32": {
+        "name": "Presto USDC Vault",
+        "symbol": "prestoUSDCv",
+        "decimals": 18
+      },
+      "0x56097f1a378848a51f35e7d9ca2592c444ec4637": {
+        "name": "infiniFi USDC Liquidity Vault",
+        "symbol": "ifUSDC",
+        "decimals": 18
+      },
+      "0x8bcd746976885b5832bad07b4921e3f2dd1d3703": {
+        "name": "KPK USDC LiquidLane",
+        "symbol": "KPK_USDC_LL",
+        "decimals": 18
+      },
+      "0x9902420048aec155f1f1df077f115595530df216": {
+        "name": "Clearstar Warehouse USDC",
+        "symbol": "CSWUSDC",
+        "decimals": 18
+      },
+      "0x9c8f48fad950d078af0c6256cb41e23b7185d142": {
+        "name": "Amber USDC Vault",
+        "symbol": "vUSDC",
+        "decimals": 18
+      },
+      "0xced027adbf0966447b25e16f943a10780d5d1c08": {
+        "name": "Cassa RWA",
+        "symbol": "LLCassaUSDC",
+        "decimals": 18
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit USDC into Keyrock Flagship USDC",
+      "rawTx": "0x02f869018001843b9aca00830f424094007e0b8e99c6134e81a1eaae754460e3202cb67180b8446e553f65000000000000000000000000000000000000000000000000000000000758a5500000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit 123.25 USDC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x007e0B8E99c6134E81A1eAAE754460E3202cB671"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "123.25 USDC"
+          },
+          {
+            "label": "Share recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint shares of Keyrock Flagship USDC using vault token decimals",
+      "rawTx": "0x02f869018001843b9aca00830f424094007e0b8e99c6134e81a1eaae754460e3202cb67180b84494bf804d00000000000000000000000000000000000000000000000014d1120d7b1600000000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Mint vault shares",
+        "interpolatedIntent": "Mint 1.5 krfUSDC for 0x2222222222222222222222222222222222222222",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x007e0B8E99c6134E81A1eAAE754460E3202cB671"
+          },
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Shares to mint",
+            "value": "1.5 krfUSDC"
+          },
+          {
+            "label": "Share recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deposit USDC into Presto USDC Vault",
+      "rawTx": "0x02f869018001843b9aca00830f4240944f7ea018239ffbdcf52133b9e98a498b2b4b9f3280b8446e553f65000000000000000000000000000000000000000000000000000000000758a5500000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit 123.25 USDC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x4f7EA018239FfBdCf52133B9E98a498B2B4b9F32"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "123.25 USDC"
+          },
+          {
+            "label": "Share recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint shares of Presto USDC Vault using vault token decimals",
+      "rawTx": "0x02f869018001843b9aca00830f4240944f7ea018239ffbdcf52133b9e98a498b2b4b9f3280b84494bf804d00000000000000000000000000000000000000000000000014d1120d7b1600000000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Mint vault shares",
+        "interpolatedIntent": "Mint 1.5 prestoUSDCv for 0x2222222222222222222222222222222222222222",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x4f7EA018239FfBdCf52133B9E98a498B2B4b9F32"
+          },
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Shares to mint",
+            "value": "1.5 prestoUSDCv"
+          },
+          {
+            "label": "Share recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deposit USDC into infiniFi USDC Liquidity Vault",
+      "rawTx": "0x02f869018001843b9aca00830f42409456097f1a378848a51f35e7d9ca2592c444ec463780b8446e553f65000000000000000000000000000000000000000000000000000000000758a5500000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit 123.25 USDC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x56097f1a378848A51F35e7D9Ca2592c444EC4637"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "123.25 USDC"
+          },
+          {
+            "label": "Share recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint shares of infiniFi USDC Liquidity Vault using vault token decimals",
+      "rawTx": "0x02f869018001843b9aca00830f42409456097f1a378848a51f35e7d9ca2592c444ec463780b84494bf804d00000000000000000000000000000000000000000000000014d1120d7b1600000000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Mint vault shares",
+        "interpolatedIntent": "Mint 1.5 ifUSDC for 0x2222222222222222222222222222222222222222",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x56097f1a378848A51F35e7D9Ca2592c444EC4637"
+          },
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Shares to mint",
+            "value": "1.5 ifUSDC"
+          },
+          {
+            "label": "Share recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deposit USDC into KPK USDC LiquidLane",
+      "rawTx": "0x02f869018001843b9aca00830f4240948bcd746976885b5832bad07b4921e3f2dd1d370380b8446e553f65000000000000000000000000000000000000000000000000000000000758a5500000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit 123.25 USDC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x8BcD746976885b5832bAD07B4921E3f2dD1D3703"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "123.25 USDC"
+          },
+          {
+            "label": "Share recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint shares of KPK USDC LiquidLane using vault token decimals",
+      "rawTx": "0x02f869018001843b9aca00830f4240948bcd746976885b5832bad07b4921e3f2dd1d370380b84494bf804d00000000000000000000000000000000000000000000000014d1120d7b1600000000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Mint vault shares",
+        "interpolatedIntent": "Mint 1.5 KPK_USDC_LL for 0x2222222222222222222222222222222222222222",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x8BcD746976885b5832bAD07B4921E3f2dD1D3703"
+          },
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Shares to mint",
+            "value": "1.5 KPK_USDC_LL"
+          },
+          {
+            "label": "Share recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deposit USDC into Clearstar Warehouse USDC",
+      "rawTx": "0x02f869018001843b9aca00830f4240949902420048aec155f1f1df077f115595530df21680b8446e553f65000000000000000000000000000000000000000000000000000000000758a5500000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit 123.25 USDC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x9902420048aEC155f1f1DF077f115595530Df216"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "123.25 USDC"
+          },
+          {
+            "label": "Share recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint shares of Clearstar Warehouse USDC using vault token decimals",
+      "rawTx": "0x02f869018001843b9aca00830f4240949902420048aec155f1f1df077f115595530df21680b84494bf804d00000000000000000000000000000000000000000000000014d1120d7b1600000000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Mint vault shares",
+        "interpolatedIntent": "Mint 1.5 CSWUSDC for 0x2222222222222222222222222222222222222222",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x9902420048aEC155f1f1DF077f115595530Df216"
+          },
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Shares to mint",
+            "value": "1.5 CSWUSDC"
+          },
+          {
+            "label": "Share recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deposit USDC into Amber USDC Vault",
+      "rawTx": "0x02f869018001843b9aca00830f4240949c8f48fad950d078af0c6256cb41e23b7185d14280b8446e553f65000000000000000000000000000000000000000000000000000000000758a5500000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit 123.25 USDC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x9C8F48faD950D078AF0C6256Cb41e23B7185d142"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "123.25 USDC"
+          },
+          {
+            "label": "Share recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint shares of Amber USDC Vault using vault token decimals",
+      "rawTx": "0x02f869018001843b9aca00830f4240949c8f48fad950d078af0c6256cb41e23b7185d14280b84494bf804d00000000000000000000000000000000000000000000000014d1120d7b1600000000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Mint vault shares",
+        "interpolatedIntent": "Mint 1.5 vUSDC for 0x2222222222222222222222222222222222222222",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x9C8F48faD950D078AF0C6256Cb41e23B7185d142"
+          },
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Shares to mint",
+            "value": "1.5 vUSDC"
+          },
+          {
+            "label": "Share recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deposit USDC into Cassa RWA",
+      "rawTx": "0x02f869018001843b9aca00830f424094ced027adbf0966447b25e16f943a10780d5d1c0880b8446e553f65000000000000000000000000000000000000000000000000000000000758a5500000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit 123.25 USDC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0xCed027AdBF0966447b25E16f943A10780D5D1c08"
+          },
+          {
+            "label": "Deposit amount",
+            "value": "123.25 USDC"
+          },
+          {
+            "label": "Share recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint shares of Cassa RWA using vault token decimals",
+      "rawTx": "0x02f869018001843b9aca00830f424094ced027adbf0966447b25e16f943a10780d5d1c0880b84494bf804d00000000000000000000000000000000000000000000000014d1120d7b1600000000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Mint vault shares",
+        "interpolatedIntent": "Mint 1.5 LLCassaUSDC for 0x2222222222222222222222222222222222222222",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0xCed027AdBF0966447b25E16f943A10780D5D1c08"
+          },
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Shares to mint",
+            "value": "1.5 LLCassaUSDC"
+          },
+          {
+            "label": "Share recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw assets from another owner to a separate recipient",
+      "rawTx": "0x02f889018001843b9aca00830f424094007e0b8e99c6134e81a1eaae754460e3202cb67180b864b460af9400000000000000000000000000000000000000000000000000000000002625a000000000000000000000000022222222222222222222222222222222222222220000000000000000000000003333333333333333333333333333333333333333c0",
+      "expected": {
+        "intent": "Withdraw from vault",
+        "interpolatedIntent": "Withdraw 2.5 USDC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x007e0B8E99c6134E81A1eAAE754460E3202cB671"
+          },
+          {
+            "label": "Assets to withdraw",
+            "value": "2.5 USDC"
+          },
+          {
+            "label": "Recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          },
+          {
+            "label": "Share owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem vault shares with distinct owner and recipient",
+      "rawTx": "0x02f889018001843b9aca00830f424094007e0b8e99c6134e81a1eaae754460e3202cb67180b864ba08765200000000000000000000000000000000000000000000000014d1120d7b16000000000000000000000000000022222222222222222222222222222222222222220000000000000000000000003333333333333333333333333333333333333333c0",
+      "expected": {
+        "intent": "Redeem vault shares",
+        "interpolatedIntent": "Redeem 1.5 krfUSDC to 0x2222222222222222222222222222222222222222",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x007e0B8E99c6134E81A1eAAE754460E3202cB671"
+          },
+          {
+            "label": "Shares to redeem",
+            "value": "1.5 krfUSDC"
+          },
+          {
+            "label": "Recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          },
+          {
+            "label": "Share owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Approve shares for the paired queue",
+      "rawTx": "0x02f869018001843b9aca00830f424094007e0b8e99c6134e81a1eaae754460e3202cb67180b844095ea7b3000000000000000000000000eafcb9c5f2138dd3ea3ad60c0e135c1b4afc6ff700000000000000000000000000000000000000000000000014d1120d7b160000c0",
+      "expected": {
+        "intent": "Approve vault share spending",
+        "interpolatedIntent": "Approve 1.5 krfUSDC for 0xEAFCB9c5f2138dD3eA3aD60c0E135c1B4aFc6Ff7",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x007e0B8E99c6134E81A1eAAE754460E3202cB671"
+          },
+          {
+            "label": "Spender",
+            "value": "0xEAFCB9c5f2138dD3eA3aD60c0E135c1B4aFc6Ff7"
+          },
+          {
+            "label": "Allowance amount",
+            "value": "1.5 krfUSDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Revoke share allowance",
+      "rawTx": "0x02f869018001843b9aca00830f424094007e0b8e99c6134e81a1eaae754460e3202cb67180b844095ea7b3000000000000000000000000eafcb9c5f2138dd3ea3ad60c0e135c1b4afc6ff70000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Approve vault share spending",
+        "interpolatedIntent": "Approve 0 krfUSDC for 0xEAFCB9c5f2138dD3eA3aD60c0E135c1B4aFc6Ff7",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x007e0B8E99c6134E81A1eAAE754460E3202cB671"
+          },
+          {
+            "label": "Spender",
+            "value": "0xEAFCB9c5f2138dD3eA3aD60c0E135c1B4aFc6Ff7"
+          },
+          {
+            "label": "Allowance amount",
+            "value": "0 krfUSDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Approve unlimited share allowance",
+      "rawTx": "0x02f869018001843b9aca00830f424094007e0b8e99c6134e81a1eaae754460e3202cb67180b844095ea7b3000000000000000000000000eafcb9c5f2138dd3ea3ad60c0e135c1b4afc6ff7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Approve vault share spending",
+        "interpolatedIntent": "Approve Unlimited krfUSDC for 0xEAFCB9c5f2138dD3eA3aD60c0E135c1B4aFc6Ff7",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x007e0B8E99c6134E81A1eAAE754460E3202cB671"
+          },
+          {
+            "label": "Spender",
+            "value": "0xEAFCB9c5f2138dD3eA3aD60c0E135c1B4aFc6Ff7"
+          },
+          {
+            "label": "Allowance amount",
+            "value": "Unlimited krfUSDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Display permit owner, allowance, spender and expiry with placeholder signature",
+      "rawTx": "0x02f90109018001843b9aca00830f424094007e0b8e99c6134e81a1eaae754460e3202cb67180b8e4d505accf0000000000000000000000003333333333333333333333333333333333333333000000000000000000000000eafcb9c5f2138dd3ea3ad60c0e135c1b4afc6ff700000000000000000000000000000000000000000000000014d1120d7b1600000000000000000000000000000000000000000000000000000000000070dbd880000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Submit share permit",
+        "interpolatedIntent": "Approve 1.5 krfUSDC for 0xEAFCB9c5f2138dD3eA3aD60c0E135c1B4aFc6Ff7",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x007e0B8E99c6134E81A1eAAE754460E3202cB671"
+          },
+          {
+            "label": "Share owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          },
+          {
+            "label": "Spender",
+            "value": "0xEAFCB9c5f2138dD3eA3aD60c0E135c1B4aFc6Ff7"
+          },
+          {
+            "label": "Allowance amount",
+            "value": "1.5 krfUSDC"
+          },
+          {
+            "label": "Signature deadline",
+            "value": "2030-01-01 00:00:00Z"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-WithdrawalQueue-vUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0x9c8f48fad950d078af0c6256cb41e23b7185d142": {
+        "name": "Amber USDC Vault",
+        "symbol": "vUSDC",
+        "decimals": 18
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Queue vault shares for a separate withdrawal NFT recipient",
+      "rawTx": "0x02f869018001843b9aca00830f424094f696ee2206051f31ceeb284d0bd14d83d353702880b844107703ab00000000000000000000000000000000000000000000000014d1120d7b1600000000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Request queued withdrawal",
+        "interpolatedIntent": "Queue 1.5 vUSDC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x9C8F48faD950D078AF0C6256Cb41e23B7185d142"
+          },
+          {
+            "label": "Vault shares to queue",
+            "value": "1.5 vUSDC"
+          },
+          {
+            "label": "NFT recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim withdrawal NFT to a separate collateral recipient",
+      "rawTx": "0x02f869018001843b9aca00830f424094f696ee2206051f31ceeb284d0bd14d83d353702880b844ddd5e1b2000000000000000000000000000000000000000000000000000000000000002a0000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Claim queued withdrawal",
+        "interpolatedIntent": "Claim NFT 42",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x9C8F48faD950D078AF0C6256Cb41e23B7185d142"
+          },
+          {
+            "label": "Withdrawal NFT ID",
+            "value": "42"
+          },
+          {
+            "label": "Asset recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-VaultV2Permit-KPK_USDC_LL.json",
+  "dataProvider": {
+    "tokens": {
+      "0x8bcd746976885b5832bad07b4921e3f2dd1d3703": {
+        "name": "KPK USDC LiquidLane",
+        "symbol": "KPK_USDC_LL",
+        "decimals": 18
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Authorize paired withdrawal queue to spend vault shares",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "KPK USDC LiquidLane",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0x8BcD746976885b5832bAD07B4921E3f2dD1D3703"
+        },
+        "message": {
+          "owner": "0x3333333333333333333333333333333333333333",
+          "spender": "0x561905fE189b36766845E89bdb95CF8756F2938A",
+          "value": "1500000000000000000",
+          "nonce": "7",
+          "deadline": "1893456000"
+        }
+      },
+      "expected": {
+        "intent": "Authorize share spending",
+        "interpolatedIntent": "Approve 1.5 KPK_USDC_LL for 0x561905fE189b36766845E89bdb95CF8756F2938A",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Share owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          },
+          {
+            "label": "Spender",
+            "value": "0x561905fE189b36766845E89bdb95CF8756F2938A"
+          },
+          {
+            "label": "Allowance amount",
+            "value": "1.5 KPK_USDC_LL"
+          },
+          {
+            "label": "Signature deadline",
+            "value": "2030-01-01 00:00:00Z"
+          },
+          {
+            "label": "Nonce",
+            "value": "7"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Authorize revocation of a vault share allowance",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "KPK USDC LiquidLane",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0x8BcD746976885b5832bAD07B4921E3f2dD1D3703"
+        },
+        "message": {
+          "owner": "0x3333333333333333333333333333333333333333",
+          "spender": "0x561905fE189b36766845E89bdb95CF8756F2938A",
+          "value": "0",
+          "nonce": "8",
+          "deadline": "1893456000"
+        }
+      },
+      "expected": {
+        "intent": "Authorize share spending",
+        "interpolatedIntent": "Approve 0 KPK_USDC_LL for 0x561905fE189b36766845E89bdb95CF8756F2938A",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Share owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          },
+          {
+            "label": "Spender",
+            "value": "0x561905fE189b36766845E89bdb95CF8756F2938A"
+          },
+          {
+            "label": "Allowance amount",
+            "value": "0 KPK_USDC_LL"
+          },
+          {
+            "label": "Signature deadline",
+            "value": "2030-01-01 00:00:00Z"
+          },
+          {
+            "label": "Nonce",
+            "value": "8"
+          }
+        ]
+      }
+    }
+  ]
+}

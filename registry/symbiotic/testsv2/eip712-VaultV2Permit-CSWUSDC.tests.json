@@ -1,0 +1,191 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-VaultV2Permit-CSWUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0x9902420048aec155f1f1df077f115595530df216": {
+        "name": "Clearstar Warehouse USDC",
+        "symbol": "CSWUSDC",
+        "decimals": 18
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Authorize paired withdrawal queue to spend vault shares",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "Clearstar Warehouse USDC",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0x9902420048aEC155f1f1DF077f115595530Df216"
+        },
+        "message": {
+          "owner": "0x3333333333333333333333333333333333333333",
+          "spender": "0x494Db3070b8B5E95CdB6D0b3Dd8950c31fCccF63",
+          "value": "1500000000000000000",
+          "nonce": "7",
+          "deadline": "1893456000"
+        }
+      },
+      "expected": {
+        "intent": "Authorize share spending",
+        "interpolatedIntent": "Approve 1.5 CSWUSDC for 0x494Db3070b8B5E95CdB6D0b3Dd8950c31fCccF63",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Share owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          },
+          {
+            "label": "Spender",
+            "value": "0x494Db3070b8B5E95CdB6D0b3Dd8950c31fCccF63"
+          },
+          {
+            "label": "Allowance amount",
+            "value": "1.5 CSWUSDC"
+          },
+          {
+            "label": "Signature deadline",
+            "value": "2030-01-01 00:00:00Z"
+          },
+          {
+            "label": "Nonce",
+            "value": "7"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Authorize revocation of a vault share allowance",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "Clearstar Warehouse USDC",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0x9902420048aEC155f1f1DF077f115595530Df216"
+        },
+        "message": {
+          "owner": "0x3333333333333333333333333333333333333333",
+          "spender": "0x494Db3070b8B5E95CdB6D0b3Dd8950c31fCccF63",
+          "value": "0",
+          "nonce": "8",
+          "deadline": "1893456000"
+        }
+      },
+      "expected": {
+        "intent": "Authorize share spending",
+        "interpolatedIntent": "Approve 0 CSWUSDC for 0x494Db3070b8B5E95CdB6D0b3Dd8950c31fCccF63",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Share owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          },
+          {
+            "label": "Spender",
+            "value": "0x494Db3070b8B5E95CdB6D0b3Dd8950c31fCccF63"
+          },
+          {
+            "label": "Allowance amount",
+            "value": "0 CSWUSDC"
+          },
+          {
+            "label": "Signature deadline",
+            "value": "2030-01-01 00:00:00Z"
+          },
+          {
+            "label": "Nonce",
+            "value": "8"
+          }
+        ]
+      }
+    }
+  ]
+}

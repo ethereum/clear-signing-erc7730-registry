@@ -1,0 +1,61 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-WithdrawalQueue-ifUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0x56097f1a378848a51f35e7d9ca2592c444ec4637": {
+        "name": "infiniFi USDC Liquidity Vault",
+        "symbol": "ifUSDC",
+        "decimals": 18
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Queue vault shares for a separate withdrawal NFT recipient",
+      "rawTx": "0x02f869018001843b9aca00830f4240945f3b48cfafeab497badeb692c24c2ccd3710e42880b844107703ab00000000000000000000000000000000000000000000000014d1120d7b1600000000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Request queued withdrawal",
+        "interpolatedIntent": "Queue 1.5 ifUSDC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x56097f1a378848A51F35e7D9Ca2592c444EC4637"
+          },
+          {
+            "label": "Vault shares to queue",
+            "value": "1.5 ifUSDC"
+          },
+          {
+            "label": "NFT recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim withdrawal NFT to a separate collateral recipient",
+      "rawTx": "0x02f869018001843b9aca00830f4240945f3b48cfafeab497badeb692c24c2ccd3710e42880b844ddd5e1b2000000000000000000000000000000000000000000000000000000000000002a0000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Claim queued withdrawal",
+        "interpolatedIntent": "Claim NFT 42",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x56097f1a378848A51F35e7D9Ca2592c444EC4637"
+          },
+          {
+            "label": "Withdrawal NFT ID",
+            "value": "42"
+          },
+          {
+            "label": "Asset recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    }
+  ]
+}
