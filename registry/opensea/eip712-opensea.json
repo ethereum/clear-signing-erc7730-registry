@@ -6,35 +6,91 @@
       "domain": { "name": "Wyvern Exchange Contract", "version": "2.3" }
     }
   },
-  "metadata": { "owner": "Wyvern Exchange Contract" },
+  "metadata": {
+    "owner": "Wyvern Exchange Contract",
+    "enums": {
+      "side": { "0": "Buy", "1": "Sell" },
+      "saleKind": { "0": "Fixed price", "1": "Dutch auction" },
+      "howToCall": { "0": "Call", "1": "DelegateCall" }
+    }
+  },
   "display": {
     "formats": {
       "Order(address exchange,address maker,address taker,uint256 makerRelayerFee,uint256 takerRelayerFee,uint256 makerProtocolFee,uint256 takerProtocolFee,address feeRecipient,uint8 feeMethod,uint8 side,uint8 saleKind,address target,uint8 howToCall,bytes calldata,bytes replacementPattern,address staticTarget,bytes staticExtradata,address paymentToken,uint256 basePrice,uint256 extra,uint256 listingTime,uint256 expirationTime,uint256 salt,uint256 nonce)": {
-        "intent": "OpenSea Listing",
+        "intent": "Sign Wyvern order",
         "fields": [
-          { "path": "exchange", "label": "Contract address", "format": "raw" },
-          { "path": "basePrice", "label": "Price", "format": "raw" },
-          { "path": "expirationTime", "label": "Offer expiration", "format": "raw" },
-          { "label": "Side", "path": "side", "visible": "never" },
-          { "label": "Extra", "path": "extra", "visible": "never" },
-          { "label": "Sale Kind", "path": "saleKind", "visible": "never" },
-          { "label": "Static Target", "path": "staticTarget", "visible": "never" },
-          { "label": "Target", "path": "target", "visible": "never" },
-          { "label": "How To Call", "path": "howToCall", "visible": "never" },
-          { "label": "Maker Relayer Fee", "path": "makerRelayerFee", "visible": "never" },
-          { "label": "Fee Method", "path": "feeMethod", "visible": "never" },
-          { "label": "Replacement Pattern", "path": "replacementPattern", "visible": "never" },
-          { "label": "Taker Relayer Fee", "path": "takerRelayerFee", "visible": "never" },
-          { "label": "Taker", "path": "taker", "visible": "never" },
-          { "label": "Listing Time", "path": "listingTime", "visible": "never" },
-          { "label": "Static Extradata", "path": "staticExtradata", "visible": "never" },
-          { "label": "Maker Protocol Fee", "path": "makerProtocolFee", "visible": "never" },
-          { "label": "Taker Protocol Fee", "path": "takerProtocolFee", "visible": "never" },
-          { "label": "Payment Token", "path": "paymentToken", "visible": "never" },
-          { "label": "Calldata", "path": "calldata", "visible": "never" },
-          { "label": "Salt", "path": "salt", "visible": "never" },
-          { "label": "Fee Recipient", "path": "feeRecipient", "visible": "never" },
-          { "label": "Maker", "path": "maker", "visible": "never" }
+          {
+            "path": "side",
+            "label": "Order side",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.side" },
+            "visible": "always"
+          },
+          {
+            "path": "saleKind",
+            "label": "Sale kind",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.saleKind" },
+            "visible": "always"
+          },
+          {
+            "path": "basePrice",
+            "label": "Price",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "paymentToken" },
+            "visible": "always"
+          },
+          {
+            "path": "maker",
+            "label": "Maker",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "taker",
+            "label": "Taker",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "target",
+            "label": "Asset contract",
+            "format": "addressName",
+            "params": { "types": ["contract", "collection", "token"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "howToCall",
+            "label": "Execution mode",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.howToCall" },
+            "visible": "always"
+          },
+          { "path": "calldata", "label": "Executed calldata", "format": "raw", "visible": "always" },
+          { "path": "replacementPattern", "label": "Rewritable bytes", "format": "raw", "visible": "always" },
+          {
+            "path": "listingTime",
+            "label": "Listing time",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "expirationTime", "label": "Expires", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" },
+          { "path": "exchange", "label": "Exchange", "visible": "never" },
+          { "path": "makerRelayerFee", "label": "Maker Relayer Fee", "visible": "never" },
+          { "path": "takerRelayerFee", "label": "Taker Relayer Fee", "visible": "never" },
+          { "path": "makerProtocolFee", "label": "Maker Protocol Fee", "visible": "never" },
+          { "path": "takerProtocolFee", "label": "Taker Protocol Fee", "visible": "never" },
+          { "path": "feeRecipient", "label": "Fee Recipient", "visible": "never" },
+          { "path": "feeMethod", "label": "Fee Method", "visible": "never" },
+          { "path": "staticTarget", "label": "Static Target", "visible": "never" },
+          { "path": "staticExtradata", "label": "Static Extradata", "visible": "never" },
+          { "path": "paymentToken", "label": "Payment Token", "visible": "never" },
+          { "path": "extra", "label": "Extra", "visible": "never" },
+          { "path": "salt", "label": "Salt", "visible": "never" },
+          { "path": "nonce", "label": "Nonce", "visible": "never" }
         ]
       }
     }
