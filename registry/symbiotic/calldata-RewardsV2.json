@@ -1,11 +1,16 @@
 {
   "$schema": "../../specs/erc7730-v2.schema.json",
   "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0xa13e65cA0FeFa52cCb9615108fF400EF4806866B" }] } },
-  "metadata": { "owner": "Symbiotic", "info": { "url": "https://symbiotic.fi" }, "contractName": "Rewards V2" },
+  "metadata": {
+    "owner": "Symbiotic",
+    "info": { "url": "https://symbiotic.fi" },
+    "contractName": "Rewards V2",
+    "enums": { "rewardType": { "0": "Vault snapshot", "1": "Cumulative Merkle" } }
+  },
   "display": {
     "formats": {
-      "claimVaultSnapshotRewards(address recipient,address network,address token,address vault,uint256 lastUnclaimedRewards,uint256 firstRewardToClaim,uint256 rewardsToClaim,bytes[] activeSharesHints)": {
-        "intent": "Claim snapshot rewards",
+      "claimRewards(address recipient,address token,bytes data)": {
+        "intent": "Claim rewards",
         "interpolatedIntent": "Claim {token} to {recipient}",
         "fields": [
           {
@@ -18,156 +23,26 @@
           {
             "path": "#.recipient",
             "label": "Recipient",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          {
-            "path": "#.network",
-            "label": "Network",
             "format": "addressName",
             "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
             "visible": "always"
           },
           { "path": "#.token", "label": "Reward token", "format": "tokenTicker", "visible": "always" },
           {
-            "path": "#.vault",
-            "label": "Vault",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          { "path": "#.lastUnclaimedRewards", "label": "Expected index", "format": "raw", "visible": "always" },
-          { "path": "#.firstRewardToClaim", "label": "Skip to index", "format": "raw", "visible": "always" },
-          { "path": "#.rewardsToClaim", "label": "Max rewards", "format": "raw", "visible": "always" },
-          { "path": "#.activeSharesHints", "label": "Share lookup hints", "format": "raw", "visible": "never" }
-        ]
-      },
-      "claimOperatorFees(address recipient,address network,address token,address vault,uint256 lastUnclaimedRewards,uint256 firstRewardToClaim,uint256 rewardsToClaim,bytes extraData)": {
-        "intent": "Claim operator fees",
-        "interpolatedIntent": "Claim {token} to {recipient}",
-        "fields": [
-          {
-            "path": "@.to",
-            "label": "Rewards contract",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "path": "#.data.[0:8]",
+            "label": "Reward type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.rewardType" },
             "visible": "always"
           },
           {
-            "path": "#.recipient",
-            "label": "Recipient",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          {
-            "path": "#.network",
+            "path": "#.data.[20:40]",
             "label": "Network",
             "format": "addressName",
             "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
             "visible": "always"
           },
-          { "path": "#.token", "label": "Reward token", "format": "tokenTicker", "visible": "always" },
-          {
-            "path": "#.vault",
-            "label": "Vault",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          { "path": "#.lastUnclaimedRewards", "label": "Expected index", "format": "raw", "visible": "always" },
-          { "path": "#.firstRewardToClaim", "label": "Skip to index", "format": "raw", "visible": "always" },
-          { "path": "#.rewardsToClaim", "label": "Max rewards", "format": "raw", "visible": "always" },
-          { "path": "#.extraData", "label": "Operator hints", "format": "raw", "visible": "never" }
-        ]
-      },
-      "claimCuratorFees(address recipient,address vault,address token)": {
-        "intent": "Claim curator fees",
-        "interpolatedIntent": "Claim {token} to {recipient}",
-        "fields": [
-          {
-            "path": "@.to",
-            "label": "Rewards contract",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          {
-            "path": "#.recipient",
-            "label": "Recipient",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          {
-            "path": "#.vault",
-            "label": "Vault",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          { "path": "#.token", "label": "Reward token", "format": "tokenTicker", "visible": "always" }
-        ]
-      },
-      "claimProtocolFees(address recipient,address token)": {
-        "intent": "Claim protocol fees",
-        "interpolatedIntent": "Claim {token} to {recipient}",
-        "fields": [
-          {
-            "path": "@.to",
-            "label": "Rewards contract",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          {
-            "path": "#.recipient",
-            "label": "Recipient",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          { "path": "#.token", "label": "Reward token", "format": "tokenTicker", "visible": "always" }
-        ]
-      },
-      "claimCumulativeMerkleRewards(address recipient,address network,(address token,uint256 rewardeeType,uint256 amount,bytes32 rewardeeDataHash) leaf,bytes32[] proof,bytes32 merkleRoot)": {
-        "intent": "Claim Merkle rewards",
-        "interpolatedIntent": "Claim {leaf.token} rewards",
-        "fields": [
-          {
-            "path": "@.to",
-            "label": "Rewards contract",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          {
-            "path": "#.recipient",
-            "label": "Recipient",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          {
-            "path": "#.network",
-            "label": "Network",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          },
-          {
-            "path": "#.leaf.amount",
-            "label": "Total entitlement",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "#.leaf.token" },
-            "visible": "always"
-          },
-          { "path": "#.leaf.token", "label": "Reward token", "format": "tokenTicker", "visible": "always" },
-          { "path": "#.leaf.rewardeeType", "label": "Rewardee type", "format": "raw", "visible": "always" },
-          { "path": "#.leaf.rewardeeDataHash", "label": "Reward data hash", "format": "raw", "visible": "always" },
-          { "path": "#.merkleRoot", "label": "Merkle root", "format": "raw", "visible": "always" },
-          { "path": "#.proof", "label": "Merkle proof", "format": "raw", "visible": "never" }
+          { "path": "#.data", "label": "Claim data", "format": "raw", "visible": "always" }
         ]
       }
     }
