@@ -391,6 +391,58 @@ jobs:
           entity: ${{ matrix.test.entity }}
           descriptor-name: ${{ matrix.test.descriptor_name }}
 
+  check-test-coverage:
+    name: Check test coverage
+    needs: detect-testsv2
+    if: needs.detect-testsv2.outputs.has_tests == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Checkout base scripts and their dependencies
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base-scripts
+          sparse-checkout: |
+            .github/scripts
+            package.json
+            package-lock.json
+
+      - name: Setup node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: base-scripts/package-lock.json
+
+      - name: Install the dependencies of the base scripts
+        working-directory: base-scripts
+        run: npm ci
+
+      - name: Check that every function of an affected descriptor has a test
+        # The script comes from the base, like the other scripts of this
+        # workflow. hashFiles only works in a step condition, so the step, not
+        # the job, is skipped until the script is on the base branch.
+        if: hashFiles('base-scripts/.github/scripts/check-selector-coverage.js') != ''
+        env:
+          TEST_MATRIX: ${{ needs.detect-testsv2.outputs.test_matrix }}
+        run: |
+          node base-scripts/.github/scripts/check-selector-coverage.js \
+            --report test-coverage/coverage.json \
+            $(echo "$TEST_MATRIX" | jq -r '.[].descriptor')
+
+      - name: Upload the coverage report
+        if: always() && hashFiles('base-scripts/.github/scripts/check-selector-coverage.js') != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: test-coverage
+          path: test-coverage
+          retention-days: 30
+
   require-testsv2:
     name: Require testsv2 files
     needs: detect-testsv2
