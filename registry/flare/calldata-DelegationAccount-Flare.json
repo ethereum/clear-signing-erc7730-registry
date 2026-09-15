@@ -1,0 +1,104 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "DelegationAccount-Flare",
+    "contract": { "deployments": [{ "chainId": 14, "address": "0x7fBc8623ac906bd3D636389b6D577E95B7D21Ef5" }] }
+  },
+  "metadata": { "owner": "Flare Foundation", "info": { "url": "https://flare.network/" }, "contractName": "DelegationAccount-Flare" },
+  "display": {
+    "formats": {
+      "delegate(address _wNat, address _to, uint256 _bips)": {
+        "intent": "Delegate FTSO vote power",
+        "fields": [
+          { "label": "Token", "format": "addressName", "params": { "types": ["token"] }, "path": "#._wNat", "visible": "always" },
+          {
+            "label": "Provider",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "path": "#._to",
+            "visible": "always"
+          },
+          { "label": "Share", "format": "unit", "params": { "decimals": 2, "base": "%" }, "path": "#._bips", "visible": "always" }
+        ]
+      },
+      "batchDelegate(address _wNat, address[] _delegatees, uint256[] _bips)": {
+        "intent": "Delegate FTSO vote power",
+        "fields": [
+          { "label": "Token", "format": "addressName", "params": { "types": ["token"] }, "path": "#._wNat", "visible": "always" },
+          {
+            "label": "Provider",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "path": "#._delegatees.[]",
+            "visible": "always"
+          },
+          { "label": "Share", "format": "unit", "params": { "decimals": 2, "base": "%" }, "path": "#._bips.[]", "visible": "always" }
+        ]
+      },
+      "undelegateAll(address _wNat)": {
+        "intent": "Undelegate FTSO vote power",
+        "fields": [{ "label": "Token", "format": "addressName", "params": { "types": ["token"] }, "path": "#._wNat", "visible": "always" }]
+      },
+      "revokeDelegationAt(address _wNat, address _who, uint256 _blockNumber)": {
+        "intent": "Revoke delegation at block",
+        "fields": [
+          { "label": "Token", "format": "addressName", "params": { "types": ["token"] }, "path": "#._wNat", "visible": "always" },
+          { "label": "Who", "format": "addressName", "params": { "types": ["eoa", "contract"] }, "path": "#._who", "visible": "always" },
+          { "label": "Block Number", "format": "raw", "path": "#._blockNumber", "visible": "always" }
+        ]
+      },
+      "delegateGovernance(address _governanceVP, address _to)": {
+        "intent": "Delegate governance VP",
+        "fields": [
+          {
+            "label": "Governance VP",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "path": "#._governanceVP",
+            "visible": "always"
+          },
+          { "label": "To", "format": "addressName", "params": { "types": ["eoa", "wallet"] }, "path": "#._to", "visible": "always" }
+        ]
+      },
+      "undelegateGovernance(address _governanceVP)": {
+        "intent": "Undelegate governance VP",
+        "fields": [
+          {
+            "label": "Governance VP",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "path": "#._governanceVP",
+            "visible": "always"
+          }
+        ]
+      },
+      "withdraw(address _wNat, uint256 _amount)": {
+        "intent": "Withdraw funds",
+        "fields": [
+          { "label": "Token", "format": "addressName", "params": { "types": ["token"] }, "path": "#._wNat", "visible": "always" },
+          { "label": "Amount", "format": "amount", "path": "#._amount", "visible": "always" }
+        ]
+      },
+      "transferExternalToken(address _wNat, address _token, uint256 _amount)": {
+        "intent": "Recover external token",
+        "fields": [
+          {
+            "label": "Account Token",
+            "format": "addressName",
+            "params": { "types": ["token"] },
+            "path": "#._wNat",
+            "visible": "always"
+          },
+          { "label": "Token", "format": "addressName", "params": { "types": ["token"] }, "path": "#._token", "visible": "always" },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#._token" },
+            "path": "#._amount",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
