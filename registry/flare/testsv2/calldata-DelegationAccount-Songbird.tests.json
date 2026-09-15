@@ -1,0 +1,189 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-DelegationAccount-Songbird.json",
+  "dataProvider": {
+    "addressNames": {
+      "0x9642b23ed1e01df1092b92641051881a322f5d4e": "My wallet",
+      "0x1234567890123456789012345678901234567890": "Savings",
+      "0x2222222222222222222222222222222222222222": "Provider A",
+      "0x3333333333333333333333333333333333333333": "Provider B",
+      "0x5555555555555555555555555555555555555555": "Recovered token",
+      "0x02f0826ef6ad107cfc861152b32b52fd11bab9ed": "WSGB",
+      "0x6666666666666666666666666666666666666666": "Governance Vote Power"
+    },
+    "tokens": {
+      "0x5555555555555555555555555555555555555555": {
+        "symbol": "RTKN",
+        "decimals": 6,
+        "name": "Recovered token"
+      },
+      "0x02f0826ef6ad107cfc861152b32b52fd11bab9ed": {
+        "symbol": "WSGB",
+        "decimals": 18,
+        "name": "WSGB"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Delegate FTSO vote power - chain 19",
+      "rawTx": "0x02f8d11301843b9aca0085051f4d5c00830493e0943546ea8647a79f4f628ae9dc68e5eadd3dacc39b80b864c26f3acf00000000000000000000000002f0826ef6ad107cfc861152b32b52fd11bab9ed00000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000000001770c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Delegate FTSO vote power",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "WSGB"
+          },
+          {
+            "label": "Provider",
+            "value": "Provider A"
+          },
+          {
+            "label": "Share",
+            "value": "60%"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Batch delegate FTSO vote power - chain 19",
+      "rawTx": "0x02f901921302843b9aca0085051f4d5c00830493e0943546ea8647a79f4f628ae9dc68e5eadd3dacc39b80b90124ba75294e00000000000000000000000002f0826ef6ad107cfc861152b32b52fd11bab9ed000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000200000000000000000000000022222222222222222222222222222222222222220000000000000000000000003333333333333333333333333333333333333333000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000009c400000000000000000000000000000000000000000000000000000000000009c4c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Delegate FTSO vote power",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "WSGB"
+          },
+          {
+            "label": "Provider",
+            "value": "Provider A"
+          },
+          {
+            "label": "Provider",
+            "value": "Provider B"
+          },
+          {
+            "label": "Share",
+            "value": "25%"
+          },
+          {
+            "label": "Share",
+            "value": "25%"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Undelegate FTSO vote power - chain 19",
+      "rawTx": "0x02f8901303843b9aca0085051f4d5c00830493e0943546ea8647a79f4f628ae9dc68e5eadd3dacc39b80a45eb71cfb00000000000000000000000002f0826ef6ad107cfc861152b32b52fd11bab9edc001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Undelegate FTSO vote power",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "WSGB"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Revoke delegation at block - chain 19",
+      "rawTx": "0x02f8d11304843b9aca0085051f4d5c00830493e0943546ea8647a79f4f628ae9dc68e5eadd3dacc39b80b864a3ea6d1b00000000000000000000000002f0826ef6ad107cfc861152b32b52fd11bab9ed00000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000005397fb1c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Revoke delegation at block",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "WSGB"
+          },
+          {
+            "label": "Who",
+            "value": "Provider A"
+          },
+          {
+            "label": "Block Number",
+            "value": "87654321"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Delegate governance VP - chain 19",
+      "rawTx": "0x02f8b11305843b9aca0085051f4d5c00830493e0943546ea8647a79f4f628ae9dc68e5eadd3dacc39b80b8441d75e42a00000000000000000000000066666666666666666666666666666666666666660000000000000000000000001234567890123456789012345678901234567890c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Delegate governance VP",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Governance VP",
+            "value": "Governance Vote Power"
+          },
+          {
+            "label": "To",
+            "value": "Savings"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Undelegate governance VP - chain 19",
+      "rawTx": "0x02f8901306843b9aca0085051f4d5c00830493e0943546ea8647a79f4f628ae9dc68e5eadd3dacc39b80a497c9c8f80000000000000000000000006666666666666666666666666666666666666666c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Undelegate governance VP",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Governance VP",
+            "value": "Governance Vote Power"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw funds from delegation account - chain 19",
+      "rawTx": "0x02f8b11307843b9aca0085051f4d5c00830493e0943546ea8647a79f4f628ae9dc68e5eadd3dacc39b80b844f3fef3a300000000000000000000000002f0826ef6ad107cfc861152b32b52fd11bab9ed00000000000000000000000000000000000000000000000029a2241af62c0000c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Withdraw funds",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "WSGB"
+          },
+          {
+            "label": "Amount",
+            "value": "3 SGB"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Recover external token from delegation account - chain 19",
+      "rawTx": "0x02f8d11308843b9aca0085051f4d5c00830493e0943546ea8647a79f4f628ae9dc68e5eadd3dacc39b80b8642fbd243200000000000000000000000002f0826ef6ad107cfc861152b32b52fd11bab9ed000000000000000000000000555555555555555555555555555555555555555500000000000000000000000000000000000000000000000000000000002625a0c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Recover external token",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Account Token",
+            "value": "WSGB"
+          },
+          {
+            "label": "Token",
+            "value": "Recovered token"
+          },
+          {
+            "label": "Amount",
+            "value": "2.5 RTKN"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,266 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-ClaimSetupManager-Songbird.json",
+  "dataProvider": {
+    "addressNames": {
+      "0x9642b23ed1e01df1092b92641051881a322f5d4e": "My wallet",
+      "0x1234567890123456789012345678901234567890": "Savings",
+      "0xabcdef0123456789abcdef0123456789abcdef01": "Claim executor",
+      "0x2222222222222222222222222222222222222222": "Provider A",
+      "0x3333333333333333333333333333333333333333": "Provider B",
+      "0x5555555555555555555555555555555555555555": "Recovered token"
+    },
+    "tokens": {
+      "0x5555555555555555555555555555555555555555": {
+        "symbol": "RTKN",
+        "decimals": 6,
+        "name": "Recovered token"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Set claim executors - chain 19",
+      "rawTx": "0x02f8d91301843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d880de0b6b3a7640000b8649119c49400000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000abcdef0123456789abcdef0123456789abcdef01c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Set claim executors",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Executors",
+            "value": "Claim executor"
+          },
+          {
+            "label": "Fee",
+            "value": "1 SGB"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set allowed claim recipients - chain 19",
+      "rawTx": "0x02f8d11302843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d80b864d2a4ac61000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000001234567890123456789012345678901234567890c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Set allowed claim recipients",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Recipients",
+            "value": "Savings"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Enable automatic claiming - chain 19",
+      "rawTx": "0x02f901191303843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d881bc16d674ec80000b8a4e72dcdbb000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000abcdef0123456789abcdef0123456789abcdef010000000000000000000000004444444444444444444444444444444444444444c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Enable automatic claiming",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Executors",
+            "value": "Claim executor"
+          },
+          {
+            "label": "Executors",
+            "value": "0x4444444444444444444444444444444444444444"
+          },
+          {
+            "label": "Delegation Account",
+            "value": "true"
+          },
+          {
+            "label": "Fee",
+            "value": "2 SGB"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Enable delegation account - chain 19",
+      "rawTx": "0x02f8701304843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d8084f0977215c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Enable delegation account",
+        "owner": "Flare Foundation",
+        "fields": []
+      }
+    },
+    {
+      "description": "Disable delegation account - chain 19",
+      "rawTx": "0x02f8701305843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d80842394deb1c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Disable delegation account",
+        "owner": "Flare Foundation",
+        "fields": []
+      }
+    },
+    {
+      "description": "Withdraw funds from delegation account - chain 19",
+      "rawTx": "0x02f8901306843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d80a42e1a7d4d0000000000000000000000000000000000000000000000008ac7230489e80000c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Withdraw funds",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "10 SGB"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Recover external token from delegation account - chain 19",
+      "rawTx": "0x02f8b11307843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d80b844489a8a47000000000000000000000000555555555555555555555555555555555555555500000000000000000000000000000000000000000000000000000000004c4b40c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Recover external token",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "Recovered token"
+          },
+          {
+            "label": "Amount",
+            "value": "5 RTKN"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Delegate FTSO vote power - chain 19",
+      "rawTx": "0x02f8b11308843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d80b844026e402b00000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000000001388c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Delegate FTSO vote power",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Provider",
+            "value": "Provider A"
+          },
+          {
+            "label": "Share",
+            "value": "50%"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Batch delegate FTSO vote power - chain 19",
+      "rawTx": "0x02f901721309843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d80b90104dc4fcda7000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000020000000000000000000000002222222222222222222222222222222222222222000000000000000000000000333333333333333333333333333333333333333300000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000bb80000000000000000000000000000000000000000000000000000000000000fa0c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Delegate FTSO vote power",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Provider",
+            "value": "Provider A"
+          },
+          {
+            "label": "Provider",
+            "value": "Provider B"
+          },
+          {
+            "label": "Share",
+            "value": "30%"
+          },
+          {
+            "label": "Share",
+            "value": "40%"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Undelegate FTSO vote power - chain 19",
+      "rawTx": "0x02f870130a843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d8084b302f393c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Undelegate FTSO vote power",
+        "owner": "Flare Foundation",
+        "fields": []
+      }
+    },
+    {
+      "description": "Revoke delegation at block - chain 19",
+      "rawTx": "0x02f8b1130b843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d80b844bbd6fbf800000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000000bc614ec001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Revoke delegation at block",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Who",
+            "value": "Provider A"
+          },
+          {
+            "label": "Block Number",
+            "value": "12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Delegate governance VP - chain 19",
+      "rawTx": "0x02f890130c843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d80a47a68a5080000000000000000000000001234567890123456789012345678901234567890c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Delegate governance VP",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "To",
+            "value": "Savings"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Undelegate governance VP - chain 19",
+      "rawTx": "0x02f870130d843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d808487a2a0dcc001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Undelegate governance VP",
+        "owner": "Flare Foundation",
+        "fields": []
+      }
+    },
+    {
+      "description": "Register as claim executor - chain 19",
+      "rawTx": "0x02f898130e843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d880de0b6b3a7640000a4ccce7e86000000000000000000000000000000000000000000000000016345785d8a0000c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Register as claim executor",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Executor Fee",
+            "value": "0.1 SGB"
+          },
+          {
+            "label": "Registration Fee",
+            "value": "1 SGB"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Update executor fee - chain 19",
+      "rawTx": "0x02f890130f843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d80a4831f16af00000000000000000000000000000000000000000000000002c68af0bb140000c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Update executor fee",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Fee Value",
+            "value": "0.2 SGB"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Unregister as claim executor - chain 19",
+      "rawTx": "0x02f8701310843b9aca0085051f4d5c00830493e094dd138b38d87b0f95f6c3e13e78ffdf2588f1732d8084868a660fc001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Unregister as claim executor",
+        "owner": "Flare Foundation",
+        "fields": []
+      }
+    }
+  ]
+}
