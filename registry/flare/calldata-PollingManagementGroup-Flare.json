@@ -1,0 +1,50 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "PollingManagementGroup-Flare",
+    "contract": { "deployments": [{ "chainId": 14, "address": "0x1e91A59aaC440D7ecA5EBf58d85903CdB0021812" }] }
+  },
+  "metadata": {
+    "owner": "Flare Foundation",
+    "info": { "url": "https://flare.network/" },
+    "contractName": "PollingMgmtGroup-Flare",
+    "enums": { "voteType": { "0": "Against", "1": "For" } }
+  },
+  "display": {
+    "formats": {
+      "castVote(uint256 _proposalId, uint8 _support)": {
+        "intent": "cast vote",
+        "fields": [
+          { "label": "Proposal Id", "format": "raw", "path": "#._proposalId", "visible": "always" },
+          {
+            "label": "Support",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.voteType" },
+            "path": "#._support",
+            "visible": "always"
+          }
+        ]
+      },
+      "propose(string _description)": {
+        "intent": "create proposal",
+        "fields": [{ "label": "Description", "format": "raw", "path": "#._description", "visible": "always" }]
+      },
+      "proposeWithSettings(string _description, (bool accept, uint256 votingStartTs, uint256 votingPeriodSeconds, uint256 thresholdConditionBIPS, uint256 majorityConditionBIPS) _settings)": {
+        "intent": "create proposal",
+        "fields": [
+          { "label": "Description", "format": "raw", "path": "#._description", "visible": "always" },
+          {
+            "path": "#._settings",
+            "fields": [
+              { "label": "Accept", "format": "raw", "path": "accept" },
+              { "label": "Voting Start", "format": "date", "params": { "encoding": "timestamp" }, "path": "votingStartTs" },
+              { "label": "Voting Period", "format": "duration", "path": "votingPeriodSeconds" },
+              { "label": "Threshold (bps)", "format": "unit", "params": { "base": "bps" }, "path": "thresholdConditionBIPS" },
+              { "label": "Majority (bps)", "format": "unit", "params": { "base": "bps" }, "path": "majorityConditionBIPS" }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
