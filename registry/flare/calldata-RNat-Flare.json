@@ -1,0 +1,74 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "RNat-Flare",
+    "contract": { "deployments": [{ "chainId": 14, "address": "0x26d460c3Cf931Fb2014FA436a49e3Af08619810e" }] }
+  },
+  "metadata": {
+    "owner": "Flare Foundation",
+    "info": { "url": "https://flare.network/" },
+    "contractName": "RNat-Flare",
+    "constants": { "rnat": "0x26d460c3Cf931Fb2014FA436a49e3Af08619810e" }
+  },
+  "display": {
+    "formats": {
+      "claimRewards(uint256[] _projectIds, uint256 _month)": {
+        "intent": "Claim RNat rewards",
+        "fields": [
+          { "label": "Project Ids", "format": "raw", "path": "#._projectIds.[]", "visible": "always" },
+          { "label": "Month", "format": "raw", "path": "#._month", "visible": "always" }
+        ]
+      },
+      "withdraw(uint128 _amount, bool _wrap)": {
+        "intent": "Withdraw RNat",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.rnat" },
+            "path": "#._amount",
+            "visible": "always"
+          },
+          { "label": "Wrap to WFLR", "format": "raw", "path": "#._wrap", "visible": "always" }
+        ]
+      },
+      "withdrawAll(bool _wrap)": {
+        "intent": "Withdraw all RNat",
+        "fields": [{ "label": "Wrap to WFLR", "format": "raw", "path": "#._wrap", "visible": "always" }]
+      },
+      "setClaimExecutors(address[] _executors)": {
+        "intent": "Set reward claim executors",
+        "fields": [
+          {
+            "label": "Executors",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._executors.[]",
+            "visible": "always"
+          }
+        ]
+      },
+      "distributeRewards(uint256 _projectId, uint256 _month, address[] _recipients, uint128[] _amountsWei)": {
+        "intent": "Distribute project rewards",
+        "fields": [
+          { "label": "Project Id", "format": "raw", "path": "#._projectId", "visible": "always" },
+          { "label": "Month", "format": "raw", "path": "#._month", "visible": "always" },
+          {
+            "label": "Recipients",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._recipients.[]",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.rnat" },
+            "path": "#._amountsWei.[]",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
