@@ -1,0 +1,58 @@
+name: 📊 registry coverage
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Mondays at 06:00 UTC
+    - cron: "0 6 * * 1"
+  push:
+    branches: [master]
+    paths:
+      - "registry/**"
+      - "ercs/**"
+      - "tools/scripts/coverage-report.js"
+      - ".github/workflows/coverage.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  refresh-coverage:
+    name: 🔁 refresh docs/coverage.md
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generate coverage report
+        run: |
+          mkdir -p docs
+          node tools/scripts/coverage-report.js --out docs/coverage.md
+
+      - name: Append report to job summary
+        run: cat docs/coverage.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit refreshed report
+        if: github.event_name != 'pull_request'
+        run: |
+          if git diff --quiet docs/coverage.md; then
+            echo "No coverage changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/coverage.md
+          git commit -m "docs: refresh registry coverage report"
+          git push
