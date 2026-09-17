@@ -1,12 +1,12 @@
 {
   "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
-    "$id": "L1StarkGateSTRKbridge",
+    "$id": "L1StarkGateFRAXBridge",
     "contract": {
       "deployments": [
         {
           "chainId": 1,
-          "address": "0xcE5485Cfb26914C5dcE00B9BAF0580364daFC7a4"
+          "address": "0xDc687e1E0B85CB589b2da3C47c933De9Db3d1ebb"
         }
       ]
     }
@@ -15,17 +15,17 @@
     "owner": "StarkWare",
     "info": {
       "url": "https://starkgate.starknet.io/",
-      "deploymentDate": "2024-10-01T00:00:00Z"
+      "deploymentDate": "2023-08-22T00:00:00Z"
     },
-    "contractName": "L1StarkGateSTRKbridge",
     "constants": {
-      "tokenAddress": "0xCa14007Eff0dB1f8135f4C25B34De49AB0d42766"
-    }
+      "fraxAddress": "0x853d955aCEf822Db058eb8505911ED77F175b99e"
+    },
+    "contractName": "L1StarkGateFRAXBridge"
   },
   "display": {
     "formats": {
-      "deposit(address token, uint256 amount, uint256 l2Recipient)": {
-        "$id": "deposit",
+      "deposit(uint256 amount, uint256 l2Recipient)": {
+        "$id": "depositLegacy",
         "intent": "Bridge",
         "interpolatedIntent": "Bridge {amount} to {l2Recipient}",
         "fields": [
@@ -34,7 +34,7 @@
             "label": "Amount to deposit",
             "format": "tokenAmount",
             "params": {
-              "tokenPath": "token"
+              "token": "$.metadata.constants.fraxAddress"
             },
             "visible": "always"
           },
@@ -51,8 +51,8 @@
           }
         ]
       },
-      "deposit(uint256 amount, uint256 l2Recipient)": {
-        "$id": "depositLegacy",
+      "deposit(address token, uint256 amount, uint256 l2Recipient)": {
+        "$id": "deposit",
         "intent": "Bridge",
         "interpolatedIntent": "Bridge {amount} to {l2Recipient}",
         "fields": [
@@ -61,7 +61,7 @@
             "label": "Amount to deposit",
             "format": "tokenAmount",
             "params": {
-              "token": "$.metadata.constants.tokenAddress"
+              "tokenPath": "token"
             },
             "visible": "always"
           },

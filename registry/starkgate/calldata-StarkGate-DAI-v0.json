@@ -1,0 +1,56 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "L1DAIBridge",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x9F96fE0633eE838D0298E8b8980E6716bE81388d"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "MakerDAO",
+    "info": {
+      "url": "https://starkgate.starknet.io/",
+      "deploymentDate": "2022-10-22T00:00:00Z"
+    },
+    "constants": {
+      "daiAddress": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+    },
+    "contractName": "L1DAIBridge"
+  },
+  "display": {
+    "formats": {
+      "deposit(uint256 amount, uint256 l2Recipient)": {
+        "$id": "deposit",
+        "intent": "Bridge",
+        "interpolatedIntent": "Bridge {amount} to {l2Recipient}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to deposit",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.daiAddress"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "l2Recipient",
+            "label": "Recipient",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Deposit fee",
+            "format": "amount"
+          }
+        ]
+      }
+    }
+  }
+}
