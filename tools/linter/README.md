@@ -40,16 +40,16 @@ This will:
 
 ### Activate the environment
 
-Before running any commands, source the `.env` file (for API keys) and activate the virtual environment:
+Before running any commands, activate the virtual environment:
 
 ```bash
-source .env && source tools/linter/.venv/bin/activate
+source tools/linter/.venv/bin/activate
 ```
 
 Or as a one-liner from the repository root:
 
 ```bash
-source .env && source tools/linter/.venv/bin/activate && erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
+source tools/linter/.venv/bin/activate && erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
 ```
 
 ### Lint descriptor files
@@ -90,23 +90,9 @@ erc7730 resolve <path>
 erc7730 schema
 ```
 
-## Configuration
+## ABI source
 
-### Etherscan API Key
-
-To validate ABIs fetched from Etherscan, the `ETHERSCAN_API_KEY` environment variable must be set.
-
-The repository root contains a `.env` file with this key. Source it before running the linter:
-
-```bash
-source .env
-```
-
-**Note:** The Python tool does not automatically load `.env` files - you must source it manually or export the variable directly:
-
-```bash
-export ETHERSCAN_API_KEY=your_api_key_here
-```
+The linter fetches reference ABIs from [Sourcify](https://sourcify.dev) and follows proxies to their implementation. No API key is needed. A deployment that is not verified on Sourcify cannot be validated against its ABI.
 
 ## Documentation
 

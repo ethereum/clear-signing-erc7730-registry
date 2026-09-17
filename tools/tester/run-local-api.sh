@@ -83,7 +83,7 @@ if [ ${#MISSING_DEPS[@]} -gt 0 ]; then
 fi
 echo -e "${GREEN}All dependencies ready${NC}"
 
-# Source .env for ETHERSCAN_API_KEY if available
+# Source .env if available
 if [ -f "$ROOT_DIR/.env" ]; then
     echo ""
     echo -e "${BLUE}Loading environment from .env${NC}"
