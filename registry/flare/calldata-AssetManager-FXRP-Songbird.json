@@ -1,0 +1,184 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "AssetManager-FXRP-Songbird",
+    "contract": { "deployments": [{ "chainId": 19, "address": "0x299d678f67e7ADD4efdf295Ebe0E92FCb4f75C4c" }] }
+  },
+  "metadata": {
+    "owner": "Flare Foundation",
+    "info": { "url": "https://flare.network/" },
+    "contractName": "AssetManager-FXRP-Songbird",
+    "constants": { "fxrp": "0xF9a84f4ec903F4EaB117A9c1098BeC078BA7027d" }
+  },
+  "display": {
+    "formats": {
+      "redeemAmount(uint256 _amountUBA, string _redeemerUnderlyingAddressString, address _executor)": {
+        "intent": "redeem FXRP",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.fxrp" },
+            "path": "#._amountUBA",
+            "visible": "always"
+          },
+          { "label": "XRP Address", "format": "raw", "path": "#._redeemerUnderlyingAddressString", "visible": "always" },
+          {
+            "label": "Executor",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#._executor",
+            "visible": "always"
+          },
+          { "label": "Executor Fee", "format": "amount", "path": "@.value", "visible": "optional" }
+        ]
+      },
+      "redeemWithTag(uint256 _amountUBA, string _redeemerUnderlyingAddressString, address _executor, uint256 _destinationTag)": {
+        "intent": "redeem FXRP",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.fxrp" },
+            "path": "#._amountUBA",
+            "visible": "always"
+          },
+          { "label": "XRP Address", "format": "raw", "path": "#._redeemerUnderlyingAddressString", "visible": "always" },
+          {
+            "label": "Executor",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#._executor",
+            "visible": "always"
+          },
+          { "label": "Dest Tag", "format": "raw", "path": "#._destinationTag", "visible": "always" },
+          { "label": "Executor Fee", "format": "amount", "path": "@.value", "visible": "optional" }
+        ]
+      },
+      "redemptionPaymentDefault((bytes32[] merkleProof, (bytes32 attestationType, bytes32 sourceId, uint64 votingRound, uint64 lowestUsedTimestamp, (uint64 minimalBlockNumber, uint64 deadlineBlockNumber, uint64 deadlineTimestamp, bytes32 destinationAddressHash, uint256 amount, bytes32 standardPaymentReference, bool checkSourceAddresses, bytes32 sourceAddressesRoot) requestBody, (uint64 minimalBlockTimestamp, uint64 firstOverflowBlockNumber, uint64 firstOverflowBlockTimestamp) responseBody) data) _proof, uint256 _redemptionRequestId)": {
+        "intent": "claim redemption default",
+        "fields": [
+          { "label": "Request ID", "format": "raw", "path": "#._redemptionRequestId", "visible": "always" },
+          {
+            "path": "#._proof",
+            "fields": [
+              {
+                "path": "data",
+                "fields": [
+                  {
+                    "path": "requestBody",
+                    "fields": [
+                      { "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.fxrp" }, "path": "amount" },
+                      { "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" }, "path": "deadlineTimestamp" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          { "label": "Merkle Proof", "path": "#._proof.merkleProof.[]", "visible": "never" },
+          { "label": "Attestation Type", "path": "#._proof.data.attestationType", "visible": "never" },
+          { "label": "Source Id", "path": "#._proof.data.sourceId", "visible": "never" },
+          { "label": "Voting Round", "path": "#._proof.data.votingRound", "visible": "never" },
+          { "label": "Lowest Used Ts", "path": "#._proof.data.lowestUsedTimestamp", "visible": "never" },
+          { "label": "Min Block", "path": "#._proof.data.requestBody.minimalBlockNumber", "visible": "never" },
+          { "label": "Deadline Block", "path": "#._proof.data.requestBody.deadlineBlockNumber", "visible": "never" },
+          { "label": "Dest Hash", "path": "#._proof.data.requestBody.destinationAddressHash", "visible": "never" },
+          { "label": "Payment Ref", "path": "#._proof.data.requestBody.standardPaymentReference", "visible": "never" },
+          { "label": "Check Source", "path": "#._proof.data.requestBody.checkSourceAddresses", "visible": "never" },
+          { "label": "Source Root", "path": "#._proof.data.requestBody.sourceAddressesRoot", "visible": "never" },
+          { "label": "Min Block Ts", "path": "#._proof.data.responseBody.minimalBlockTimestamp", "visible": "never" },
+          { "label": "Overflow Block", "path": "#._proof.data.responseBody.firstOverflowBlockNumber", "visible": "never" },
+          { "label": "Overflow Ts", "path": "#._proof.data.responseBody.firstOverflowBlockTimestamp", "visible": "never" }
+        ]
+      },
+      "executeDirectMinting((bytes32[] merkleProof, (bytes32 attestationType, bytes32 sourceId, uint64 votingRound, uint64 lowestUsedTimestamp, (bytes32 transactionId, address proofOwner) requestBody, (uint64 blockNumber, uint64 blockTimestamp, string sourceAddress, bytes32 sourceAddressHash, bytes32 receivingAddressHash, bytes32 intendedReceivingAddressHash, int256 spentAmount, int256 intendedSpentAmount, int256 receivedAmount, int256 intendedReceivedAmount, bool hasMemoData, bytes firstMemoData, bool hasDestinationTag, uint256 destinationTag, uint8 status) responseBody) data) _payment)": {
+        "intent": "execute minting",
+        "fields": [
+          {
+            "path": "#._payment",
+            "fields": [
+              {
+                "path": "data",
+                "fields": [
+                  {
+                    "path": "responseBody",
+                    "fields": [
+                      { "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.fxrp" }, "path": "receivedAmount" },
+                      { "label": "XRPL Source", "format": "raw", "path": "sourceAddress" },
+                      { "label": "Dest Tag", "format": "raw", "path": "destinationTag" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          { "label": "Executor Fee", "format": "amount", "path": "@.value", "visible": "optional" },
+          { "label": "Merkle Proof", "path": "#._payment.merkleProof.[]", "visible": "never" },
+          { "label": "Attestation Type", "path": "#._payment.data.attestationType", "visible": "never" },
+          { "label": "Source Id", "path": "#._payment.data.sourceId", "visible": "never" },
+          { "label": "Voting Round", "path": "#._payment.data.votingRound", "visible": "never" },
+          { "label": "Lowest Used Ts", "path": "#._payment.data.lowestUsedTimestamp", "visible": "never" },
+          { "label": "Tx Id", "path": "#._payment.data.requestBody.transactionId", "visible": "never" },
+          { "label": "Proof Owner", "path": "#._payment.data.requestBody.proofOwner", "visible": "never" },
+          { "label": "Block Number", "path": "#._payment.data.responseBody.blockNumber", "visible": "never" },
+          { "label": "Block Timestamp", "path": "#._payment.data.responseBody.blockTimestamp", "visible": "never" },
+          { "label": "Source Hash", "path": "#._payment.data.responseBody.sourceAddressHash", "visible": "never" },
+          { "label": "Receiving Hash", "path": "#._payment.data.responseBody.receivingAddressHash", "visible": "never" },
+          { "label": "Intended Recv", "path": "#._payment.data.responseBody.intendedReceivingAddressHash", "visible": "never" },
+          { "label": "Spent Amount", "path": "#._payment.data.responseBody.spentAmount", "visible": "never" },
+          { "label": "Intended Spent", "path": "#._payment.data.responseBody.intendedSpentAmount", "visible": "never" },
+          { "label": "Intended Recv Amt", "path": "#._payment.data.responseBody.intendedReceivedAmount", "visible": "never" },
+          { "label": "Has Memo", "path": "#._payment.data.responseBody.hasMemoData", "visible": "never" },
+          { "label": "Memo Data", "path": "#._payment.data.responseBody.firstMemoData", "visible": "never" },
+          { "label": "Has Dest Tag", "path": "#._payment.data.responseBody.hasDestinationTag", "visible": "never" },
+          { "label": "Status", "path": "#._payment.data.responseBody.status", "visible": "never" }
+        ]
+      },
+      "executeDirectMintingWithData((bytes32[] merkleProof, (bytes32 attestationType, bytes32 sourceId, uint64 votingRound, uint64 lowestUsedTimestamp, (bytes32 transactionId, address proofOwner) requestBody, (uint64 blockNumber, uint64 blockTimestamp, string sourceAddress, bytes32 sourceAddressHash, bytes32 receivingAddressHash, bytes32 intendedReceivingAddressHash, int256 spentAmount, int256 intendedSpentAmount, int256 receivedAmount, int256 intendedReceivedAmount, bool hasMemoData, bytes firstMemoData, bool hasDestinationTag, uint256 destinationTag, uint8 status) responseBody) data) _payment, bytes _data)": {
+        "intent": "execute minting",
+        "fields": [
+          {
+            "path": "#._payment",
+            "fields": [
+              {
+                "path": "data",
+                "fields": [
+                  {
+                    "path": "responseBody",
+                    "fields": [
+                      { "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.fxrp" }, "path": "receivedAmount" },
+                      { "label": "XRPL Source", "format": "raw", "path": "sourceAddress" },
+                      { "label": "Dest Tag", "format": "raw", "path": "destinationTag" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          { "label": "Executor Fee", "format": "amount", "path": "@.value", "visible": "optional" },
+          { "label": "User Op", "format": "raw", "path": "#._data" },
+          { "label": "Merkle Proof", "path": "#._payment.merkleProof.[]", "visible": "never" },
+          { "label": "Attestation Type", "path": "#._payment.data.attestationType", "visible": "never" },
+          { "label": "Source Id", "path": "#._payment.data.sourceId", "visible": "never" },
+          { "label": "Voting Round", "path": "#._payment.data.votingRound", "visible": "never" },
+          { "label": "Lowest Used Ts", "path": "#._payment.data.lowestUsedTimestamp", "visible": "never" },
+          { "label": "Tx Id", "path": "#._payment.data.requestBody.transactionId", "visible": "never" },
+          { "label": "Proof Owner", "path": "#._payment.data.requestBody.proofOwner", "visible": "never" },
+          { "label": "Block Number", "path": "#._payment.data.responseBody.blockNumber", "visible": "never" },
+          { "label": "Block Timestamp", "path": "#._payment.data.responseBody.blockTimestamp", "visible": "never" },
+          { "label": "Source Hash", "path": "#._payment.data.responseBody.sourceAddressHash", "visible": "never" },
+          { "label": "Receiving Hash", "path": "#._payment.data.responseBody.receivingAddressHash", "visible": "never" },
+          { "label": "Intended Recv", "path": "#._payment.data.responseBody.intendedReceivingAddressHash", "visible": "never" },
+          { "label": "Spent Amount", "path": "#._payment.data.responseBody.spentAmount", "visible": "never" },
+          { "label": "Intended Spent", "path": "#._payment.data.responseBody.intendedSpentAmount", "visible": "never" },
+          { "label": "Intended Recv Amt", "path": "#._payment.data.responseBody.intendedReceivedAmount", "visible": "never" },
+          { "label": "Has Memo", "path": "#._payment.data.responseBody.hasMemoData", "visible": "never" },
+          { "label": "Memo Data", "path": "#._payment.data.responseBody.firstMemoData", "visible": "never" },
+          { "label": "Has Dest Tag", "path": "#._payment.data.responseBody.hasDestinationTag", "visible": "never" },
+          { "label": "Status", "path": "#._payment.data.responseBody.status", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
