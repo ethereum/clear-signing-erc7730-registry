@@ -58,7 +58,7 @@ Reviewers check each PR against the [review guidelines](docs/REVIEWING.md).
 The `erc7730` Python package is available for validating and formatting ERC-7730 descriptors:
 
 ```bash
-# Install the erc7730 package (requires Python 3.12+)
+# Install the erc7730 package (requires Python 3.12: releases pin >=3.12,<3.13)
 pip install erc7730
 
 # Validate a specific file
@@ -74,9 +74,11 @@ erc7730 format
 erc7730 generate --address 0xContractAddress --chain-id 1 --owner "Entity Name" --url "https://entity.url"
 ```
 
+On Python 3.13 or later `pip install erc7730` fails with `Could not find a version that satisfies the requirement erc7730 (from versions: none)`, because every published release pins `>=3.12,<3.13`. Use `uv` below rather than installing a second interpreter.
+
 ### Optional: using uv instead of pip
 
-If you have [uv](https://docs.astral.sh/uv/) installed, you can skip the install step and run `erc7730` ad-hoc with `uvx`:
+If you have [uv](https://docs.astral.sh/uv/) installed, you can skip the install step and run `erc7730` ad-hoc with `uvx`. `uv` downloads a matching Python itself, so these work whatever your system Python is:
 
 ```bash
 # Run any erc7730 command without installing it first
