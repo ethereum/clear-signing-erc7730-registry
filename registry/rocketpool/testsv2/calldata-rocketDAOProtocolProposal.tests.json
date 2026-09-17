@@ -1,0 +1,82 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-rocketDAOProtocolProposal.json",
+  "tests": [
+    {
+      "description": "Vote For on proposal 42 - chain 1",
+      "rawTx": "0x02f9012f0180843b9aca008506fc23ac008303d090942d627a50dc1c4eda73e42858e8460b0ecf300b2580b90104b5171d19000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000003635c9adc5dea00000000000000000000000000000000000000000000000000000000000000000000500000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000007bccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc0",
+      "expected": {
+        "intent": "Vote on pDAO proposal",
+        "interpolatedIntent": "Vote For on pDAO proposal 42",
+        "owner": "Rocket Pool",
+        "fields": [
+          { "label": "Proposal ID", "value": "42" },
+          { "label": "Vote", "value": "For" },
+          { "label": "Voting power", "value": "1000000000000000000000" }
+        ]
+      }
+    },
+    {
+      "description": "Submit pDAO proposal - chain 1",
+      "rawTx": "0x02f9018f0180843b9aca008506fc23ac008303d090942d627a50dc1c4eda73e42858e8460b0ecf300b2580b9016475fc2c13000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000001406f400000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000001a496e637265617365206d696e696d756d2052504c207374616b6500000000000000000000000000000000000000000000000000000000000000000000000000041234abcd00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000003635c9adc5dea000001111111111111111111111111111111111111111111111111111111111111111c0",
+      "expected": {
+        "intent": "Submit pDAO proposal",
+        "interpolatedIntent": "Submit pDAO proposal: Increase minimum RPL stake",
+        "owner": "Rocket Pool",
+        "fields": [
+          { "label": "Message", "value": "Increase minimum RPL stake" },
+          { "label": "Block number", "value": "21000000" }
+        ]
+      }
+    },
+    {
+      "description": "Override delegate vote Against on proposal 42 - chain 1",
+      "rawTx": "0x02f86e0180843b9aca008506fc23ac008303d090942d627a50dc1c4eda73e42858e8460b0ecf300b2580b8441c15da27000000000000000000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000000000000000003c0",
+      "expected": {
+        "intent": "Override delegate vote",
+        "interpolatedIntent": "Override delegate vote to Against on pDAO proposal 42",
+        "owner": "Rocket Pool",
+        "fields": [
+          { "label": "Proposal ID", "value": "42" },
+          { "label": "Vote", "value": "Against" }
+        ]
+      }
+    },
+    {
+      "description": "Finalise proposal 42 - chain 1",
+      "rawTx": "0x02f84d0180843b9aca008506fc23ac008303d090942d627a50dc1c4eda73e42858e8460b0ecf300b2580a46b75dbde000000000000000000000000000000000000000000000000000000000000002ac0",
+      "expected": {
+        "intent": "Finalise pDAO proposal",
+        "interpolatedIntent": "Finalise pDAO proposal 42",
+        "owner": "Rocket Pool",
+        "fields": [
+          { "label": "Proposal ID", "value": "42" }
+        ]
+      }
+    },
+    {
+      "description": "Execute proposal 42 - chain 1",
+      "rawTx": "0x02f84d0180843b9aca008506fc23ac008303d090942d627a50dc1c4eda73e42858e8460b0ecf300b2580a4fe0d94c1000000000000000000000000000000000000000000000000000000000000002ac0",
+      "expected": {
+        "intent": "Execute pDAO proposal",
+        "interpolatedIntent": "Execute pDAO proposal 42",
+        "owner": "Rocket Pool",
+        "fields": [
+          { "label": "Proposal ID", "value": "42" }
+        ]
+      }
+    },
+    {
+      "description": "Destroy proposal 42 - chain 1",
+      "rawTx": "0x02f84d0180843b9aca008506fc23ac008303d090942d627a50dc1c4eda73e42858e8460b0ecf300b2580a49d118770000000000000000000000000000000000000000000000000000000000000002ac0",
+      "expected": {
+        "intent": "Destroy pDAO proposal",
+        "interpolatedIntent": "Destroy pDAO proposal 42",
+        "owner": "Rocket Pool",
+        "fields": [
+          { "label": "Proposal ID", "value": "42" }
+        ]
+      }
+    }
+  ]
+}
