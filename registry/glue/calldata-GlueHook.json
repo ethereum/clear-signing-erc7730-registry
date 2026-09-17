@@ -1,0 +1,1195 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "GlueHook",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+        },
+        {
+          "chainId": 8453,
+          "address": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+        },
+        {
+          "chainId": 130,
+          "address": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+        },
+        {
+          "chainId": 42161,
+          "address": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+        },
+        {
+          "chainId": 10,
+          "address": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+        },
+        {
+          "chainId": 56,
+          "address": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+        },
+        {
+          "chainId": 137,
+          "address": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+        },
+        {
+          "chainId": 43114,
+          "address": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+        },
+        {
+          "chainId": 196,
+          "address": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+        },
+        {
+          "chainId": 480,
+          "address": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+        },
+        {
+          "chainId": 1868,
+          "address": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+        },
+        {
+          "chainId": 4326,
+          "address": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+        },
+        {
+          "chainId": 4663,
+          "address": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+        },
+        {
+          "chainId": 5042,
+          "address": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Glue",
+    "info": {
+      "url": "https://gluehook.trade",
+      "deploymentDate": "2026-09-13T00:00:00Z"
+    },
+    "constants": {
+      "native": "0x0000000000000000000000000000000000000000",
+      "glueHook": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+    },
+    "contractName": "GlueHook"
+  },
+  "display": {
+    "formats": {
+      "launchPool((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks) key,uint160 sqrtPriceX96,address main,address recipient,int24 tickLower,int24 tickUpper,uint128 liquidity,address owner,(uint64 buybackShareWad,uint64 burnShareWad,uint64 compoundShareWad,uint64 potCompoundShareWad,uint64 potBurnShareWad,bool publicHarvest,address secondaryRecipient,address mainRecipient,uint256 minMain,uint256 minSecondary) config)": {
+        "$id": "launchPool",
+        "intent": "Launch GlueHook pool",
+        "interpolatedIntent": "Launch {key.currency0}/{key.currency1} pool",
+        "fields": [
+          {
+            "path": "key.currency0",
+            "label": "Token 0",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.currency1",
+            "label": "Token 1",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.fee",
+            "label": "Pool fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 4
+            }
+          },
+          {
+            "path": "key.tickSpacing",
+            "label": "Tick spacing",
+            "format": "raw"
+          },
+          {
+            "path": "key.hooks",
+            "label": "Hook",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            },
+            "visible": "never"
+          },
+          {
+            "path": "sqrtPriceX96",
+            "label": "Price sqrtX96",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "main",
+            "label": "Main asset",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "recipient",
+            "label": "Delivery (0=burn)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "tickLower",
+            "label": "Lower tick",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "tickUpper",
+            "label": "Upper tick",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "liquidity",
+            "label": "L units",
+            "format": "raw"
+          },
+          {
+            "path": "owner",
+            "label": "Owner (0=locked)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "config.buybackShareWad",
+            "label": "Buyback share",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.burnShareWad",
+            "label": "Burn share",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.compoundShareWad",
+            "label": "Compound share",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.potCompoundShareWad",
+            "label": "Pot compound",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.potBurnShareWad",
+            "label": "Pot burn",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.publicHarvest",
+            "label": "Public harvest",
+            "format": "raw"
+          },
+          {
+            "path": "config.secondaryRecipient",
+            "label": "Fee → secondary",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "config.mainRecipient",
+            "label": "Fee → main",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "config.minMain",
+            "label": "Min main",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "main",
+              "nativeCurrencyAddress": [
+                "$.metadata.constants.native"
+              ],
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "off"
+            }
+          },
+          {
+            "path": "config.minSecondary",
+            "label": "Min 2nd",
+            "format": "raw",
+            "visible": {
+              "ifNotIn": [
+                "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+              ]
+            }
+          },
+          {
+            "path": "@.value",
+            "label": "Native sent",
+            "format": "amount",
+            "visible": {
+              "ifNotIn": [
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "initPot((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks) key,address main,address recipient)": {
+        "$id": "initPot",
+        "intent": "Open buyback pot",
+        "interpolatedIntent": "Open pot, main {main}",
+        "fields": [
+          {
+            "path": "key.currency0",
+            "label": "Token 0",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.currency1",
+            "label": "Token 1",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.fee",
+            "label": "Pool fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 4
+            }
+          },
+          {
+            "path": "key.tickSpacing",
+            "label": "Tick spacing",
+            "format": "raw"
+          },
+          {
+            "path": "key.hooks",
+            "label": "Hook",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            },
+            "visible": "never"
+          },
+          {
+            "path": "main",
+            "label": "Main asset",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "recipient",
+            "label": "Delivery (0=burn)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          }
+        ]
+      },
+      "addLiquidity((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks) key,int24 tickLower,int24 tickUpper,uint128 liquidity,address owner)": {
+        "$id": "addLiquidity",
+        "intent": "Create LP program",
+        "interpolatedIntent": "Create LP for {key.currency0}/{key.currency1}",
+        "fields": [
+          {
+            "path": "key.currency0",
+            "label": "Token 0",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.currency1",
+            "label": "Token 1",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.fee",
+            "label": "Pool fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 4
+            }
+          },
+          {
+            "path": "key.tickSpacing",
+            "label": "Tick spacing",
+            "format": "raw"
+          },
+          {
+            "path": "key.hooks",
+            "label": "Hook",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            },
+            "visible": "never"
+          },
+          {
+            "path": "tickLower",
+            "label": "Lower tick",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "tickUpper",
+            "label": "Upper tick",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "liquidity",
+            "label": "L units",
+            "format": "raw"
+          },
+          {
+            "path": "owner",
+            "label": "Owner (0=locked)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "@.value",
+            "label": "Native sent",
+            "format": "amount",
+            "visible": {
+              "ifNotIn": [
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "addLiquidityAdvanced((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks) key,int24 tickLower,int24 tickUpper,uint128 liquidity,address owner,(uint64 buybackShareWad,uint64 burnShareWad,uint64 compoundShareWad,uint64 potCompoundShareWad,uint64 potBurnShareWad,bool publicHarvest,address secondaryRecipient,address mainRecipient,uint256 minMain,uint256 minSecondary) config)": {
+        "$id": "addLiquidityAdvanced",
+        "intent": "Create LP program",
+        "interpolatedIntent": "Create LP for {key.currency0}/{key.currency1}",
+        "fields": [
+          {
+            "path": "key.currency0",
+            "label": "Token 0",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.currency1",
+            "label": "Token 1",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.fee",
+            "label": "Pool fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 4
+            }
+          },
+          {
+            "path": "key.tickSpacing",
+            "label": "Tick spacing",
+            "format": "raw"
+          },
+          {
+            "path": "key.hooks",
+            "label": "Hook",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            },
+            "visible": "never"
+          },
+          {
+            "path": "tickLower",
+            "label": "Lower tick",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "tickUpper",
+            "label": "Upper tick",
+            "format": "raw",
+            "visible": "optional"
+          },
+          {
+            "path": "liquidity",
+            "label": "L units",
+            "format": "raw"
+          },
+          {
+            "path": "owner",
+            "label": "Owner (0=locked)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "config.buybackShareWad",
+            "label": "Buyback share",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.burnShareWad",
+            "label": "Burn share",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.compoundShareWad",
+            "label": "Compound share",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.potCompoundShareWad",
+            "label": "Pot compound",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.potBurnShareWad",
+            "label": "Pot burn",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.publicHarvest",
+            "label": "Public harvest",
+            "format": "raw"
+          },
+          {
+            "path": "config.secondaryRecipient",
+            "label": "Fee → secondary",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "config.mainRecipient",
+            "label": "Fee → main",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "config.minMain",
+            "label": "Min main",
+            "format": "raw",
+            "visible": {
+              "ifNotIn": [
+                "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+              ]
+            }
+          },
+          {
+            "path": "config.minSecondary",
+            "label": "Min 2nd",
+            "format": "raw",
+            "visible": {
+              "ifNotIn": [
+                "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+              ]
+            }
+          },
+          {
+            "path": "@.value",
+            "label": "Native sent",
+            "format": "amount",
+            "visible": {
+              "ifNotIn": [
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "addProgramLiquidity((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks) key,uint128 liquidity)": {
+        "$id": "addProgramLiquidity",
+        "intent": "Add program LP",
+        "interpolatedIntent": "Add LP to {key.currency0}/{key.currency1}",
+        "fields": [
+          {
+            "path": "key.currency0",
+            "label": "Token 0",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.currency1",
+            "label": "Token 1",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.fee",
+            "label": "Pool fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 4
+            }
+          },
+          {
+            "path": "key.tickSpacing",
+            "label": "Tick spacing",
+            "format": "raw"
+          },
+          {
+            "path": "key.hooks",
+            "label": "Hook",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            },
+            "visible": "never"
+          },
+          {
+            "path": "liquidity",
+            "label": "L units",
+            "format": "raw"
+          },
+          {
+            "path": "@.value",
+            "label": "Native sent",
+            "format": "amount",
+            "visible": {
+              "ifNotIn": [
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "removeProgramLiquidity((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks) key,uint128 liquidity,address to)": {
+        "$id": "removeProgramLiquidity",
+        "intent": "Remove program LP",
+        "interpolatedIntent": "Remove LP from {key.currency0}/{key.currency1}",
+        "fields": [
+          {
+            "path": "key.currency0",
+            "label": "Token 0",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.currency1",
+            "label": "Token 1",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.fee",
+            "label": "Pool fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 4
+            }
+          },
+          {
+            "path": "key.tickSpacing",
+            "label": "Tick spacing",
+            "format": "raw"
+          },
+          {
+            "path": "key.hooks",
+            "label": "Hook",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            },
+            "visible": "never"
+          },
+          {
+            "path": "liquidity",
+            "label": "L units",
+            "format": "raw"
+          },
+          {
+            "path": "to",
+            "label": "Send remainder to",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          }
+        ]
+      },
+      "harvest((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks) key)": {
+        "$id": "harvest",
+        "intent": "Harvest LP fees",
+        "interpolatedIntent": "Harvest {key.currency0}/{key.currency1}",
+        "fields": [
+          {
+            "path": "key.currency0",
+            "label": "Token 0",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.currency1",
+            "label": "Token 1",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.fee",
+            "label": "Pool fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 4
+            }
+          },
+          {
+            "path": "key.tickSpacing",
+            "label": "Tick spacing",
+            "format": "raw"
+          },
+          {
+            "path": "key.hooks",
+            "label": "Hook",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            },
+            "visible": "never"
+          }
+        ]
+      },
+      "donate((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks) key,uint256 amount)": {
+        "$id": "donate",
+        "intent": "Donate to pot",
+        "interpolatedIntent": "Donate {amount} to {key.currency0}/{key.currency1}",
+        "fields": [
+          {
+            "path": "key.currency0",
+            "label": "Token 0",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.currency1",
+            "label": "Token 1",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          },
+          {
+            "path": "key.fee",
+            "label": "Pool fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 4
+            }
+          },
+          {
+            "path": "key.tickSpacing",
+            "label": "Tick spacing",
+            "format": "raw"
+          },
+          {
+            "path": "key.hooks",
+            "label": "Hook",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            },
+            "visible": "never"
+          },
+          {
+            "path": "amount",
+            "label": "Donation",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "key.currency0",
+              "nativeCurrencyAddress": [
+                "$.metadata.constants.native"
+              ]
+            }
+          },
+          {
+            "path": "@.value",
+            "label": "Native sent",
+            "format": "amount",
+            "visible": {
+              "ifNotIn": [
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "claim(address asset)": {
+        "$id": "claim",
+        "intent": "Claim owed tokens",
+        "interpolatedIntent": "Claim owed {asset}",
+        "fields": [
+          {
+            "path": "asset",
+            "label": "Asset",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token",
+                "collection"
+              ]
+            }
+          }
+        ]
+      },
+      "flushDirect(bytes32 poolId)": {
+        "$id": "flushDirect",
+        "intent": "Retry delivery",
+        "interpolatedIntent": "Retry parked delivery",
+        "fields": [
+          {
+            "path": "poolId",
+            "label": "Pool id",
+            "format": "raw"
+          }
+        ]
+      },
+      "setProgramConfig(bytes32 poolId,(uint64 buybackShareWad,uint64 burnShareWad,uint64 compoundShareWad,uint64 potCompoundShareWad,uint64 potBurnShareWad,bool publicHarvest,address secondaryRecipient,address mainRecipient,uint256 minMain,uint256 minSecondary) config)": {
+        "$id": "setProgramConfig",
+        "intent": "Edit LP program",
+        "interpolatedIntent": "Edit LP program split",
+        "fields": [
+          {
+            "path": "poolId",
+            "label": "Pool id",
+            "format": "raw"
+          },
+          {
+            "path": "config.buybackShareWad",
+            "label": "Buyback share",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.burnShareWad",
+            "label": "Burn share",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.compoundShareWad",
+            "label": "Compound share",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.potCompoundShareWad",
+            "label": "Pot compound",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.potBurnShareWad",
+            "label": "Pot burn",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            }
+          },
+          {
+            "path": "config.publicHarvest",
+            "label": "Public harvest",
+            "format": "raw"
+          },
+          {
+            "path": "config.secondaryRecipient",
+            "label": "Fee → secondary",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "config.mainRecipient",
+            "label": "Fee → main",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "config.minMain",
+            "label": "Min main",
+            "format": "raw",
+            "visible": {
+              "ifNotIn": [
+                "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+              ]
+            }
+          },
+          {
+            "path": "config.minSecondary",
+            "label": "Min 2nd",
+            "format": "raw",
+            "visible": {
+              "ifNotIn": [
+                "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+              ]
+            }
+          }
+        ]
+      },
+      "setProgramOperator(bytes32 poolId,address newOperator)": {
+        "$id": "setProgramOperator",
+        "intent": "Set program operator",
+        "interpolatedIntent": "Set operator to {newOperator}",
+        "fields": [
+          {
+            "path": "poolId",
+            "label": "Pool id",
+            "format": "raw"
+          },
+          {
+            "path": "newOperator",
+            "label": "Operator (0=frozen)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          }
+        ]
+      },
+      "setRecipient(bytes32 poolId,address recipient)": {
+        "$id": "setRecipient",
+        "intent": "Set pot recipient",
+        "interpolatedIntent": "Set delivery to {recipient}",
+        "fields": [
+          {
+            "path": "poolId",
+            "label": "Pool id",
+            "format": "raw"
+          },
+          {
+            "path": "recipient",
+            "label": "Delivery (0=burn)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          }
+        ]
+      },
+      "transferProgramOwnership(bytes32 poolId,address newOwner)": {
+        "$id": "transferProgramOwnership",
+        "intent": "Transfer LP program",
+        "interpolatedIntent": "Transfer program to {newOwner}",
+        "fields": [
+          {
+            "path": "poolId",
+            "label": "Pool id",
+            "format": "raw"
+          },
+          {
+            "path": "newOwner",
+            "label": "Owner (0=locked)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

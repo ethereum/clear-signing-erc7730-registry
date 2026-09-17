@@ -1,0 +1,584 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-GlueHook.json",
+  "dataProvider": {
+    "tokens": {
+      "0x1111111111111111111111111111111111111111": {
+        "symbol": "TOKEN",
+        "decimals": 18,
+        "name": "Demo Token"
+      },
+      "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0x0000000000000000000000000000000000000000": {
+        "symbol": "ETH",
+        "decimals": 18,
+        "name": "Ether"
+      }
+    },
+    "addressNames": {
+      "0x03d482cb3ff339c2d29736818d0f72c66dd6a040": "GlueHook",
+      "0x1111111111111111111111111111111111111111": "TOKEN",
+      "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": "USDC"
+    },
+    "nftCollectionNames": {}
+  },
+  "tests": [
+    {
+      "description": "Launch an ETH-quoted token pool, burn recipient, 3-way split",
+      "rawTx": "0x02f902f782210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a0408806f05b59d3b20000b902c4d2d5f19e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000003d482cb3ff339c2d29736818d0f72c66dd6a0400000000000000000000000000000000000000001000000000000000000000000000000000000000000000000111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f42400000000000000000000000007e5f4552091a69125d5dfcb7b8c2659029395bdf00000000000000000000000000000000000000000000000002c68af0bb1400000000000000000000000000000000000000000000000000000429d069189e000000000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002c62c80ad86785dd3bfc7b616400a98e1903b6720000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Launch GlueHook pool",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Token 0",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Token 1",
+            "value": "TOKEN"
+          },
+          {
+            "label": "Pool fee",
+            "value": "0.3%"
+          },
+          {
+            "label": "Tick spacing",
+            "value": "60"
+          },
+          {
+            "label": "Price sqrtX96",
+            "value": "79228162514264337593543950336"
+          },
+          {
+            "label": "Main asset",
+            "value": "TOKEN"
+          },
+          {
+            "label": "Delivery (0=burn)",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Lower tick",
+            "value": "0"
+          },
+          {
+            "label": "Upper tick",
+            "value": "0"
+          },
+          {
+            "label": "L units",
+            "value": "1000000"
+          },
+          {
+            "label": "Owner (0=locked)",
+            "value": "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf"
+          },
+          {
+            "label": "Buyback share",
+            "value": "20%"
+          },
+          {
+            "label": "Burn share",
+            "value": "30%"
+          },
+          {
+            "label": "Compound share",
+            "value": "50%"
+          },
+          {
+            "label": "Pot compound",
+            "value": "0%"
+          },
+          {
+            "label": "Pot burn",
+            "value": "0%"
+          },
+          {
+            "label": "Public harvest",
+            "value": "false"
+          },
+          {
+            "label": "Fee → secondary",
+            "value": "0x2c62C80aD86785DD3bfC7B616400A98E1903b672"
+          },
+          {
+            "label": "Fee → main",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Min main",
+            "value": "off TOKEN"
+          },
+          {
+            "label": "Native sent",
+            "value": "0.5 ETH"
+          }
+        ],
+        "interpolatedIntent": "Launch 0x0000000000000000000000000000000000000000/TOKEN pool"
+      }
+    },
+    {
+      "description": "Open a buyback pot, burn recipient, TOKEN as main",
+      "rawTx": "0x02f9010e82210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a04080b8e4578ea4a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000003d482cb3ff339c2d29736818d0f72c66dd6a04000000000000000000000000011111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Open buyback pot",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Token 0",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Token 1",
+            "value": "TOKEN"
+          },
+          {
+            "label": "Pool fee",
+            "value": "0.3%"
+          },
+          {
+            "label": "Tick spacing",
+            "value": "60"
+          },
+          {
+            "label": "Main asset",
+            "value": "TOKEN"
+          },
+          {
+            "label": "Delivery (0=burn)",
+            "value": "0x0000000000000000000000000000000000000000"
+          }
+        ],
+        "interpolatedIntent": "Open pot, main TOKEN"
+      }
+    },
+    {
+      "description": "Create a full-range LP program with a 3-way split",
+      "rawTx": "0x02f9029782210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a040880de0b6b3a7640000b902644c95a848000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000003d482cb3ff339c2d29736818d0f72c66dd6a0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f42400000000000000000000000007e5f4552091a69125d5dfcb7b8c2659029395bdf00000000000000000000000000000000000000000000000002c68af0bb1400000000000000000000000000000000000000000000000000000429d069189e000000000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002c62c80ad86785dd3bfc7b616400a98e1903b6720000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Create LP program",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Token 0",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Token 1",
+            "value": "TOKEN"
+          },
+          {
+            "label": "Pool fee",
+            "value": "0.3%"
+          },
+          {
+            "label": "Tick spacing",
+            "value": "60"
+          },
+          {
+            "label": "Lower tick",
+            "value": "0"
+          },
+          {
+            "label": "Upper tick",
+            "value": "0"
+          },
+          {
+            "label": "L units",
+            "value": "1000000"
+          },
+          {
+            "label": "Owner (0=locked)",
+            "value": "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf"
+          },
+          {
+            "label": "Buyback share",
+            "value": "20%"
+          },
+          {
+            "label": "Burn share",
+            "value": "30%"
+          },
+          {
+            "label": "Compound share",
+            "value": "50%"
+          },
+          {
+            "label": "Pot compound",
+            "value": "0%"
+          },
+          {
+            "label": "Pot burn",
+            "value": "0%"
+          },
+          {
+            "label": "Public harvest",
+            "value": "false"
+          },
+          {
+            "label": "Fee → secondary",
+            "value": "0x2c62C80aD86785DD3bfC7B616400A98E1903b672"
+          },
+          {
+            "label": "Fee → main",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Native sent",
+            "value": "1 ETH"
+          }
+        ],
+        "interpolatedIntent": "Create LP for 0x0000000000000000000000000000000000000000/TOKEN"
+      }
+    },
+    {
+      "description": "Add liquidity units to an existing program",
+      "rawTx": "0x02f8f682210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a0408803782dace9d90000b8c4acbf9f16000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000003d482cb3ff339c2d29736818d0f72c66dd6a040000000000000000000000000000000000000000000000000000000000007a120c0",
+      "expected": {
+        "intent": "Add program LP",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Token 0",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Token 1",
+            "value": "TOKEN"
+          },
+          {
+            "label": "Pool fee",
+            "value": "0.3%"
+          },
+          {
+            "label": "Tick spacing",
+            "value": "60"
+          },
+          {
+            "label": "L units",
+            "value": "500000"
+          },
+          {
+            "label": "Native sent",
+            "value": "0.25 ETH"
+          }
+        ],
+        "interpolatedIntent": "Add LP to 0x0000000000000000000000000000000000000000/TOKEN"
+      }
+    },
+    {
+      "description": "Remove program LP and send remainder to a friend",
+      "rawTx": "0x02f9010e82210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a04080b8e469f99990000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000003d482cb3ff339c2d29736818d0f72c66dd6a040000000000000000000000000000000000000000000000000000000000003d0900000000000000000000000002c62c80ad86785dd3bfc7b616400a98e1903b672c0",
+      "expected": {
+        "intent": "Remove program LP",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Token 0",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Token 1",
+            "value": "TOKEN"
+          },
+          {
+            "label": "Pool fee",
+            "value": "0.3%"
+          },
+          {
+            "label": "Tick spacing",
+            "value": "60"
+          },
+          {
+            "label": "L units",
+            "value": "250000"
+          },
+          {
+            "label": "Send remainder to",
+            "value": "0x2c62C80aD86785DD3bfC7B616400A98E1903b672"
+          }
+        ],
+        "interpolatedIntent": "Remove LP from 0x0000000000000000000000000000000000000000/TOKEN"
+      }
+    },
+    {
+      "description": "Donate 0.5 ETH to a native secondary pot",
+      "rawTx": "0x02f8f682210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a0408806f05b59d3b20000b8c4286e08f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000003d482cb3ff339c2d29736818d0f72c66dd6a04000000000000000000000000000000000000000000000000006f05b59d3b20000c0",
+      "expected": {
+        "intent": "Donate to pot",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Token 0",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Token 1",
+            "value": "TOKEN"
+          },
+          {
+            "label": "Pool fee",
+            "value": "0.3%"
+          },
+          {
+            "label": "Tick spacing",
+            "value": "60"
+          },
+          {
+            "label": "Donation",
+            "value": "0.5 ETH"
+          },
+          {
+            "label": "Native sent",
+            "value": "0.5 ETH"
+          }
+        ],
+        "interpolatedIntent": "Donate 0.5 ETH to 0x0000000000000000000000000000000000000000/TOKEN"
+      }
+    },
+    {
+      "description": "Donate 1000 TOKEN to an ERC20 secondary pot",
+      "rawTx": "0x02f8ee82210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a04080b8c4286e08f00000000000000000000000001111111111111111111111111111111111111111000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda029130000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000003d482cb3ff339c2d29736818d0f72c66dd6a04000000000000000000000000000000000000000000000003635c9adc5dea00000c0",
+      "expected": {
+        "intent": "Donate to pot",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Token 0",
+            "value": "TOKEN"
+          },
+          {
+            "label": "Token 1",
+            "value": "USDC"
+          },
+          {
+            "label": "Pool fee",
+            "value": "0.3%"
+          },
+          {
+            "label": "Tick spacing",
+            "value": "60"
+          },
+          {
+            "label": "Donation",
+            "value": "1000 TOKEN"
+          }
+        ],
+        "interpolatedIntent": "Donate 1000 TOKEN to TOKEN/USDC"
+      }
+    },
+    {
+      "description": "Seed a full-range LP program",
+      "rawTx": "0x02f9015782210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a040880de0b6b3a7640000b901247e03657d000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000003d482cb3ff339c2d29736818d0f72c66dd6a0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f42400000000000000000000000007e5f4552091a69125d5dfcb7b8c2659029395bdfc0",
+      "expected": {
+        "intent": "Create LP program",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Token 0",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Token 1",
+            "value": "TOKEN"
+          },
+          {
+            "label": "Pool fee",
+            "value": "0.3%"
+          },
+          {
+            "label": "Tick spacing",
+            "value": "60"
+          },
+          {
+            "label": "Lower tick",
+            "value": "0"
+          },
+          {
+            "label": "Upper tick",
+            "value": "0"
+          },
+          {
+            "label": "L units",
+            "value": "1000000"
+          },
+          {
+            "label": "Owner (0=locked)",
+            "value": "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf"
+          },
+          {
+            "label": "Native sent",
+            "value": "1 ETH"
+          }
+        ],
+        "interpolatedIntent": "Create LP for 0x0000000000000000000000000000000000000000/TOKEN"
+      }
+    },
+    {
+      "description": "Harvest the program's fees",
+      "rawTx": "0x02f8ce82210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a04080b8a401099984000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000003d482cb3ff339c2d29736818d0f72c66dd6a040c0",
+      "expected": {
+        "intent": "Harvest LP fees",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Token 0",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Token 1",
+            "value": "TOKEN"
+          },
+          {
+            "label": "Pool fee",
+            "value": "0.3%"
+          },
+          {
+            "label": "Tick spacing",
+            "value": "60"
+          }
+        ],
+        "interpolatedIntent": "Harvest 0x0000000000000000000000000000000000000000/TOKEN"
+      }
+    },
+    {
+      "description": "Edit the program to a 3-way split",
+      "rawTx": "0x02f9018f82210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a04080b9016416b3e9bbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000000000000000000000000000000000000000000002c68af0bb1400000000000000000000000000000000000000000000000000000429d069189e000000000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002c62c80ad86785dd3bfc7b616400a98e1903b6720000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Edit LP program",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Pool id",
+            "value": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "label": "Buyback share",
+            "value": "20%"
+          },
+          {
+            "label": "Burn share",
+            "value": "30%"
+          },
+          {
+            "label": "Compound share",
+            "value": "50%"
+          },
+          {
+            "label": "Pot compound",
+            "value": "0%"
+          },
+          {
+            "label": "Pot burn",
+            "value": "0%"
+          },
+          {
+            "label": "Public harvest",
+            "value": "false"
+          },
+          {
+            "label": "Fee → secondary",
+            "value": "0x2c62C80aD86785DD3bfC7B616400A98E1903b672"
+          },
+          {
+            "label": "Fee → main",
+            "value": "0x0000000000000000000000000000000000000000"
+          }
+        ],
+        "interpolatedIntent": "Edit LP program split"
+      }
+    },
+    {
+      "description": "Freeze the program operator",
+      "rawTx": "0x02f86e82210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a04080b8447639bc1eaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Set program operator",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Pool id",
+            "value": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "label": "Operator (0=frozen)",
+            "value": "0x0000000000000000000000000000000000000000"
+          }
+        ],
+        "interpolatedIntent": "Set operator to 0x0000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "description": "Point the pot at burn",
+      "rawTx": "0x02f86e82210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a04080b84471246487aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Set pot recipient",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Pool id",
+            "value": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "label": "Delivery (0=burn)",
+            "value": "0x0000000000000000000000000000000000000000"
+          }
+        ],
+        "interpolatedIntent": "Set delivery to 0x0000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "description": "Lock the program liquidity forever",
+      "rawTx": "0x02f86e82210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a04080b8446ec9a743aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Transfer LP program",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Pool id",
+            "value": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "label": "Owner (0=locked)",
+            "value": "0x0000000000000000000000000000000000000000"
+          }
+        ],
+        "interpolatedIntent": "Transfer program to 0x0000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "description": "Claim owed TOKEN",
+      "rawTx": "0x02f84d82210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a04080a41e83409a0000000000000000000000001111111111111111111111111111111111111111c0",
+      "expected": {
+        "intent": "Claim owed tokens",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Asset",
+            "value": "TOKEN"
+          }
+        ],
+        "interpolatedIntent": "Claim owed TOKEN"
+      }
+    },
+    {
+      "description": "Retry a parked main delivery",
+      "rawTx": "0x02f84d82210507830f42408402faf080830dbba09403d482cb3ff339c2d29736818d0f72c66dd6a04080a4d7ca239aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac0",
+      "expected": {
+        "intent": "Retry delivery",
+        "owner": "Glue",
+        "fields": [
+          {
+            "label": "Pool id",
+            "value": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "interpolatedIntent": "Retry parked delivery"
+      }
+    }
+  ]
+}
