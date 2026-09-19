@@ -1,0 +1,333 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-EntryPoint-0.8.json",
+  "dataProvider": {
+    "tokens": {
+      "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0": {
+        "symbol": "wstETH",
+        "decimals": 18,
+        "name": "Wrapped liquid staked Ether 2.0"
+      },
+      "0xae7ab96520de3a18e5e111b5eaab095312d7fe84": {
+        "symbol": "stETH",
+        "decimals": 18,
+        "name": "Liquid staked Ether 2.0"
+      }
+    },
+    "addressNames": {
+      "0xaa1aef44dde610f433f271c6a8749139dd5162e1": "My smart account"
+    }
+  },
+  "tests": [
+    {
+      "description": "execute: one action \u2014 transfer 1.5 wstETH from a delegated account (Ethereum)",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "PackedUserOperation": [
+            {
+              "name": "sender",
+              "type": "address"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "initCode",
+              "type": "bytes"
+            },
+            {
+              "name": "callData",
+              "type": "bytes"
+            },
+            {
+              "name": "accountGasLimits",
+              "type": "bytes32"
+            },
+            {
+              "name": "preVerificationGas",
+              "type": "uint256"
+            },
+            {
+              "name": "gasFees",
+              "type": "bytes32"
+            },
+            {
+              "name": "paymasterAndData",
+              "type": "bytes"
+            }
+          ]
+        },
+        "primaryType": "PackedUserOperation",
+        "domain": {
+          "name": "ERC4337",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108"
+        },
+        "message": {
+          "sender": "0xaa1aEf44dDe610f433f271c6a8749139dD5162e1",
+          "nonce": "1",
+          "initCode": "0x7702",
+          "callData": "0xb61d27f60000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044a9059cbb000000000000000000000000123456789012345678901234567890123456789000000000000000000000000000000000000000000000000014d1120d7b16000000000000000000000000000000000000000000000000000000000000",
+          "accountGasLimits": "0x000000000000000000000000000186a000000000000000000000000000030d40",
+          "preVerificationGas": "60000",
+          "gasFees": "0x00000000000000000000000000000001000000000000000000000000000000c8",
+          "paymasterAndData": "0x"
+        }
+      },
+      "expected": {
+        "intent": "Execute smart account action",
+        "owner": "eth-infinitism",
+        "fields": [
+          {
+            "label": "Account",
+            "value": "My smart account"
+          },
+          {
+            "label": "Action",
+            "value": "0xb61d27f60000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044a9059cbb000000000000000000000000123456789012345678901234567890123456789000000000000000000000000000000000000000000000000014d1120d7b16000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Gas fees (packed)",
+            "value": "0x00000000000000000000000000000001000000000000000000000000000000c8"
+          },
+          {
+            "label": "Gas limits (packed)",
+            "value": "0x000000000000000000000000000186a000000000000000000000000000030d40"
+          },
+          {
+            "label": "Pre-verification gas",
+            "value": "60000"
+          }
+        ]
+      }
+    },
+    {
+      "description": "executeBatch: approve stETH then wrap it, sponsored by a paymaster (Ethereum)",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "PackedUserOperation": [
+            {
+              "name": "sender",
+              "type": "address"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "initCode",
+              "type": "bytes"
+            },
+            {
+              "name": "callData",
+              "type": "bytes"
+            },
+            {
+              "name": "accountGasLimits",
+              "type": "bytes32"
+            },
+            {
+              "name": "preVerificationGas",
+              "type": "uint256"
+            },
+            {
+              "name": "gasFees",
+              "type": "bytes32"
+            },
+            {
+              "name": "paymasterAndData",
+              "type": "bytes"
+            }
+          ]
+        },
+        "primaryType": "PackedUserOperation",
+        "domain": {
+          "name": "ERC4337",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108"
+        },
+        "message": {
+          "sender": "0xaa1aEf44dDe610f433f271c6a8749139dD5162e1",
+          "nonce": "1",
+          "initCode": "0x7702",
+          "callData": "0x34fcd5be0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000ae7ab96520de3a18e5e111b5eaab095312d7fe84000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b30000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca00000000000000000000000000000000000000000000000001bc16d674ec80000000000000000000000000000000000000000000000000000000000000000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000024ea598cb00000000000000000000000000000000000000000000000001bc16d674ec8000000000000000000000000000000000000000000000000000000000000",
+          "accountGasLimits": "0x000000000000000000000000000186a000000000000000000000000000030d40",
+          "preVerificationGas": "60000",
+          "gasFees": "0x00000000000000000000000000000001000000000000000000000000000000c8",
+          "paymasterAndData": "0x1107056553878474d7206e8a9a48780d215eec9c000000000000000000000000000186a0000000000000000000000000000186a0"
+        }
+      },
+      "expected": {
+        "intent": "Execute smart account action",
+        "owner": "eth-infinitism",
+        "fields": [
+          {
+            "label": "Account",
+            "value": "My smart account"
+          },
+          {
+            "label": "Action",
+            "value": "0x34fcd5be0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000ae7ab96520de3a18e5e111b5eaab095312d7fe84000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b30000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca00000000000000000000000000000000000000000000000001bc16d674ec80000000000000000000000000000000000000000000000000000000000000000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000024ea598cb00000000000000000000000000000000000000000000000001bc16d674ec8000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Paymaster",
+            "value": "0x1107056553878474d7206e8a9a48780d215eec9c000000000000000000000000000186a0000000000000000000000000000186a0"
+          },
+          {
+            "label": "Gas fees (packed)",
+            "value": "0x00000000000000000000000000000001000000000000000000000000000000c8"
+          },
+          {
+            "label": "Gas limits (packed)",
+            "value": "0x000000000000000000000000000186a000000000000000000000000000030d40"
+          },
+          {
+            "label": "Pre-verification gas",
+            "value": "60000"
+          }
+        ]
+      }
+    },
+    {
+      "description": "execute: send 0.25 ETH with empty calldata (Ethereum)",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "PackedUserOperation": [
+            {
+              "name": "sender",
+              "type": "address"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "initCode",
+              "type": "bytes"
+            },
+            {
+              "name": "callData",
+              "type": "bytes"
+            },
+            {
+              "name": "accountGasLimits",
+              "type": "bytes32"
+            },
+            {
+              "name": "preVerificationGas",
+              "type": "uint256"
+            },
+            {
+              "name": "gasFees",
+              "type": "bytes32"
+            },
+            {
+              "name": "paymasterAndData",
+              "type": "bytes"
+            }
+          ]
+        },
+        "primaryType": "PackedUserOperation",
+        "domain": {
+          "name": "ERC4337",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108"
+        },
+        "message": {
+          "sender": "0xaa1aEf44dDe610f433f271c6a8749139dD5162e1",
+          "nonce": "1",
+          "initCode": "0x7702",
+          "callData": "0xb61d27f6000000000000000000000000123456789012345678901234567890123456789000000000000000000000000000000000000000000000000003782dace9d9000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000",
+          "accountGasLimits": "0x000000000000000000000000000186a000000000000000000000000000030d40",
+          "preVerificationGas": "60000",
+          "gasFees": "0x00000000000000000000000000000001000000000000000000000000000000c8",
+          "paymasterAndData": "0x"
+        }
+      },
+      "expected": {
+        "intent": "Execute smart account action",
+        "owner": "eth-infinitism",
+        "fields": [
+          {
+            "label": "Account",
+            "value": "My smart account"
+          },
+          {
+            "label": "Action",
+            "value": "0xb61d27f6000000000000000000000000123456789012345678901234567890123456789000000000000000000000000000000000000000000000000003782dace9d9000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Gas fees (packed)",
+            "value": "0x00000000000000000000000000000001000000000000000000000000000000c8"
+          },
+          {
+            "label": "Gas limits (packed)",
+            "value": "0x000000000000000000000000000186a000000000000000000000000000030d40"
+          },
+          {
+            "label": "Pre-verification gas",
+            "value": "60000"
+          }
+        ]
+      }
+    }
+  ]
+}
