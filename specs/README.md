@@ -9,8 +9,9 @@ The following files are automatically synced from the [ethereum/ERCs](https://gi
 | Local file | Upstream source |
 |---|---|
 | `erc-7730.md` | [ERCS/erc-7730.md](https://github.com/ethereum/ERCs/blob/master/ERCS/erc-7730.md) |
-| `erc7730-v2.schema.json` | [assets/erc-7730/erc7730-v2.schema.json](https://github.com/ethereum/ERCs/blob/master/assets/erc-7730/erc7730-v2.schema.json) |
-| `erc7730-v1.schema.json` | [assets/erc-7730/erc7730-v1.schema.json](https://github.com/ethereum/ERCs/blob/master/assets/erc-7730/erc7730-v1.schema.json) |
+| `erc7730-v*.schema.json` | every schema file under [assets/erc-7730/](https://github.com/ethereum/ERCs/tree/master/assets/erc-7730): released versions such as `erc7730-v2.schema.json`, release candidates (`-rc.N`) and the in-development draft (`-next`) |
+
+The workflow lists the upstream folder at run time, so a new schema file arrives here without a change to the workflow. Descriptors point at a released schema by a relative path, for example `"$schema": "../../specs/erc7730-v2.schema.json"`. The `-next` draft changes without notice and no descriptor should point at it.
 
 Do not edit these files directly — changes should be made upstream and will be picked up automatically.
 
