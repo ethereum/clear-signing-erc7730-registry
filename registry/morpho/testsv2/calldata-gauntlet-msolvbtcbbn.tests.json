@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-msolvbtcbbn.json",
+  "dataProvider": {
+    "tokens": {
+      "0xd9d920aa40f578ab794426f5c90f6c731d159def": { "symbol": "xSolvBTC", "decimals": 18, "name": "xSolvBTC" },
+      "0xdbb316375b4dc992b2c8827d120c09dfb1d3455d": {
+        "symbol": "msolvbtcbbn",
+        "decimals": 18,
+        "name": "SolvBTC Babylon Vault"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit - chain 1 (synthetic: the vault has no direct deposit transaction on chain, deposits go through the bundler)",
+      "rawTx": "0x02f86e0101843b9aca008504a817c80083030d4094dbb316375b4dc992b2c8827d120c09dfb1d3455d80b8446e553f6500000000000000000000000000000000000000000000000006f05b59d3b2000000000000000000000000000051b5871fcf177189f2ee32966c258997ba42e216c0",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Gauntlet",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.5 xSolvBTC" },
+          { "label": "Share ticker", "value": "msolvbtcbbn" },
+          { "label": "Send shares to", "value": "0x51b5871FCF177189F2Ee32966C258997bA42e216" }
+        ]
+      }
+    },
+    {
+      "description": "Mint - chain 1 (synthetic)",
+      "rawTx": "0x02f86e0101843b9aca008504a817c80083030d4094dbb316375b4dc992b2c8827d120c09dfb1d3455d80b84494bf804d0000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000051b5871fcf177189f2ee32966c258997ba42e216c0",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Gauntlet",
+        "fields": [
+          { "label": "Deposit asset", "value": "xSolvBTC" },
+          { "label": "Minted shares", "value": "1 msolvbtcbbn" },
+          { "label": "Mint shares to", "value": "0x51b5871FCF177189F2Ee32966C258997bA42e216" }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw - chain 1 (synthetic)",
+      "rawTx": "0x02f88e0101843b9aca008504a817c80083030d4094dbb316375b4dc992b2c8827d120c09dfb1d3455d80b864b460af9400000000000000000000000000000000000000000000000003782dace9d9000000000000000000000000000051b5871fcf177189f2ee32966c258997ba42e21600000000000000000000000051b5871fcf177189f2ee32966c258997ba42e216c0",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Gauntlet",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "0.25 xSolvBTC" },
+          { "label": "To", "value": "0x51b5871FCF177189F2Ee32966C258997bA42e216" },
+          { "label": "Owner", "value": "0x51b5871FCF177189F2Ee32966C258997bA42e216" }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1 (synthetic)",
+      "rawTx": "0x02f88e0101843b9aca008504a817c80083030d4094dbb316375b4dc992b2c8827d120c09dfb1d3455d80b864ba0876520000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000051b5871fcf177189f2ee32966c258997ba42e21600000000000000000000000051b5871fcf177189f2ee32966c258997ba42e216c0",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Gauntlet",
+        "fields": [
+          { "label": "Shares to redeem", "value": "1 msolvbtcbbn" },
+          { "label": "To", "value": "0x51b5871FCF177189F2Ee32966C258997bA42e216" },
+          { "label": "Owner", "value": "0x51b5871FCF177189F2Ee32966C258997bA42e216" }
+        ]
+      }
+    }
+  ]
+}
