@@ -12,7 +12,8 @@
       "side": { "0": "Buy", "1": "Sell" },
       "saleKind": { "0": "Fixed price", "1": "Dutch auction" },
       "howToCall": { "0": "Call", "1": "DelegateCall" }
-    }
+    },
+    "constants": { "addressAsNull": "0x0000000000000000000000000000000000000000" }
   },
   "display": {
     "formats": {
@@ -37,7 +38,14 @@
             "path": "basePrice",
             "label": "Price",
             "format": "tokenAmount",
-            "params": { "tokenPath": "paymentToken" },
+            "params": { "tokenPath": "paymentToken", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
+            "visible": "always"
+          },
+          {
+            "path": "extra",
+            "label": "Price change",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "paymentToken", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
             "visible": "always"
           },
           {
@@ -88,7 +96,6 @@
           { "path": "staticTarget", "label": "Static Target", "visible": "never" },
           { "path": "staticExtradata", "label": "Static Extradata", "visible": "never" },
           { "path": "paymentToken", "label": "Payment Token", "visible": "never" },
-          { "path": "extra", "label": "Extra", "visible": "never" },
           { "path": "salt", "label": "Salt", "visible": "never" },
           { "path": "nonce", "label": "Nonce", "visible": "never" }
         ]
