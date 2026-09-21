@@ -19,20 +19,20 @@
         "intent": "AugustusRFQ ERC20 order",
         "fields": [
           { "path": "nonceAndMeta", "label": "Nonce and metadata", "format": "raw" },
-          { "path": "expiry", "label": "Expiration time", "format": "raw" },
-          { "path": "makerAsset", "label": "Maker asset address", "format": "raw" },
-          { "path": "takerAsset", "label": "Taker asset address", "format": "raw" },
+          { "path": "expiry", "label": "Expiration time", "format": "date", "params": { "encoding": "timestamp" }, "visible": { "ifNotIn": [0] } },
+          { "path": "makerAsset", "label": "Maker asset", "format": "addressName", "params": { "types": ["token"] } },
+          { "path": "takerAsset", "label": "Taker asset", "format": "addressName", "params": { "types": ["token"] } },
           { "path": "maker", "label": "Maker address", "format": "raw" },
           { "path": "taker", "label": "Taker address", "format": "raw" },
-          { "path": "makerAmount", "label": "Maker amount", "format": "raw" },
-          { "path": "takerAmount", "label": "Taker amount", "format": "raw" }
+          { "path": "makerAmount", "label": "Maker amount", "format": "tokenAmount", "params": { "tokenPath": "makerAsset" } },
+          { "path": "takerAmount", "label": "Taker amount", "format": "tokenAmount", "params": { "tokenPath": "takerAsset" } }
         ]
       },
       "OrderNFT(uint256 nonceAndMeta,uint128 expiry,uint256 makerAsset,uint256 makerAssetId,uint256 takerAsset,uint256 takerAssetId,address maker,address taker,uint256 makerAmount,uint256 takerAmount)": {
         "intent": "AugustusRFQ NFT order",
         "fields": [
           { "path": "nonceAndMeta", "label": "Nonce and metadata", "format": "raw" },
-          { "path": "expiry", "label": "Expiration time", "format": "raw" },
+          { "path": "expiry", "label": "Expiration time", "format": "date", "params": { "encoding": "timestamp" }, "visible": { "ifNotIn": [0] } },
           { "path": "makerAsset", "label": "Maker asset encoded", "format": "raw" },
           { "path": "makerAssetId", "label": "Maker asset NFT ID", "format": "raw" },
           { "path": "takerAsset", "label": "Taker asset encoded", "format": "raw" },
