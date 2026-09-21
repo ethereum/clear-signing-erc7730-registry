@@ -1,0 +1,56 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "LiquidityPoolV3",
+    "contract": { "deployments": [{ "chainId": 8453, "address": "0xEE755F1BbcbF6e3260469D0f473522d71d3bdDda" }] }
+  },
+  "metadata": {
+    "owner": "Surge",
+    "info": { "url": "https://surge.credit" },
+    "contractName": "LiquidityPoolV3",
+    "constants": { "usdc": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" }
+  },
+  "display": {
+    "formats": {
+      "deposit(uint256 amount_)": {
+        "$id": "deposit",
+        "intent": "Supply to Surge",
+        "interpolatedIntent": "Supply {amount_} to Surge",
+        "fields": [{ "path": "amount_", "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.usdc" } }]
+      },
+      "withdraw(uint256 amount_)": {
+        "$id": "withdraw",
+        "intent": "Withdraw from Surge",
+        "interpolatedIntent": "Withdraw {amount_} from Surge",
+        "fields": [{ "path": "amount_", "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.usdc" } }]
+      },
+      "withdrawFromMarket(uint256 marketId_,uint256 amount_)": {
+        "$id": "withdrawFromMarket",
+        "intent": "Request withdrawal",
+        "interpolatedIntent": "Request {amount_} withdrawal",
+        "fields": [
+          { "path": "amount_", "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.usdc" } },
+          { "path": "marketId_", "label": "Fixed market", "format": "raw" }
+        ]
+      },
+      "setExposure(uint256 marketId_,uint256 exposureBps_)": {
+        "$id": "setExposure",
+        "intent": "Set market exposure",
+        "interpolatedIntent": "Set exposure {exposureBps_}",
+        "fields": [
+          { "path": "marketId_", "label": "Fixed market", "format": "raw" },
+          { "path": "exposureBps_", "label": "Exposure", "format": "unit", "params": { "base": "%", "decimals": 2 } }
+        ]
+      },
+      "setExposures(uint256[] marketIds_,uint256[] exposures_)": {
+        "$id": "setExposures",
+        "intent": "Set market exposures",
+        "interpolatedIntent": "Set exposures {exposures_.[]}",
+        "fields": [
+          { "path": "marketIds_.[]", "label": "Fixed market", "format": "raw" },
+          { "path": "exposures_.[]", "label": "Exposure", "format": "unit", "params": { "base": "%", "decimals": 2 } }
+        ]
+      }
+    }
+  }
+}

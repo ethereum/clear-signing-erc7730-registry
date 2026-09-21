@@ -1,0 +1,62 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "includes": "../../ercs/calldata-erc4626-vaults.json",
+  "context": {
+    "$id": "sUSDS",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xa3931d71877C0E7a3148CB7Eb4463524FEc27fbD" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Sky",
+    "info": { "url": "https://sky.money" },
+    "constants": {
+      "underlyingToken": "0xdC035D45d973E3EC169d2276DDab16f1e407384F",
+      "underlyingTicker": "USDS",
+      "vaultTicker": "sUSDS"
+    },
+    "contractName": "sUSDS"
+  },
+  "display": {
+    "formats": {
+      "deposit(uint256 assets, address receiver)": {
+        "intent": "Deposit USDS into Sky Savings"
+      },
+      "deposit(uint256 assets, address receiver, uint16 referral)": {
+        "intent": "Deposit USDS into Sky Savings",
+        "fields": [
+          {
+            "path": "assets",
+            "label": "Deposit asset",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
+          },
+          {
+            "label": "Share ticker",
+            "format": "raw",
+            "value": "$.metadata.constants.vaultTicker"
+          },
+          {
+            "path": "receiver",
+            "label": "Send shares to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "referral",
+            "label": "Referral",
+            "format": "raw",
+            "visible": "optional"
+          }
+        ]
+      },
+      "withdraw(uint256 assets, address receiver, address owner)": {
+        "intent": "Withdraw USDS from Sky Savings"
+      }
+    }
+  }
+}

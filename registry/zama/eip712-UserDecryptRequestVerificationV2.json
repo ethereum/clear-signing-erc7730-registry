@@ -1,0 +1,30 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "eip712": {
+      "deployments": [
+        { "chainId": 1, "address": "0x0f6024a97684f7d90ddb0fAAD79cB15F2C888D24" },
+        { "chainId": 11155111, "address": "0x5D8BD78e2ea6bbE41f26dFe9fdaEAa349e077478" }
+      ],
+      "domain": { "name": "Decryption", "version": "1" }
+    }
+  },
+  "metadata": {},
+  "display": {
+    "formats": {
+      "UserDecryptRequestVerification(address userAddress,bytes publicKey,address[] allowedContracts,uint256 startTimestamp,uint256 durationSeconds,bytes extraData)": {
+        "$id": "userDecryptRequestV2",
+        "intent": "Authorize decryption of your confidential data",
+        "interpolatedIntent": "Authorize {userAddress} to decrypt for {allowedContracts.[]} for {durationSeconds}",
+        "fields": [
+          { "path": "userAddress", "label": "Requesting account", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "allowedContracts.[]", "label": "Authorized contracts", "format": "addressName", "params": { "types": ["contract"] } },
+          { "path": "startTimestamp", "label": "Valid from", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "durationSeconds", "label": "Valid for", "format": "duration" },
+          { "path": "publicKey", "label": "Public key", "format": "raw", "visible": "never" },
+          { "path": "extraData", "label": "Extra data", "format": "raw", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

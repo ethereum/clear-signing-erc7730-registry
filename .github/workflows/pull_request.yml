@@ -68,7 +68,7 @@ jobs:
       - name: Install ERC-7730 library
         timeout-minutes: 10
         if: steps.affected-descriptors.outputs.any_affected == 'true'
-        run: pip install erc7730
+        run: pip install -r .github/requirements.txt
 
       - name: Validate ERC-7730 descriptors affected by pull request
         timeout-minutes: 120
@@ -106,7 +106,7 @@ jobs:
       - name: Install check-jsonschema
         timeout-minutes: 10
         if: steps.changed-json-files.outputs.any_changed == 'true'
-        run: pip install check-jsonschema
+        run: pip install -r .github/requirements-schema.txt
 
       - name: Validate changed files against JSON schemas
         timeout-minutes: 60

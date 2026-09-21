@@ -1,0 +1,39 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "eip712": {
+      "domain": {
+        "name": "HyperDisciplineVault",
+        "version": "4"
+      },
+      "deployments": [
+        { "chainId": 42161, "address": "0x8bC22f59B2E734b18aeDe34C930a268fDDbebB03" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "HyperDiscipline",
+    "info": {
+      "url": "https://hyperdiscipline.xyz",
+      "deploymentDate": "2026-04-29T00:00:00Z"
+    }
+  },
+  "display": {
+    "formats": {
+      "CommitIntent(address user,address token,uint256 amount,bytes32 rulesHash,uint64 duration,uint256 fine,address recipient,uint256 nonce,uint256 deadline)": {
+        "intent": "Open commitment",
+        "fields": [
+          { "path": "user", "label": "Trader", "format": "addressName", "params": { "types": ["eoa"] }, "visible": "always" },
+          { "path": "amount", "label": "Stake amount", "format": "tokenAmount", "params": { "tokenPath": "token" }, "visible": "always" },
+          { "path": "fine", "label": "Slash penalty", "format": "tokenAmount", "params": { "tokenPath": "token" }, "visible": "always" },
+          { "path": "duration", "label": "Duration", "format": "duration", "visible": "always" },
+          { "path": "recipient", "label": "Slash recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] }, "visible": "always" },
+          { "path": "deadline", "label": "Valid until", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" },
+          { "path": "token", "label": "Stake token", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          { "path": "rulesHash", "label": "Rules hash", "format": "raw", "visible": "always" },
+          { "path": "nonce", "label": "Nonce", "format": "raw", "visible": "always" }
+        ]
+      }
+    }
+  }
+}
