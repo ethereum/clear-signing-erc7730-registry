@@ -44,6 +44,48 @@
           { "label": "Valid until", "value": "2027-01-01 00:00:00Z" }
         ]
       }
+    },
+    {
+      "description": "Authorize spending of tokens without expiry",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Permit": [
+            { "name": "holder", "type": "address" },
+            { "name": "spender", "type": "address" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "expiry", "type": "uint256" },
+            { "name": "allowed", "type": "bool" }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "Dai Stablecoin",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+        },
+        "message": {
+          "holder": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "spender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+          "nonce": "12",
+          "expiry": "0",
+          "allowed": true
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of tokens",
+        "owner": "Dai Stablecoin v2.0",
+        "fields": [
+          { "label": "Spender", "value": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D" },
+          { "label": "Unlimited spending", "value": "true" }
+        ]
+      }
     }
   ]
 }
