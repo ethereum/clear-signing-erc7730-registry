@@ -1,0 +1,910 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-UniversalDelegator-USDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "name": "USD Coin",
+        "symbol": "USDC",
+        "decimals": 6
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Add adapter to the allocation route",
+      "rawTx": "0x02f848018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880a460d54d410000000000000000000000001111111111111111111111111111111111111111c0",
+      "expected": {
+        "intent": "Add allocation adapter",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter",
+            "value": "0x1111111111111111111111111111111111111111"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Remove adapter from the allocation route",
+      "rawTx": "0x02f848018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880a4585cd34b0000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Remove allocation adapter",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set precise USDC cap and fractional percent",
+      "rawTx": "0x02f889018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b864a08d5654000000000000000000000000111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000075bcd1500000000000000000000000000000000000000000000000001bc16d674ec8000c0",
+      "expected": {
+        "intent": "Set adapter allocation limits",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Absolute asset cap",
+            "value": "123.456789 USDC"
+          },
+          {
+            "label": "Share allocation cap",
+            "value": "12.5%"
+          },
+          {
+            "label": "Share cap (WAD)",
+            "value": "125000000000000000"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set maximum absolute cap and 100 percent share",
+      "rawTx": "0x02f889018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b864a08d56540000000000000000000000002222222222222222222222222222222222222222ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000de0b6b3a7640000c0",
+      "expected": {
+        "intent": "Set adapter allocation limits",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter",
+            "value": "0x2222222222222222222222222222222222222222"
+          },
+          {
+            "label": "Absolute asset cap",
+            "value": "No absolute cap USDC"
+          },
+          {
+            "label": "Share allocation cap",
+            "value": "100%"
+          },
+          {
+            "label": "Share cap (WAD)",
+            "value": "1000000000000000000"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Disable allocations with both caps zero",
+      "rawTx": "0x02f889018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b864a08d5654000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Set adapter allocation limits",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter",
+            "value": "0x2222222222222222222222222222222222222222"
+          },
+          {
+            "label": "Absolute asset cap",
+            "value": "0 USDC"
+          },
+          {
+            "label": "Share allocation cap",
+            "value": "0%"
+          },
+          {
+            "label": "Share cap (WAD)",
+            "value": "0"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Retain smallest share-cap unit exactly",
+      "rawTx": "0x02f889018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b864a08d5654000000000000000000000000111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001c0",
+      "expected": {
+        "intent": "Set adapter allocation limits",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Absolute asset cap",
+            "value": "0.000001 USDC"
+          },
+          {
+            "label": "Share allocation cap",
+            "value": "0.0000000000000001%"
+          },
+          {
+            "label": "Share cap (WAD)",
+            "value": "1"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Change adapter priority without hiding either address",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b8448ef5792a00000000000000000000000022222222222222222222222222222222222222220000000000000000000000001111111111111111111111111111111111111111c0",
+      "expected": {
+        "intent": "Swap adapter priority",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "First adapter",
+            "value": "0x2222222222222222222222222222222222222222"
+          },
+          {
+            "label": "Second adapter",
+            "value": "0x1111111111111111111111111111111111111111"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Preserve automatic allocation order",
+      "rawTx": "0x02f8a9018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b884c4e68d930000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000022222222222222222222222222222222222222220000000000000000000000001111111111111111111111111111111111111111c0",
+      "expected": {
+        "intent": "Set automatic allocation order",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter in order",
+            "value": "0x2222222222222222222222222222222222222222"
+          },
+          {
+            "label": "Adapter in order",
+            "value": "0x1111111111111111111111111111111111111111"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Clear automatic allocation route",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b844c4e68d9300000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Set automatic allocation order",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          }
+        ]
+      }
+    },
+    {
+      "description": "allocate displays exact requested USDC",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b844b78b52df000000000000000000000000111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000075bcd15c0",
+      "expected": {
+        "intent": "Allocate vault assets",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Maximum allocation",
+            "value": "123.456789 USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "allocate displays uint256 maximum without promising settlement",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b844b78b52df0000000000000000000000001111111111111111111111111111111111111111ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Allocate vault assets",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Maximum allocation",
+            "value": "Maximum request (uint256 max) USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "allocateExact displays exact requested USDC",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b8442f62f70c000000000000000000000000111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000075bcd15c0",
+      "expected": {
+        "intent": "Allocate using vault liquidity",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Requested allocation",
+            "value": "123.456789 USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "allocateExact displays uint256 maximum without promising settlement",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b8442f62f70c0000000000000000000000001111111111111111111111111111111111111111ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Allocate using vault liquidity",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Requested allocation",
+            "value": "115792089237316195423570985008687907853269984665640564039457584007913129.639935 USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "allocateAll displays exact requested USDC",
+      "rawTx": "0x02f848018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880a4b362a86c00000000000000000000000000000000000000000000000000000000075bcd15c0",
+      "expected": {
+        "intent": "Allocate across adapters",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Allocation ceiling",
+            "value": "123.456789 USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "allocateAll displays uint256 maximum without promising settlement",
+      "rawTx": "0x02f848018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880a4b362a86cffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Allocate across adapters",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Allocation ceiling",
+            "value": "Maximum request (uint256 max) USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "deallocate displays exact requested USDC",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b84459db9eb0000000000000000000000000111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000075bcd15c0",
+      "expected": {
+        "intent": "Deallocate adapter assets",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Requested assets",
+            "value": "123.456789 USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "deallocate displays uint256 maximum without promising settlement",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b84459db9eb00000000000000000000000001111111111111111111111111111111111111111ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Deallocate adapter assets",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Requested assets",
+            "value": "Maximum request (uint256 max) USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "deallocateAll displays exact requested USDC",
+      "rawTx": "0x02f848018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880a40a39171100000000000000000000000000000000000000000000000000000000075bcd15c0",
+      "expected": {
+        "intent": "Deallocate across adapters",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Requested assets",
+            "value": "123.456789 USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "deallocateAll displays uint256 maximum without promising settlement",
+      "rawTx": "0x02f848018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880a40a391711ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Deallocate across adapters",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Requested assets",
+            "value": "Maximum request (uint256 max) USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "deallocateExact displays exact requested USDC",
+      "rawTx": "0x02f848018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880a4535d8b5b00000000000000000000000000000000000000000000000000000000075bcd15c0",
+      "expected": {
+        "intent": "Deallocate after queue fill",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Requested assets",
+            "value": "123.456789 USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "deallocateExact displays uint256 maximum without promising settlement",
+      "rawTx": "0x02f848018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880a4535d8b5bffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Deallocate after queue fill",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Requested assets",
+            "value": "Maximum request (uint256 max) USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "forceDeallocate displays exact requested USDC",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b844d35ba3c9000000000000000000000000111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000075bcd15c0",
+      "expected": {
+        "intent": "Request adapter deallocation",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Maximum deallocation",
+            "value": "123.456789 USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "forceDeallocate displays uint256 maximum without promising settlement",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b844d35ba3c90000000000000000000000001111111111111111111111111111111111111111ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Request adapter deallocation",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Adapter",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Maximum deallocation",
+            "value": "Maximum request (uint256 max) USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Sweep pending withdrawals without an amount promise",
+      "rawTx": "0x02e8018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da0588084de54984cc0",
+      "expected": {
+        "intent": "Process pending withdrawals",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Grant known allocation role with its full ID",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b8442f2ff15d3e716b9e768f9140a805a7bd2ea8ed6273ee028841754af21433cf2650718e900000000000000000000000001111111111111111111111111111111111111111c0",
+      "expected": {
+        "intent": "Grant delegator role",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Role ID",
+            "value": "0x3e716b9e768f9140a805a7bd2ea8ed6273ee028841754af21433cf2650718e90"
+          },
+          {
+            "label": "Role recipient",
+            "value": "0x1111111111111111111111111111111111111111"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Grant default administrator role with zero ID visible",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b8442f2ff15d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Grant delegator role",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Role ID",
+            "value": "0x0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Role recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Render unknown role IDs without friendly-name assumptions",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b8442f2ff15dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Grant delegator role",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Role ID",
+            "value": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+          },
+          {
+            "label": "Role recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Revoke role from specified account",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b844d547741f3e716b9e768f9140a805a7bd2ea8ed6273ee028841754af21433cf2650718e900000000000000000000000001111111111111111111111111111111111111111c0",
+      "expected": {
+        "intent": "Revoke delegator role",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Role ID",
+            "value": "0x3e716b9e768f9140a805a7bd2ea8ed6273ee028841754af21433cf2650718e90"
+          },
+          {
+            "label": "Role holder",
+            "value": "0x1111111111111111111111111111111111111111"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Renounce role with caller confirmation visible",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b84436568abe3e716b9e768f9140a805a7bd2ea8ed6273ee028841754af21433cf2650718e900000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Renounce delegator role",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Role ID",
+            "value": "0x3e716b9e768f9140a805a7bd2ea8ed6273ee028841754af21433cf2650718e90"
+          },
+          {
+            "label": "Role holder",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Transfer ownership to a concrete new owner",
+      "rawTx": "0x02f848018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880a4f2fde38b0000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Transfer delegator ownership",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "New owner",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deployment 1 retains delegate target",
+      "rawTx": "0x02e8018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da0588084de54984cc0",
+      "expected": {
+        "intent": "Process pending withdrawals",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deployment 2 retains delegate target",
+      "rawTx": "0x02e8018001843b9aca00830f42409444c213a4fce41e9ddecc2222bc8f705d42e41b228084de54984cc0",
+      "expected": {
+        "intent": "Process pending withdrawals",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0x44c213A4FCe41E9DdeCC2222Bc8f705D42e41b22"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deployment 3 retains delegate target",
+      "rawTx": "0x02e8018001843b9aca00830f424094c6017834f5838176800c6c4db8cdeb6463f33d788084de54984cc0",
+      "expected": {
+        "intent": "Process pending withdrawals",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xc6017834F5838176800C6C4Db8CDEB6463f33d78"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deployment 4 retains delegate target",
+      "rawTx": "0x02e8018001843b9aca00830f424094073db5f29d670e66bde5c520c12d4f4faeaac39d8084de54984cc0",
+      "expected": {
+        "intent": "Process pending withdrawals",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0x073DB5f29D670E66bde5c520c12D4f4FAeAAc39D"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deployment 5 retains delegate target",
+      "rawTx": "0x02e8018001843b9aca00830f424094ead44b1545bcb2c0b6b8399f7c63f48be2fe3eea8084de54984cc0",
+      "expected": {
+        "intent": "Process pending withdrawals",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xEAD44b1545BCB2C0B6B8399f7C63F48be2fe3eeA"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deployment 6 retains delegate target",
+      "rawTx": "0x02e8018001843b9aca00830f424094e7b97eb234d4a10fa774d0f8e5837bfe4fe36c718084de54984cc0",
+      "expected": {
+        "intent": "Process pending withdrawals",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xE7B97eB234D4A10fa774d0F8e5837bFE4Fe36c71"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deployment 7 retains delegate target",
+      "rawTx": "0x02e8018001843b9aca00830f4240947e74ac5e88651ed89880e2d18bcc4e4398a099888084de54984cc0",
+      "expected": {
+        "intent": "Process pending withdrawals",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0x7E74aC5e88651ed89880e2D18bcc4E4398A09988"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Reallocation multicall preserves deallocate-before-allocate order",
+      "rawTx": "0x02f901aa018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b90184ac9650d800000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000004459db9eb0000000000000000000000000111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000075bcd150000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000442f62f70c000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000075bcd1500000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Manage vault allocations",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Deallocate adapter assets",
+              "owner": "Symbiotic",
+              "fields": [
+                {
+                  "label": "Delegator",
+                  "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+                },
+                {
+                  "label": "Adapter",
+                  "value": "0x1111111111111111111111111111111111111111"
+                },
+                {
+                  "label": "Requested assets",
+                  "value": "123.456789 USDC"
+                }
+              ]
+            }
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Allocate using vault liquidity",
+              "owner": "Symbiotic",
+              "fields": [
+                {
+                  "label": "Delegator",
+                  "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+                },
+                {
+                  "label": "Adapter",
+                  "value": "0x2222222222222222222222222222222222222222"
+                },
+                {
+                  "label": "Requested allocation",
+                  "value": "123.456789 USDC"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "Nested multicall keeps all inner operations visible",
+      "rawTx": "0x02f9024a018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b90224ac9650d80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000184ac9650d800000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000004459db9eb0000000000000000000000000111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000075bcd150000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000442f62f70c000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000075bcd150000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Manage vault allocations",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Manage vault allocations",
+              "owner": "Symbiotic",
+              "fields": [
+                {
+                  "label": "Delegator",
+                  "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+                },
+                {
+                  "label": "Action",
+                  "value": {
+                    "intent": "Deallocate adapter assets",
+                    "owner": "Symbiotic",
+                    "fields": [
+                      {
+                        "label": "Delegator",
+                        "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+                      },
+                      {
+                        "label": "Adapter",
+                        "value": "0x1111111111111111111111111111111111111111"
+                      },
+                      {
+                        "label": "Requested assets",
+                        "value": "123.456789 USDC"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "label": "Action",
+                  "value": {
+                    "intent": "Allocate using vault liquidity",
+                    "owner": "Symbiotic",
+                    "fields": [
+                      {
+                        "label": "Delegator",
+                        "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+                      },
+                      {
+                        "label": "Adapter",
+                        "value": "0x2222222222222222222222222222222222222222"
+                      },
+                      {
+                        "label": "Requested allocation",
+                        "value": "123.456789 USDC"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "Unknown nested selector remains visible as raw calldata",
+      "rawTx": "0x02f8c9018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b8a4ac9650d80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000004deadbeef00000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Manage vault allocations",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          },
+          {
+            "label": "Action",
+            "value": "0xdeadbeef"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Empty multicall does not invent allocation details",
+      "rawTx": "0x02f869018001843b9aca00830f424094dc94e7d2efaf84e620c8d39386f168aaa99da05880b844ac9650d800000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Manage vault allocations",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Delegator",
+            "value": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+          }
+        ]
+      }
+    }
+  ]
+}
