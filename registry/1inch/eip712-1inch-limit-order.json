@@ -15,10 +15,16 @@
   "metadata": { "owner": "1inch Limit Order Protocol" },
   "display": {
     "formats": {
-      "OrderStructure(uint256 salt,address maker,address receiver,address makerAsset,address takerAsset,uint256 makingAmount,uint256 takingAmount,uint256 makerTraits)": {
+      "Order(uint256 salt,address makerAsset,address takerAsset,address maker,address receiver,address allowedSender,uint256 makingAmount,uint256 takingAmount,bytes makerAssetData,bytes takerAssetData,bytes getMakerAmount,bytes getTakerAmount,bytes predicate,bytes permit,bytes interaction)": {
         "intent": "1inch Order",
         "fields": [
-          { "path": "maker", "label": "From", "format": "raw", "visible": "always" },
+          {
+            "path": "maker",
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
           {
             "path": "makingAmount",
             "label": "Send",
@@ -33,12 +39,28 @@
             "params": { "tokenPath": "takerAsset" },
             "visible": "always"
           },
-          { "path": "receiver", "label": "To", "format": "raw", "visible": "always" },
-          { "label": "Salt", "path": "salt", "visible": "never" },
-          { "label": "Maker Traits", "path": "makerTraits", "visible": "never" },
-          { "label": "Interactions", "path": "interactions", "visible": "never" },
-          { "label": "Allowed Sender", "path": "allowedSender", "visible": "never" },
-          { "label": "Offsets", "path": "offsets", "visible": "never" }
+          {
+            "path": "receiver",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "allowedSender",
+            "label": "Allowed sender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          { "path": "makerAssetData", "label": "Maker asset data", "format": "raw", "visible": "always" },
+          { "path": "takerAssetData", "label": "Taker asset data", "format": "raw", "visible": "always" },
+          { "path": "getMakerAmount", "label": "Maker amount getter", "format": "raw", "visible": "always" },
+          { "path": "getTakerAmount", "label": "Taker amount getter", "format": "raw", "visible": "always" },
+          { "path": "predicate", "label": "Predicate", "format": "raw", "visible": "always" },
+          { "path": "permit", "label": "Permit", "format": "raw", "visible": "always" },
+          { "path": "interaction", "label": "Interaction", "format": "raw", "visible": "always" },
+          { "label": "Salt", "path": "salt", "visible": "never" }
         ]
       }
     }
