@@ -1,0 +1,219 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "feralfile-airdrop",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x051E50D8465417e58899FD48C3b0Fc0CA3Dd4B6a"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Feral File",
+    "info": {
+      "url": "https://feralfile.com"
+    },
+    "contractName": "Feral File Airdrop V1"
+  },
+  "display": {
+    "formats": {
+      "safeTransferFrom(address from,address to,uint256 id,uint256 amount,bytes data)": {
+        "intent": "Transfer airdrop token",
+        "interpolatedIntent": "Transfer {amount} of token {id} to {to}",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "id",
+            "label": "Artwork",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            }
+          },
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "raw"
+          }
+        ]
+      },
+      "safeBatchTransferFrom(address from,address to,uint256[] ids,uint256[] amounts,bytes data)": {
+        "intent": "Batch transfer airdrop tokens",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "ids.[]",
+            "label": "Artworks",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            }
+          },
+          {
+            "path": "amounts.[]",
+            "label": "Amounts",
+            "format": "raw"
+          }
+        ]
+      },
+      "setApprovalForAll(address operator,bool approved)": {
+        "intent": "Set operator approval",
+        "fields": [
+          {
+            "path": "operator",
+            "label": "Operator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "approved",
+            "label": "Approved",
+            "format": "raw"
+          }
+        ]
+      },
+      "burn(uint256 tokenID_,uint256 amount_)": {
+        "intent": "Burn airdrop token",
+        "interpolatedIntent": "Destroy {amount_} of token {tokenID_}",
+        "fields": [
+          {
+            "path": "tokenID_",
+            "label": "Artwork",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            }
+          },
+          {
+            "path": "amount_",
+            "label": "Amount",
+            "format": "raw"
+          }
+        ]
+      },
+      "mint(uint256 tokenID_,uint256 amount_)": {
+        "intent": "Mint airdrop tokens to contract",
+        "fields": [
+          {
+            "path": "tokenID_",
+            "label": "Artwork",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            }
+          },
+          {
+            "path": "amount_",
+            "label": "Amount",
+            "format": "raw"
+          }
+        ]
+      },
+      "airdrop(uint256 tokenID_,address[] to_)": {
+        "intent": "Airdrop tokens to recipients",
+        "fields": [
+          {
+            "path": "tokenID_",
+            "label": "Artwork",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            }
+          },
+          {
+            "path": "to_.[]",
+            "label": "Recipients",
+            "format": "raw"
+          }
+        ]
+      },
+      "end()": {
+        "intent": "End airdrop",
+        "fields": []
+      },
+      "setURI(string uri_)": {
+        "intent": "Set token URI",
+        "fields": [
+          {
+            "path": "uri_",
+            "label": "URI",
+            "format": "raw"
+          }
+        ]
+      },
+      "setContractURI(string contractURI_)": {
+        "intent": "Set contract URI",
+        "fields": [
+          {
+            "path": "contractURI_",
+            "label": "Contract URI",
+            "format": "raw"
+          }
+        ]
+      },
+      "burnRemaining(uint256 tokenID_)": {
+        "intent": "Burn remaining airdrop supply",
+        "fields": [
+          {
+            "path": "tokenID_",
+            "label": "Artwork",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

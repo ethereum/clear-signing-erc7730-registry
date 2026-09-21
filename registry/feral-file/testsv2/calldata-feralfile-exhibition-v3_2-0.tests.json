@@ -1,0 +1,233 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-feralfile-exhibition-v3_2-0.json",
+  "dataProvider": {
+    "addressNames": {
+      "0x0000000000000000000000000000000000000001": "Sender",
+      "0x0000000000000000000000000000000000000003": "Receiver",
+      "0x0000000000000000000000000000000000000002": "Test Operator"
+    },
+    "nftCollectionNames": {
+      "0x14a62abfec0e09159fbe9c050f3b03044fc7ea52": "Feral File Exhibition V3.2"
+    }
+  },
+  "tests": [
+    {
+      "description": "Transfer artwork - transferFrom",
+      "rawTx": "0x02f88e0180843b9aca008504a817c80083030d409414a62abfec0e09159fbe9c050f3b03044fc7ea5280b86423b872dd0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000003e9c0",
+      "expected": {
+        "intent": "Transfer artwork",
+        "interpolatedIntent": "Transfer token Feral File Exhibition V3.2 #1001 from Sender to Receiver",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "From",
+            "value": "Sender"
+          },
+          {
+            "label": "To",
+            "value": "Receiver"
+          },
+          {
+            "label": "Artwork",
+            "value": "Feral File Exhibition V3.2 #1001"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Transfer artwork - safeTransferFrom",
+      "rawTx": "0x02f88e0180843b9aca008504a817c80083030d409414a62abfec0e09159fbe9c050f3b03044fc7ea5280b86442842e0e0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000003e9c0",
+      "expected": {
+        "intent": "Transfer artwork",
+        "interpolatedIntent": "Safely transfer token Feral File Exhibition V3.2 #1001 to Receiver",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "From",
+            "value": "Sender"
+          },
+          {
+            "label": "To",
+            "value": "Receiver"
+          },
+          {
+            "label": "Artwork",
+            "value": "Feral File Exhibition V3.2 #1001"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Transfer artwork - safeTransferFrom with data",
+      "rawTx": "0x02f8ce0180843b9aca008504a817c80083030d409414a62abfec0e09159fbe9c050f3b03044fc7ea5280b8a4b88d4fde0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000003e900000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Transfer artwork",
+        "interpolatedIntent": "Safely transfer token Feral File Exhibition V3.2 #1001 to Receiver",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "From",
+            "value": "Sender"
+          },
+          {
+            "label": "To",
+            "value": "Receiver"
+          },
+          {
+            "label": "Artwork",
+            "value": "Feral File Exhibition V3.2 #1001"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Approve artwork transfer",
+      "rawTx": "0x02f86e0180843b9aca008504a817c80083030d409414a62abfec0e09159fbe9c050f3b03044fc7ea5280b844095ea7b3000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000003e9c0",
+      "expected": {
+        "intent": "Approve artwork transfer",
+        "interpolatedIntent": "Allow Test Operator to transfer token Feral File Exhibition V3.2 #1001",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "Operator",
+            "value": "Test Operator"
+          },
+          {
+            "label": "Artwork",
+            "value": "Feral File Exhibition V3.2 #1001"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set operator approval - grant all",
+      "rawTx": "0x02f86e0180843b9aca008504a817c80083030d409414a62abfec0e09159fbe9c050f3b03044fc7ea5280b844a22cb46500000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001c0",
+      "expected": {
+        "intent": "Set operator approval",
+        "interpolatedIntent": "true all tokens for Test Operator",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "Operator",
+            "value": "Test Operator"
+          },
+          {
+            "label": "Approved",
+            "value": "true"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set royalty payout address",
+      "rawTx": "0x02f84d0180843b9aca008504a817c80083030d409414a62abfec0e09159fbe9c050f3b03044fc7ea5280a445aeefde0000000000000000000000000000000000000000000000000000000000000003c0",
+      "expected": {
+        "intent": "Set royalty payout address",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "Payout address",
+            "value": "Receiver"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set token base URI",
+      "rawTx": "0x02f88e0180843b9aca008504a817c80083030d409414a62abfec0e09159fbe9c050f3b03044fc7ea5280b8648ef79e910000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001c68747470733a2f2f666572616c66696c652e636f6d2f746f6b656e2f00000000c0",
+      "expected": {
+        "intent": "Set token base URI",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "Base URI",
+            "value": "https://feralfile.com/token/"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Update edition IPFS CID",
+      "rawTx": "0x02f8ae0180843b9aca008504a817c80083030d409414a62abfec0e09159fbe9c050f3b03044fc7ea5280b8840cfcb5f100000000000000000000000000000000000000000000000000000000000003e900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000009516d546573744349440000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Update edition IPFS CID",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "Artwork",
+            "value": "Feral File Exhibition V3.2 #1001"
+          },
+          {
+            "label": "IPFS CID",
+            "value": "QmTestCID"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Burn artwork editions",
+      "rawTx": "0x02f88e0180843b9aca008504a817c80083030d409414a62abfec0e09159fbe9c050f3b03044fc7ea5280b864fc05ea680000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003e9c0",
+      "expected": {
+        "intent": "Burn artwork editions",
+        "interpolatedIntent": "Permanently destroy selected editions",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "Artworks",
+            "value": "Feral File Exhibition V3.2 #1001"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Authorize artwork transfer",
+      "rawTx": "0x02f9014f0180843b9aca008504a817c80083030d409414a62abfec0e09159fbe9c050f3b03044fc7ea5280b901249fbf39cd000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000003e9000000000000000000000000000000000000000000000000000000006774858000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001bc0",
+      "expected": {
+        "intent": "Authorize artwork transfer",
+        "interpolatedIntent": "Execute authorized artwork transfers",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "From",
+            "value": "Sender"
+          },
+          {
+            "label": "To",
+            "value": "Receiver"
+          },
+          {
+            "label": "Artwork",
+            "value": "Feral File Exhibition V3.2 #1001"
+          },
+          {
+            "label": "Authorization expires",
+            "value": "2025-01-01 00:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Batch mint editions",
+      "rawTx": "0x02f9016f0180843b9aca008504a817c80083030d409414a62abfec0e09159fbe9c050f3b03044fc7ea5280b9014412d907b900000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000003e900000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000d697066733a2f2f516d5465737400000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Batch mint editions",
+        "owner": "Feral File",
+        "fields": [
+          {
+            "label": "Artwork ID",
+            "value": "1001"
+          },
+          {
+            "label": "Edition",
+            "value": "1"
+          },
+          {
+            "label": "Owner",
+            "value": "Receiver"
+          }
+        ]
+      }
+    }
+  ]
+}
