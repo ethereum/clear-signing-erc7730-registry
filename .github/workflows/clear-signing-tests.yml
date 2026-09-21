@@ -448,7 +448,7 @@ jobs:
     needs: detect-testsv2
     # Every affected descriptor needs its own test file. One descriptor with a
     # test file must not hide another without one.
-    if: needs.detect-testsv2.outputs.missing_tests != '[]'
+    # No job-level "if": the check must show a pass, not a skip.
     runs-on: ubuntu-latest
     steps:
       # An annotation, not a comment: a fork run has a read-only token.
@@ -458,6 +458,10 @@ jobs:
           # whose transitive "includes" chain contains a changed shared file.
           MISSING: ${{ needs.detect-testsv2.outputs.missing_tests }}
         run: |
+          if [ "$(echo "$MISSING" | jq 'length')" -eq 0 ]; then
+            echo "Every affected descriptor has a testsv2 file."
+            exit 0
+          fi
           # A JSON array, so a path that holds a space stays one path.
           echo "$MISSING" | jq -r '.[]' | while IFS= read -r descriptor; do
             echo "::error file=${descriptor},line=1::No testsv2 file for this descriptor. Create registry/<entity>/testsv2/<descriptor-name>.tests.json — see the \"Reference test cases\" section of README.md."
