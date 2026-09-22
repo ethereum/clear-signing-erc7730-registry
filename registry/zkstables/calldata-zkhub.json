@@ -1,0 +1,672 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 8453,
+          "address": "0x2a6568A96ca4967eb6E7bBFA46aa1bcD7eDc50e1"
+        },
+        {
+          "chainId": 84532,
+          "address": "0xC07055D40e8c341Ebced313Ae400AEC203F28e5B"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "ZK Stables",
+    "info": {
+      "legalName": "ZK Stables",
+      "url": "https://zkstables.com"
+    },
+    "contractName": "ZKHub"
+  },
+  "display": {
+    "formats": {
+      "changeControllerWithAuth(bytes32 epk, address newController, (uint256 nonce,uint256 deadline,bytes signature) auth)": {
+        "intent": "Change controller (auth)",
+        "fields": [
+          {
+            "label": "ZK address",
+            "format": "raw",
+            "path": "#.epk"
+          },
+          {
+            "label": "New controller",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract",
+                "token",
+                "collection"
+              ]
+            },
+            "path": "#.newController"
+          }
+        ]
+      },
+      "encryptedBurn(address zkemt, (uint256 x,uint256 y) epk, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) newBalance, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) tsCt, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) trcCt, bytes proof)": {
+        "intent": "Encrypted burn",
+        "fields": [
+          {
+            "path": "zkemt",
+            "label": "Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "epk.x.[0:32]",
+            "label": "Encryption key x",
+            "format": "raw"
+          },
+          {
+            "path": "epk.y.[0:32]",
+            "label": "Encryption key y",
+            "format": "raw"
+          }
+        ]
+      },
+      "encryptedMint(address zkemt, (uint256 x,uint256 y) epk, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) mintCt, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) tsCt, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) trcCt, bytes proof)": {
+        "intent": "Encrypted mint",
+        "fields": [
+          {
+            "path": "zkemt",
+            "label": "Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "epk.x.[0:32]",
+            "label": "Encryption key x",
+            "format": "raw"
+          },
+          {
+            "path": "epk.y.[0:32]",
+            "label": "Encryption key y",
+            "format": "raw"
+          }
+        ]
+      },
+      "freezeAddress(address addr)": {
+        "intent": "Freeze address",
+        "interpolatedIntent": "Freeze {addr}",
+        "fields": [
+          {
+            "path": "addr",
+            "label": "Address",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "freezeEpk(bytes32 epk)": {
+        "intent": "Freeze ZK address",
+        "fields": [
+          {
+            "path": "epk",
+            "label": "ZK address",
+            "format": "raw"
+          }
+        ]
+      },
+      "initialize(address initialOwner, (uint256 x,uint256 y) trcPk_, (uint256 x,uint256 y) totalSupplyPk_)": {
+        "intent": "Initialize",
+        "fields": [
+          {
+            "label": "Initial owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            },
+            "path": "#.initialOwner"
+          }
+        ]
+      },
+      "pause()": {
+        "intent": "Pause all transfers",
+        "fields": []
+      },
+      "pauseZkemt(address zkemt)": {
+        "intent": "Pause token",
+        "interpolatedIntent": "Pause {zkemt}",
+        "fields": [
+          {
+            "path": "zkemt",
+            "label": "Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "publicBurn(address zkemt, address burnFrom, uint256 amount)": {
+        "intent": "Public burn",
+        "interpolatedIntent": "Burn {amount} from {burnFrom}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "zkemt"
+            }
+          },
+          {
+            "path": "burnFrom",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "publicMint(address zkemt, address to, uint256 amount)": {
+        "intent": "Public mint",
+        "interpolatedIntent": "Mint {amount} to {to}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "zkemt"
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "registerEpk((uint256 x,uint256 y) epk, address controller, bytes proof)": {
+        "intent": "Register account",
+        "fields": [
+          {
+            "path": "epk.x.[0:32]",
+            "label": "Encryption key x",
+            "format": "raw"
+          },
+          {
+            "path": "epk.y.[0:32]",
+            "label": "Encryption key y",
+            "format": "raw"
+          },
+          {
+            "path": "controller",
+            "label": "Controller",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "registerZkemt(address zkemt)": {
+        "intent": "Register token",
+        "fields": [
+          {
+            "label": "Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract",
+                "token",
+                "collection"
+              ]
+            },
+            "path": "#.zkemt"
+          }
+        ]
+      },
+      "renounceOwnership()": {
+        "intent": "Renounce ownership",
+        "fields": []
+      },
+      "rotateTotalSupplyKey((uint256 x,uint256 y) newTsPk, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C)[] newTotalSupplies, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C)[] expectedOldTotalSupplies)": {
+        "intent": "Rotate total supply key",
+        "fields": [
+          {
+            "path": "newTsPk.x.[0:32]",
+            "label": "New key x",
+            "format": "raw"
+          },
+          {
+            "path": "newTsPk.y.[0:32]",
+            "label": "New key y",
+            "format": "raw"
+          }
+        ]
+      },
+      "seizeEncrypted(address zkemt, (uint256 x,uint256 y) epk, address to, uint256 amount)": {
+        "intent": "Seize (encrypted)",
+        "interpolatedIntent": "Seize {amount} to {to}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "zkemt"
+            }
+          },
+          {
+            "path": "epk.x.[0:32]",
+            "label": "From key x",
+            "format": "raw"
+          },
+          {
+            "path": "epk.y.[0:32]",
+            "label": "From key y",
+            "format": "raw"
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "seizePublic(address zkemt, address from, address to, uint256 amount)": {
+        "intent": "Seize",
+        "interpolatedIntent": "Seize {amount} from {from}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "zkemt"
+            }
+          },
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "setEncryptedBurnAuth(address burner, bytes32 epk, bool enabled)": {
+        "intent": "Set encrypted burn permission",
+        "fields": [
+          {
+            "label": "Burner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract",
+                "token",
+                "collection"
+              ]
+            },
+            "path": "#.burner"
+          },
+          {
+            "label": "ZK address",
+            "format": "raw",
+            "path": "#.epk"
+          },
+          {
+            "label": "Enabled",
+            "format": "raw",
+            "path": "#.enabled"
+          }
+        ]
+      },
+      "setFreezer(address freezer, bool enabled)": {
+        "intent": "Set freezer",
+        "fields": [
+          {
+            "path": "freezer",
+            "label": "Freezer",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "enabled",
+            "label": "Enabled",
+            "format": "raw"
+          }
+        ]
+      },
+      "setMinter(address minter, bool enabled)": {
+        "intent": "Set minter",
+        "fields": [
+          {
+            "path": "minter",
+            "label": "Minter",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "enabled",
+            "label": "Enabled",
+            "format": "raw"
+          }
+        ]
+      },
+      "setPauser(address pauser, bool enabled)": {
+        "intent": "Set pauser",
+        "fields": [
+          {
+            "path": "pauser",
+            "label": "Pauser",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "enabled",
+            "label": "Enabled",
+            "format": "raw"
+          }
+        ]
+      },
+      "setPublicBurnAuth(address burner, address burnFrom, bool enabled)": {
+        "intent": "Set public burn permission",
+        "fields": [
+          {
+            "label": "Burner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract",
+                "token",
+                "collection"
+              ]
+            },
+            "path": "#.burner"
+          },
+          {
+            "label": "Burn from",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            },
+            "path": "#.burnFrom"
+          },
+          {
+            "label": "Enabled",
+            "format": "raw",
+            "path": "#.enabled"
+          }
+        ]
+      },
+      "setSanctionsList(address newList)": {
+        "intent": "Set sanctions list",
+        "fields": [
+          {
+            "label": "New list",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract",
+                "token",
+                "collection"
+              ]
+            },
+            "path": "#.newList"
+          }
+        ]
+      },
+      "setSeizer(address seizer, bool enabled)": {
+        "intent": "Set seizer",
+        "fields": [
+          {
+            "path": "seizer",
+            "label": "Seizer",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "enabled",
+            "label": "Enabled",
+            "format": "raw"
+          }
+        ]
+      },
+      "setTrcPk((uint256 x,uint256 y) pk)": {
+        "intent": "Set TRC key",
+        "fields": [
+          {
+            "path": "pk.x.[0:32]",
+            "label": "TRC key x",
+            "format": "raw"
+          },
+          {
+            "path": "pk.y.[0:32]",
+            "label": "TRC key y",
+            "format": "raw"
+          }
+        ]
+      },
+      "transferOwnership(address newOwner)": {
+        "intent": "Transfer ownership",
+        "interpolatedIntent": "Transfer ownership to {newOwner}",
+        "fields": [
+          {
+            "path": "newOwner",
+            "label": "New owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "unfreezeAddress(address addr)": {
+        "intent": "Unfreeze address",
+        "interpolatedIntent": "Unfreeze {addr}",
+        "fields": [
+          {
+            "path": "addr",
+            "label": "Address",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "unfreezeEpk(bytes32 epk)": {
+        "intent": "Unfreeze ZK address",
+        "fields": [
+          {
+            "path": "epk",
+            "label": "ZK address",
+            "format": "raw"
+          }
+        ]
+      },
+      "unpause()": {
+        "intent": "Unpause all transfers",
+        "fields": []
+      },
+      "unpauseZkemt(address zkemt)": {
+        "intent": "Unpause token",
+        "interpolatedIntent": "Unpause {zkemt}",
+        "fields": [
+          {
+            "path": "zkemt",
+            "label": "Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "upgradeToAndCall(address newImplementation, bytes data)": {
+        "intent": "Upgrade contract",
+        "fields": [
+          {
+            "label": "New implementation",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract",
+                "token",
+                "collection"
+              ]
+            },
+            "path": "#.newImplementation"
+          },
+          {
+            "label": "Data",
+            "format": "raw",
+            "path": "#.data"
+          }
+        ]
+      },
+      "upgradeZkemt(address zkemt, address newImpl, bytes data)": {
+        "intent": "Upgrade token",
+        "fields": [
+          {
+            "label": "Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract",
+                "token",
+                "collection"
+              ]
+            },
+            "path": "#.zkemt"
+          },
+          {
+            "label": "New implementation",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract",
+                "token",
+                "collection"
+              ]
+            },
+            "path": "#.newImpl"
+          },
+          {
+            "label": "Data",
+            "format": "raw",
+            "path": "#.data"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,1052 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-zkemt.json",
+  "dataProvider": {
+    "tokens": {
+      "0x8ed36a645bef11075283524c01aca742cbafc832": {
+        "symbol": "zkUSD",
+        "decimals": 6,
+        "name": "ZK Stables USD"
+      },
+      "0x79c12772de2cfc45359eccb8a9c038c3e5ae8e31": {
+        "symbol": "zkUSD",
+        "decimals": 6,
+        "name": "ZK Stables USD"
+      }
+    },
+    "addressNames": {
+      "0xe6455dec538f906d28f6910c531e02f560e2f1f9": "Alice",
+      "0x1111111111111111111111111111111111111111": "Bob",
+      "0x8ed36a645bef11075283524c01aca742cbafc832": "zkUSD"
+    }
+  },
+  "tests": [
+    {
+      "description": "TransferWithAuthorization",
+      "data": {
+        "domain": {
+          "name": "zkUSD",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x8ED36a645beF11075283524C01acA742CbAfC832"
+        },
+        "primaryType": "TransferWithAuthorization",
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "TransferWithAuthorization": [
+            {
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "validAfter",
+              "type": "uint256"
+            },
+            {
+              "name": "validBefore",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "bytes32"
+            }
+          ]
+        },
+        "message": {
+          "from": "0xE6455dEC538F906D28f6910c531e02F560E2f1f9",
+          "to": "0x1111111111111111111111111111111111111111",
+          "value": "21370000",
+          "validAfter": "1767225600",
+          "validBefore": "1767225600",
+          "nonce": "0x1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "expected": {
+        "intent": "Transfer with authorization",
+        "interpolatedIntent": "Send 21.37 zkUSD to Bob",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "From",
+            "value": "Alice"
+          },
+          {
+            "label": "To",
+            "value": "Bob"
+          },
+          {
+            "label": "Amount",
+            "value": "21.37 zkUSD"
+          },
+          {
+            "label": "Valid after",
+            "value": "2026-01-01 00:00:00Z"
+          },
+          {
+            "label": "Valid before",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "PublicToEncryptedTransferAuth",
+      "data": {
+        "domain": {
+          "name": "zkUSD",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x8ED36a645beF11075283524C01acA742CbAfC832"
+        },
+        "primaryType": "PublicToEncryptedTransferAuth",
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "PublicToEncryptedTransferAuth": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "recipient",
+              "type": "bytes32"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "owner": "0xE6455dEC538F906D28f6910c531e02F560E2f1f9",
+          "recipient": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "amount": "21370000",
+          "nonce": "0",
+          "deadline": "1767225600"
+        }
+      },
+      "expected": {
+        "intent": "Transfer (public to encrypted)",
+        "interpolatedIntent": "Send 21.37 zkUSD to encrypted",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "21.37 zkUSD"
+          },
+          {
+            "label": "Owner",
+            "value": "Alice"
+          },
+          {
+            "label": "To ZK address",
+            "value": "0x1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "PublicToEncryptedTransferWithCallerAuth",
+      "data": {
+        "domain": {
+          "name": "zkUSD",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x8ED36a645beF11075283524C01acA742CbAfC832"
+        },
+        "primaryType": "PublicToEncryptedTransferWithCallerAuth",
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "PublicToEncryptedTransferWithCallerAuth": [
+            {
+              "name": "caller",
+              "type": "address"
+            },
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "recipient",
+              "type": "bytes32"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "caller": "0xE6455dEC538F906D28f6910c531e02F560E2f1f9",
+          "owner": "0xE6455dEC538F906D28f6910c531e02F560E2f1f9",
+          "recipient": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "amount": "21370000",
+          "nonce": "0",
+          "deadline": "1767225600"
+        }
+      },
+      "expected": {
+        "intent": "Public to encrypted (caller)",
+        "interpolatedIntent": "Send 21.37 zkUSD to encrypted",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "21.37 zkUSD"
+          },
+          {
+            "label": "Owner",
+            "value": "Alice"
+          },
+          {
+            "label": "Caller",
+            "value": "Alice"
+          },
+          {
+            "label": "To ZK address",
+            "value": "0x1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "AutoEncryptAuth",
+      "data": {
+        "domain": {
+          "name": "zkUSD",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x8ED36a645beF11075283524C01acA742CbAfC832"
+        },
+        "primaryType": "AutoEncryptAuth",
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "AutoEncryptAuth": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "enabled",
+              "type": "bool"
+            },
+            {
+              "name": "epk",
+              "type": "bytes32"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "owner": "0xE6455dEC538F906D28f6910c531e02F560E2f1f9",
+          "enabled": true,
+          "epk": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "nonce": "0",
+          "deadline": "1767225600"
+        }
+      },
+      "expected": {
+        "intent": "Set auto-encrypt",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "Owner",
+            "value": "Alice"
+          },
+          {
+            "label": "Enabled",
+            "value": "true"
+          },
+          {
+            "label": "ZK address",
+            "value": "0x1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "EncryptedTransferAuth",
+      "data": {
+        "domain": {
+          "name": "zkUSD",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x8ED36a645beF11075283524C01acA742CbAfC832"
+        },
+        "primaryType": "EncryptedTransferAuth",
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "EncryptedTransferAuth": [
+            {
+              "name": "senderEpk",
+              "type": "bytes32"
+            },
+            {
+              "name": "recipientEpk",
+              "type": "bytes32"
+            },
+            {
+              "name": "paramsHash",
+              "type": "bytes32"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "senderEpk": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "recipientEpk": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "paramsHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "nonce": "0",
+          "deadline": "1767225600"
+        }
+      },
+      "expected": {
+        "intent": "Encrypted transfer",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "To ZK address",
+            "value": "0x1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "EncryptedTransferWithCallerAuth",
+      "data": {
+        "domain": {
+          "name": "zkUSD",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x8ED36a645beF11075283524C01acA742CbAfC832"
+        },
+        "primaryType": "EncryptedTransferWithCallerAuth",
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "EncryptedTransferWithCallerAuth": [
+            {
+              "name": "caller",
+              "type": "address"
+            },
+            {
+              "name": "senderEpk",
+              "type": "bytes32"
+            },
+            {
+              "name": "recipientEpk",
+              "type": "bytes32"
+            },
+            {
+              "name": "paramsHash",
+              "type": "bytes32"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "caller": "0xE6455dEC538F906D28f6910c531e02F560E2f1f9",
+          "senderEpk": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "recipientEpk": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "paramsHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "nonce": "0",
+          "deadline": "1767225600"
+        }
+      },
+      "expected": {
+        "intent": "Encrypted transfer (caller)",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "Caller",
+            "value": "Alice"
+          },
+          {
+            "label": "To ZK address",
+            "value": "0x1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "EncryptedToPublicAuth",
+      "data": {
+        "domain": {
+          "name": "zkUSD",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x8ED36a645beF11075283524C01acA742CbAfC832"
+        },
+        "primaryType": "EncryptedToPublicAuth",
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "EncryptedToPublicAuth": [
+            {
+              "name": "senderEpk",
+              "type": "bytes32"
+            },
+            {
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "name": "paramsHash",
+              "type": "bytes32"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "senderEpk": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "recipient": "0x1111111111111111111111111111111111111111",
+          "amount": "21370000",
+          "paramsHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "nonce": "0",
+          "deadline": "1767225600"
+        }
+      },
+      "expected": {
+        "intent": "Encrypted to public (auth)",
+        "interpolatedIntent": "Send 21.37 zkUSD to Bob",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "21.37 zkUSD"
+          },
+          {
+            "label": "To",
+            "value": "Bob"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "EncryptedToPublicWithCallerAuth",
+      "data": {
+        "domain": {
+          "name": "zkUSD",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x8ED36a645beF11075283524C01acA742CbAfC832"
+        },
+        "primaryType": "EncryptedToPublicWithCallerAuth",
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "EncryptedToPublicWithCallerAuth": [
+            {
+              "name": "caller",
+              "type": "address"
+            },
+            {
+              "name": "senderEpk",
+              "type": "bytes32"
+            },
+            {
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "name": "paramsHash",
+              "type": "bytes32"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "caller": "0xE6455dEC538F906D28f6910c531e02F560E2f1f9",
+          "senderEpk": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "recipient": "0x1111111111111111111111111111111111111111",
+          "amount": "21370000",
+          "paramsHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "nonce": "0",
+          "deadline": "1767225600"
+        }
+      },
+      "expected": {
+        "intent": "Encrypted to public (caller)",
+        "interpolatedIntent": "Send 21.37 zkUSD to Bob",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "21.37 zkUSD"
+          },
+          {
+            "label": "To",
+            "value": "Bob"
+          },
+          {
+            "label": "Caller",
+            "value": "Alice"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "ManagePendingBalanceAuth",
+      "data": {
+        "domain": {
+          "name": "zkUSD",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x8ED36a645beF11075283524C01acA742CbAfC832"
+        },
+        "primaryType": "ManagePendingBalanceAuth",
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "ManagePendingBalanceAuth": [
+            {
+              "name": "epk",
+              "type": "bytes32"
+            },
+            {
+              "name": "clear",
+              "type": "bool"
+            },
+            {
+              "name": "enabled",
+              "type": "bool"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "epk": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "clear": true,
+          "enabled": true,
+          "nonce": "0",
+          "deadline": "1767225600"
+        }
+      },
+      "expected": {
+        "intent": "Manage pending balance",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "Enable pending",
+            "value": "true"
+          },
+          {
+            "label": "Clear pending",
+            "value": "true"
+          },
+          {
+            "label": "ZK address",
+            "value": "0x1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "ReceiveWithAuthorization",
+      "data": {
+        "domain": {
+          "name": "zkUSD",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x8ED36a645beF11075283524C01acA742CbAfC832"
+        },
+        "primaryType": "ReceiveWithAuthorization",
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "ReceiveWithAuthorization": [
+            {
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "validAfter",
+              "type": "uint256"
+            },
+            {
+              "name": "validBefore",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "bytes32"
+            }
+          ]
+        },
+        "message": {
+          "from": "0xE6455dEC538F906D28f6910c531e02F560E2f1f9",
+          "to": "0x1111111111111111111111111111111111111111",
+          "value": "21370000",
+          "validAfter": "1767225600",
+          "validBefore": "1767225600",
+          "nonce": "0x1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "expected": {
+        "intent": "Receive with authorization",
+        "interpolatedIntent": "Receive 21.37 zkUSD from Alice",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "From",
+            "value": "Alice"
+          },
+          {
+            "label": "To",
+            "value": "Bob"
+          },
+          {
+            "label": "Amount",
+            "value": "21.37 zkUSD"
+          },
+          {
+            "label": "Valid after",
+            "value": "2026-01-01 00:00:00Z"
+          },
+          {
+            "label": "Valid before",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Permit",
+      "data": {
+        "domain": {
+          "name": "zkUSD",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x8ED36a645beF11075283524C01acA742CbAfC832"
+        },
+        "primaryType": "Permit",
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "owner": "0xE6455dEC538F906D28f6910c531e02F560E2f1f9",
+          "spender": "0x1111111111111111111111111111111111111111",
+          "value": "21370000",
+          "nonce": "0",
+          "deadline": "1767225600"
+        }
+      },
+      "expected": {
+        "intent": "Approve (permit)",
+        "interpolatedIntent": "Approve 21.37 zkUSD for Bob",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "21.37 zkUSD"
+          },
+          {
+            "label": "Spender",
+            "value": "Bob"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Permit — unlimited allowance",
+      "data": {
+        "domain": {
+          "name": "zkUSD",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x8ED36a645beF11075283524C01acA742CbAfC832"
+        },
+        "primaryType": "Permit",
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "owner": "0xE6455dEC538F906D28f6910c531e02F560E2f1f9",
+          "spender": "0x1111111111111111111111111111111111111111",
+          "value": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+          "nonce": "0",
+          "deadline": "1767225600"
+        }
+      },
+      "expected": {
+        "intent": "Approve (permit)",
+        "interpolatedIntent": "Approve Unlimited zkUSD for Bob",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "Unlimited zkUSD"
+          },
+          {
+            "label": "Spender",
+            "value": "Bob"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    }
+  ]
+}
