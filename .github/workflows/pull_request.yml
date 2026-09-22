@@ -10,10 +10,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-#env:
-#  ETHERSCAN_API_HOST: <set this secret to define a custom Etherscan API host>
-#  ETHERSCAN_API_KEY: <set this secret to inject Etherscan API key>
-
 jobs:
   validate_descriptors:
     name: 🔎 validate descriptors
@@ -75,6 +71,7 @@ jobs:
         if: steps.affected-descriptors.outputs.any_affected == 'true'
         env:
           AFFECTED_FILES: ${{ steps.affected-descriptors.outputs.descriptors }}
+          SOURCIFY_TOKEN: ${{ secrets.SOURCIFY_TOKEN_CLEAR_SIGNING_CI }}
         run: erc7730 lint $AFFECTED_FILES --gha
 
   validate_schemas:

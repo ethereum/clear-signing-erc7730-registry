@@ -1,0 +1,83 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-wstETH-L2.json",
+  "dataProvider": {
+    "tokens": {
+      "0x1f32b1c2345538c0c6f582fcb022739c4a194ebb": { "symbol": "wstETH", "decimals": 18, "name": "Wrapped liquid staked Ether 2.0" },
+      "0x26c5e01524d2e6280a48f2c50ff6de7e52e9611c": { "symbol": "wstETH", "decimals": 18, "name": "Wrapped liquid staked Ether 2.0" },
+      "0xc02fe7317d4eb8753a02c35fe019786854a92001": { "symbol": "wstETH", "decimals": 18, "name": "Wrapped liquid staked Ether 2.0" },
+      "0xc1cba3fcea344f92d9239c08c0568f6f2f0ee452": { "symbol": "wstETH", "decimals": 18, "name": "Wrapped liquid staked Ether 2.0" },
+      "0x5979d7b546e38e414f7e9822514be443a4800529": { "symbol": "wstETH", "decimals": 18, "name": "Wrapped liquid staked Ether 2.0" },
+      "0xb5bedd42000b71fdde22d3ee8a79bd49a568fc8f": { "symbol": "wstETH", "decimals": 18, "name": "Wrapped liquid staked Ether 2.0" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Authorize spending - chain 42161",
+      "rawTx": "0x02f86f82a4b101843b9aca0084773594008301d4c0945979d7b546e38e414f7e9822514be443a480052980b844095ea7b3000000000000000000000000e66aa98b55c5a55c9af9da12fe39b8868af9a34600000000000000000000000000000000000000000000000d9462c6cb4b5a0000c0",
+      "expected": {
+        "intent": "Authorize spending",
+        "owner": "Lido DAO",
+        "fields": [
+          { "label": "Spender", "value": "0xE66AA98B55C5A55c9Af9da12FE39B8868af9a346" },
+          { "label": "Amount", "value": "250.5 wstETH" }
+        ],
+        "interpolatedIntent": "Allow to spend 250.5 wstETH"
+      }
+    },
+    {
+      "description": "Authorize unlimited spending - chain 8453",
+      "rawTx": "0x02f86f82210501843b9aca0084773594008301d4c094c1cba3fcea344f92d9239c08c0568f6f2f0ee45280b844095ea7b3000000000000000000000000e66aa98b55c5a55c9af9da12fe39b8868af9a346ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Authorize spending",
+        "owner": "Lido DAO",
+        "fields": [
+          { "label": "Spender", "value": "0xE66AA98B55C5A55c9Af9da12FE39B8868af9a346" },
+          { "label": "Amount", "value": "Unlimited wstETH" }
+        ],
+        "interpolatedIntent": "Allow to spend Unlimited wstETH"
+      }
+    },
+    {
+      "description": "Transfer wstETH - chain 56",
+      "rawTx": "0x02f86d3801843b9aca0084773594008301d4c09426c5e01524d2e6280a48f2c50ff6de7e52e9611c80b844a9059cbb0000000000000000000000002aed99855fed0259e5774b50a9f589d2bc1e1597000000000000000000000000000000000000000000000000ab407c9eb0520000c0",
+      "expected": {
+        "intent": "Transfer wstETH",
+        "owner": "Lido DAO",
+        "fields": [
+          { "label": "Recipient", "value": "0x2aeD99855FED0259e5774B50a9f589D2BC1E1597" },
+          { "label": "Amount", "value": "12.34 wstETH" }
+        ],
+        "interpolatedIntent": "Send 12.34 wstETH to 0x2aeD99855FED0259e5774B50a9f589D2BC1E1597"
+      }
+    },
+    {
+      "description": "Transfer wstETH - chain 59144",
+      "rawTx": "0x02f86f82e70801843b9aca0084773594008301d4c094b5bedd42000b71fdde22d3ee8a79bd49a568fc8f80b844a9059cbb0000000000000000000000002aed99855fed0259e5774b50a9f589d2bc1e159700000000000000000000000000000000000000000000000003782dace9d90000c0",
+      "expected": {
+        "intent": "Transfer wstETH",
+        "owner": "Lido DAO",
+        "fields": [
+          { "label": "Recipient", "value": "0x2aeD99855FED0259e5774B50a9f589D2BC1E1597" },
+          { "label": "Amount", "value": "0.25 wstETH" }
+        ],
+        "interpolatedIntent": "Send 0.25 wstETH to 0x2aeD99855FED0259e5774B50a9f589D2BC1E1597"
+      }
+    },
+    {
+      "description": "Transfer wstETH from sender - chain 10",
+      "rawTx": "0x02f88d0a01843b9aca0084773594008301d4c0941f32b1c2345538c0c6f582fcb022739c4a194ebb80b86423b872dd00000000000000000000000008b00ceee2fb66029b53d76110b19eeaabfd1e650000000000000000000000002aed99855fed0259e5774b50a9f589d2bc1e1597000000000000000000000000000000000000000000000000019334e70d000e9cc0",
+      "from": "0xE66AA98B55C5A55c9Af9da12FE39B8868af9a346",
+      "expected": {
+        "intent": "Transfer wstETH",
+        "owner": "Lido DAO",
+        "fields": [
+          { "label": "Sender", "value": "0x08b00cEEE2Fb66029B53D76110B19eeAabfd1e65" },
+          { "label": "Recipient", "value": "0x2aeD99855FED0259e5774B50a9f589D2BC1E1597" },
+          { "label": "Amount", "value": "0.113492582574591644 wstETH" }
+        ],
+        "interpolatedIntent": "Send 0.113492582574591644 wstETH to 0x2aeD99855FED0259e5774B50a9f589D2BC1E1597"
+      }
+    }
+  ]
+}
