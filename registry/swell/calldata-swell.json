@@ -12,18 +12,20 @@
         "intent": "Add to whitelist",
         "fields": [{ "label": "Address", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] }, "path": "#._address" }]
       },
-      "allowance(address owner, address spender)": {
-        "intent": "Check Allowance",
-        "fields": [
-          { "label": "Owner", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] }, "path": "#.owner" },
-          { "label": "Spender", "format": "addressName", "params": { "types": ["contract"] }, "path": "#.spender" }
-        ]
-      },
       "approve(address spender, uint256 amount)": {
         "intent": "Approve spender",
         "fields": [
           { "label": "Spender", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] }, "path": "#.spender" },
-          { "label": "Amount", "format": "tokenAmount", "path": "amount", "params": { "token": "$.metadata.constants.swellToken" } }
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "amount",
+            "params": {
+              "token": "$.metadata.constants.swellToken",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            }
+          }
         ]
       },
       "batchAddToWhitelist(address[] _addresses)": {
@@ -48,7 +50,7 @@
           }
         ]
       },
-      "burn(uint256 amount)": { "fields": [{ "label": "Amount", "format": "tokenAmount", "path": "#.amount", "params": { "tokenPath": "@.to" } }] },
+      "burn(uint256 amount)": { "intent": "Burn tokens", "fields": [{ "label": "Amount", "format": "tokenAmount", "path": "#.amount", "params": { "tokenPath": "@.to" } }] },
       "decreaseAllowance(address spender, uint256 subtractedValue)": {
         "intent": "Decrease allowance",
         "fields": [
@@ -75,7 +77,16 @@
         "intent": "Increase allowance",
         "fields": [
           { "label": "Spender", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] }, "path": "#.spender" },
-          { "label": "Added Value", "format": "tokenAmount", "path": "#.addedValue", "params": { "tokenPath": "@.to" } }
+          {
+            "label": "Added Value",
+            "format": "tokenAmount",
+            "path": "#.addedValue",
+            "params": {
+              "tokenPath": "@.to",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            }
+          }
         ]
       },
       "removeFromWhitelist(address _address)": {
@@ -105,7 +116,7 @@
           { "label": "Amount", "format": "tokenAmount", "path": "amount", "params": { "tokenPath": "@.to" } }
         ]
       },
-      "withdrawERC20(address _token)": { "fields": [{ "label": "Token", "format": "addressName", "params": { "types": ["token"] }, "path": "#._token" }] }
+      "withdrawERC20(address _token)": { "intent": "Withdraw ERC-20 token", "fields": [{ "label": "Token", "format": "addressName", "params": { "types": ["token"] }, "path": "#._token" }] }
     }
   }
 }
