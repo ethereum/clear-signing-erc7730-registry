@@ -110,62 +110,55 @@ jobs:
         if: steps.changed-json-files.outputs.any_changed == 'true'
         env:
           CHANGED_FILES: ${{ steps.changed-json-files.outputs.all_changed_files }}
+        # The script groups the files by the schema each one names and runs
+        # check-jsonschema once per schema. A "$schema" key that is a URL or
+        # that points outside specs/ fails the check instead of silently
+        # falling back to the default schema.
+        run: .github/scripts/validate-json-schemas.sh $CHANGED_FILES
+
+  validate_schema_change:
+    name: 🔎 validate every file against a changed schema
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        timeout-minutes: 10
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Get all changed schema files
+        timeout-minutes: 5
+        id: changed-schema-files
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
+        with:
+          files: |
+            specs/*.schema.json
+
+      - name: Setup python
+        timeout-minutes: 10
+        if: steps.changed-schema-files.outputs.any_changed == 'true'
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install check-jsonschema
+        timeout-minutes: 10
+        if: steps.changed-schema-files.outputs.any_changed == 'true'
+        run: pip install -r .github/requirements-schema.txt
+
+      - name: Validate every registry file against the schemas
+        timeout-minutes: 20
+        if: steps.changed-schema-files.outputs.any_changed == 'true'
+        # A schema change is checked against the whole registry, not only
+        # against the files a pull request touches. Under the ERC-7730
+        # versioning rules a schema change that keeps every existing
+        # descriptor valid is a PATCH or MINOR, and one that invalidates a
+        # descriptor is a MAJOR. This job is the machine check for that
+        # rule: if it fails, the schema change is breaking for this
+        # registry, and it must not land on the active major line.
         run: |
-          DEFAULT_SCHEMA="specs/erc7730-v2.schema.json"
-          TESTS_V1_SCHEMA="specs/erc7730-tests.schema.json"
-          TESTS_V2_SCHEMA="specs/erc7730-tests-v2.schema.json"
-          FAILED=0
-
-          for file in $CHANGED_FILES; do
-            if echo "$file" | grep -qE '/sigs/'; then
-              echo "Skipping $file (auditor attestation, no schema yet)"
-              continue
-            fi
-
-            # Resolve schema — folder-based dispatch for test files takes precedence,
-            # since legacy test files do not carry a $schema field.
-            if echo "$file" | grep -qE '/testsv2/.*\.tests\.json$'; then
-              SCHEMA_PATH="$TESTS_V2_SCHEMA"
-            elif echo "$file" | grep -qE '/tests/.*\.tests\.json$'; then
-              SCHEMA_PATH="$TESTS_V1_SCHEMA"
-            else
-              # Descriptor / shared / ercs file — read its $schema field if present.
-              SCHEMA_REF=$(python3 -c '
-          import json, sys
-          try:
-              with open(sys.argv[1]) as f:
-                  data = json.load(f)
-              print(data.get("$schema", ""))
-          except Exception:
-              print("")
-          ' "$file")
-
-              if [ -z "$SCHEMA_REF" ]; then
-                SCHEMA_PATH="$DEFAULT_SCHEMA"
-              elif echo "$SCHEMA_REF" | grep -qE '^https?://'; then
-                SCHEMA_PATH="$DEFAULT_SCHEMA"
-              else
-                FILE_DIR=$(dirname "$file")
-                RESOLVED=$(cd "$FILE_DIR" && realpath -m "$SCHEMA_REF" 2>/dev/null || echo "")
-                if [ -n "$RESOLVED" ] && [ -f "$RESOLVED" ]; then
-                  SCHEMA_PATH="$RESOLVED"
-                else
-                  SCHEMA_PATH="$DEFAULT_SCHEMA"
-                fi
-              fi
-            fi
-
-            echo "::group::Validating $file against $SCHEMA_PATH"
-            if ! check-jsonschema --schemafile "$SCHEMA_PATH" "$file"; then
-              FAILED=1
-            fi
-            echo "::endgroup::"
-          done
-
-          if [ "$FAILED" -ne 0 ]; then
-            echo "::error::One or more files failed JSON schema validation"
-            exit 1
-          fi
+          mapfile -t FILES < <(find registry ercs -name '*.json' | sort)
+          .github/scripts/validate-json-schemas.sh "${FILES[@]}"
 
   validate_index:
     name: 🔎 validate index
