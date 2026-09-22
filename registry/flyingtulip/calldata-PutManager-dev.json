@@ -2,11 +2,49 @@
   "$schema": "../../specs/erc7730-v2.schema.json",
   "includes": "common-PutManager.json",
   "context": { "contract": { "deployments": [{ "chainId": 146, "address": "0xAbd838E9977fc76430d637ED35EccFaF178Ce071" }] } },
-  "metadata": {
-    "contractName": "PutManager dev",
-    "constants": {
-      "ftToken": "0x26382a5331DDB46e7c0c101fb53480EB64a94AD9",
-      "pftCollection": "0x1d8051c90076FaA5b683A3551Ee4369d00f99D67"
+  "metadata": { "contractName": "PutManager dev", "constants": { "ftToken": "0x26382a5331DDB46e7c0c101fb53480EB64a94AD9" } },
+  "display": {
+    "formats": {
+      "divest(uint256 id, uint256 amount_ft)": {
+        "intent": "Divest FT PUT",
+        "fields": [
+          {
+            "path": "id",
+            "label": "Position",
+            "format": "nftName",
+            "params": { "collection": "0x1d8051c90076FaA5b683A3551Ee4369d00f99D67" },
+            "visible": "always"
+          },
+          {
+            "path": "amount_ft",
+            "label": "FT amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.ftToken" },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Divest {amount_ft} from {id}"
+      },
+      "withdrawFT(uint256 id, uint256 amount)": {
+        "intent": "Withdraw FT from PUT",
+        "fields": [
+          {
+            "path": "id",
+            "label": "Position",
+            "format": "nftName",
+            "params": { "collection": "0x1d8051c90076FaA5b683A3551Ee4369d00f99D67" },
+            "visible": "always"
+          },
+          {
+            "path": "amount",
+            "label": "FT amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.ftToken" },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Withdraw {amount} from {id}"
+      }
     }
   }
 }
