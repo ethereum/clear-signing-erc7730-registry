@@ -1,65 +1,635 @@
 {
   "$schema": "../../../specs/erc7730-tests-v2.schema.json",
   "descriptor": "../eip712-rarible-exchange-v2.json",
-  "dataProvider": { "tokens": {} },
+  "dataProvider": {
+    "tokens": {}
+  },
   "tests": [
     {
-      "description": "List Order",
+      "description": "Sell one ERC721 for ETH, no start time",
       "data": {
         "types": {
           "EIP712Domain": [
-            { "name": "name", "type": "string" },
-            { "name": "version", "type": "string" },
-            { "name": "chainId", "type": "uint256" },
-            { "name": "verifyingContract", "type": "address" }
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
           ],
-          "AssetType": [{ "name": "assetClass", "type": "bytes4" }, { "name": "data", "type": "bytes" }],
-          "Asset": [{ "name": "assetType", "type": "AssetType" }, { "name": "value", "type": "uint256" }],
+          "AssetType": [
+            {
+              "name": "assetClass",
+              "type": "bytes4"
+            },
+            {
+              "name": "data",
+              "type": "bytes"
+            }
+          ],
+          "Asset": [
+            {
+              "name": "assetType",
+              "type": "AssetType"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
           "Order": [
-            { "name": "maker", "type": "address" },
-            { "name": "makeAsset", "type": "Asset" },
-            { "name": "taker", "type": "address" },
-            { "name": "takeAsset", "type": "Asset" },
-            { "name": "salt", "type": "uint256" },
-            { "name": "start", "type": "uint256" },
-            { "name": "end", "type": "uint256" },
-            { "name": "dataType", "type": "bytes4" },
-            { "name": "data", "type": "bytes" }
+            {
+              "name": "maker",
+              "type": "address"
+            },
+            {
+              "name": "makeAsset",
+              "type": "Asset"
+            },
+            {
+              "name": "taker",
+              "type": "address"
+            },
+            {
+              "name": "takeAsset",
+              "type": "Asset"
+            },
+            {
+              "name": "salt",
+              "type": "uint256"
+            },
+            {
+              "name": "start",
+              "type": "uint256"
+            },
+            {
+              "name": "end",
+              "type": "uint256"
+            },
+            {
+              "name": "dataType",
+              "type": "bytes4"
+            },
+            {
+              "name": "data",
+              "type": "bytes"
+            }
           ]
         },
         "primaryType": "Order",
-        "domain": { "name": "Exchange", "version": "2", "chainId": 1, "verifyingContract": "0x9757f2d2b135150bbeb65308d4a91804107cd8d6" },
+        "domain": {
+          "name": "Exchange",
+          "version": "2",
+          "chainId": 1,
+          "verifyingContract": "0x9757f2d2b135150bbeb65308d4a91804107cd8d6"
+        },
         "message": {
-          "maker": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+          "maker": "0xf73B971E6460c78ca906bf3865Ff3a73ac537fC6",
           "makeAsset": {
             "assetType": {
               "assetClass": "0x73ad2146",
-              "data": "0x000000000000000000000000bc4ca0eda7647a8ab7c2061c2e118a18a936f13d00000000000000000000000000000000000000000000000000000000000004d2"
+              "data": "0x000000000000000000000000adf9c3c2d2946b3c80913b9e022dc2ce9e93afd90000000000000000000000000000000000000000000000000000000000000a78"
             },
             "value": "1"
           },
-          "taker": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "taker": "0x0000000000000000000000000000000000000000",
           "takeAsset": {
-            "assetType": { "assetClass": "0x8ae85d84", "data": "0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" },
-            "value": "2500000000"
+            "assetType": {
+              "assetClass": "0xaaaebeba",
+              "data": "0x"
+            },
+            "value": "75000000000000000"
           },
-          "salt": "98452730198273409182374019283740192837401928374019283",
-          "start": 1774041600,
-          "end": 1776643200,
+          "salt": "45181540419654492606079490701180160859582060178349897206775021285779530569402",
+          "start": "0",
+          "end": "1791730102",
+          "dataType": "0x4ade54ca",
+          "data": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000001cf0df2a5a20cd61d68d4489eebbf85b8d39e18a00000000000000000000000000000000000000000000000000000000000001db"
+        }
+      },
+      "expected": {
+        "intent": "Exchange order",
+        "owner": "Rarible ExchangeV2",
+        "fields": [
+          {
+            "label": "Order maker address",
+            "value": "0xf73B971E6460c78ca906bf3865Ff3a73ac537fC6"
+          },
+          {
+            "label": "Make asset kind",
+            "value": "ERC721"
+          },
+          {
+            "label": "Make asset amount",
+            "value": "1"
+          },
+          {
+            "label": "Make asset data",
+            "value": "0x000000000000000000000000adf9c3c2d2946b3c80913b9e022dc2ce9e93afd90000000000000000000000000000000000000000000000000000000000000a78"
+          },
+          {
+            "label": "Order taker address",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Take asset kind",
+            "value": "ETH"
+          },
+          {
+            "label": "Take asset amount",
+            "value": "75000000000000000"
+          },
+          {
+            "label": "Take asset data",
+            "value": "0x"
+          },
+          {
+            "label": "Order end time",
+            "value": "2026-10-11 14:48:22Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Bid ETH for one ERC721, start and end time",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "AssetType": [
+            {
+              "name": "assetClass",
+              "type": "bytes4"
+            },
+            {
+              "name": "data",
+              "type": "bytes"
+            }
+          ],
+          "Asset": [
+            {
+              "name": "assetType",
+              "type": "AssetType"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "Order": [
+            {
+              "name": "maker",
+              "type": "address"
+            },
+            {
+              "name": "makeAsset",
+              "type": "Asset"
+            },
+            {
+              "name": "taker",
+              "type": "address"
+            },
+            {
+              "name": "takeAsset",
+              "type": "Asset"
+            },
+            {
+              "name": "salt",
+              "type": "uint256"
+            },
+            {
+              "name": "start",
+              "type": "uint256"
+            },
+            {
+              "name": "end",
+              "type": "uint256"
+            },
+            {
+              "name": "dataType",
+              "type": "bytes4"
+            },
+            {
+              "name": "data",
+              "type": "bytes"
+            }
+          ]
+        },
+        "primaryType": "Order",
+        "domain": {
+          "name": "Exchange",
+          "version": "2",
+          "chainId": 1,
+          "verifyingContract": "0x9757f2d2b135150bbeb65308d4a91804107cd8d6"
+        },
+        "message": {
+          "maker": "0x425dB5bc09679173b0bF66600B0De78dEA8b583e",
+          "makeAsset": {
+            "assetType": {
+              "assetClass": "0xaaaebeba",
+              "data": "0x"
+            },
+            "value": "100000000000000"
+          },
+          "taker": "0x2383E444C160768BE4A368D50593fE1E4B9F3a27",
+          "takeAsset": {
+            "assetType": {
+              "assetClass": "0x73ad2146",
+              "data": "0x0000000000000000000000005eb2fe41b588f2e22a527188dc0678abc883c6ee0000000000000000000000000000000000000000000000000000000000000000"
+            },
+            "value": "1"
+          },
+          "salt": "1788543380030",
+          "start": "1788542780",
+          "end": "1788629780",
           "dataType": "0xffffffff",
           "data": "0x"
         }
       },
       "expected": {
-        "intent": "List Order",
+        "intent": "Exchange order",
         "owner": "Rarible ExchangeV2",
         "fields": [
-          { "label": "Order maker address", "value": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e" },
-          { "label": "Order make asset value", "value": "1" },
-          { "label": "Order taker address", "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" },
-          { "label": "Order take asset value", "value": "2500000000" },
-          { "label": "Order start time", "value": "1774041600" },
-          { "label": "Order end time", "value": "1776643200" }
+          {
+            "label": "Order maker address",
+            "value": "0x425dB5bc09679173b0bF66600B0De78dEA8b583e"
+          },
+          {
+            "label": "Make asset kind",
+            "value": "ETH"
+          },
+          {
+            "label": "Make asset amount",
+            "value": "100000000000000"
+          },
+          {
+            "label": "Make asset data",
+            "value": "0x"
+          },
+          {
+            "label": "Order taker address",
+            "value": "0x2383E444C160768BE4A368D50593fE1E4B9F3a27"
+          },
+          {
+            "label": "Take asset kind",
+            "value": "ERC721"
+          },
+          {
+            "label": "Take asset amount",
+            "value": "1"
+          },
+          {
+            "label": "Take asset data",
+            "value": "0x0000000000000000000000005eb2fe41b588f2e22a527188dc0678abc883c6ee0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Order start time",
+            "value": "2026-09-04 17:26:20Z"
+          },
+          {
+            "label": "Order end time",
+            "value": "2026-09-05 17:36:20Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Sell ERC1155 units for ETH, no start time",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "AssetType": [
+            {
+              "name": "assetClass",
+              "type": "bytes4"
+            },
+            {
+              "name": "data",
+              "type": "bytes"
+            }
+          ],
+          "Asset": [
+            {
+              "name": "assetType",
+              "type": "AssetType"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "Order": [
+            {
+              "name": "maker",
+              "type": "address"
+            },
+            {
+              "name": "makeAsset",
+              "type": "Asset"
+            },
+            {
+              "name": "taker",
+              "type": "address"
+            },
+            {
+              "name": "takeAsset",
+              "type": "Asset"
+            },
+            {
+              "name": "salt",
+              "type": "uint256"
+            },
+            {
+              "name": "start",
+              "type": "uint256"
+            },
+            {
+              "name": "end",
+              "type": "uint256"
+            },
+            {
+              "name": "dataType",
+              "type": "bytes4"
+            },
+            {
+              "name": "data",
+              "type": "bytes"
+            }
+          ]
+        },
+        "primaryType": "Order",
+        "domain": {
+          "name": "Exchange",
+          "version": "2",
+          "chainId": 1,
+          "verifyingContract": "0x9757f2d2b135150bbeb65308d4a91804107cd8d6"
+        },
+        "message": {
+          "maker": "0x089B6918d9a93FC80a03B2b25Fa63788BC2Bc7fF",
+          "makeAsset": {
+            "assetType": {
+              "assetClass": "0x973bb640",
+              "data": "0x0000000000000000000000009dd54262ca72738584b3d98fc99f878ae72c370c0000000000000000000000000000000000000000000000000000000000000001"
+            },
+            "value": "1000"
+          },
+          "taker": "0x0000000000000000000000000000000000000000",
+          "takeAsset": {
+            "assetType": {
+              "assetClass": "0xaaaebeba",
+              "data": "0x"
+            },
+            "value": "4100000000000000000"
+          },
+          "salt": "6736775552927171663313392497994284121514914661931588558142440401456877687307",
+          "start": "0",
+          "end": "1795764943",
+          "dataType": "0x4ade54ca",
+          "data": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000089b6918d9a93fc80a03b2b25fa63788bc2bc7ff00000000000000000000000000000000000000000000000000000000000000640000000000000000000000001cf0df2a5a20cd61d68d4489eebbf85b8d39e18a0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "expected": {
+        "intent": "Exchange order",
+        "owner": "Rarible ExchangeV2",
+        "fields": [
+          {
+            "label": "Order maker address",
+            "value": "0x089B6918d9a93FC80a03B2b25Fa63788BC2Bc7fF"
+          },
+          {
+            "label": "Make asset kind",
+            "value": "ERC1155"
+          },
+          {
+            "label": "Make asset amount",
+            "value": "1000"
+          },
+          {
+            "label": "Make asset data",
+            "value": "0x0000000000000000000000009dd54262ca72738584b3d98fc99f878ae72c370c0000000000000000000000000000000000000000000000000000000000000001"
+          },
+          {
+            "label": "Order taker address",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Take asset kind",
+            "value": "ETH"
+          },
+          {
+            "label": "Take asset amount",
+            "value": "4100000000000000000"
+          },
+          {
+            "label": "Take asset data",
+            "value": "0x"
+          },
+          {
+            "label": "Order end time",
+            "value": "2026-11-27 07:35:43Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Bid WETH for any token of a collection",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "AssetType": [
+            {
+              "name": "assetClass",
+              "type": "bytes4"
+            },
+            {
+              "name": "data",
+              "type": "bytes"
+            }
+          ],
+          "Asset": [
+            {
+              "name": "assetType",
+              "type": "AssetType"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "Order": [
+            {
+              "name": "maker",
+              "type": "address"
+            },
+            {
+              "name": "makeAsset",
+              "type": "Asset"
+            },
+            {
+              "name": "taker",
+              "type": "address"
+            },
+            {
+              "name": "takeAsset",
+              "type": "Asset"
+            },
+            {
+              "name": "salt",
+              "type": "uint256"
+            },
+            {
+              "name": "start",
+              "type": "uint256"
+            },
+            {
+              "name": "end",
+              "type": "uint256"
+            },
+            {
+              "name": "dataType",
+              "type": "bytes4"
+            },
+            {
+              "name": "data",
+              "type": "bytes"
+            }
+          ]
+        },
+        "primaryType": "Order",
+        "domain": {
+          "name": "Exchange",
+          "version": "2",
+          "chainId": 1,
+          "verifyingContract": "0x9757f2d2b135150bbeb65308d4a91804107cd8d6"
+        },
+        "message": {
+          "maker": "0xfF2E6E6caE16e64eDB1E496d41336AA495a5349c",
+          "makeAsset": {
+            "assetType": {
+              "assetClass": "0x8ae85d84",
+              "data": "0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+            },
+            "value": "70000000000000000"
+          },
+          "taker": "0x0000000000000000000000000000000000000000",
+          "takeAsset": {
+            "assetType": {
+              "assetClass": "0xf63c2825",
+              "data": "0x0000000000000000000000001d3ada5856b14d9df178ea5cab137d436dc55f1d"
+            },
+            "value": "1"
+          },
+          "salt": "44378029853624603227814100000943862560107829974277713996664526917827105454603",
+          "start": "1786672165",
+          "end": "1789264165",
+          "dataType": "0x4ade54ca",
+          "data": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "expected": {
+        "intent": "Exchange order",
+        "owner": "Rarible ExchangeV2",
+        "fields": [
+          {
+            "label": "Order maker address",
+            "value": "0xfF2E6E6caE16e64eDB1E496d41336AA495a5349c"
+          },
+          {
+            "label": "Make asset kind",
+            "value": "ERC20"
+          },
+          {
+            "label": "Make asset amount",
+            "value": "70000000000000000"
+          },
+          {
+            "label": "Make asset data",
+            "value": "0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+          },
+          {
+            "label": "Order taker address",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Take asset kind",
+            "value": "Collection, any id"
+          },
+          {
+            "label": "Take asset amount",
+            "value": "1"
+          },
+          {
+            "label": "Take asset data",
+            "value": "0x0000000000000000000000001d3ada5856b14d9df178ea5cab137d436dc55f1d"
+          },
+          {
+            "label": "Order start time",
+            "value": "2026-08-14 01:49:25Z"
+          },
+          {
+            "label": "Order end time",
+            "value": "2026-09-13 01:49:25Z"
+          }
         ]
       }
     }
