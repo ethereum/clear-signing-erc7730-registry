@@ -46,7 +46,11 @@
       "beneficiary": {
         "label": "Beneficiary",
         "format": "addressName",
-        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+        "params": {
+          "types": ["eoa", "wallet", "contract"],
+          "sources": ["local", "ens"],
+          "senderAddress": ["0x0000000000000000000000000000000000000000"]
+        }
       }
     },
     "formats": {
@@ -67,17 +71,7 @@
             "params": { "tokenPath": "execution.desc.dstToken" },
             "visible": "always"
           },
-          {
-            "path": "execution.desc.dstReceiver",
-            "label": "Beneficiary",
-            "format": "addressName",
-            "params": {
-              "types": ["eoa", "wallet", "contract"],
-              "sources": ["local", "ens"],
-              "senderAddress": ["0x0000000000000000000000000000000000000000"]
-            },
-            "visible": "always"
-          },
+          { "path": "execution.desc.dstReceiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
           { "label": "Call Target", "path": "execution.callTarget", "visible": "never" },
           { "label": "Approve Target", "path": "execution.approveTarget", "visible": "never" },
           { "label": "Target Data", "path": "execution.targetData", "visible": "never" },
