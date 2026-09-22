@@ -1,0 +1,109 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-executor.json",
+  "dataProvider": {
+    "tokens": {},
+    "addressNames": {
+      "0x1111111111111111111111111111111111111111": "Bob",
+      "0x2222222222222222222222222222222222222222": "Backoffice Safe"
+    }
+  },
+  "tests": [
+    {
+      "description": "Exec — forward ether, no inner call",
+      "data": {
+        "domain": {
+          "name": "UnorderedExecutor",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x83f6aEbf9fc929BBEa92aF571c66436B360E324E"
+        },
+        "primaryType": "Exec",
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Exec": [
+            {
+              "name": "safe",
+              "type": "address"
+            },
+            {
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "data",
+              "type": "bytes"
+            },
+            {
+              "name": "requestId",
+              "type": "bytes32"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "safe": "0x2222222222222222222222222222222222222222",
+          "to": "0x1111111111111111111111111111111111111111",
+          "value": "1500000000000000000",
+          "data": "0x",
+          "requestId": "0x2222222222222222222222222222222222222222222222222222222222222222",
+          "deadline": "1767225600"
+        }
+      },
+      "expected": {
+        "intent": "Authorize Safe transaction",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "From safe",
+            "value": "Backoffice Safe"
+          },
+          {
+            "label": "Value",
+            "value": "1.5 ETH"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-01-01 00:00:00Z"
+          },
+          {
+            "label": "Request id",
+            "value": "0x2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          {
+            "label": "To",
+            "value": "Bob"
+          },
+          {
+            "label": "Action",
+            "value": "0x"
+          }
+        ]
+      }
+    }
+  ]
+}

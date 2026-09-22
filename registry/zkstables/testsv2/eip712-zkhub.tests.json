@@ -1,0 +1,89 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-zkhub.json",
+  "dataProvider": {
+    "tokens": {},
+    "addressNames": {
+      "0xe6455dec538f906d28f6910c531e02f560e2f1f9": "Alice",
+      "0x1111111111111111111111111111111111111111": "Bob",
+      "0x2a6568a96ca4967eb6e7bbfa46aa1bcd7edc50e1": "ZKHub"
+    }
+  },
+  "tests": [
+    {
+      "description": "ChangeControllerAuth",
+      "data": {
+        "domain": {
+          "name": "ZKHub",
+          "version": "1",
+          "chainId": 8453,
+          "verifyingContract": "0x2a6568A96ca4967eb6E7bBFA46aa1bcD7eDc50e1"
+        },
+        "primaryType": "ChangeControllerAuth",
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "ChangeControllerAuth": [
+            {
+              "name": "epk",
+              "type": "bytes32"
+            },
+            {
+              "name": "newController",
+              "type": "address"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "epk": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "newController": "0xE6455dEC538F906D28f6910c531e02F560E2f1f9",
+          "nonce": "0",
+          "deadline": "1767225600"
+        }
+      },
+      "expected": {
+        "intent": "Change controller",
+        "interpolatedIntent": "Set controller to Alice",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "New controller",
+            "value": "Alice"
+          },
+          {
+            "label": "ZK address",
+            "value": "0x1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    }
+  ]
+}
