@@ -202,12 +202,27 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
 
 ## Index files
 
-`index.calldata.json` and `index.eip712.json` at the repository root let wallets and libraries find the right descriptor for a transaction without downloading the whole registry. Both are keyed by [CAIP-10](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-10.md)-style `eip155:$chainId:$address` identifiers:
+`index.calldata.json` and `index.eip712.json` at the repository root let wallets and libraries find the right descriptor for a transaction without downloading the whole registry.
 
 - `index.calldata.json` maps each identifier to the path of the descriptor for that contract.
 - `index.eip712.json` maps each identifier to its EIP-712 primary types, and each primary type to the descriptors defining it. Every entry also carries the keccak256 hashes of the `encodeType` strings it covers, so consumers can pick the right descriptor when several define the same primary type for the same contract.
 
-Both files are **generated** from the descriptors under `registry/` — do not edit them by hand. A CI job regenerates them on every change to `master` and opens a pull request when they change, so contributors do not need to update them. To regenerate locally, run `npm ci && npm run generate-index`.
+### Index keys
+
+An index key is a tagged union. The tag is the part before the first `:` and determines how the rest of the key is read:
+
+| Tag | Key | Identifies |
+| --- | --- | --- |
+| `eip155` | `eip155:$chainId:$address` | a deployment, in [CAIP-10](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-10.md) style, address lower-cased |
+| `eip712-domain-separator` | `eip712-domain-separator:$separator` | an EIP-712 domain separator, lower-cased. `index.eip712.json` only |
+
+A descriptor is indexed under exactly one tag, never both, so a consumer that resolves only `eip155:` keys sees the same index it saw before the second tag existed.
+
+**Consumers MUST ignore any key whose tag they do not recognize.** Further tags may be added, and a consumer that parses an unknown key as if it were an `eip155:` one, or treats it as malformed input, will break when that happens.
+
+`eip712-domain-separator:` exists because a salt-based EIP-712 domain carries the chain id in a `salt` member and has no `chainId` member. The specification requires a message bound by `eip712.deployments` to carry both `domain.chainId` and `domain.verifyingContract`, so a descriptor for a salt domain cannot declare deployments and has no `eip155:` identifier. It binds through `eip712.domainSeparator` instead, and is keyed by that separator.
+
+Both files are **generated** from the descriptors under `registry/` — do not edit them by hand. A CI job regenerates them on every change to `master` and opens a pull request when they change, so contributors do not need to update them. To regenerate locally, run `npm ci && npm run generate-index`. The key space above is covered by `npm test`.
 
 ## Disclaimer
 
