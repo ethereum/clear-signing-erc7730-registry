@@ -1,5 +1,10 @@
-name: 🏷️ pull request labels
+name: Pull Request Labels
 
+# Labels a pull request from the paths it changes, so a reviewer sees which
+# part of the repository it touches. The labeler writes to the pull request,
+# which a pull_request run of a fork cannot do, so this runs on
+# pull_request_target. It reads .github/labeler.yml from the base branch and
+# runs no code from the pull request.
 on:
   pull_request_target:
 
@@ -12,8 +17,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # A pull request that gets no label changes files outside the known areas
+  # of the repository, and a reviewer must look at it first.
   setup_pull_request:
-    name: 🤖 setup pull request
+    name: 🏷️ Pull request has a label
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

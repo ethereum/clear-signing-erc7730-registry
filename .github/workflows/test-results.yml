@@ -1,8 +1,11 @@
-name: Clear Signing Tests Results
+name: Test Results
 
-# Clear Signing Tests runs as pull_request, and a fork run gets a read-only
-# token. So the results comment must come from here, where the token can write.
-# clear-signing-tests-started.yml writes the note that this workflow replaces,
+# Posts the results of every runner on the pull request, in one comment with
+# one column per implementation, so a reviewer sees a failed or divergent
+# case without a look at the run logs. The Tests workflow runs as
+# pull_request, and a fork run gets a read-only token. So the results comment
+# must come from here, where the token can write.
+# tests-queued.yml writes the note that this workflow replaces,
 # and both write the same "## Clear Signing Tests" comment.
 #
 # This workflow also builds the test report bundle of the run and publishes it
@@ -14,7 +17,7 @@ name: Clear Signing Tests Results
 # as a string.
 on:
   workflow_run:
-    workflows: ["Clear Signing Tests"]
+    workflows: ["Tests"]
     types: [completed]
 
 concurrency:
@@ -38,7 +41,7 @@ env:
 
 jobs:
   post-implementation-results:
-    name: Post implementation results to PR
+    name: 📊 Post the results and the report
     # A cancelled run has partial artifacts and races the run that replaced it.
     # A failed run is the interesting case and must not be excluded.
     if: >-

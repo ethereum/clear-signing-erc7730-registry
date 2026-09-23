@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * Builds the test report bundle of one clear-signing-tests.yml run: a single
+ * Builds the test report bundle of one tests.yml run: a single
  * JSON file that the test report viewer renders. The bundle joins, per
  * affected descriptor, the resolved descriptor, its test file, the results of
  * every implementation, the function coverage, and the recommendations.
  *
- * Inputs are the artifacts of the run, as clear-signing-tests-results.yml
+ * Inputs are the artifacts of the run, as test-results.yml
  * downloads them:
  *
  *   --context   the pr-context artifact: context.json, tests/, descriptors/

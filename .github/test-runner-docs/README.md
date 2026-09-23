@@ -1,6 +1,6 @@
 # Test runner guide
 
-A test runner is a small program that consumes one `.tests.json` fixture from the registry, drives a clear-signing implementation against each case, and writes a `results.json` describing what the implementation rendered. The CI workflow ([`clear-signing-tests.yml`](../workflows/clear-signing-tests.yml)) wraps the runner in a composite action, uploads the `results.json` as an artifact, and the `post-results` job aggregates per-implementation columns onto the PR.
+A test runner is a small program that consumes one `.tests.json` fixture from the registry, drives a clear-signing implementation against each case, and writes a `results.json` describing what the implementation rendered. The CI workflow ([`tests.yml`](../workflows/tests.yml)) wraps the runner in a composite action, uploads the `results.json` as an artifact, and the results workflow ([`test-results.yml`](../workflows/test-results.yml)) aggregates per-implementation columns onto the PR.
 
 ## Input
 
@@ -105,6 +105,6 @@ The optional keys are read by the test report bundle, see [`bundle.md`](./bundle
 
 ## Wiring into CI
 
-Wrap the runner in a composite action under `.github/actions/run-<name>-tests/` and add a sibling job in [`clear-signing-tests.yml`](../workflows/clear-signing-tests.yml). The action should call [`upload-test-results`](../actions/upload-test-results/action.yml) to publish the artifact.
+Wrap the runner in a composite action under `.github/actions/run-<name>-tests/` and add a sibling job in [`tests.yml`](../workflows/tests.yml). The action should call [`upload-test-results`](../actions/upload-test-results/action.yml) to publish the artifact.
 
 See [`run-sourcify-tests`](../actions/run-sourcify-tests/action.yml) for a complete reference implementation.
