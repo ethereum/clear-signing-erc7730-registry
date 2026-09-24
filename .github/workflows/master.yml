@@ -13,9 +13,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # The pull request checks lint only the affected descriptors, and a
-  # reference ABI can change after the merge. So every descriptor is linted
-  # again on master.
+  # The pull request checks lint only the affected descriptors. Two pull
+  # requests that each pass alone can break together, for example when one
+  # changes a shared file and the other adds a descriptor that includes it.
+  # So every descriptor is linted again on master.
   validate_descriptors:
     name: Descriptors pass the ERC-7730 linter
     runs-on: ubuntu-latest

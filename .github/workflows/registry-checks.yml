@@ -15,11 +15,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # The erc7730 linter compares a descriptor with the ABI of its deployed
-  # contract, checks that each parameter has a display field that fits its
-  # type, checks the length of the texts, and checks the EIP-712 domain. A
-  # descriptor that breaks these rules shows wrong or incomplete data on the
-  # wallet screen.
+  # The erc7730 linter fails when a display field points to a parameter
+  # that is not in the ABI of the deployed contract, or when an EIP-712
+  # key is malformed. Such a descriptor shows wrong or missing data on the
+  # wallet screen. Text length and missing display fields are only warnings.
   validate_descriptors:
     name: Descriptors pass the ERC-7730 linter
     runs-on: ubuntu-latest
