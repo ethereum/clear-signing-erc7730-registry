@@ -1,0 +1,491 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-QuickSwap.json",
+  "dataProvider": {
+    "tokens": {
+      "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270": {
+        "symbol": "WPOL",
+        "decimals": 18,
+        "name": "Wrapped Polygon Ecosystem Token"
+      },
+      "0x2791bca1f2de4661ed88a30c99a7a9449aa84174": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin (PoS)"
+      },
+      "0x55bee1bd3eb9986f6d2d963278de09ee92a3ef1d": {
+        "symbol": "TT01",
+        "decimals": 18,
+        "name": "Test Token 01"
+      },
+      "0x5d301750cc9719f00872e33ee81f9c37aba242f4": {
+        "symbol": "RVLT",
+        "decimals": 18,
+        "name": "Revolt 2 Earn"
+      },
+      "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "Wrapped Ether"
+      },
+      "0x831753dd7087cac61ab5644b308642cc1c33dc13": {
+        "symbol": "QUICK",
+        "decimals": 18,
+        "name": "Quickswap"
+      },
+      "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063": {
+        "symbol": "DAI",
+        "decimals": 18,
+        "name": "(PoS) Dai Stablecoin"
+      },
+      "0xc2132d05d31c914a87c6611c10748aeb04b58e8f": {
+        "symbol": "USDT0",
+        "decimals": 6,
+        "name": "USDT0"
+      },
+      "0xeb51d9a39ad5eef215dc0bf39a8821ff804a0f01": {
+        "symbol": "LGNS",
+        "decimals": 9,
+        "name": "Longinus"
+      },
+      "0xf6ad3ccf71abb3e12becf6b3d2a74c963859adcd": {
+        "symbol": "TT02",
+        "decimals": 18,
+        "name": "Test Token 02"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Swap - swapExactTokensForTokens - chain 137",
+      "rawTx": "0xf9012b19843b9aca008301f3b594a5e0829caced8ffdd4de3c43696c57f7d7a678ff80b9010438ed17390000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000da4c6afafec544a00000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000476307dac3fd170166e007fcaa14f0a129721463000000000000000000000000000000000000000000000000000000005f737c05000000000000000000000000000000000000000000000000000000000000000200000000000000000000000055bee1bd3eb9986f6d2d963278de09ee92a3ef1d000000000000000000000000f6ad3ccf71abb3e12becf6b3d2a74c963859adcd81898080",
+      "txHash": "0x08ab7241ff2d5c4f73aa1c443f8dd91b514f2d2d941ca9f5dbbf729eb5617afe",
+      "expected": {
+        "intent": "Swap",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Amount to Send",
+            "value": "1 TT01"
+          },
+          {
+            "label": "Minimum to Receive",
+            "value": "0.983129076546688074 TT02"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0x476307DaC3FD170166e007FCaA14F0A129721463"
+          },
+          {
+            "label": "Deadline",
+            "value": "2020-09-29 18:25:09Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Swap - swapExactTokensForETH - chain 137",
+      "rawTx": "0xf9012b08843b9aca00830292de94a5e0829caced8ffdd4de3c43696c57f7d7a678ff80b9010418cbafe50000000000000000000000000000000000000000000000008ac7230489e800000000000000000000000000000000000000000000000000000027fd4d585ea23400000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000361b41c0f02c32513de78c472f99a5a11b207cbf000000000000000000000000000000000000000000000000000000005f757866000000000000000000000000000000000000000000000000000000000000000200000000000000000000000055bee1bd3eb9986f6d2d963278de09ee92a3ef1d0000000000000000000000000d500b1d8e8ef31e21c99d1db9a6444d3adf127081898080",
+      "txHash": "0x2463b626f3f61dadc4dc30b13469020c1ca5b3153d2f6e635e7a333833e40106",
+      "expected": {
+        "intent": "Swap",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Amount to Send",
+            "value": "10 TT01"
+          },
+          {
+            "label": "Minimum to Receive",
+            "value": "0.01125603272862162 POL"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0x361b41C0f02C32513De78C472F99A5a11B207cbf"
+          },
+          {
+            "label": "Deadline",
+            "value": "2020-10-01 06:34:14Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Swap - swapExactETHForTokens - chain 137",
+      "rawTx": "0xf9011103843b9aca008302c69994a5e0829caced8ffdd4de3c43696c57f7d7a678ff87470de4df820000b8e47ff36ab5000000000000000000000000000000000000000000000000fa621689d34bef770000000000000000000000000000000000000000000000000000000000000080000000000000000000000000361b41c0f02c32513de78c472f99a5a11b207cbf000000000000000000000000000000000000000000000000000000005f75776400000000000000000000000000000000000000000000000000000000000000020000000000000000000000000d500b1d8e8ef31e21c99d1db9a6444d3adf127000000000000000000000000055bee1bd3eb9986f6d2d963278de09ee92a3ef1d81898080",
+      "txHash": "0x200c63b9e4cd88f3a952b34e0d6fb4c0517687ae02a20b1d1cd8f954284e0233",
+      "expected": {
+        "intent": "Swap",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Amount to Send",
+            "value": "0.02 POL"
+          },
+          {
+            "label": "Minimum to Receive",
+            "value": "18.042007838410927991 TT01"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0x361b41C0f02C32513De78C472F99A5a11B207cbf"
+          },
+          {
+            "label": "Deadline",
+            "value": "2020-10-01 06:29:56Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Swap - swapTokensForExactTokens - chain 137",
+      "rawTx": "0xf9012b2b843b9aca008302690694a5e0829caced8ffdd4de3c43696c57f7d7a678ff80b901048803dbee00000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000fb1f400000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000c80cf238c3fdec3fd65077f5e31dfca0a90ba64700000000000000000000000000000000000000000000000000000000bf0115de00000000000000000000000000000000000000000000000000000000000000020000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa84174000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f81898080",
+      "txHash": "0x0b88f57c711958074504b5e076f2b983b0e60ef3ab08361f75fb19c90efe9838",
+      "expected": {
+        "intent": "Swap",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Amount to Receive",
+            "value": "1 USDT0"
+          },
+          {
+            "label": "Maximum to Send",
+            "value": "1.028596 USDC"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0xC80CF238c3FdEC3FD65077f5e31dFca0A90ba647"
+          },
+          {
+            "label": "Deadline",
+            "value": "2071-07-19 08:16:30Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Swap - swapExactTokensForTokensSupportingFeeOnTransferTokens - chain 137",
+      "rawTx": "0x02f90132818981eb8506fc23ac00857b27174c0e830f424094a5e0829caced8ffdd4de3c43696c57f7d7a678ff80b901045c11d7950000000000000000000000000000000000000000000000005f86dec0c4d8a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000009ec4a77460301eefc15b8b0d64a3a4f21feb8a79000000000000000000000000000000000000000000000000000000006ab117e400000000000000000000000000000000000000000000000000000000000000020000000000000000000000008f3cf7ad23cd3cadbd9735aff958023239c6a063000000000000000000000000eb51d9a39ad5eef215dc0bf39a8821ff804a0f01c0",
+      "txHash": "0x52bd4346ca3930c3dbf3952fc55a7cc3df3abd4158dbf3421057de5d6a75151a",
+      "expected": {
+        "intent": "Swap",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Amount to Send",
+            "value": "6.883434 DAI"
+          },
+          {
+            "label": "Minimum to Receive",
+            "value": "0 LGNS"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0x9EC4a77460301EefC15B8b0d64A3A4F21FEB8A79"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-09-21 11:41:24Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Swap - swapTokensForExactETH - chain 137",
+      "rawTx": "0xf9012b1c843b9aca008302a66b94a5e0829caced8ffdd4de3c43696c57f7d7a678ff80b901044a25d94a000000000000000000000000000000000000000000000001158e460913d00000000000000000000000000000000000000000000000000000027aa9c3a2b52af900000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000216505b5b23aacafa38f9060154e5580f9c544a100000000000000000000000000000000000000000000000000000000bf01cad000000000000000000000000000000000000000000000000000000000000000020000000000000000000000008f3cf7ad23cd3cadbd9735aff958023239c6a0630000000000000000000000000d500b1d8e8ef31e21c99d1db9a6444d3adf127081898080",
+      "txHash": "0xbb587af10678ead7d1337c5b1dea41a272790c039f382dec75423203bbe289d0",
+      "expected": {
+        "intent": "Swap",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Amount to Receive",
+            "value": "20 POL"
+          },
+          {
+            "label": "Maximum to Send",
+            "value": "0.178641792948054777 DAI"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0x216505b5B23aACaFA38f9060154E5580F9C544a1"
+          },
+          {
+            "label": "Deadline",
+            "value": "2071-07-19 21:08:32Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Swap - swapExactETHForTokensSupportingFeeOnTransferTokens - chain 137",
+      "rawTx": "0x02f9015a818981f18512fcd1d5698575c9ef1b03830c986894a5e0829caced8ffdd4de3c43696c57f7d7a678ff88016345785d8a0000b90124b6f9de9500000000000000000000000000000000000000000002fd9150e359375082585200000000000000000000000000000000000000000000000000000000000000800000000000000000000000003bdefbea17f4a007847eff2a4b242bcb4ef4e20a00000000000000000000000000000000000000000000000000000000d562012600000000000000000000000000000000000000000000000000000000000000040000000000000000000000000d500b1d8e8ef31e21c99d1db9a6444d3adf1270000000000000000000000000831753dd7087cac61ab5644b308642cc1c33dc130000000000000000000000007ceb23fd6bc0add59e62ac25578270cff1b9f6190000000000000000000000005d301750cc9719f00872e33ee81f9c37aba242f4c0",
+      "txHash": "0xf079b618046070abea0a68df6f46f2ccb26a536e6583624c3ecab8de42df63d8",
+      "expected": {
+        "intent": "Swap",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Amount to Send",
+            "value": "0.1 POL"
+          },
+          {
+            "label": "Minimum to Receive",
+            "value": "3615290.965886403329808466 RVLT"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0x3bDeFBEa17f4a007847eff2a4b242bcb4eF4E20a"
+          },
+          {
+            "label": "Deadline",
+            "value": "2083-06-11 20:03:50Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Add Liquidity - addLiquidity - chain 137",
+      "rawTx": "0xf9012b108477359400832e119f94a5e0829caced8ffdd4de3c43696c57f7d7a678ff80b90104e8e3370000000000000000000000000055bee1bd3eb9986f6d2d963278de09ee92a3ef1d000000000000000000000000f6ad3ccf71abb3e12becf6b3d2a74c963859adcd0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000056bc75e2d63100000000000000000000000000000476307dac3fd170166e007fcaa14f0a129721463000000000000000000000000000000000000000000000000000000005f70bb2381898080",
+      "txHash": "0x9e687f275f60bc334aa3695e7169800935cb2a3bbdc3bf435c716e149ea0b0c3",
+      "expected": {
+        "intent": "Add Liquidity",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Desired amount",
+            "value": "100 TT01"
+          },
+          {
+            "label": "Minimum amount",
+            "value": "100 TT01"
+          },
+          {
+            "label": "Desired amount",
+            "value": "100 TT02"
+          },
+          {
+            "label": "Minimum amount",
+            "value": "100 TT02"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0x476307DaC3FD170166e007FCaA14F0A129721463"
+          },
+          {
+            "label": "Deadline",
+            "value": "2020-09-27 16:17:39Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Add Liquidity - addLiquidityETH - chain 137",
+      "rawTx": "0xf8f202843b9aca00832e1dff94a5e0829caced8ffdd4de3c43696c57f7d7a678ff8802c68af0bb140000b8c4f305d71900000000000000000000000055bee1bd3eb9986f6d2d963278de09ee92a3ef1d00000000000000000000000000000000000000000000000ad78ebc5ac620000000000000000000000000000000000000000000000000000ad78ebc5ac620000000000000000000000000000000000000000000000000000002c68af0bb140000000000000000000000000000361b41c0f02c32513de78c472f99a5a11b207cbf000000000000000000000000000000000000000000000000000000005f75772781898080",
+      "txHash": "0x942b2adb5b960b3a6f1ce7e4bbdf9a1e4b08ab6509a2289d75c1f085eefc1582",
+      "expected": {
+        "intent": "Add Liquidity",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Amount to Send",
+            "value": "0.2 POL"
+          },
+          {
+            "label": "Desired amount",
+            "value": "200 TT01"
+          },
+          {
+            "label": "Minimum amount",
+            "value": "200 TT01"
+          },
+          {
+            "label": "Minimum amount",
+            "value": "0.2 POL"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0x361b41C0f02C32513De78C472F99A5a11B207cbf"
+          },
+          {
+            "label": "Deadline",
+            "value": "2020-10-01 06:28:55Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Remove Liquidity - removeLiquidity - chain 137",
+      "rawTx": "0xf9010a04843b9aca008303300894a5e0829caced8ffdd4de3c43696c57f7d7a678ff80b8e4baa2abde0000000000000000000000007ceb23fd6bc0add59e62ac25578270cff1b9f6190000000000000000000000008f3cf7ad23cd3cadbd9735aff958023239c6a06300000000000000000000000000000000000000000000000207425fb0f2c579770000000000000000000000000000000000000000000000001ab3e3cf0804b20200000000000000000000000000000000000000000000002711466afd5600c8e4000000000000000000000000e33b397be64ad6e8eab6b3a2cb5117346edc1111000000000000000000000000000000000000000000000000000000005f84cf2a81898080",
+      "txHash": "0x8b25ad10c49afa42794e0f29a5fa290e8bbc7ef7c7a7556530818342206e96c6",
+      "expected": {
+        "intent": "Remove Liquidity",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Minimum amount",
+            "value": "1.924131944149594626 WETH"
+          },
+          {
+            "label": "Minimum amount",
+            "value": "720.667818857989196004 DAI"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0xE33B397BE64aD6E8eaB6b3A2cB5117346Edc1111"
+          },
+          {
+            "label": "Deadline",
+            "value": "2020-10-12 21:48:26Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Remove Liquidity - removeLiquidityETH - chain 137",
+      "rawTx": "0xf8ea09843b9aca008303a0dc94a5e0829caced8ffdd4de3c43696c57f7d7a678ff80b8c402751cec0000000000000000000000007ceb23fd6bc0add59e62ac25578270cff1b9f619000000000000000000000000000000000000000000000000562bda9d1adcd6ef000000000000000000000000000000000000000000000000008ebf977fdc7e7e0000000000000000000000000000000000000000000000345a91effe9d3b3cb40000000000000000000000003e894250c5892d3aa9516643c9937c51ea3997bd000000000000000000000000000000000000000000000000000000005f8b2b2e81898080",
+      "txHash": "0x60dfd70895a17a6765e14884c204c20999410803501e109da5130854e1a56d6c",
+      "expected": {
+        "intent": "Remove Liquidity",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Minimum amount",
+            "value": "0.040180104099036798 WETH"
+          },
+          {
+            "label": "Minimum amount",
+            "value": "965.756953044771880116 POL"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0x3E894250c5892d3Aa9516643C9937c51ea3997bD"
+          },
+          {
+            "label": "Deadline",
+            "value": "2020-10-17 17:34:38Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Remove Liquidity - removeLiquidityWithPermit - chain 137",
+      "rawTx": "0xf9018b0e843b9aca008303bc6394a5e0829caced8ffdd4de3c43696c57f7d7a678ff80b901642195995c0000000000000000000000000d500b1d8e8ef31e21c99d1db9a6444d3adf127000000000000000000000000055bee1bd3eb9986f6d2d963278de09ee92a3ef1d00000000000000000000000000000000000000000000000003d235a296fcf4c900000000000000000000000000000000000000000000000000235978e783dffe00000000000000000000000000000000000000000000000068c36eac8776c214000000000000000000000000c80cf238c3fdec3fd65077f5e31dfca0a90ba647000000000000000000000000000000000000000000000000000000005f766eb40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001ba31c74b6a8e419970c5a5123551e66889d4672e3d431fba3ad7e71a706640c77052f5741a52eb882c46ce12bb4da7c457413243679e730fa98feaa7ca20de3d481898080",
+      "txHash": "0x06252a8c5b225b548e9f369342c0f2c18a55d7c6951b976acde5783201bf7d77",
+      "expected": {
+        "intent": "Remove Liquidity",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Minimum amount",
+            "value": "0.009949999999999998 WPOL"
+          },
+          {
+            "label": "Minimum amount",
+            "value": "7.548999087689220628 TT01"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0xC80CF238c3FdEC3FD65077f5e31dFca0A90ba647"
+          },
+          {
+            "label": "Unlimited LP permit",
+            "value": "false"
+          },
+          {
+            "label": "Deadline",
+            "value": "2020-10-02 00:05:08Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Remove Liquidity - removeLiquidityETHWithPermit - chain 137",
+      "rawTx": "0xf9016b10843b9aca00830488f194a5e0829caced8ffdd4de3c43696c57f7d7a678ff80b90144ded9382a000000000000000000000000f6ad3ccf71abb3e12becf6b3d2a74c963859adcd00000000000000000000000000000000000000000000000003fa48037cb026fd00000000000000000000000000000000000000000000000071791b11d86a2fcc00000000000000000000000000000000000000000000000000235978e783dffe000000000000000000000000c80cf238c3fdec3fd65077f5e31dfca0a90ba647000000000000000000000000000000000000000000000000000000005f766f020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001bcddf550239c06207f531eefc3975345683573ce2fbf63c474395f1d63aa48ce5708e4969e050991aa037ff304095565d8612789247bc9414484c2bcfb989e59981898080",
+      "txHash": "0xdad56847fae754f88aaf712897390133487f00e8484c6e7d2ce9ee5594729221",
+      "expected": {
+        "intent": "Remove Liquidity",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Minimum amount",
+            "value": "8.176596361927077836 TT02"
+          },
+          {
+            "label": "Minimum amount",
+            "value": "0.009949999999999998 POL"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0xC80CF238c3FdEC3FD65077f5e31dFca0A90ba647"
+          },
+          {
+            "label": "Unlimited LP permit",
+            "value": "false"
+          },
+          {
+            "label": "Deadline",
+            "value": "2020-10-02 00:06:26Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Remove Liquidity - removeLiquidityETHSupportingFeeOnTransferTokens (synthetic, no real transaction found) - chain 137",
+      "rawTx": "0x02f8ef818901843b9aca008506fc23ac008307a12094a5e0829caced8ffdd4de3c43696c57f7d7a678ff80b8c4af2979eb0000000000000000000000008f3cf7ad23cd3cadbd9735aff958023239c6a06300000000000000000000000000000000000000000000000014d1120d7b16000000000000000000000000000000000000000000000000006c6b935b8bbd4000000000000000000000000000000000000000000000000000337fe5feaf2d180000000000000000000000000000c80cf238c3fdec3fd65077f5e31dfca0a90ba647000000000000000000000000000000000000000000000000000000006ab13b80c0",
+      "expected": {
+        "intent": "Remove Liquidity",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Minimum amount",
+            "value": "2000 DAI"
+          },
+          {
+            "label": "Minimum amount",
+            "value": "950 POL"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0xC80CF238c3FdEC3FD65077f5e31dFca0A90ba647"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-09-21 14:13:20Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Remove Liquidity - removeLiquidityETHWithPermitSupportingFeeOnTransferTokens (synthetic, approveMax true, no real transaction found) - chain 137",
+      "rawTx": "0x02f90170818901843b9aca008506fc23ac008307a12094a5e0829caced8ffdd4de3c43696c57f7d7a678ff80b901445b0d59840000000000000000000000008f3cf7ad23cd3cadbd9735aff958023239c6a06300000000000000000000000000000000000000000000000014d1120d7b16000000000000000000000000000000000000000000000000006c6b935b8bbd4000000000000000000000000000000000000000000000000000337fe5feaf2d180000000000000000000000000000c80cf238c3fdec3fd65077f5e31dfca0a90ba647000000000000000000000000000000000000000000000000000000006ab13b800000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001ba31c74b6a8e419970c5a5123551e66889d4672e3d431fba3ad7e71a706640c77052f5741a52eb882c46ce12bb4da7c457413243679e730fa98feaa7ca20de3d4c0",
+      "expected": {
+        "intent": "Remove Liquidity",
+        "owner": "QuickSwap",
+        "fields": [
+          {
+            "label": "Minimum amount",
+            "value": "2000 DAI"
+          },
+          {
+            "label": "Minimum amount",
+            "value": "950 POL"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0xC80CF238c3FdEC3FD65077f5e31dFca0A90ba647"
+          },
+          {
+            "label": "Unlimited LP permit",
+            "value": "true"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-09-21 14:13:20Z"
+          }
+        ]
+      }
+    }
+  ]
+}

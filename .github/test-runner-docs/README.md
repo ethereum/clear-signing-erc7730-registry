@@ -1,6 +1,6 @@
 # Test runner guide
 
-A test runner is a small program that consumes one `.tests.json` fixture from the registry, drives a clear-signing implementation against each case, and writes a `results.json` describing what the implementation rendered. The CI workflow ([`clear-signing-tests.yml`](../workflows/clear-signing-tests.yml)) wraps the runner in a composite action, uploads the `results.json` as an artifact, and the `post-results` job aggregates per-implementation columns onto the PR.
+A test runner is a small program that consumes one `.tests.json` fixture from the registry, drives a clear-signing implementation against each case, and writes a `results.json` describing what the implementation rendered. The CI workflow ([`descriptor-tests.yml`](../workflows/descriptor-tests.yml)) wraps the runner in a composite action that runs it once per affected descriptor in one job per implementation, uploads the `results.json` files as one artifact per implementation, and the results workflow ([`descriptor-test-results.yml`](../workflows/descriptor-test-results.yml)) aggregates per-implementation columns onto the PR.
 
 ## Input
 
@@ -28,26 +28,44 @@ Write a single `results.json` per descriptor to the working directory.
         "intent": "Execute call",
         "interpolatedIntent": "Execute call on USDC",
         "owner": "Example Smart Account",
-        "fields": {
-          "Target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-          "Spending Limit": "0 ETH",
-          "Call data": {
-            "intent": "Approve",
-            "owner": "USDC",
-            "fields": {
-              "Spender": "0x1234567890123456789012345678901234567890",
-              "Amount": "100 USDC",
-              "Deadline": "2026-12-31 23:59 UTC"
+        "fields": [
+          {
+            "label": "Target",
+            "value": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+          },
+          {
+            "label": "Spending Limit",
+            "value": "0 ETH"
+          },
+          {
+            "label": "Call data",
+            "value": {
+              "intent": "Approve",
+              "owner": "USDC",
+              "fields": [
+                {
+                  "label": "Spender",
+                  "value": "0x1234567890123456789012345678901234567890"
+                },
+                {
+                  "label": "Amount",
+                  "value": "100 USDC"
+                },
+                {
+                  "label": "Deadline",
+                  "value": "2026-12-31 23:59 UTC"
+                }
+              ]
             }
           }
-        }
+        ]
       }
     }
   ]
 }
 ```
 
-`rendered` mirrors the shape of `expected` in the fixture — the same `{intent, owner, fields}` form applies to both calldata and EIP-712 cases.
+`rendered` mirrors the shape of `expected` in the fixture — the same `{intent, owner, fields}` form applies to both calldata and EIP-712 cases. `fields` is an ordered array of `{label, value}` entries, never an object keyed by label: labels can repeat when a field iterates over an array.
 
 ### Fields
 
@@ -60,6 +78,12 @@ Write a single `results.json` per descriptor to the working directory.
 | `cases[].status`      | yes         | enum   | One of `pass`, `fail`, `error`, `skipped` (see below)                                                                                                                                                                                                       |
 | `cases[].rendered`    | conditional | object | What the runner produced. Same shape as `expected` in the test data file — see [The `expected` block](../../README.md#the-expected-block) in the main README for the field-level breakdown. Required on `pass` and `fail`; omitted on `error` and `skipped` |
 | `cases[].message`     | optional    | string | Human-readable note. Required on `error` and `skipped`; optional on `fail`                                                                                                                                                                                  |
+| `cases[].warnings`    | optional    | array  | Notes that did not change the verdict, one string each. The test report page shows them next to the rendered output                                                                                                                                       |
+| `cases[].format`      | optional    | string | The `display.formats` key the implementation matched. The test report page compares it with the key that the selector of the transaction hits                                                                                                              |
+| `cases[].chainId`     | optional    | number | The chain the implementation rendered for                                                                                                                                                                                                                  |
+| `cases[].durationMs`  | optional    | number | How long the case took, in milliseconds                                                                                                                                                                                                                    |
+
+The optional keys are read by the test report bundle, see [`bundle.md`](./bundle.md). A runner that omits them loses nothing in the comment.
 
 **Calldata formatters.** Fields that use a calldata formatter (the field's value is itself an encoded inner call) appear as a nested `rendered`-shaped object in `fields`; nesting is recursive.
 
@@ -81,6 +105,6 @@ Write a single `results.json` per descriptor to the working directory.
 
 ## Wiring into CI
 
-Wrap the runner in a composite action under `.github/actions/run-<name>-tests/` and add a sibling job in [`clear-signing-tests.yml`](../workflows/clear-signing-tests.yml). The action should call [`upload-test-results`](../actions/upload-test-results/action.yml) to publish the artifact.
+Wrap the runner in a composite action under `.github/actions/run-<name>-tests/` that takes the test matrix of the `detect-testsv2` job, runs the runner once per entry and writes one `<entity>__<descriptor>.json` per entry into an output directory. Add a sibling job in [`descriptor-tests.yml`](../workflows/descriptor-tests.yml) that calls the action and then [`upload-test-results`](../actions/upload-test-results/action.yml), which validates the files, publishes them as one artifact and fails the job on a case that did not pass. One job per implementation, not one per descriptor, keeps the checks of a pull request short.
 
 See [`run-sourcify-tests`](../actions/run-sourcify-tests/action.yml) for a complete reference implementation.

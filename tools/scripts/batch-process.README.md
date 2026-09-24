@@ -18,7 +18,7 @@ Automated batch processing tool for ERC-7730 registry folders. This script strea
 
 - **erc7730 Python library** - For linting validation
   ```bash
-  pip install erc7730
+  pip install -r .github/requirements.txt
   ```
 
 - **GitHub CLI** - For PR creation
@@ -42,7 +42,7 @@ Automated batch processing tool for ERC-7730 registry folders. This script strea
 npm install
 
 # Install erc7730 CLI (optional but recommended)
-pip install erc7730
+pip install -r .github/requirements.txt
 ```
 
 ## Usage
@@ -287,7 +287,7 @@ node tools/scripts/batch-process.js protocol --skip-migration
 Install the Python library:
 
 ```bash
-pip install erc7730
+pip install -r .github/requirements.txt
 ```
 
 ### "GitHub CLI (gh) not installed"

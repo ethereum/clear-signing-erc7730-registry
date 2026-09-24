@@ -7,6 +7,9 @@
   "metadata": {
     "owner": "Lido DAO",
     "info": { "url": "https://lido.fi" },
+    "enums": {
+      "operatorApproval": { "true": "Allow all", "false": "Revoke all" }
+    },
     "constants": {
       "stETHaddress": "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
       "wstETHaddress": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
@@ -29,7 +32,7 @@
           {
             "label": "Beneficiary",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"], "senderAddress": ["0x0000000000000000000000000000000000000000"] },
             "path": "#._owner",
             "visible": "always"
           }
@@ -49,7 +52,7 @@
           {
             "label": "Beneficiary",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"], "senderAddress": ["0x0000000000000000000000000000000000000000"] },
             "path": "#._owner",
             "visible": "always"
           },
@@ -94,7 +97,7 @@
           {
             "label": "Beneficiary",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"], "senderAddress": ["0x0000000000000000000000000000000000000000"] },
             "path": "#._owner",
             "visible": "always"
           },
@@ -181,7 +184,8 @@
         ]
       },
       "setApprovalForAll(address _operator, bool _approved)": {
-        "intent": "Set unstETH operator approval",
+        "intent": "Manage ALL unstETH NFTs",
+        "interpolatedIntent": "{_approved} unstETH NFTs",
         "fields": [
           {
             "label": "Operator",
@@ -190,7 +194,13 @@
             "path": "#._operator",
             "visible": "always"
           },
-          { "label": "Approved", "format": "raw", "path": "#._approved", "visible": "always" }
+          {
+            "label": "Access",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.operatorApproval" },
+            "path": "#._approved",
+            "visible": "always"
+          }
         ]
       }
     }

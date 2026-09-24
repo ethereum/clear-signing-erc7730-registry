@@ -1,0 +1,49 @@
+name: PR Labels
+
+# Labels a pull request from the paths it changes, so a reviewer sees which
+# part of the repository it touches. The labeler writes to the pull request,
+# which a pull_request run of a fork cannot do, so this runs on
+# pull_request_target. It reads .github/labeler.yml from the base branch and
+# runs no code from the pull request.
+on:
+  pull_request_target:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # A pull request that gets no label changes files outside the known areas
+  # of the repository, and a reviewer must look at it first.
+  setup_pull_request:
+    name: Add PR labels
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        timeout-minutes: 10
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Add labels
+        timeout-minutes: 5
+        uses: actions/labeler@f27b608878404679385c85cfa523b85ccb86e213 # v6
+        with:
+          sync-labels: true
+
+      - name: Enforce labels
+        timeout-minutes: 5
+        uses: mheap/github-action-required-labels@23e10fde7e062233401931a0eece796cd9bf3177 # v5
+        with:
+          mode: minimum
+          count: 1
+          labels: |
+            documentation
+            specifications
+            descriptors
+            ci
+            tools
+          add_comment: true

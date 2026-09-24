@@ -1,0 +1,362 @@
+name: Descriptor Tests
+
+# Runs the test file of each affected descriptor against every clear-signing
+# implementation, so a descriptor that renders wrong is caught before the
+# merge. Each implementation runs as one job over all affected descriptors,
+# so the pull request shows one check per implementation.
+#
+# This workflow runs on pull_request, so it runs for every pull request,
+# including one from a fork, and a fork run gets a read-only token. That is
+# the intent: the runners read the descriptors and fixtures of the pull
+# request, so this run must not hold a token that can write. The note on the
+# pull request and the results comment need a write token, so they live in
+# descriptor-tests-queued.yml and descriptor-test-results.yml, which run
+# the workflow file of the base branch and no code from the pull request.
+# Do not merge the three workflows into one.
+on:
+  pull_request:
+    paths:
+      - "registry/**/*.json"
+      - "ercs/**/*.json"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  FORCE_COLOR: "1"
+
+jobs:
+  # Finds the descriptors that the pull request affects, also through a
+  # changed shared file, and the testsv2 file of each. The other jobs of this
+  # workflow and the results workflow work from this list.
+  detect-testsv2:
+    name: Find the affected descriptors and their tests
+    runs-on: ubuntu-latest
+    outputs:
+      has_tests: ${{ steps.detect.outputs.has_tests }}
+      has_affected: ${{ steps.detect.outputs.has_affected }}
+      affected_descriptors: ${{ steps.detect.outputs.affected_descriptors }}
+      missing_tests: ${{ steps.detect.outputs.missing_tests }}
+      test_matrix: ${{ steps.detect.outputs.test_matrix }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      # The registry and ercs trees of the base are for the test report: the
+      # base version of a modified descriptor, with its includes.
+      - name: Checkout base scripts
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base-scripts
+          sparse-checkout: |
+            .github/scripts
+            registry
+            ercs
+
+      - name: Get changed descriptor, shared and testsv2 files
+        id: changed-files
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
+        with:
+          files: |
+            registry/**/*.json
+            ercs/**/*.json
+          files_ignore: |
+            registry/**/tests/**
+            registry/**/sigs/**
+
+      - name: Detect testsv2 files for affected descriptors
+        id: detect
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          DELETED_FILES: ${{ steps.changed-files.outputs.deleted_files }}
+        run: |
+          # A change to a shared file must run the tests of every descriptor
+          # that includes it, so deleted files are passed too.
+          RESULT=$(CHANGED_FILES="$CHANGED_FILES $DELETED_FILES" \
+            node base-scripts/.github/scripts/list-affected-descriptors.js)
+          echo "$RESULT" | jq .
+          echo "test_matrix=$(echo "$RESULT" | jq -c '.matrix')" >> $GITHUB_OUTPUT
+          echo "has_tests=$(echo "$RESULT" | jq -r '.has_tests')" >> $GITHUB_OUTPUT
+          echo "has_affected=$(echo "$RESULT" | jq -r '.has_affected')" >> $GITHUB_OUTPUT
+          echo "affected_descriptors=$(echo "$RESULT" | jq -c '.affected_descriptors')" >> $GITHUB_OUTPUT
+          echo "missing_tests=$(echo "$RESULT" | jq -c '.missing_tests // []')" >> $GITHUB_OUTPUT
+
+      # descriptor-test-results.yml runs after this workflow and posts the
+      # comment that a fork run cannot write. It learns the pull request and the
+      # tested descriptors from here, and it gets a copy of each test file, so
+      # it never has to check out the head of a fork.
+      #
+      # The test report also needs each descriptor as tested with its includes
+      # resolved, the base version it replaces, and whether the pull request
+      # added or modified each file. The head checkout holds the head,
+      # base-scripts holds the base tree. The report parts cannot fail the
+      # step: the runner jobs give the verdict, and the report shows a gap
+      # where a file could not be read.
+      - name: Build the pull request context
+        if: always()
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HAS_TESTS: ${{ steps.detect.outputs.has_tests }}
+          HAS_AFFECTED: ${{ steps.detect.outputs.has_affected }}
+          TEST_MATRIX: ${{ steps.detect.outputs.test_matrix }}
+          MISSING_TESTS: ${{ steps.detect.outputs.missing_tests }}
+          ADDED_FILES: ${{ steps.changed-files.outputs.added_files }}
+          MODIFIED_FILES: ${{ steps.changed-files.outputs.modified_files }}
+          RENAMED_FILES: ${{ steps.changed-files.outputs.renamed_files }}
+          DELETED_FILES: ${{ steps.changed-files.outputs.deleted_files }}
+        run: |
+          # This step also runs after a failure, so the detect outputs can be
+          # empty. jq needs valid JSON for --argjson.
+          TEST_MATRIX="${TEST_MATRIX:-[]}"
+          MISSING_TESTS="${MISSING_TESTS:-[]}"
+
+          # Whether the pull request added, modified or left alone the
+          # descriptor and the test file of each matrix entry. The lists come
+          # from the changed-files step, separated by spaces; a registry path
+          # has none. A failure gives an empty map, and the report says
+          # "unknown".
+          kind() {
+            case " $DELETED_FILES " in *" $1 "*) echo deleted; return ;; esac
+            case " $ADDED_FILES " in *" $1 "*) echo added; return ;; esac
+            case " $MODIFIED_FILES $RENAMED_FILES " in *" $1 "*) echo modified; return ;; esac
+            echo unchanged
+          }
+          CHANGES=$(echo "$TEST_MATRIX" | jq -r '.[] | "\(.descriptor)\t\(.test_file)"' |
+            while IFS=$'\t' read -r descriptor test_file; do
+              printf '%s\t%s\t%s\n' "$descriptor" "$(kind "$descriptor")" "$(kind "$test_file")"
+            done |
+            jq -R -s 'split("\n") | map(select(length > 0) | split("\t"))
+              | map({key: .[0], value: {descriptor: .[1], tests: .[2]}}) | from_entries') || CHANGES='{}'
+          if [ -z "$CHANGES" ]; then CHANGES='{}'; fi
+
+          mkdir -p pr-context/tests
+          jq -n \
+            --argjson pr_number "$PR_NUMBER" \
+            --arg head_sha "$HEAD_SHA" \
+            --arg head_repo "$HEAD_REPO" \
+            --arg base_sha "$BASE_SHA" \
+            --arg has_tests "$HAS_TESTS" \
+            --arg has_affected "$HAS_AFFECTED" \
+            --argjson matrix "$TEST_MATRIX" \
+            --argjson missing "$MISSING_TESTS" \
+            --argjson changes "$CHANGES" \
+            '{pr_number: $pr_number, head_sha: $head_sha, head_repo: $head_repo, base_sha: $base_sha,
+              has_tests: ($has_tests == "true"),
+              has_affected: ($has_affected == "true"),
+              matrix: $matrix, missing_tests: $missing, changes: $changes}' \
+            > pr-context/context.json
+
+          echo "$TEST_MATRIX" | jq -r '.[] | "\(.entity)\t\(.descriptor_name)\t\(.test_file)"' |
+            while IFS=$'\t' read -r entity descriptor test_file; do
+              cp "$test_file" "pr-context/tests/${entity}__${descriptor}.tests.json"
+            done
+
+          # The descriptors, head and base, with their includes resolved. A
+          # file that cannot be resolved is a warning, not a failure.
+          RESOLVE=base-scripts/.github/scripts/resolve-erc7730-includes.js
+          resolve() {
+            if ! node "$RESOLVE" "$1" "$2"; then
+              echo "::warning file=$1::Could not resolve the includes of $1 for the test report"
+            fi
+          }
+          echo "$TEST_MATRIX" | jq -r '.[].descriptor' | while IFS= read -r descriptor; do
+            if [ -z "$descriptor" ]; then continue; fi
+            if [ -f "$descriptor" ]; then
+              resolve "$descriptor" "pr-context/descriptors/$descriptor"
+            fi
+            if [ -f "base-scripts/$descriptor" ]; then
+              resolve "base-scripts/$descriptor" "pr-context/base-descriptors/$descriptor"
+            fi
+          done
+
+          cat pr-context/context.json
+          find pr-context -type f | sort
+
+      - name: Collect the recommendations
+        # The hashFiles test lets the pull request that adds the script pass.
+        # The base ref does not hold the script yet, and the step starts to
+        # work by itself after the merge.
+        if: always() && hashFiles('base-scripts/.github/scripts/check-recommended-fields.js') != ''
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        # An advisory comment, so the results workflow posts it. This run has a
+        # read-only token when the pull request comes from a fork.
+        run: node base-scripts/.github/scripts/check-recommended-fields.js > pr-context/recommendations.md
+
+      - name: Upload the pull request context
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pr-context
+          path: pr-context
+          # The same retention as the results artifacts. A re-run after a
+          # shorter period would find no context.
+          retention-days: 30
+
+  # Runs the test file of every affected descriptor through the Sourcify
+  # TypeScript implementation, in one job, so a pull request gets one check
+  # per implementation and not one per descriptor (#3048). The test passes
+  # when the implementation renders what the test file expects.
+  sourcify-tests:
+    name: Typescript - Sourcify SDK tests
+    needs: detect-testsv2
+    if: needs.detect-testsv2.outputs.has_tests == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout registry
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: registry
+
+      - name: Checkout base scripts and actions
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base-scripts
+          sparse-checkout: .github
+
+      - name: Run Sourcify clear-signing tests
+        uses: ./base-scripts/.github/actions/run-sourcify-tests
+        with:
+          test-matrix: ${{ needs.detect-testsv2.outputs.test_matrix }}
+          registry-root: ${{ github.workspace }}/registry
+          output-dir: ${{ github.workspace }}/results
+
+      - name: Upload results
+        if: always()
+        uses: ./base-scripts/.github/actions/upload-test-results
+        with:
+          results-dir: ${{ github.workspace }}/results
+          implementation-slug: sourcify-ts-clear-signing
+          test-matrix: ${{ needs.detect-testsv2.outputs.test_matrix }}
+
+  # The same test files, through the Rust implementation. A second
+  # implementation shows where a descriptor depends on the behavior of one
+  # implementation.
+  rust-tests:
+    name: Rust - llbartekll SDK tests
+    needs: detect-testsv2
+    if: needs.detect-testsv2.outputs.has_tests == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout registry
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: registry
+
+      - name: Checkout base scripts and actions
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base-scripts
+          sparse-checkout: .github
+
+      - name: Run Rust clear-signing tests
+        uses: ./base-scripts/.github/actions/run-rust-tests
+        with:
+          test-matrix: ${{ needs.detect-testsv2.outputs.test_matrix }}
+          registry-root: ${{ github.workspace }}/registry
+          output-dir: ${{ github.workspace }}/results
+
+      - name: Upload results
+        if: always()
+        uses: ./base-scripts/.github/actions/upload-test-results
+        with:
+          results-dir: ${{ github.workspace }}/results
+          implementation-slug: rust-clear-signing
+          test-matrix: ${{ needs.detect-testsv2.outputs.test_matrix }}
+
+  # The runners test only the functions that a test case calls. This job
+  # fails when a function in display.formats of a calldata descriptor has no
+  # test case. EIP-712 descriptors have no functions and are skipped.
+  check-test-coverage:
+    name: Every function has a test case
+    needs: detect-testsv2
+    if: needs.detect-testsv2.outputs.has_tests == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Checkout base scripts and their dependencies
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base-scripts
+          sparse-checkout: |
+            .github/scripts
+            package.json
+            package-lock.json
+
+      - name: Setup node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: base-scripts/package-lock.json
+
+      - name: Install the dependencies of the base scripts
+        working-directory: base-scripts
+        run: npm ci
+
+      - name: Check that every function of an affected descriptor has a test
+        # The script comes from the base, like the other scripts of this
+        # workflow. hashFiles only works in a step condition, so the step, not
+        # the job, is skipped until the script is on the base branch.
+        if: hashFiles('base-scripts/.github/scripts/check-selector-coverage.js') != ''
+        env:
+          TEST_MATRIX: ${{ needs.detect-testsv2.outputs.test_matrix }}
+        run: |
+          node base-scripts/.github/scripts/check-selector-coverage.js \
+            --report test-coverage/coverage.json \
+            $(echo "$TEST_MATRIX" | jq -r '.[].descriptor')
+
+      - name: Upload the coverage report
+        if: always() && hashFiles('base-scripts/.github/scripts/check-selector-coverage.js') != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: test-coverage
+          path: test-coverage
+          retention-days: 30
+
+  # An affected descriptor without a testsv2 file would go through the
+  # runners untested. This job has no condition, so the check shows a pass
+  # when every affected descriptor has a test file.
+  require-testsv2:
+    name: Every affected descriptor has a test file
+    needs: detect-testsv2
+    # Every affected descriptor needs its own test file. One descriptor with a
+    # test file must not hide another without one.
+    # No job-level "if": the check must show a pass, not a skip.
+    runs-on: ubuntu-latest
+    steps:
+      # An annotation, not a comment: a fork run has a read-only token.
+      - name: Fail when an affected descriptor has no test file
+        env:
+          # Affected descriptors = directly changed ones, plus descriptors
+          # whose transitive "includes" chain contains a changed shared file.
+          MISSING: ${{ needs.detect-testsv2.outputs.missing_tests }}
+        run: |
+          if [ "$(echo "$MISSING" | jq 'length')" -eq 0 ]; then
+            echo "Every affected descriptor has a testsv2 file."
+            exit 0
+          fi
+          # A JSON array, so a path that holds a space stays one path.
+          echo "$MISSING" | jq -r '.[]' | while IFS= read -r descriptor; do
+            echo "::error file=${descriptor},line=1::No testsv2 file for this descriptor. Create registry/<entity>/testsv2/<descriptor-name>.tests.json — see the \"Reference test cases\" section of README.md."
+          done
+          echo "::error::$(echo "$MISSING" | jq 'length') descriptor(s) have no testsv2 file"
+          exit 1

@@ -1,0 +1,446 @@
+name: Descriptor Test Results
+
+# Posts the results of every runner on the pull request, in one comment with
+# one column per implementation, so a reviewer sees a failed or divergent
+# case without a look at the run logs.
+#
+# The Descriptor Tests workflow runs as pull_request, and a fork run gets a
+# read-only token. So the results comment must come from here: workflow_run
+# gives a write token, and the run uses the workflow file and the scripts of
+# the default branch, which a fork cannot change. The run reads only the
+# artifacts of the test run, as data. descriptor-tests-queued.yml writes the
+# note that this workflow replaces, and both write the same
+# "## Clear Signing Tests" comment.
+#
+# This workflow also builds the test report bundle of the run and publishes it
+# to the test-reports branch, where the test report viewer reads it. The
+# comment links to the viewer. See .github/test-runner-docs/bundle.md.
+#
+# The test jobs give the verdict, so a lost comment or a lost report cannot
+# make a failed pull request look green. The workflow name below is matched
+# as a string.
+on:
+  workflow_run:
+    workflows: ["Descriptor Tests"]
+    types: [completed]
+
+concurrency:
+  # The workflow_run payload has no pull request number, so the head repository
+  # and branch identify the pull request instead.
+  group: ${{ github.workflow }}-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  # For the push to the test-reports branch. The other branches are protected
+  # by the repository rules, not by this token.
+  contents: write
+  pull-requests: write
+
+env:
+  # The test report viewer. The comment links to it with the pull request and
+  # the run, and the viewer reads the bundle from the test-reports branch.
+  REPORT_BASE_URL: https://tests.erc7730.sourcify.dev/
+  REPORTS_BRANCH: test-reports
+
+jobs:
+  post-implementation-results:
+    name: Post the results and the report
+    # A cancelled run has partial artifacts and races the run that replaced it.
+    # A failed run is the interesting case and must not be excluded.
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion != 'cancelled' &&
+      github.event.workflow_run.conclusion != 'skipped'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Download the pull request context
+        id: context
+        continue-on-error: true
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: pr-context
+          path: pr-context
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download the test coverage report
+        continue-on-error: true
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: test-coverage
+          path: test-coverage
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download the runner results
+        continue-on-error: true
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: results__*
+          merge-multiple: true
+          path: artifacts
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # A fork wrote the artifacts, so the pull request must come from the
+      # event, which a fork cannot change.
+      - name: Find the pull request
+        id: pr
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
+          RUN_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const headRepo = process.env.RUN_HEAD_REPO;
+            const headBranch = process.env.RUN_HEAD_BRANCH;
+            const { data: open } = await github.rest.pulls.list({
+              owner, repo, state: 'open', head: `${headRepo.split('/')[0]}:${headBranch}`, per_page: 100,
+            });
+            const pr = open.find(
+              (p) => p.head.sha === process.env.RUN_HEAD_SHA && p.head.repo?.full_name === headRepo,
+            );
+            if (!pr) {
+              core.info(`No open pull request at ${headRepo}@${process.env.RUN_HEAD_SHA}. No comment.`);
+              core.setOutput('found', 'false');
+              return;
+            }
+            core.setOutput('found', 'true');
+            core.setOutput('number', String(pr.number));
+            core.setOutput('url', pr.html_url);
+            core.setOutput('title', pr.title);
+
+      # The scripts come from the default branch, so a fork cannot change
+      # them. Every step up to the comment continues on error: the comment
+      # matters more than the report.
+      #
+      # The token of this job can write, so it stays out of reach of the
+      # dependencies: the checkout keeps no credentials, the install runs no
+      # package scripts, and no cache is restored.
+      - name: Checkout the scripts
+        if: steps.pr.outputs.found == 'true'
+        continue-on-error: true
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: scripts
+          persist-credentials: false
+          sparse-checkout: |
+            .github/scripts
+            package.json
+            package-lock.json
+
+      - name: Setup node
+        if: steps.pr.outputs.found == 'true'
+        continue-on-error: true
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "22"
+
+      - name: Install the dependencies of the scripts
+        if: steps.pr.outputs.found == 'true'
+        continue-on-error: true
+        working-directory: scripts
+        run: npm ci --ignore-scripts
+
+      # The run and the pull request come from the event and from the step
+      # above, not from the artifact, so a fork cannot change them. The base
+      # commit comes from the context artifact, which the detect job wrote
+      # from the pull_request event.
+      - name: Build the test report bundle
+        id: bundle
+        if: steps.pr.outputs.found == 'true'
+        continue-on-error: true
+        env:
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          RUN_STARTED_AT: ${{ github.event.workflow_run.run_started_at }}
+          RUN_COMPLETED_AT: ${{ github.event.workflow_run.updated_at }}
+          TESTED_SHA: ${{ github.event.workflow_run.head_sha }}
+          HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          PR_URL: ${{ steps.pr.outputs.url }}
+          PR_TITLE: ${{ steps.pr.outputs.title }}
+        run: |
+          mkdir -p artifacts pr-context
+          node scripts/.github/scripts/build-bundle.js \
+            --context pr-context --artifacts artifacts --output report/bundle.json
+
+      - name: Publish the bundle to the test-reports branch
+        id: publish
+        if: steps.pr.outputs.found == 'true' && steps.bundle.outcome == 'success'
+        continue-on-error: true
+        env:
+          REPO_URL: https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          BRANCH: ${{ env.REPORTS_BRANCH }}
+          BUNDLE: report/bundle.json
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          TESTED_SHA: ${{ github.event.workflow_run.head_sha }}
+          WORKDIR: reports
+          SCRIPTS_DIR: scripts/.github/scripts
+        run: |
+          bash scripts/.github/scripts/publish-report.sh
+          echo "url=${REPORT_BASE_URL}?pr=${PR_NUMBER}&run=${RUN_ID}" >> "$GITHUB_OUTPUT"
+
+      - name: Post PR comment
+        if: steps.pr.outputs.found == 'true'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_STARTED_AT: ${{ github.event.workflow_run.run_started_at }}
+          RUN_COMPLETED_AT: ${{ github.event.workflow_run.updated_at }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          # Empty when the report was not published, so the comment has no link.
+          REPORT_URL: ${{ steps.publish.outcome == 'success' && steps.publish.outputs.url || '' }}
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const STATUS_ICONS = { pass: '✅', fail: '❌', error: '⚠️', skipped: '⏭️' };
+            const icon = (s) => (Object.hasOwn(STATUS_ICONS, s) ? STATUS_ICONS[s] : '—');
+            // GitHub rejects a comment body above 65536 characters.
+            const MAX_BODY = 60000;
+            const { owner, repo } = context.repo;
+            const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${process.env.RUN_ID}`;
+            const workspace = process.env.GITHUB_WORKSPACE;
+            const artifactsRoot = path.join(workspace, 'artifacts');
+            const contextRoot = path.join(workspace, 'pr-context');
+            const issue_number = Number(process.env.PR_NUMBER);
+            const reportUrl = process.env.REPORT_URL || '';
+
+            // The artifact can be absent when the test run failed early. Say so,
+            // instead of leaving the "in progress" note on the pull request.
+            let ctx;
+            try {
+              ctx = JSON.parse(fs.readFileSync(path.join(contextRoot, 'context.json'), 'utf8'));
+            } catch (e) {
+              core.warning(`No usable pull request context: ${e.message}`);
+              ctx = null;
+            }
+
+            // Runner strings are untrusted. Keep them inside one line.
+            const line = (v) =>
+              String(v ?? '')
+                .replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))
+                .replace(/\|/g, '\\|')
+                .replace(/[\r\n]+/g, ' ');
+            // And inside one table cell.
+            const cell = (v) => line(v).slice(0, 200);
+            const block = (v) => {
+              const text = v != null ? JSON.stringify(v, null, 2) : '(none)';
+              return text.length > 4000 ? `${text.slice(0, 4000)}\n… truncated` : text;
+            };
+
+            // Each runner uploads one artifact that holds one
+            // `<slug>__<entity>__<descriptor>.json` per descriptor. With
+            // merge-multiple: true they all land flat in artifactsRoot, with
+            // no collisions.
+            let resultFiles = [];
+            try {
+              resultFiles = fs.readdirSync(artifactsRoot).filter(f => f.endsWith('.json'));
+            } catch (e) {
+              core.warning(`Could not read ${artifactsRoot}: ${e.message}`);
+            }
+            core.info(`Matched ${resultFiles.length} result JSON files`);
+
+            // The commit under test, and the start and end time of the run.
+            // All three come from the workflow_run event, not from the
+            // artifact, so a fork cannot change them. A reviewer can therefore
+            // see if the results belong to the head of the pull request or to
+            // an older commit.
+            const testedSha = process.env.RUN_HEAD_SHA;
+            const utc = (value) =>
+              Number.isNaN(Date.parse(value))
+                ? 'an unknown time'
+                : `${new Date(value).toISOString().slice(0, 16).replace('T', ' ')} UTC`;
+
+            // Writes, replaces or removes one comment. An empty text removes it.
+            const RESULTS = '## Clear Signing Tests';
+            const RECOMMENDATIONS = '<!-- erc7730-recommended-fields -->';
+            const upsert = async (text, marker = RESULTS) => {
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner, repo, issue_number, per_page: 100,
+              });
+              const existing = comments.find(
+                (c) => c.user.type === 'Bot' && c.body.startsWith(marker),
+              );
+              if (text === '') {
+                if (existing) await github.rest.issues.deleteComment({ owner, repo, comment_id: existing.id });
+                return;
+              }
+              if (existing) {
+                await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body: text });
+              } else {
+                await github.rest.issues.createComment({ owner, repo, issue_number, body: text });
+              }
+            };
+
+            // A separate comment, and not part of the results, because it never
+            // blocks the pull request. It is written before the branches below,
+            // which return early.
+            let recommendations = '';
+            try {
+              recommendations = fs.readFileSync(path.join(contextRoot, 'recommendations.md'), 'utf8').trim();
+            } catch {
+              // The test run failed before it could collect them.
+            }
+            await upsert(recommendations, RECOMMENDATIONS);
+
+            let body = '## Clear Signing Tests\n\n';
+            body += `Tested [\`${testedSha.slice(0, 7)}\`](${context.serverUrl}/${owner}/${repo}/commit/${testedSha})`;
+            body += ` · started ${utc(process.env.RUN_STARTED_AT)}`;
+            body += ` · finished ${utc(process.env.RUN_COMPLETED_AT)}\n\n`;
+
+            // The report page shows what each case rendered, the diff between
+            // the implementations, and the coverage. The URL is built by the
+            // workflow from the event, not from an artifact.
+            if (reportUrl !== '') {
+              body += `📊 [Open the test report](${reportUrl})\n\n`;
+            }
+
+            // The test run failed before it could describe itself.
+            if (ctx === null) {
+              body += `> The test run produced no results. See the [run](${runUrl}).\n`;
+              await upsert(body);
+              return;
+            }
+
+            // Nothing was affected, so there is nothing to report.
+            if (!ctx.has_affected) {
+              await upsert('');
+              return;
+            }
+
+            // require-testsv2 already failed the run, but the annotations do
+            // not explain how to fix it.
+            const missing = ctx.missing_tests ?? [];
+            if (missing.length > 0) {
+              body += `❌ ${missing.length} affected descriptor(s) have no test file:\n\n`;
+              for (const descriptor of missing) body += `- \`${cell(descriptor)}\`\n`;
+              body +=
+                '\nCreate a test file at `registry/<entity>/testsv2/<descriptor-name>.tests.json`. ' +
+                'See [testing documentation](../blob/master/README.md#reference-test-cases) for details.\n\n';
+            }
+
+            // check-test-coverage already failed the run, like require-testsv2.
+            let coverage = {};
+            try {
+              coverage = JSON.parse(fs.readFileSync(path.join(workspace, 'test-coverage', 'coverage.json'), 'utf8'));
+            } catch {
+              // The job did not run, or the run failed before it.
+            }
+            const gaps = Object.entries(coverage);
+            if (gaps.length > 0) {
+              body += `❌ ${gaps.length} affected descriptor(s) failed the test coverage check:\n\n`;
+              for (const [descriptor, messages] of gaps) {
+                body += `- \`${cell(descriptor)}\`\n`;
+                for (const message of messages) body += `  - ${line(message).slice(0, 1000)}\n`;
+              }
+              body += '\n';
+            }
+
+            // No descriptor had a test file, so no runner produced anything.
+            if (!ctx.has_tests) {
+              await upsert(body);
+              return;
+            }
+
+            if (resultFiles.length === 0) {
+              body += `> No implementation test results were uploaded. See the [run](${runUrl}).\n`;
+            } else {
+              // rows: keyed by entity|descriptor|description
+              // each row stores per-impl status + rendered (for diff blocks) + message
+              const rows = new Map();
+              const impls = new Set();
+
+              // The test files travel in the pr-context artifact, so the
+              // expected output is available without a checkout of the head.
+              const testFileCache = new Map();
+              const loadExpected = (entity, descriptor, description) => {
+                const key = `${entity}__${descriptor}`;
+                if (!testFileCache.has(key)) {
+                  const testPath = path.join(contextRoot, 'tests', `${key}.tests.json`);
+                  try {
+                    testFileCache.set(key, JSON.parse(fs.readFileSync(testPath, 'utf8')));
+                  } catch (e) {
+                    core.warning(`Could not read ${testPath}: ${e.message}`);
+                    testFileCache.set(key, null);
+                  }
+                }
+                const doc = testFileCache.get(key);
+                if (!doc || !Array.isArray(doc.tests)) return null;
+                const t = doc.tests.find(t => t.description === description);
+                return t ? t.expected : null;
+              };
+
+              for (const file of resultFiles) {
+                let data;
+                try { data = JSON.parse(fs.readFileSync(path.join(artifactsRoot, file), 'utf8')); }
+                catch (e) { core.warning(`Could not parse ${file}: ${e.message}`); continue; }
+                const impl = data.implementation || file;
+                impls.add(impl);
+                // filename: <slug>__<entity>__<descriptor>.json
+                const parts = file.replace(/\.json$/, '').split('__');
+                const entity = parts[1];
+                const descriptor = parts[2];
+                for (const c of data.cases || []) {
+                  const key = `${entity}|${descriptor}|${c.description}`;
+                  if (!rows.has(key)) rows.set(key, { entity, descriptor, description: c.description, byImpl: {} });
+                  rows.get(key).byImpl[impl] = {
+                    status: c.status,
+                    rendered: c.rendered,
+                    message: c.message,
+                  };
+                }
+              }
+
+              const implList = [...impls].sort();
+
+              // --- Compact status table ---
+              const header = ['Entity', 'Descriptor', 'Case', ...implList.map(cell)].join(' | ');
+              const sep = ['---', '---', '---', ...implList.map(() => ':---:')].join(' | ');
+              body += `| ${header} |\n| ${sep} |\n`;
+              for (const r of rows.values()) {
+                const cells = implList.map(i => icon((r.byImpl[i] || {}).status));
+                body += `| ${cell(r.entity)} | ${cell(r.descriptor)} | ${cell(r.description)} | ${cells.join(' | ')} |\n`;
+              }
+              body += '\n✅ pass · ❌ fail · ⚠️ error · ⏭️ skipped · — not run\n';
+
+              // --- Details for non-pass cases ---
+              const details = [];
+              for (const r of rows.values()) {
+                for (const impl of implList) {
+                  const result = r.byImpl[impl];
+                  if (!result || result.status === 'pass') continue;
+                  const summary = `${icon(result.status)} ${cell(r.entity)}/${cell(r.descriptor)} · ${cell(r.description)} · \`${cell(impl)}\``;
+                  let block_ = `<details>\n<summary>${summary}</summary>\n\n`;
+                  if (result.message) {
+                    block_ += `> ${cell(result.message)}\n\n`;
+                  }
+                  if (result.status === 'fail') {
+                    const expected = loadExpected(r.entity, r.descriptor, r.description);
+                    block_ += `**Expected:**\n\n\`\`\`json\n${block(expected)}\n\`\`\`\n\n`;
+                    block_ += `**Got:**\n\n\`\`\`json\n${block(result.rendered)}\n\`\`\`\n`;
+                  }
+                  block_ += '\n</details>\n';
+                  details.push(block_);
+                }
+              }
+              if (details.length > 0) {
+                body += '\n### Details\n\n' + details.join('\n');
+              }
+
+              body += `\n📋 [View test details](${runUrl})\n`;
+            }
+
+            if (body.length > MAX_BODY) {
+              body = `${body.slice(0, MAX_BODY)}\n\n… truncated. See the [run](${runUrl}).\n`;
+            }
+
+            await upsert(body);
