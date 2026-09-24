@@ -4,7 +4,12 @@
   "dataProvider": {
     "tokens": {
       "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USD Coin", "symbol": "USDC" },
-      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" }
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" },
+      "0x754704bc059f8c67012fed69bc8a327a5aafb603": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USDC"
+      }
     }
   },
   "tests": [
@@ -239,6 +244,93 @@
           { "label": "Spender", "value": "0xE592427A0AEce92De3Edee1F18E0157C05861564" },
           { "label": "Amount", "value": "Any amount USDC" },
           { "label": "Deadline", "value": "2026-07-01 00:00:00Z" }
+        ]
+      }
+    },
+    {
+      "description": "Authorize spending of USDC on Monad (chain 143)",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "PermitDetails": [
+            {
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint160"
+            },
+            {
+              "name": "expiration",
+              "type": "uint48"
+            },
+            {
+              "name": "nonce",
+              "type": "uint48"
+            }
+          ],
+          "PermitSingle": [
+            {
+              "name": "details",
+              "type": "PermitDetails"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "sigDeadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "PermitSingle",
+        "domain": {
+          "name": "Permit2",
+          "chainId": 143,
+          "verifyingContract": "0x000000000022D473030F116dDEE9F6B43aC78BA3"
+        },
+        "message": {
+          "details": {
+            "token": "0x754704Bc059F8C67012fEd69BC8A327a5aafb603",
+            "amount": "2500000000",
+            "expiration": 1782864000,
+            "nonce": 0
+          },
+          "spender": "0x1b81D678ffb9C0263b24A97847620C99d213eB14",
+          "sigDeadline": 1774915200
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of token",
+        "owner": "Uniswap Labs",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x1b81D678ffb9C0263b24A97847620C99d213eB14"
+          },
+          {
+            "label": "Amount allowance",
+            "value": "2500 USDC"
+          },
+          {
+            "label": "Approval expires",
+            "value": "2026-07-01 00:00:00Z"
+          }
         ]
       }
     }
