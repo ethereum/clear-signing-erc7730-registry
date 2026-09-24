@@ -1,11 +1,11 @@
-name: Tests
+name: Descriptor Tests
 
 # Runs the test file of each affected descriptor against every clear-signing
 # implementation, so a descriptor that renders wrong is caught before the
 # merge. The runners consume no secrets, so this workflow runs on
 # pull_request for every pull request, including one from a fork. A fork run
 # gets a read-only token and cannot write the results comment;
-# test-results.yml posts it afterwards, from the base
+# descriptor-test-results.yml posts it afterwards, from the base
 # repository.
 on:
   pull_request:
@@ -28,7 +28,7 @@ jobs:
   # changed shared file, and the testsv2 file of each. The other jobs of this
   # workflow and the results workflow work from this list.
   detect-testsv2:
-    name: 🔍 Find the affected descriptors and their tests
+    name: Find the affected descriptors and their tests
     runs-on: ubuntu-latest
     outputs:
       has_tests: ${{ steps.detect.outputs.has_tests }}
@@ -81,7 +81,7 @@ jobs:
           echo "affected_descriptors=$(echo "$RESULT" | jq -c '.affected_descriptors')" >> $GITHUB_OUTPUT
           echo "missing_tests=$(echo "$RESULT" | jq -c '.missing_tests // []')" >> $GITHUB_OUTPUT
 
-      # test-results.yml runs after this workflow and posts the
+      # descriptor-test-results.yml runs after this workflow and posts the
       # comment that a fork run cannot write. It learns the pull request and the
       # tested descriptors from here, and it gets a copy of each test file, so
       # it never has to check out the head of a fork.
@@ -200,7 +200,7 @@ jobs:
   # implementation. The test passes when the implementation renders what the
   # test file expects.
   sourcify-tests:
-    name: 🧪 Sourcify renders ${{ matrix.test.entity }}/${{ matrix.test.descriptor_name }} as expected
+    name: Typescript - Sourcify SDK tests for ${{ matrix.test.entity }}/${{ matrix.test.descriptor_name }}
     needs: detect-testsv2
     if: needs.detect-testsv2.outputs.has_tests == 'true'
     runs-on: ubuntu-latest
@@ -241,7 +241,7 @@ jobs:
   # implementation shows where a descriptor depends on the behavior of one
   # implementation.
   rust-tests:
-    name: 🧪 Rust renders ${{ matrix.test.entity }}/${{ matrix.test.descriptor_name }} as expected
+    name: Rust - llbartekll SDK tests for ${{ matrix.test.entity }}/${{ matrix.test.descriptor_name }}
     needs: detect-testsv2
     if: needs.detect-testsv2.outputs.has_tests == 'true'
     runs-on: ubuntu-latest
@@ -282,7 +282,7 @@ jobs:
   # fails when a function in display.formats of a calldata descriptor has no
   # test case. EIP-712 descriptors have no functions and are skipped.
   check-test-coverage:
-    name: 🎯 Every function has a test case
+    name: Every function has a test case
     needs: detect-testsv2
     if: needs.detect-testsv2.outputs.has_tests == 'true'
     runs-on: ubuntu-latest
@@ -337,7 +337,7 @@ jobs:
   # runners untested. This job has no condition, so the check shows a pass
   # when every affected descriptor has a test file.
   require-testsv2:
-    name: 🧾 Every affected descriptor has a test file
+    name: Every affected descriptor has a test file
     needs: detect-testsv2
     # Every affected descriptor needs its own test file. One descriptor with a
     # test file must not hide another without one.

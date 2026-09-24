@@ -1,13 +1,13 @@
-name: Tests Queued
+name: Descriptor Tests Queued
 
 # Posts the "tests are queued" note on the pull request as soon as a commit
 # is pushed. The note tells the author that the tests run, and it replaces
 # the results of the previous commit, which a reader could take for the new
 # commit. A fork pull_request run has a read-only token, so the note must
-# come from here. test-results.yml then replaces it with the
+# come from here. descriptor-test-results.yml then replaces it with the
 # results.
 #
-# Keep the paths filter equal to the one in tests.yml.
+# Keep the paths filter equal to the one in descriptor-tests.yml.
 on:
   pull_request_target:
     types: [opened, reopened, synchronize]
@@ -25,7 +25,7 @@ permissions:
 
 jobs:
   announce-run:
-    name: ⏳ Post the queued note
+    name: Post the queued note
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -44,7 +44,7 @@ jobs:
             const { data: runs } = await github.rest.actions.listWorkflowRunsForRepo({
               owner, repo, head_sha: sha, event: 'pull_request', per_page: 100,
             });
-            if (runs.workflow_runs.some((r) => r.name === 'Tests' && r.status === 'completed')) {
+            if (runs.workflow_runs.some((r) => r.name === 'Descriptor Tests' && r.status === 'completed')) {
               core.info(`The tests for ${sha.slice(0, 7)} already finished. No note.`);
               return;
             }

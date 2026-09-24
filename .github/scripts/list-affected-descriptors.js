@@ -26,7 +26,7 @@
  *   }
  *
  * "matrix" only contains affected descriptors that have an existing testsv2
- * file, in the shape consumed by the Tests workflow.
+ * file, in the shape consumed by the Descriptor Tests workflow.
  */
 
 const fs = require('fs');

@@ -53,9 +53,9 @@ write_readme() {
   cat > README.md <<'EOF'
 # Test reports
 
-This branch is written by the Test Results workflow. Do not edit it by hand, and do not base work on it: it has no shared history with `master`, and it can be recreated from scratch at any time.
+This branch is written by the Descriptor Test Results workflow. Do not edit it by hand, and do not base work on it: it has no shared history with `master`, and it can be recreated from scratch at any time.
 
-Each run of the Tests workflow on a pull request adds one bundle, and updates the index of that pull request:
+Each run of the Descriptor Tests workflow on a pull request adds one bundle, and updates the index of that pull request:
 
 ```
 pr/<pull request number>/<run id>.json   the bundle of one run
