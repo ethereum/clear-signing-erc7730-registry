@@ -1,5 +1,9 @@
-name: ✨ pull request
+name: Registry Checks
 
+# The rules that the registry data of a pull request must follow. One job per
+# rule, so a failed check names the broken rule. A job that needs network or
+# tooling looks only at the files that the pull request changes, and at the
+# descriptors that include them. A cheap job scans the whole registry.
 on:
   pull_request:
 
@@ -11,8 +15,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # The erc7730 linter fails when a display field points to a parameter
+  # that is not in the ABI of the deployed contract, or when an EIP-712
+  # key is malformed. Such a descriptor shows wrong or missing data on the
+  # wallet screen. Text length and missing display fields are only warnings.
   validate_descriptors:
-    name: 🔎 validate descriptors
+    name: Descriptors pass the ERC-7730 linter
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -74,8 +82,11 @@ jobs:
           SOURCIFY_TOKEN: ${{ secrets.SOURCIFY_TOKEN_CLEAR_SIGNING_CI }}
         run: erc7730 lint $AFFECTED_FILES --gha
 
+  # A file that does not match its JSON schema is unreadable for a wallet and
+  # for the tools. The linter covers only the descriptors, so this job also
+  # checks the test files, against the test schema of their folder.
   validate_schemas:
-    name: 🔎 validate JSON schemas
+    name: JSON files match their schema
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -167,8 +178,13 @@ jobs:
             exit 1
           fi
 
+  # Each (chainId, address) maps to one calldata descriptor, and two
+  # descriptors cannot register the same EIP-712 type at one address. A
+  # descriptor that breaks this would overwrite an entry of another
+  # descriptor in the index files. Without this job, the conflict shows
+  # only after the merge, in the sync-indexes workflow.
   validate_index:
-    name: 🔎 validate index
+    name: No index entry is overwritten
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -176,7 +192,7 @@ jobs:
         timeout-minutes: 10
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Get all changed descriptor files
+      - name: Get all changed descriptor and shared files
         timeout-minutes: 5
         id: changed-files
         uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
@@ -187,6 +203,8 @@ jobs:
           files_ignore: |
             registry/**/tests/**
             registry/**/testsv2/**
+            registry/**/sigs/**
+            registry/**/*.tests.json
 
       - name: Setup node
         timeout-minutes: 10
@@ -204,15 +222,13 @@ jobs:
       - name: Check that the index can still be built
         timeout-minutes: 10
         if: steps.changed-files.outputs.any_changed == 'true'
-        # Each (chainId, address) maps to exactly one calldata descriptor, and
-        # two descriptors cannot register the same EIP-712 encodeType at one
-        # address. A pull request that breaks either would leave the index
-        # ungeneratable, which only surfaces after the merge, in the
-        # sync-indexes workflow — by then the conflict is already on master.
         run: node tools/scripts/generate-index.js --validate
 
+  # The file name says what a file is: calldata-* and eip712-* files are root
+  # descriptors, common-* files are shared parts. The tools, the index
+  # generator and the other checks rely on these prefixes.
   validate_file_names:
-    name: 🔎 validate file names
+    name: File names follow the registry layout
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -238,8 +254,12 @@ jobs:
 
           [ "$FAILED" -eq 0 ] || exit 1
 
+  # An auditor attestation in sigs/ is bound to a descriptor by file name. A
+  # change to that descriptor, also through a shared file it includes, would
+  # make the attestation vouch for content the auditor never saw. A deleted
+  # or renamed descriptor leaves the attestation without a descriptor.
   validate_attested_descriptors:
-    name: 🔎 validate attested descriptors
+    name: Attested descriptors are unchanged
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

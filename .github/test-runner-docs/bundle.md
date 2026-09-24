@@ -1,6 +1,6 @@
 # Test report bundle
 
-A bundle is one JSON file that describes one run of the [Clear Signing Tests](../workflows/clear-signing-tests.yml) workflow on a pull request. The results workflow builds it with [`build-bundle.js`](../scripts/build-bundle.js) from the artifacts of the run, commits it to the `test-reports` branch as `pr/<number>/<run id>.json`, and links to the test report viewer, which reads the bundle from `raw.githubusercontent.com`.
+A bundle is one JSON file that describes one run of the [Descriptor Tests](../workflows/descriptor-tests.yml) workflow on a pull request. The results workflow builds it with [`build-bundle.js`](../scripts/build-bundle.js) from the artifacts of the run, commits it to the `test-reports` branch as `pr/<number>/<run id>.json`, and links to the test report viewer, which reads the bundle from `raw.githubusercontent.com`.
 
 The bundle is the contract between this repository and the viewer, which lives in its own repository. `schemaVersion` names the version of this document. The number goes up only for a change that breaks an old reader: a renamed or removed key, or a changed shape. A new optional key does not bump it. A bundle keeps its version forever, so the viewer reads every version it has known.
 
@@ -107,7 +107,7 @@ The results workflow publishes every bundle with [`publish-report.sh`](../script
 
 ```
 README.md                    what the branch is
-pr/<number>/<run id>.json    the bundle of one run of the Clear Signing Tests workflow
+pr/<number>/<run id>.json    the bundle of one run of the Descriptor Tests workflow
 pr/<number>/index.json       the runs of one pull request, newest first
 ```
 
