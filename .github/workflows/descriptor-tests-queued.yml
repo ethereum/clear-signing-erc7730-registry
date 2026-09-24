@@ -3,9 +3,13 @@ name: Descriptor Tests Queued
 # Posts the "tests are queued" note on the pull request as soon as a commit
 # is pushed. The note tells the author that the tests run, and it replaces
 # the results of the previous commit, which a reader could take for the new
-# commit. A fork pull_request run has a read-only token, so the note must
-# come from here. descriptor-test-results.yml then replaces it with the
-# results.
+# commit.
+#
+# The note needs a write token, and a fork pull_request run has a read-only
+# token. So this runs on pull_request_target: the token can write, and the
+# run uses the workflow file of the base branch. It checks out nothing and
+# runs no code from the pull request. descriptor-test-results.yml then
+# replaces the note with the results.
 #
 # Keep the paths filter equal to the one in descriptor-tests.yml.
 on:

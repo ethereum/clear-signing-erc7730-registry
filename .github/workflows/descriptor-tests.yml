@@ -2,11 +2,16 @@ name: Descriptor Tests
 
 # Runs the test file of each affected descriptor against every clear-signing
 # implementation, so a descriptor that renders wrong is caught before the
-# merge. The runners consume no secrets, so this workflow runs on
-# pull_request for every pull request, including one from a fork. A fork run
-# gets a read-only token and cannot write the results comment;
-# descriptor-test-results.yml posts it afterwards, from the base
-# repository.
+# merge.
+#
+# This workflow runs on pull_request, so it runs for every pull request,
+# including one from a fork, and a fork run gets a read-only token. That is
+# the intent: the runners read the descriptors and fixtures of the pull
+# request, so this run must not hold a token that can write. The note on the
+# pull request and the results comment need a write token, so they live in
+# descriptor-tests-queued.yml and descriptor-test-results.yml, which run
+# the workflow file of the base branch and no code from the pull request.
+# Do not merge the three workflows into one.
 on:
   pull_request:
     paths:
