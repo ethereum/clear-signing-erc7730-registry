@@ -8,8 +8,9 @@
  * Inputs are the artifacts of the run, as descriptor-test-results.yml
  * downloads them:
  *
- *   --context   the pr-context artifact: context.json, tests/, descriptors/
- *               and, for a modified descriptor, base-descriptors/
+ *   --context   the pr-context artifact: context.json, tests/, descriptors/,
+ *               for a modified descriptor base-descriptors/, and
+ *               recommendations.json from check-recommended-fields.js
  *   --artifacts the results__* artifacts, merged flat: one
  *               <slug>__<entity>__<descriptor>.json per runner and descriptor
  *   --output    where to write the bundle
@@ -209,22 +210,71 @@ function matchFormat(formats, input) {
   return null;
 }
 
-/** The non-blocking advice for a descriptor, as check-recommended-fields.js gives it. */
-function recommendationsOf(descriptor) {
-  const out = [];
-  const formats = descriptor?.display?.formats;
-  if (isObject(formats)) {
-    for (const [key, format] of Object.entries(formats)) {
-      if (!isObject(format)) continue;
-      // The same test as check-recommended-fields.js, so the comment and the
-      // page agree.
-      if (!('interpolatedIntent' in format)) {
-        out.push({ type: 'no-interpolated-intent', format: key });
-      }
+/**
+ * The suggestions of check-recommended-fields.js, from recommendations.json in
+ * the context. The file comes from a fork, so every item is checked and copied
+ * key by key; an item that does not have the documented shape is dropped. A
+ * context without the file, or with a file that is not version 1, gives no
+ * suggestions.
+ *
+ * Returns the items and the "includes" chain of each descriptor, which maps a
+ * suggestion on a shared file to the descriptors that include the file.
+ */
+function readRecommendations(contextRoot) {
+  const file = path.join(contextRoot, 'recommendations.json');
+  const none = { items: [], includes: new Map() };
+  if (!fs.existsSync(file)) return none;
+  const doc = readJson(file);
+  if (!isObject(doc) || doc.version !== 1 || !Array.isArray(doc.items)) {
+    warn(`ignoring ${file}: not a version 1 recommendations file`);
+    return none;
+  }
+  const items = [];
+  doc.items.forEach((item, i) => {
+    const ok =
+      isObject(item) && ['type', 'file', 'pointer', 'message'].every((key) => typeof item[key] === 'string');
+    if (!ok) {
+      warn(`dropping recommendation #${i}: not an object with string type, file, pointer and message`);
+      return;
+    }
+    const out = { type: item.type, file: item.file, pointer: item.pointer, message: item.message };
+    for (const key of ['format', 'key']) {
+      if (typeof item[key] === 'string') out[key] = item[key];
+    }
+    items.push(out);
+  });
+  const includes = new Map();
+  if (isObject(doc.includes)) {
+    for (const [descriptor, chain] of Object.entries(doc.includes)) {
+      if (Array.isArray(chain)) includes.set(descriptor, chain.filter((f) => typeof f === 'string'));
     }
   }
-  if (descriptor?.context?.contract?.abi !== undefined) out.push({ type: 'deprecated-key', key: 'context.contract.abi' });
-  if (descriptor?.context?.eip712?.schemas !== undefined) out.push({ type: 'deprecated-key', key: 'context.eip712.schemas' });
+  return { items, includes };
+}
+
+/**
+ * The suggestions that apply to one descriptor. An item applies when it names
+ * the descriptor itself or a file in its "includes" chain. A missing
+ * interpolatedIntent applies only when the resolved descriptor has the format
+ * and the format still has no interpolatedIntent: a descriptor can override a
+ * format of the file it includes.
+ */
+function recommendationsFor(descriptorPath, head, { items, includes }) {
+  const files = new Set([descriptorPath, ...(includes.get(descriptorPath) ?? [])]);
+  const formats = isObject(head?.display?.formats) ? head.display.formats : {};
+  const out = [];
+  for (const item of items) {
+    if (!files.has(item.file)) continue;
+    if (item.type === 'no-interpolated-intent') {
+      if (item.format === undefined || !Object.hasOwn(formats, item.format)) continue;
+      const format = formats[item.format];
+      if (!isObject(format) || 'interpolatedIntent' in format) continue;
+      out.push({ type: item.type, format: item.format, file: item.file, pointer: item.pointer });
+    } else if (item.type === 'deprecated-key') {
+      if (item.key === undefined) continue;
+      out.push({ type: item.type, key: item.key, file: item.file, pointer: item.pointer });
+    }
+  }
   return out;
 }
 
@@ -257,6 +307,7 @@ function build({ contextRoot, artifactsRoot, env }) {
   if (ctx === null) throw new Error(`no pull request context in ${contextRoot}; the test run did not describe itself`);
   const matrix = Array.isArray(ctx.matrix) ? ctx.matrix : [];
   const changes = isObject(ctx.changes) ? ctx.changes : {};
+  const recommendations = readRecommendations(contextRoot);
 
   // The results, grouped by descriptor. Each artifact file is named
   // <slug>__<entity>__<descriptor>.json; the slug names the implementation.
@@ -390,7 +441,7 @@ function build({ contextRoot, artifactsRoot, env }) {
       base,
       dataProvider: isObject(fixture?.dataProvider) ? fixture.dataProvider : null,
       formats,
-      recommendations: recommendationsOf(head),
+      recommendations: recommendationsFor(descriptorPath, head, recommendations),
       cases,
     });
   }
@@ -415,6 +466,7 @@ function build({ contextRoot, artifactsRoot, env }) {
     },
     implementations: [...implementations.values()].sort((a, b) => a.id.localeCompare(b.id)),
     missingTests: Array.isArray(ctx.missing_tests) ? ctx.missing_tests : [],
+    recommendations: recommendations.items,
     descriptors,
   };
 }
@@ -448,4 +500,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { build, diffRendered, normalizeRendered, formatsOf, inputOf, matchFormat };
+module.exports = { build, diffRendered, normalizeRendered, formatsOf, inputOf, matchFormat, readRecommendations, recommendationsFor };

@@ -182,15 +182,20 @@ jobs:
           find pr-context -type f | sort
 
       - name: Collect the recommendations
-        # The hashFiles test lets the pull request that adds the script pass.
-        # The base ref does not hold the script yet, and the step starts to
-        # work by itself after the merge.
+        # The script comes from the base. The hashFiles test skips the step
+        # when the base does not hold the script. An older base script writes
+        # Markdown, not JSON; the results workflow ignores a file that is not
+        # valid JSON, so the step starts to work by itself after the merge.
         if: always() && hashFiles('base-scripts/.github/scripts/check-recommended-fields.js') != ''
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-        # An advisory comment, so the results workflow posts it. This run has a
-        # read-only token when the pull request comes from a fork.
-        run: node base-scripts/.github/scripts/check-recommended-fields.js > pr-context/recommendations.md
+          # For the "includes" chain of each descriptor, which the test report
+          # needs to give a descriptor the suggestions of a shared file.
+          AFFECTED_DESCRIPTORS: ${{ steps.detect.outputs.affected_descriptors }}
+        # Suggestions, not errors. The results workflow puts them in the test
+        # report and counts them in its comment. This run has a read-only token
+        # when the pull request comes from a fork, so it only writes a file.
+        run: node base-scripts/.github/scripts/check-recommended-fields.js > pr-context/recommendations.json
 
       - name: Upload the pull request context
         if: always()
