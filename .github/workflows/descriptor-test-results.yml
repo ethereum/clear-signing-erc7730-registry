@@ -237,9 +237,10 @@ jobs:
               return text.length > 4000 ? `${text.slice(0, 4000)}\n… truncated` : text;
             };
 
-            // Each artifact is a single file named
-            // `<slug>__<entity>__<descriptor>.json`. With merge-multiple: true
-            // they all land flat in artifactsRoot, with no collisions.
+            // Each runner uploads one artifact that holds one
+            // `<slug>__<entity>__<descriptor>.json` per descriptor. With
+            // merge-multiple: true they all land flat in artifactsRoot, with
+            // no collisions.
             let resultFiles = [];
             try {
               resultFiles = fs.readdirSync(artifactsRoot).filter(f => f.endsWith('.json'));
