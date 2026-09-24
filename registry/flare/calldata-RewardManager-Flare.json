@@ -4,9 +4,99 @@
     "$id": "RewardManager-Flare",
     "contract": { "deployments": [{ "chainId": 14, "address": "0xC8f55c5aA2C752eE285Bd872855C749f4ee6239B" }] }
   },
-  "metadata": { "owner": "Flare Labs", "info": { "url": "https://flare.network/" }, "contractName": "RewardManager-Flare" },
+  "metadata": {
+    "owner": "Flare Foundation",
+    "info": { "url": "https://flare.network/" },
+    "contractName": "RewardManager-Flare",
+    "enums": { "claimType": { "0": "Direct", "1": "Provider fee", "2": "Wrapped FLR", "3": "Mirrored stake", "4": "C-chain stake" } }
+  },
   "display": {
     "formats": {
+      "claim(address _rewardOwner, address _recipient, uint24 _rewardEpochId, bool _wrap, (bytes32[] merkleProof, (uint24 rewardEpochId, bytes20 beneficiary, uint120 amount, uint8 claimType) body)[] _proofs)": {
+        "intent": "claim rewards",
+        "interpolatedIntent": "Claim rewards to {_recipient}",
+        "fields": [
+          {
+            "label": "Reward Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#._rewardOwner",
+            "visible": "always"
+          },
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#._recipient",
+            "visible": "always"
+          },
+          { "label": "Up To Epoch", "format": "raw", "path": "#._rewardEpochId", "visible": "always" },
+          { "label": "Wrap Rewards", "format": "raw", "path": "#._wrap", "visible": "always" },
+          {
+            "label": "Claim Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "path": "#._proofs.[].body.beneficiary",
+            "visible": "always"
+          },
+          { "label": "Amount", "format": "amount", "path": "#._proofs.[].body.amount", "visible": "always" },
+          {
+            "label": "Claim Type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.claimType" },
+            "path": "#._proofs.[].body.claimType",
+            "visible": "always"
+          },
+          { "label": "Proofs Merkle Proof", "path": "#._proofs.[].merkleProof.[]", "visible": "never" },
+          { "label": "Proofs Body Epoch Id", "path": "#._proofs.[].body.rewardEpochId", "visible": "never" }
+        ]
+      },
+      "claimProxy(address _msgSender, address _rewardOwner, address _recipient, uint24 _rewardEpochId, bool _wrap, (bytes32[] merkleProof, (uint24 rewardEpochId, bytes20 beneficiary, uint120 amount, uint8 claimType) body)[] _proofs)": {
+        "intent": "claim rewards by proxy",
+        "interpolatedIntent": "Claim rewards to {_recipient}",
+        "fields": [
+          {
+            "label": "Executor",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] },
+            "path": "#._msgSender",
+            "visible": "always"
+          },
+          {
+            "label": "Reward Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#._rewardOwner",
+            "visible": "always"
+          },
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#._recipient",
+            "visible": "always"
+          },
+          { "label": "Up To Epoch", "format": "raw", "path": "#._rewardEpochId", "visible": "always" },
+          { "label": "Wrap Rewards", "format": "raw", "path": "#._wrap", "visible": "always" },
+          {
+            "label": "Claim Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "path": "#._proofs.[].body.beneficiary",
+            "visible": "always"
+          },
+          { "label": "Amount", "format": "amount", "path": "#._proofs.[].body.amount", "visible": "always" },
+          {
+            "label": "Claim Type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.claimType" },
+            "path": "#._proofs.[].body.claimType",
+            "visible": "always"
+          },
+          { "label": "Proofs Merkle Proof", "path": "#._proofs.[].merkleProof.[]", "visible": "never" },
+          { "label": "Proofs Body Epoch Id", "path": "#._proofs.[].body.rewardEpochId", "visible": "never" }
+        ]
+      },
       "autoClaim(address[] _rewardOwners, uint24 _rewardEpochId, (bytes32[] merkleProof, (uint24 rewardEpochId, bytes20 beneficiary, uint120 amount, uint8 claimType) body)[] _proofs)": {
         "intent": "claim rewards",
         "fields": [

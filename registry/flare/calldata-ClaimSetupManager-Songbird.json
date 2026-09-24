@@ -1,0 +1,121 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ClaimSetupManager-Songbird",
+    "contract": { "deployments": [{ "chainId": 19, "address": "0xDD138B38d87b0F95F6c3e13e78FFDF2588F1732d" }] }
+  },
+  "metadata": { "owner": "Flare Foundation", "info": { "url": "https://flare.network/" }, "contractName": "ClaimSetupManager-Songbird" },
+  "display": {
+    "formats": {
+      "setClaimExecutors(address[] _executors)": {
+        "intent": "Set claim executors",
+        "fields": [
+          {
+            "label": "Executors",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] },
+            "path": "#._executors.[]",
+            "visible": "always"
+          },
+          { "label": "Fee", "format": "amount", "path": "@.value", "visible": "always" }
+        ]
+      },
+      "setAllowedClaimRecipients(address[] _recipients)": {
+        "intent": "Set allowed claim recipients",
+        "fields": [
+          {
+            "label": "Recipients",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#._recipients.[]",
+            "visible": "always"
+          }
+        ]
+      },
+      "setAutoClaiming(address[] _executors, bool _enableDelegationAccount)": {
+        "intent": "Enable automatic claiming",
+        "fields": [
+          {
+            "label": "Executors",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] },
+            "path": "#._executors.[]",
+            "visible": "always"
+          },
+          { "label": "Delegation Account", "format": "raw", "path": "#._enableDelegationAccount", "visible": "always" },
+          { "label": "Fee", "format": "amount", "path": "@.value", "visible": "always" }
+        ]
+      },
+      "enableDelegationAccount()": { "intent": "Enable delegation account", "fields": [] },
+      "disableDelegationAccount()": { "intent": "Disable delegation account", "fields": [] },
+      "withdraw(uint256 _amount)": {
+        "intent": "Withdraw funds",
+        "fields": [{ "label": "Amount", "format": "amount", "path": "#._amount", "visible": "always" }]
+      },
+      "transferExternalToken(address _token, uint256 _amount)": {
+        "intent": "Recover external token",
+        "fields": [
+          { "label": "Token", "format": "addressName", "params": { "types": ["token"] }, "path": "#._token", "visible": "always" },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#._token" },
+            "path": "#._amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "delegate(address _to, uint256 _bips)": {
+        "intent": "Delegate FTSO vote power",
+        "fields": [
+          {
+            "label": "Provider",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "path": "#._to",
+            "visible": "always"
+          },
+          { "label": "Share", "format": "unit", "params": { "decimals": 2, "base": "%" }, "path": "#._bips", "visible": "always" }
+        ]
+      },
+      "batchDelegate(address[] _delegatees, uint256[] _bips)": {
+        "intent": "Delegate FTSO vote power",
+        "fields": [
+          {
+            "label": "Provider",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "path": "#._delegatees.[]",
+            "visible": "always"
+          },
+          { "label": "Share", "format": "unit", "params": { "decimals": 2, "base": "%" }, "path": "#._bips.[]", "visible": "always" }
+        ]
+      },
+      "undelegateAll()": { "intent": "Undelegate FTSO vote power", "fields": [] },
+      "revokeDelegationAt(address _who, uint256 _blockNumber)": {
+        "intent": "Revoke delegation at block",
+        "fields": [
+          { "label": "Who", "format": "addressName", "params": { "types": ["eoa", "contract"] }, "path": "#._who", "visible": "always" },
+          { "label": "Block Number", "format": "raw", "path": "#._blockNumber", "visible": "always" }
+        ]
+      },
+      "delegateGovernance(address _to)": {
+        "intent": "Delegate governance VP",
+        "fields": [{ "label": "To", "format": "addressName", "params": { "types": ["eoa", "wallet"] }, "path": "#._to", "visible": "always" }]
+      },
+      "undelegateGovernance()": { "intent": "Undelegate governance VP", "fields": [] },
+      "registerExecutor(uint256 _feeValue)": {
+        "intent": "Register as claim executor",
+        "fields": [
+          { "label": "Executor Fee", "format": "amount", "path": "#._feeValue", "visible": "always" },
+          { "label": "Registration Fee", "format": "amount", "path": "@.value", "visible": "always" }
+        ]
+      },
+      "updateExecutorFeeValue(uint256 _feeValue)": {
+        "intent": "Update executor fee",
+        "fields": [{ "label": "Fee Value", "format": "amount", "path": "#._feeValue", "visible": "always" }]
+      },
+      "unregisterExecutor()": { "intent": "Unregister as claim executor", "fields": [] }
+    }
+  }
+}
