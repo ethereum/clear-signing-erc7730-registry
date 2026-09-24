@@ -1,0 +1,67 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "USDYInstantManager",
+    "contract": {
+      "deployments": [
+        { "chainId": 56, "address": "0x9bA360087075A4Cef548eeD71Eed197bf4cFA4E2" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Ondo Finance",
+    "contractName": "USDY Instant Manager",
+    "info": { "url": "https://ondo.finance" },
+    "constants": {
+      "USDYaddress": "0x608593d17A2decBbc4399e4185bE4922F97eD32E"
+    }
+  },
+  "display": {
+    "formats": {
+      "subscribe(address depositToken, uint256 depositAmount, uint256 minimumRwaReceived)": {
+        "$id": "subscribe",
+        "intent": "Subscribe to USDY",
+        "interpolatedIntent": "Subscribe with {depositAmount} for at least {minimumRwaReceived}+",
+        "fields": [
+          {
+            "path": "depositAmount",
+            "format": "tokenAmount",
+            "label": "Deposit Amount",
+            "params": { "tokenPath": "depositToken" },
+            "visible": "always"
+          },
+          {
+            "path": "minimumRwaReceived",
+            "format": "tokenAmount",
+            "label": "Min USDY Received",
+            "params": { "token": "$.metadata.constants.USDYaddress" },
+            "visible": "always"
+          },
+          { "path": "depositToken", "label": "Deposit Token", "visible": "never" }
+        ]
+      },
+      "redeem(uint256 rwaAmount, address receivingToken, uint256 minimumTokenReceived)": {
+        "$id": "redeem",
+        "intent": "Redeem USDY",
+        "interpolatedIntent": "Redeem {rwaAmount} for at least {minimumTokenReceived}+",
+        "fields": [
+          {
+            "path": "rwaAmount",
+            "format": "tokenAmount",
+            "label": "USDY Amount",
+            "params": { "token": "$.metadata.constants.USDYaddress" },
+            "visible": "always"
+          },
+          {
+            "path": "minimumTokenReceived",
+            "format": "tokenAmount",
+            "label": "Min Receive Amount",
+            "params": { "tokenPath": "receivingToken" },
+            "visible": "always"
+          },
+          { "path": "receivingToken", "label": "Receiving Token", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
