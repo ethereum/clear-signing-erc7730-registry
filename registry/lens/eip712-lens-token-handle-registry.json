@@ -3,27 +3,40 @@
   "context": {
     "eip712": {
       "deployments": [{ "chainId": 137, "address": "0xd4f2f33680fccb36748fa9831851643781608844" }],
-      "domain": { "name": "Lens Protocol Profiles", "version": "2" }
+      "domain": { "name": "TokenHandleRegistry", "version": "1" }
     }
   },
   "metadata": { "owner": "TokenHandleRegistry" },
   "display": {
     "formats": {
-      "unlink_with_sig(uint256 handle_id,uint256 profile_id,uint256 signatureDeadline)": {
-        "intent": "unlink_with_sig",
+      "Link(uint256 handleId,uint256 profileId,uint256 nonce,uint256 deadline)": {
+        "intent": "Link handle to profile",
         "fields": [
-          { "path": "handle_id", "label": "handle_id", "format": "raw" },
-          { "path": "profile_id", "label": "profile_id", "format": "raw" },
-          { "path": "signatureDeadline", "label": "signatureDeadline", "format": "raw" }
+          { "path": "handleId", "label": "Handle", "format": "raw", "visible": "always" },
+          { "path": "profileId", "label": "Profile", "format": "raw", "visible": "always" },
+          {
+            "path": "deadline",
+            "label": "Signature expires",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "nonce", "label": "Nonce", "visible": "never" }
         ]
       },
-      "unlink(uint256 handleId,uint256 profileId,uint256 nonce,uint256 deadline)": {
-        "intent": "unlink",
+      "Unlink(uint256 handleId,uint256 profileId,uint256 nonce,uint256 deadline)": {
+        "intent": "Unlink handle from profile",
         "fields": [
-          { "path": "handleId", "label": "handleId", "format": "raw" },
-          { "path": "profileId", "label": "profileId", "format": "raw" },
-          { "path": "nonce", "label": "nonce", "format": "raw" },
-          { "label": "Deadline", "path": "deadline", "visible": "never" }
+          { "path": "handleId", "label": "Handle", "format": "raw", "visible": "always" },
+          { "path": "profileId", "label": "Profile", "format": "raw", "visible": "always" },
+          {
+            "path": "deadline",
+            "label": "Signature expires",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "nonce", "label": "Nonce", "visible": "never" }
         ]
       }
     }
