@@ -1,9 +1,17 @@
-name: Clear Signing Tests Started
+name: Descriptor Tests Queued
 
-# A fork pull_request run has a read-only token, so the note must come from
-# here. clear-signing-tests-results.yml then replaces it with the results.
+# Posts the "tests are queued" note on the pull request as soon as a commit
+# is pushed. The note tells the author that the tests run, and it replaces
+# the results of the previous commit, which a reader could take for the new
+# commit.
 #
-# Keep the paths filter equal to the one in clear-signing-tests.yml.
+# The note needs a write token, and a fork pull_request run has a read-only
+# token. So this runs on pull_request_target: the token can write, and the
+# run uses the workflow file of the base branch. It checks out nothing and
+# runs no code from the pull request. descriptor-test-results.yml then
+# replaces the note with the results.
+#
+# Keep the paths filter equal to the one in descriptor-tests.yml.
 on:
   pull_request_target:
     types: [opened, reopened, synchronize]
@@ -21,7 +29,7 @@ permissions:
 
 jobs:
   announce-run:
-    name: Announce the test run
+    name: Post the queued note
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -40,7 +48,7 @@ jobs:
             const { data: runs } = await github.rest.actions.listWorkflowRunsForRepo({
               owner, repo, head_sha: sha, event: 'pull_request', per_page: 100,
             });
-            if (runs.workflow_runs.some((r) => r.name === 'Clear Signing Tests' && r.status === 'completed')) {
+            if (runs.workflow_runs.some((r) => r.name === 'Descriptor Tests' && r.status === 'completed')) {
               core.info(`The tests for ${sha.slice(0, 7)} already finished. No note.`);
               return;
             }

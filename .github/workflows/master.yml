@@ -1,4 +1,4 @@
-name: ✨ master
+name: Master Checks
 
 on:
   push:
@@ -13,8 +13,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # The pull request checks lint only the affected descriptors. Two pull
+  # requests that each pass alone can break together, for example when one
+  # changes a shared file and the other adds a descriptor that includes it.
+  # So every descriptor is linted again on master.
   validate_descriptors:
-    name: 🔎 validate descriptors
+    name: Descriptors pass the ERC-7730 linter
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -34,15 +38,15 @@ jobs:
         run: pip install -r .github/requirements.txt
 
       - name: Validate ERC-7730 descriptors
-        timeout-minutes: 10
+        timeout-minutes: 30
         env:
           SOURCIFY_TOKEN: ${{ secrets.SOURCIFY_TOKEN_CLEAR_SIGNING_CI }}
         run: |
           # Lint only root descriptors. Exclude the test fixtures under tests/ and
           # testsv2/ and the auditor attestations under sigs/ (same set as
-          # pull_request.yml's files_ignore) — they are not ERC-7730 descriptors
+          # registry-checks.yml's files_ignore) — they are not ERC-7730 descriptors
           # and fail descriptor validation.
           FILES=$(find registry -type f \( -name 'calldata-*.json' -o -name 'eip712-*.json' \) \
             -not -path '*/tests/*' -not -path '*/testsv2/*' -not -path '*/sigs/*' \
             -not -name '*.tests.json')
-          erc7730 lint $FILES --gha
+          erc7730 lint --require-verified $FILES --gha
