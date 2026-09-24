@@ -49,17 +49,17 @@ ercs/
 - All ERC-7730 compatible files are prefixed with either `calldata` for smart contracts or `eip712` for EIP-712 messages.
 - All ERC-7730 compatible files are correctly validated against the schema file located at `specs/erc7730-v2.schema.json`.
 - Do not use the `calldata` or `eip712` prefixes for common files which are included by the ERC-7730 files and placed at the top level of the entity folder. Name them `common-*.json` instead.
-- Each descriptor added or changed is accompanied by a test file so descriptors can be verified against the formatter implementations. See [Reference test cases](#reference-test-cases).
+- Each descriptor added or changed is accompanied by a test file so descriptors can be verified against the formatter implementations. For a calldata descriptor, the test file has at least one test case for every function in `display.formats`: CI derives the selector of each format and looks for it in the calldata of the test cases. See [Reference test cases](#reference-test-cases).
 
 Reviewers check each PR against the [review guidelines](docs/REVIEWING.md).
 
 ## How to validate
 
-The `erc7730` Python package is available for validating and formatting ERC-7730 descriptors:
+The `erc7730` Python package is available for validating and formatting ERC-7730 descriptors. This repository uses the [sourcifyeth/python-erc7730](https://github.com/sourcifyeth/python-erc7730) fork, pinned in `.github/requirements.txt`:
 
 ```bash
 # Install the erc7730 package (requires Python 3.12+)
-pip install erc7730
+pip install -r .github/requirements.txt
 
 # Validate a specific file
 erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
@@ -70,7 +70,7 @@ erc7730 lint $(find registry -type f \( -name 'calldata-*.json' -o -name 'eip712
 # Format all descriptors
 erc7730 format
 
-# Generate a new descriptor from Etherscan
+# Generate a new descriptor from Sourcify
 erc7730 generate --address 0xContractAddress --chain-id 1 --owner "Entity Name" --url "https://entity.url"
 ```
 
@@ -80,18 +80,18 @@ If you have [uv](https://docs.astral.sh/uv/) installed, you can skip the install
 
 ```bash
 # Run any erc7730 command without installing it first
-uvx erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
-uvx erc7730 format
+uvx --from "$(cat .github/requirements.txt)" erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
+uvx --from "$(cat .github/requirements.txt)" erc7730 format
 ```
 
 Or install it as a persistent uv-managed tool:
 
 ```bash
-uv tool install erc7730
+uv tool install "$(cat .github/requirements.txt)"
 erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
 ```
 
-For more information about the ERC-7730 tools, visit the [erc7730 package on PyPI](https://pypi.org/project/erc7730/).
+For more information about the ERC-7730 tools, visit the [sourcifyeth/python-erc7730](https://github.com/sourcifyeth/python-erc7730) repository.
 
 ## Reference test cases
 

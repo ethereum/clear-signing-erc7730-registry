@@ -3,20 +3,23 @@
   "context": {
     "eip712": {
       "deployments": [{ "chainId": 1, "address": "0xe63602a9b3dfe983187525ac985fec4f57b24ed5" }],
-      "domain": { "name": "DeGate Protocol", "version": "3.0.1" }
+      "domain": { "name": "DeGate Protocol", "version": "0.1.0" }
     }
   },
-  "metadata": { "owner": "DeGate Exchange Contract" },
+  "metadata": {
+    "owner": "DeGate Exchange Contract",
+    "enums": { "tokenID": { "0": "ETH", "1": "DG", "2": "USDC", "3": "USDT", "4": "WBTC", "5": "DAI" } }
+  },
   "display": {
     "formats": {
       "AccountUpdate(address owner,uint32 accountID,uint32 feeTokenID,uint96 maxFee,uint256 publicKey,uint32 validUntil,uint32 nonce)": {
-        "intent": "DeGate AccountUpdate",
+        "intent": "Replace account signing key",
         "fields": [
           { "path": "owner", "label": "Owner", "format": "raw" },
           { "path": "accountID", "label": "AccountID", "format": "raw" },
-          { "path": "feeTokenID", "label": "FeeTokenID", "format": "raw" },
-          { "path": "maxFee", "label": "MaxFee", "format": "raw" },
-          { "path": "publicKey", "label": "PublicKey", "format": "raw" },
+          { "path": "feeTokenID", "label": "Fee token", "format": "enum", "params": { "$ref": "$.metadata.enums.tokenID" } },
+          { "path": "maxFee", "label": "Max fee (base units)", "format": "raw" },
+          { "path": "publicKey", "label": "New signing key", "format": "raw" },
           { "path": "validUntil", "label": "ValidUntil", "format": "raw" },
           { "path": "nonce", "label": "Nonce", "format": "raw" }
         ]
@@ -26,10 +29,10 @@
         "fields": [
           { "path": "owner", "label": "Owner", "format": "raw" },
           { "path": "accountID", "label": "AccountID", "format": "raw" },
-          { "path": "tokenID", "label": "TokenID", "format": "raw" },
-          { "path": "amount", "label": "Amount", "format": "raw" },
-          { "path": "feeTokenID", "label": "FeeTokenID", "format": "raw" },
-          { "path": "maxFee", "label": "MaxFee", "format": "raw" },
+          { "path": "tokenID", "label": "Token", "format": "enum", "params": { "$ref": "$.metadata.enums.tokenID" } },
+          { "path": "amount", "label": "Amount (base units)", "format": "raw" },
+          { "path": "feeTokenID", "label": "Fee token", "format": "enum", "params": { "$ref": "$.metadata.enums.tokenID" } },
+          { "path": "maxFee", "label": "Max fee (base units)", "format": "raw" },
           { "path": "to", "label": "To", "format": "raw" },
           { "path": "minGas", "label": "MinGas", "format": "raw" },
           { "path": "validUntil", "label": "ValidUntil", "format": "raw" },
@@ -41,10 +44,10 @@
         "fields": [
           { "path": "owner", "label": "Owner", "format": "raw" },
           { "path": "accountID", "label": "AccountID", "format": "raw" },
-          { "path": "tokenID", "label": "TokenID", "format": "raw" },
-          { "path": "amount", "label": "Amount", "format": "raw" },
-          { "path": "feeTokenID", "label": "FeeTokenID", "format": "raw" },
-          { "path": "maxFee", "label": "MaxFee", "format": "raw" },
+          { "path": "tokenID", "label": "Token", "format": "enum", "params": { "$ref": "$.metadata.enums.tokenID" } },
+          { "path": "amount", "label": "Amount (base units)", "format": "raw" },
+          { "path": "feeTokenID", "label": "Fee token", "format": "enum", "params": { "$ref": "$.metadata.enums.tokenID" } },
+          { "path": "maxFee", "label": "Max fee (base units)", "format": "raw" },
           { "path": "to", "label": "To", "format": "raw" },
           { "path": "validUntil", "label": "ValidUntil", "format": "raw" },
           { "path": "storageID", "label": "StorageID", "format": "raw" }

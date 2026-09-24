@@ -10,10 +10,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-#env:
-#  ETHERSCAN_API_HOST: <set this secret to define a custom Etherscan API host>
-#  ETHERSCAN_API_KEY: <set this secret to inject Etherscan API key>
-
 jobs:
   validate_descriptors:
     name: 🔎 validate descriptors
@@ -68,13 +64,14 @@ jobs:
       - name: Install ERC-7730 library
         timeout-minutes: 10
         if: steps.affected-descriptors.outputs.any_affected == 'true'
-        run: pip install erc7730
+        run: pip install -r .github/requirements.txt
 
       - name: Validate ERC-7730 descriptors affected by pull request
         timeout-minutes: 120
         if: steps.affected-descriptors.outputs.any_affected == 'true'
         env:
           AFFECTED_FILES: ${{ steps.affected-descriptors.outputs.descriptors }}
+          SOURCIFY_TOKEN: ${{ secrets.SOURCIFY_TOKEN_CLEAR_SIGNING_CI }}
         run: erc7730 lint $AFFECTED_FILES --gha
 
   validate_schemas:
@@ -106,7 +103,7 @@ jobs:
       - name: Install check-jsonschema
         timeout-minutes: 10
         if: steps.changed-json-files.outputs.any_changed == 'true'
-        run: pip install check-jsonschema
+        run: pip install -r .github/requirements-schema.txt
 
       - name: Validate changed files against JSON schemas
         timeout-minutes: 60

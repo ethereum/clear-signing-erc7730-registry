@@ -5,8 +5,13 @@ name: Clear Signing Tests Results
 # clear-signing-tests-started.yml writes the note that this workflow replaces,
 # and both write the same "## Clear Signing Tests" comment.
 #
-# The test jobs give the verdict, so a lost comment cannot make a failed pull
-# request look green. The workflow name below is matched as a string.
+# This workflow also builds the test report bundle of the run and publishes it
+# to the test-reports branch, where the test report viewer reads it. The
+# comment links to the viewer. See .github/test-runner-docs/bundle.md.
+#
+# The test jobs give the verdict, so a lost comment or a lost report cannot
+# make a failed pull request look green. The workflow name below is matched
+# as a string.
 on:
   workflow_run:
     workflows: ["Clear Signing Tests"]
@@ -20,7 +25,16 @@ concurrency:
 
 permissions:
   actions: read
+  # For the push to the test-reports branch. The other branches are protected
+  # by the repository rules, not by this token.
+  contents: write
   pull-requests: write
+
+env:
+  # The test report viewer. The comment links to it with the pull request and
+  # the run, and the viewer reads the bundle from the test-reports branch.
+  REPORT_BASE_URL: https://tests.erc7730.sourcify.dev/
+  REPORTS_BRANCH: test-reports
 
 jobs:
   post-implementation-results:
@@ -44,6 +58,15 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Download the test coverage report
+        continue-on-error: true
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: test-coverage
+          path: test-coverage
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Download the runner results
         continue-on-error: true
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -54,15 +77,119 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      # A fork wrote the artifacts, so the pull request must come from the
+      # event, which a fork cannot change.
+      - name: Find the pull request
+        id: pr
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
+          RUN_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const headRepo = process.env.RUN_HEAD_REPO;
+            const headBranch = process.env.RUN_HEAD_BRANCH;
+            const { data: open } = await github.rest.pulls.list({
+              owner, repo, state: 'open', head: `${headRepo.split('/')[0]}:${headBranch}`, per_page: 100,
+            });
+            const pr = open.find(
+              (p) => p.head.sha === process.env.RUN_HEAD_SHA && p.head.repo?.full_name === headRepo,
+            );
+            if (!pr) {
+              core.info(`No open pull request at ${headRepo}@${process.env.RUN_HEAD_SHA}. No comment.`);
+              core.setOutput('found', 'false');
+              return;
+            }
+            core.setOutput('found', 'true');
+            core.setOutput('number', String(pr.number));
+            core.setOutput('url', pr.html_url);
+            core.setOutput('title', pr.title);
+
+      # The scripts come from the default branch, so a fork cannot change
+      # them. Every step up to the comment continues on error: the comment
+      # matters more than the report.
+      #
+      # The token of this job can write, so it stays out of reach of the
+      # dependencies: the checkout keeps no credentials, the install runs no
+      # package scripts, and no cache is restored.
+      - name: Checkout the scripts
+        if: steps.pr.outputs.found == 'true'
+        continue-on-error: true
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: scripts
+          persist-credentials: false
+          sparse-checkout: |
+            .github/scripts
+            package.json
+            package-lock.json
+
+      - name: Setup node
+        if: steps.pr.outputs.found == 'true'
+        continue-on-error: true
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "22"
+
+      - name: Install the dependencies of the scripts
+        if: steps.pr.outputs.found == 'true'
+        continue-on-error: true
+        working-directory: scripts
+        run: npm ci --ignore-scripts
+
+      # The run and the pull request come from the event and from the step
+      # above, not from the artifact, so a fork cannot change them. The base
+      # commit comes from the context artifact, which the detect job wrote
+      # from the pull_request event.
+      - name: Build the test report bundle
+        id: bundle
+        if: steps.pr.outputs.found == 'true'
+        continue-on-error: true
+        env:
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          RUN_STARTED_AT: ${{ github.event.workflow_run.run_started_at }}
+          RUN_COMPLETED_AT: ${{ github.event.workflow_run.updated_at }}
+          TESTED_SHA: ${{ github.event.workflow_run.head_sha }}
+          HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          PR_URL: ${{ steps.pr.outputs.url }}
+          PR_TITLE: ${{ steps.pr.outputs.title }}
+        run: |
+          mkdir -p artifacts pr-context
+          node scripts/.github/scripts/build-bundle.js \
+            --context pr-context --artifacts artifacts --output report/bundle.json
+
+      - name: Publish the bundle to the test-reports branch
+        id: publish
+        if: steps.pr.outputs.found == 'true' && steps.bundle.outcome == 'success'
+        continue-on-error: true
+        env:
+          REPO_URL: https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          BRANCH: ${{ env.REPORTS_BRANCH }}
+          BUNDLE: report/bundle.json
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          TESTED_SHA: ${{ github.event.workflow_run.head_sha }}
+          WORKDIR: reports
+          SCRIPTS_DIR: scripts/.github/scripts
+        run: |
+          bash scripts/.github/scripts/publish-report.sh
+          echo "url=${REPORT_BASE_URL}?pr=${PR_NUMBER}&run=${RUN_ID}" >> "$GITHUB_OUTPUT"
+
       - name: Post PR comment
+        if: steps.pr.outputs.found == 'true'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           RUN_ID: ${{ github.event.workflow_run.id }}
           RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-          RUN_HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
-          RUN_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
           RUN_STARTED_AT: ${{ github.event.workflow_run.run_started_at }}
           RUN_COMPLETED_AT: ${{ github.event.workflow_run.updated_at }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          # Empty when the report was not published, so the comment has no link.
+          REPORT_URL: ${{ steps.publish.outcome == 'success' && steps.publish.outputs.url || '' }}
         with:
           script: |
             const fs = require('fs');
@@ -77,22 +204,8 @@ jobs:
             const workspace = process.env.GITHUB_WORKSPACE;
             const artifactsRoot = path.join(workspace, 'artifacts');
             const contextRoot = path.join(workspace, 'pr-context');
-
-            // A fork wrote the artifact, so the pull request must come from
-            // the event, which a fork cannot change.
-            const headRepo = process.env.RUN_HEAD_REPO;
-            const headBranch = process.env.RUN_HEAD_BRANCH;
-            const { data: open } = await github.rest.pulls.list({
-              owner, repo, state: 'open', head: `${headRepo.split('/')[0]}:${headBranch}`, per_page: 100,
-            });
-            const pr = open.find(
-              (p) => p.head.sha === process.env.RUN_HEAD_SHA && p.head.repo?.full_name === headRepo,
-            );
-            if (!pr) {
-              core.info(`No open pull request at ${headRepo}@${process.env.RUN_HEAD_SHA}. No comment.`);
-              return;
-            }
-            const issue_number = pr.number;
+            const issue_number = Number(process.env.PR_NUMBER);
+            const reportUrl = process.env.REPORT_URL || '';
 
             // The artifact can be absent when the test run failed early. Say so,
             // instead of leaving the "in progress" note on the pull request.
@@ -104,13 +217,14 @@ jobs:
               ctx = null;
             }
 
-            // Runner strings are untrusted. Keep them inside one table cell.
-            const cell = (v) =>
+            // Runner strings are untrusted. Keep them inside one line.
+            const line = (v) =>
               String(v ?? '')
                 .replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))
                 .replace(/\|/g, '\\|')
-                .replace(/[\r\n]+/g, ' ')
-                .slice(0, 200);
+                .replace(/[\r\n]+/g, ' ');
+            // And inside one table cell.
+            const cell = (v) => line(v).slice(0, 200);
             const block = (v) => {
               const text = v != null ? JSON.stringify(v, null, 2) : '(none)';
               return text.length > 4000 ? `${text.slice(0, 4000)}\n… truncated` : text;
@@ -175,6 +289,13 @@ jobs:
             body += ` · started ${utc(process.env.RUN_STARTED_AT)}`;
             body += ` · finished ${utc(process.env.RUN_COMPLETED_AT)}\n\n`;
 
+            // The report page shows what each case rendered, the diff between
+            // the implementations, and the coverage. The URL is built by the
+            // workflow from the event, not from an artifact.
+            if (reportUrl !== '') {
+              body += `📊 [Open the test report](${reportUrl})\n\n`;
+            }
+
             // The test run failed before it could describe itself.
             if (ctx === null) {
               body += `> The test run produced no results. See the [run](${runUrl}).\n`;
@@ -197,6 +318,23 @@ jobs:
               body +=
                 '\nCreate a test file at `registry/<entity>/testsv2/<descriptor-name>.tests.json`. ' +
                 'See [testing documentation](../blob/master/README.md#reference-test-cases) for details.\n\n';
+            }
+
+            // check-test-coverage already failed the run, like require-testsv2.
+            let coverage = {};
+            try {
+              coverage = JSON.parse(fs.readFileSync(path.join(workspace, 'test-coverage', 'coverage.json'), 'utf8'));
+            } catch {
+              // The job did not run, or the run failed before it.
+            }
+            const gaps = Object.entries(coverage);
+            if (gaps.length > 0) {
+              body += `❌ ${gaps.length} affected descriptor(s) failed the test coverage check:\n\n`;
+              for (const [descriptor, messages] of gaps) {
+                body += `- \`${cell(descriptor)}\`\n`;
+                for (const message of messages) body += `  - ${line(message).slice(0, 1000)}\n`;
+              }
+              body += '\n';
             }
 
             // No descriptor had a test file, so no runner produced anything.
