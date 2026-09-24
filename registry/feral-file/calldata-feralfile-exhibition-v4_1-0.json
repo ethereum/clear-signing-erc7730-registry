@@ -1,0 +1,406 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "feralfile-exhibition-v4_1",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x115C9A6118bC7a3EB0aBD30f6BCF1C45Bb198AEd"
+        },
+        {
+          "chainId": 1,
+          "address": "0x32c07ADE321B90813220F5064842B1F34A59f322"
+        },
+        {
+          "chainId": 1,
+          "address": "0x5D303A17883C442603B8afb54921d1b7DCc0C831"
+        },
+        {
+          "chainId": 1,
+          "address": "0x8a20fB6eb7e1D662b157Fc6eA0694972584C09BB"
+        },
+        {
+          "chainId": 1,
+          "address": "0xFfE213c3faA18B4B80aC1658C363D471dC745886"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Feral File",
+    "info": {
+      "url": "https://feralfile.com"
+    },
+    "contractName": "Feral File Exhibition V4.1"
+  },
+  "display": {
+    "formats": {
+      "transferFrom(address from,address to,uint256 tokenId)": {
+        "intent": "Transfer artwork",
+        "interpolatedIntent": "Transfer token {tokenId} from {from} to {to}",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "tokenId",
+            "label": "Artwork",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            }
+          }
+        ]
+      },
+      "safeTransferFrom(address from,address to,uint256 tokenId)": {
+        "intent": "Transfer artwork",
+        "interpolatedIntent": "Safely transfer token {tokenId} to {to}",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "tokenId",
+            "label": "Artwork",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            }
+          }
+        ]
+      },
+      "safeTransferFrom(address from,address to,uint256 tokenId,bytes data)": {
+        "intent": "Transfer artwork",
+        "interpolatedIntent": "Safely transfer token {tokenId} to {to}",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "tokenId",
+            "label": "Artwork",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            }
+          }
+        ]
+      },
+      "approve(address operator,uint256 tokenId)": {
+        "intent": "Approve artwork transfer",
+        "interpolatedIntent": "Allow {operator} to transfer token {tokenId}",
+        "fields": [
+          {
+            "path": "operator",
+            "label": "Operator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "tokenId",
+            "label": "Artwork",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            }
+          }
+        ]
+      },
+      "setApprovalForAll(address operator,bool approved)": {
+        "intent": "Set operator approval",
+        "interpolatedIntent": "{approved} all tokens for {operator}",
+        "fields": [
+          {
+            "path": "operator",
+            "label": "Operator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "approved",
+            "label": "Approved",
+            "format": "raw"
+          }
+        ]
+      },
+      "burnArtworks(uint256[] tokenIds)": {
+        "intent": "Burn artworks",
+        "interpolatedIntent": "Permanently destroy selected artworks",
+        "fields": [
+          {
+            "path": "tokenIds.[]",
+            "label": "Artworks",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            }
+          }
+        ]
+      },
+      "buyArtworks(bytes32 r_,bytes32 s_,uint8 v_,(uint256 price,uint256 cost,uint256 expiryTime,address destination,uint256[] tokenIds,(address recipient,uint256 bps)[][] revenueShares,bool payByVaultContract) saleData_)": {
+        "intent": "Purchase artworks",
+        "interpolatedIntent": "Buy artworks for {saleData_.destination}",
+        "fields": [
+          {
+            "path": "saleData_.price",
+            "label": "Price",
+            "format": "amount"
+          },
+          {
+            "path": "saleData_.cost",
+            "label": "Platform cost",
+            "format": "amount"
+          },
+          {
+            "path": "saleData_.destination",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "saleData_.tokenIds.[]",
+            "label": "Artworks",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            }
+          },
+          {
+            "path": "saleData_.expiryTime",
+            "label": "Offer expires",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "saleData_.payByVaultContract",
+            "label": "Pay via vault",
+            "format": "raw"
+          },
+          {
+            "path": "saleData_.revenueShares.[].[].recipient",
+            "label": "Revenue recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "saleData_.revenueShares.[].[].bps",
+            "label": "Revenue share (basis points)",
+            "format": "raw"
+          }
+        ]
+      },
+      "startSale()": {
+        "intent": "Start artwork sale",
+        "fields": []
+      },
+      "resumeSale()": {
+        "intent": "Resume artwork sale",
+        "fields": []
+      },
+      "pauseSale()": {
+        "intent": "Pause artwork sale",
+        "fields": []
+      },
+      "stopSaleAndBurn()": {
+        "intent": "Stop sale and burn unsold artworks",
+        "fields": []
+      },
+      "stopSaleAndTransfer(uint256[] seriesIds,address[] recipientAddresses)": {
+        "intent": "Stop sale and return unsold artworks",
+        "fields": [
+          {
+            "path": "seriesIds.[]",
+            "label": "Series IDs",
+            "format": "raw"
+          },
+          {
+            "path": "recipientAddresses.[]",
+            "label": "Recipients",
+            "format": "raw"
+          }
+        ]
+      },
+      "mintArtworks((uint256 seriesId,uint256 tokenId,address owner)[] data)": {
+        "intent": "Mint artworks",
+        "fields": [
+          {
+            "path": "data.[].seriesId",
+            "label": "Series ID",
+            "format": "raw"
+          },
+          {
+            "path": "data.[].tokenId",
+            "label": "Artwork",
+            "format": "nftName",
+            "params": {
+              "collectionPath": "@.to"
+            }
+          },
+          {
+            "path": "data.[].owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "setVault(address vault_)": {
+        "intent": "Set vault contract",
+        "fields": [
+          {
+            "path": "vault_",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "setCostReceiver(address costReceiver_)": {
+        "intent": "Set cost receiver",
+        "fields": [
+          {
+            "path": "costReceiver_",
+            "label": "Cost receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "setTokenBaseURI(string baseURI_)": {
+        "intent": "Set token base URI",
+        "fields": [
+          {
+            "path": "baseURI_",
+            "label": "Base URI",
+            "format": "raw"
+          }
+        ]
+      },
+      "setAdvanceSetting(address[] addresses_,uint256[] amounts_)": {
+        "intent": "Set advance payment settings",
+        "fields": [
+          {
+            "path": "addresses_.[]",
+            "label": "Addresses",
+            "format": "raw"
+          },
+          {
+            "path": "amounts_.[]",
+            "label": "Advance amounts",
+            "format": "amount"
+          }
+        ]
+      },
+      "replaceAdvanceAddresses(address[] oldAddresses_,address[] newAddresses_)": {
+        "intent": "Replace advance payment addresses",
+        "fields": [
+          {
+            "path": "oldAddresses_.[]",
+            "label": "Old addresses",
+            "format": "raw"
+          },
+          {
+            "path": "newAddresses_.[]",
+            "label": "New addresses",
+            "format": "raw"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Tesseract Deployer WETH",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x6701241e65d4bafc399ca4358e95960af3c041c4" }] }
+  },
+  "metadata": {
+    "owner": "Tesseract Earn Oy",
+    "info": { "url": "https://tesseract.fi" },
+    "contractName": "Tesseract Vault Deployer (WETH)",
+    "constants": { "underlyingToken": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", "vaultTicker": "teWETH" }
+  },
+  "display": {
+    "formats": {
+      "deployVault(uint256 initialDeposit, uint256 maxManagementFee, uint256 maxPerformanceFee)": {
+        "intent": "Deploy Vault",
+        "fields": [
+          { "label": "Vault share ticker", "format": "raw", "value": "$.metadata.constants.vaultTicker" },
+          {
+            "path": "initialDeposit",
+            "label": "Initial deposit",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
+          },
+          {
+            "path": "maxManagementFee",
+            "label": "Max management fee",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 2 },
+            "visible": "always"
+          },
+          {
+            "path": "maxPerformanceFee",
+            "label": "Max performance fee",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 2 },
+            "visible": "always"
+          }
+        ]
+      },
+      "deployVaultWithPermit(uint256 initialDeposit, uint256 maxManagementFee, uint256 maxPerformanceFee, uint256 deadline, uint8 v, bytes32 r, bytes32 s)": {
+        "intent": "Deploy Vault (Permit)",
+        "fields": [
+          { "label": "Vault share ticker", "format": "raw", "value": "$.metadata.constants.vaultTicker" },
+          {
+            "path": "initialDeposit",
+            "label": "Initial deposit",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
+          },
+          {
+            "path": "maxManagementFee",
+            "label": "Max management fee",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 2 },
+            "visible": "always"
+          },
+          {
+            "path": "maxPerformanceFee",
+            "label": "Max performance fee",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 2 },
+            "visible": "always"
+          },
+          {
+            "path": "deadline",
+            "label": "Permit deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

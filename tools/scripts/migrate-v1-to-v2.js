@@ -335,7 +335,7 @@ function needsSkipLint(filePath) {
 function lintFile(filePath, version) {
   const linterCmd = getLinterCommand();
   if (!linterCmd) {
-    verboseLog("  ⚠️  erc7730 CLI not found. Install with: pip install erc7730", "WARN");
+    verboseLog("  ⚠️  erc7730 CLI not found. Install with: pip install -r .github/requirements.txt", "WARN");
     stats.linting.skipped++;
     return true; // Don't fail if CLI not available
   }

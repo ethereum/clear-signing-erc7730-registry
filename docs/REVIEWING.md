@@ -10,7 +10,7 @@ A PR review is deliberately **short and basic**: the mechanical rules are enforc
 
 ### 1. Are all CI checks green?
 
-Nothing gets merged with failing checks. CI covers the mechanical review completely — linting and schema validation, test presence and results, index collisions (no hijacking of another project's deployments), file naming, and immutability of attested descriptors. None of these needs a manual pass anymore.
+Nothing gets merged with failing checks. CI covers the mechanical review completely — linting and schema validation, test presence, results and coverage (every function of a calldata descriptor has a test case), index collisions (no hijacking of another project's deployments), file naming, and immutability of attested descriptors. None of these needs a manual pass anymore.
 
 The optional improvements (adding `interpolatedIntent`, dropping deprecated fields) are also suggested automatically by the advisory **recommendations comment** — nothing to do there either; whether the author applies them is their call.
 
