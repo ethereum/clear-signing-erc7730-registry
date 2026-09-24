@@ -1,0 +1,50 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "SimplePSMV2",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xfE0C14B4E614f40Bf58845b4B04CeD17fd116532" }] }
+  },
+  "metadata": {
+    "owner": "Diamond Hands",
+    "contractName": "Diamond Hands PSM",
+    "info": { "url": "https://diamondhands.credit", "deploymentDate": "2026-06-16T16:40:50Z" },
+    "constants": { "ucdToken": "0xaAaB6B05E5EecB015898483d4e6703d7F218850b" }
+  },
+  "display": {
+    "formats": {
+      "swap(address stablecoin, uint256 amountIn, uint256 minUcdOut)": {
+        "intent": "Buy UCD",
+        "interpolatedIntent": "Swap {#.amountIn} for UCD",
+        "fields": [
+          { "path": "#.amountIn", "label": "Amount to swap", "format": "tokenAmount", "params": { "tokenPath": "#.stablecoin" } },
+          {
+            "path": "#.minUcdOut",
+            "label": "Minimum received",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.ucdToken" }
+          },
+          { "path": "#.stablecoin", "label": "Stablecoin", "visible": "never" }
+        ]
+      },
+      "redeem(address stablecoin, uint256 ucdAmount, uint256 minStablecoinOut)": {
+        "intent": "Redeem UCD",
+        "interpolatedIntent": "Redeem {#.ucdAmount}",
+        "fields": [
+          {
+            "path": "#.ucdAmount",
+            "label": "Amount to redeem",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.ucdToken" }
+          },
+          {
+            "path": "#.minStablecoinOut",
+            "label": "Minimum received",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.stablecoin" }
+          },
+          { "path": "#.stablecoin", "label": "Stablecoin", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
