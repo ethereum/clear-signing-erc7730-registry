@@ -1,0 +1,282 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "USD8Booster",
+    "contract": {
+      "abi": "https://api.etherscan.io/api?module=contract&action=getabi&address=0x6f74ce39bb1d75c56e2fe5f349a6a5f51ce6f12d&format=raw",
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x6f74ce39bb1d75c56e2fe5f349a6a5f51ce6f12d"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "USD8",
+    "info": {
+      "legalName": "USD8 (usd8.fi)",
+      "url": "https://usd8.fi",
+      "deploymentDate": "2026-05-03"
+    },
+    "enums": {
+      "tokenId": {
+        "1": "1% Cover Booster"
+      }
+    },
+    "constants": {
+      "boosterAdmin": "0x977cc5a8504ab467b73259dcc2288dd1869efa41"
+    }
+  },
+  "display": {
+    "formats": {
+      "claim(address receiver,uint256 nonce,uint256 tokenId,uint256 amount,bytes signature)": {
+        "$id": "claim",
+        "intent": "Claim USD8 Booster NFT",
+        "fields": [
+          {
+            "label": "Receiver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#.receiver"
+          },
+          {
+            "label": "Booster type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.tokenId" },
+            "path": "#.tokenId"
+          },
+          {
+            "label": "Amount",
+            "format": "raw",
+            "path": "#.amount"
+          },
+          {
+            "label": "Nonce",
+            "format": "raw",
+            "path": "#.nonce"
+          },
+          {
+            "label": "Auth signature",
+            "format": "raw",
+            "path": "#.signature",
+            "visible": "never"
+          }
+        ]
+      },
+      "mint(address to,uint256 tokenId,uint256 amount)": {
+        "$id": "mint",
+        "intent": "Admin mint USD8 Booster",
+        "fields": [
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#.to"
+          },
+          {
+            "label": "Booster type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.tokenId" },
+            "path": "#.tokenId"
+          },
+          {
+            "label": "Amount",
+            "format": "raw",
+            "path": "#.amount"
+          }
+        ]
+      },
+      "mintBatch(address[] recipients,uint256[] tokenIds,uint256[] amounts)": {
+        "$id": "mintBatch",
+        "intent": "Admin batch mint USD8 Boosters",
+        "fields": [
+          {
+            "label": "Recipients",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#.recipients.[]"
+          },
+          {
+            "label": "Booster types",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.tokenId" },
+            "path": "#.tokenIds.[]"
+          },
+          {
+            "label": "Amounts",
+            "format": "raw",
+            "path": "#.amounts.[]"
+          }
+        ]
+      },
+      "safeTransferFrom(address from,address to,uint256 id,uint256 value,bytes data)": {
+        "$id": "safeTransferFrom",
+        "intent": "Transfer USD8 Booster",
+        "fields": [
+          {
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#.from"
+          },
+          {
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#.to"
+          },
+          {
+            "label": "Booster type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.tokenId" },
+            "path": "#.id"
+          },
+          {
+            "label": "Amount",
+            "format": "raw",
+            "path": "#.value"
+          },
+          {
+            "label": "Data",
+            "format": "raw",
+            "path": "#.data",
+            "visible": "never"
+          }
+        ]
+      },
+      "safeBatchTransferFrom(address from,address to,uint256[] ids,uint256[] values,bytes data)": {
+        "$id": "safeBatchTransferFrom",
+        "intent": "Batch transfer USD8 Boosters",
+        "fields": [
+          {
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#.from"
+          },
+          {
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#.to"
+          },
+          {
+            "label": "Booster types",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.tokenId" },
+            "path": "#.ids.[]"
+          },
+          {
+            "label": "Amounts",
+            "format": "raw",
+            "path": "#.values.[]"
+          },
+          {
+            "label": "Data",
+            "format": "raw",
+            "path": "#.data",
+            "visible": "never"
+          }
+        ]
+      },
+      "setApprovalForAll(address operator,bool approved)": {
+        "$id": "setApprovalForAll",
+        "intent": "Approve operator",
+        "fields": [
+          {
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] },
+            "path": "#.operator"
+          },
+          {
+            "label": "Approved",
+            "format": "raw",
+            "path": "#.approved"
+          }
+        ]
+      },
+      "burn(address account,uint256 id,uint256 value)": {
+        "$id": "burn",
+        "intent": "Burn USD8 Booster",
+        "fields": [
+          {
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#.account"
+          },
+          {
+            "label": "Booster type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.tokenId" },
+            "path": "#.id"
+          },
+          {
+            "label": "Amount",
+            "format": "raw",
+            "path": "#.value"
+          }
+        ]
+      },
+      "burnBatch(address account,uint256[] ids,uint256[] values)": {
+        "$id": "burnBatch",
+        "intent": "Batch burn USD8 Boosters",
+        "fields": [
+          {
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#.account"
+          },
+          {
+            "label": "Booster types",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.tokenId" },
+            "path": "#.ids.[]"
+          },
+          {
+            "label": "Amounts",
+            "format": "raw",
+            "path": "#.values.[]"
+          }
+        ]
+      },
+      "setSigner(address newSigner)": {
+        "$id": "setSigner",
+        "intent": "Rotate claim signer",
+        "fields": [
+          {
+            "label": "New signer",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#.newSigner"
+          }
+        ]
+      },
+      "setURI(string newuri)": {
+        "$id": "setURI",
+        "intent": "Update metadata URI",
+        "fields": [
+          {
+            "label": "New URI",
+            "format": "raw",
+            "path": "#.newuri"
+          }
+        ]
+      },
+      "invalidateNonce(uint256 nonce)": {
+        "$id": "invalidateNonce",
+        "intent": "Invalidate claim nonce",
+        "fields": [
+          {
+            "label": "Nonce",
+            "format": "raw",
+            "path": "#.nonce"
+          }
+        ]
+      }
+    }
+  }
+}
