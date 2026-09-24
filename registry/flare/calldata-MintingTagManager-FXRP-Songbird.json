@@ -1,0 +1,53 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "MintingTagManager-FXRP-Songbird",
+    "contract": { "deployments": [{ "chainId": 19, "address": "0x09E139A95edD67509AEA040BF4b722Ec103D21f4" }] }
+  },
+  "metadata": {
+    "owner": "Flare Foundation",
+    "info": { "url": "https://flare.network/" },
+    "contractName": "MintingTagManager-FXRP-Songbird"
+  },
+  "display": {
+    "formats": {
+      "reserve()": {
+        "intent": "reserve minting tag",
+        "fields": [{ "label": "Reservation Fee", "format": "amount", "path": "@.value", "visible": "always" }]
+      },
+      "setMintingRecipient(uint256 _mintingTag, address _recipient)": {
+        "intent": "set mint recipient",
+        "fields": [
+          { "label": "Tag Id", "format": "raw", "path": "#._mintingTag", "visible": "always" },
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#._recipient",
+            "visible": "always"
+          }
+        ]
+      },
+      "setAllowedExecutor(uint256 _mintingTag, address _executor)": {
+        "intent": "set mint executor",
+        "fields": [
+          { "label": "Tag Id", "format": "raw", "path": "#._mintingTag", "visible": "always" },
+          {
+            "label": "Executor",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"] },
+            "path": "#._executor",
+            "visible": "always"
+          }
+        ]
+      },
+      "transfer(address _to, uint256 _mintingTag)": {
+        "intent": "transfer minting tag",
+        "fields": [
+          { "label": "To", "format": "addressName", "params": { "types": ["eoa", "wallet"] }, "path": "#._to", "visible": "always" },
+          { "label": "Tag Id", "format": "raw", "path": "#._mintingTag", "visible": "always" }
+        ]
+      }
+    }
+  }
+}
