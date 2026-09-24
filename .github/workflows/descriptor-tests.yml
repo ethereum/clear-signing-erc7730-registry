@@ -2,7 +2,8 @@ name: Descriptor Tests
 
 # Runs the test file of each affected descriptor against every clear-signing
 # implementation, so a descriptor that renders wrong is caught before the
-# merge.
+# merge. Each implementation runs as one job over all affected descriptors,
+# so the pull request shows one check per implementation.
 #
 # This workflow runs on pull_request, so it runs for every pull request,
 # including one from a fork, and a fork run gets a read-only token. That is
@@ -201,18 +202,15 @@ jobs:
           # shorter period would find no context.
           retention-days: 30
 
-  # Runs the test file of one descriptor through the Sourcify TypeScript
-  # implementation. The test passes when the implementation renders what the
-  # test file expects.
+  # Runs the test file of every affected descriptor through the Sourcify
+  # TypeScript implementation, in one job, so a pull request gets one check
+  # per implementation and not one per descriptor (#3048). The test passes
+  # when the implementation renders what the test file expects.
   sourcify-tests:
-    name: Typescript - Sourcify SDK tests for ${{ matrix.test.entity }}/${{ matrix.test.descriptor_name }}
+    name: Typescript - Sourcify SDK tests
     needs: detect-testsv2
     if: needs.detect-testsv2.outputs.has_tests == 'true'
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        test: ${{ fromJson(needs.detect-testsv2.outputs.test_matrix) }}
     steps:
       - name: Checkout registry
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -230,30 +228,26 @@ jobs:
       - name: Run Sourcify clear-signing tests
         uses: ./base-scripts/.github/actions/run-sourcify-tests
         with:
-          test-file: ${{ github.workspace }}/registry/${{ matrix.test.test_file }}
-          output: ${{ github.workspace }}/results.json
+          test-matrix: ${{ needs.detect-testsv2.outputs.test_matrix }}
+          registry-root: ${{ github.workspace }}/registry
+          output-dir: ${{ github.workspace }}/results
 
       - name: Upload results
         if: always()
         uses: ./base-scripts/.github/actions/upload-test-results
         with:
-          results-path: ${{ github.workspace }}/results.json
+          results-dir: ${{ github.workspace }}/results
           implementation-slug: sourcify-ts-clear-signing
-          entity: ${{ matrix.test.entity }}
-          descriptor-name: ${{ matrix.test.descriptor_name }}
+          test-matrix: ${{ needs.detect-testsv2.outputs.test_matrix }}
 
-  # The same test file, through the Rust implementation. A second
+  # The same test files, through the Rust implementation. A second
   # implementation shows where a descriptor depends on the behavior of one
   # implementation.
   rust-tests:
-    name: Rust - llbartekll SDK tests for ${{ matrix.test.entity }}/${{ matrix.test.descriptor_name }}
+    name: Rust - llbartekll SDK tests
     needs: detect-testsv2
     if: needs.detect-testsv2.outputs.has_tests == 'true'
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        test: ${{ fromJson(needs.detect-testsv2.outputs.test_matrix) }}
     steps:
       - name: Checkout registry
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -271,17 +265,17 @@ jobs:
       - name: Run Rust clear-signing tests
         uses: ./base-scripts/.github/actions/run-rust-tests
         with:
-          test-file: ${{ github.workspace }}/registry/${{ matrix.test.test_file }}
-          output: ${{ github.workspace }}/results.json
+          test-matrix: ${{ needs.detect-testsv2.outputs.test_matrix }}
+          registry-root: ${{ github.workspace }}/registry
+          output-dir: ${{ github.workspace }}/results
 
       - name: Upload results
         if: always()
         uses: ./base-scripts/.github/actions/upload-test-results
         with:
-          results-path: ${{ github.workspace }}/results.json
+          results-dir: ${{ github.workspace }}/results
           implementation-slug: rust-clear-signing
-          entity: ${{ matrix.test.entity }}
-          descriptor-name: ${{ matrix.test.descriptor_name }}
+          test-matrix: ${{ needs.detect-testsv2.outputs.test_matrix }}
 
   # The runners test only the functions that a test case calls. This job
   # fails when a function in display.formats of a calldata descriptor has no
