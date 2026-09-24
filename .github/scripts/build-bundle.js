@@ -282,6 +282,35 @@ function recommendationsFor(descriptorPath, head, { items, includes }) {
 // The bundle
 // ---------------------------------------------------------------------------
 
+/**
+ * JSON text of a value with the keys of every object in sorted order, so
+ * that two values that differ only in key order give the same text.
+ */
+function canonical(value) {
+  const sort = (v) => {
+    if (Array.isArray(v)) return v.map(sort);
+    if (!isObject(v)) return v;
+    const out = {};
+    for (const key of Object.keys(v).sort()) out[key] = sort(v[key]);
+    return out;
+  };
+  return JSON.stringify(sort(value));
+}
+
+/**
+ * The change of a descriptor. The workflow knows only the files of the pull
+ * request, so a descriptor whose own file did not change is "unchanged", even
+ * when the pull request changed a file that it includes. Here the resolved
+ * head and base are known: when they differ, the descriptor is "modified",
+ * and viaInclude says that the change came from an included file. Other
+ * values stay as they are.
+ */
+function resolveChange(change, head, base) {
+  if (change.descriptor !== 'unchanged' || head === null || base === null) return change;
+  if (canonical(head) === canonical(base)) return change;
+  return { ...change, descriptor: 'modified', viaInclude: true };
+}
+
 /** One path segment: no separator, and not only dots. */
 const SEGMENT = /^(?!\.+$)[A-Za-z0-9._-]+$/;
 
@@ -364,9 +393,13 @@ function build({ contextRoot, artifactsRoot, env }) {
     const fixture = readJson(fixtureFile);
     const formats = formatsOf(head, kind);
 
-    const change = isObject(changes[descriptorPath])
-      ? changes[descriptorPath]
-      : { descriptor: base ? 'modified' : head ? 'added' : 'unknown', tests: 'unknown' };
+    const change = resolveChange(
+      isObject(changes[descriptorPath])
+        ? changes[descriptorPath]
+        : { descriptor: base ? 'modified' : head ? 'added' : 'unknown', tests: 'unknown' },
+      head,
+      base,
+    );
 
     // One case per fixture test, with the input facts and the result of
     // every implementation, keyed by its id.
@@ -500,4 +533,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { build, diffRendered, normalizeRendered, formatsOf, inputOf, matchFormat, readRecommendations, recommendationsFor };
+module.exports = { build, canonical, resolveChange, diffRendered, normalizeRendered, formatsOf, inputOf, matchFormat, readRecommendations, recommendationsFor };

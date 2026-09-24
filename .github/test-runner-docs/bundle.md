@@ -52,7 +52,8 @@ The list comes from [`check-recommended-fields.js`](../scripts/check-recommended
 | `path` | string | Repository path, e.g. `registry/flare/calldata-AssetManager-FXRP-Flare.json` |
 | `entity`, `name` | string | The two parts of the path |
 | `kind` | `calldata` or `eip712` | From the file name prefix |
-| `change.descriptor` | string | `added`, `modified`, `deleted`, `unchanged` or `unknown` |
+| `change.descriptor` | string | `added`, `modified`, `deleted`, `unchanged` or `unknown`. `modified` also when only a file that the descriptor includes changed: the resolved `head` and `base` differ |
+| `change.viaInclude` | `true`, optional | Present when `change.descriptor` is `modified` only because a file that the descriptor includes changed. The descriptor file itself did not change |
 | `change.tests` | string | Same values, for the test file |
 | `testFile` | string or null | Repository path of the test file |
 | `head` | object or null | The descriptor at `pr.headSha`, with `includes` resolved |
