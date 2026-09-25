@@ -1,0 +1,93 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "WormholeTokenBridge",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x3ee18B2214AFF97000D974cf647E7C347E8fa585" },
+        { "chainId": 56, "address": "0xB6F6D86a8f9879A9c87f643768d9efc38c1Da6E7" },
+        { "chainId": 137, "address": "0x5a58505a96D1dbf8dF91cB21B54419FC36e93fdE" },
+        { "chainId": 43114, "address": "0x0e082F06FF657D94310cB8cE8B0D9a04541d8052" },
+        { "chainId": 10, "address": "0x1D68124e65faFC907325e3EDbF8c4d84499DAa8b" },
+        { "chainId": 42161, "address": "0x0b2402144Bb366A632D14B83F244D2e0e21bD39c" },
+        { "chainId": 8453, "address": "0x8d2de8d2f73F1F4cAB472AC9A881C9b123C79627" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Wormhole",
+    "contractName": "TokenBridge",
+    "info": { "url": "https://portalbridge.com/" },
+    "enums": {
+      "wormholeChain": {
+        "1": "Solana",
+        "2": "Ethereum",
+        "4": "BNB Chain",
+        "5": "Polygon",
+        "6": "Avalanche",
+        "23": "Arbitrum",
+        "24": "Optimism",
+        "30": "Base"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "transferTokens(address token,uint256 amount,uint16 recipientChain,bytes32 recipient,uint256 arbiterFee,uint32 nonce)": {
+        "intent": "Bridge tokens",
+        "fields": [
+          { "path": "#.token", "label": "Token", "format": "addressName", "params": { "types": ["token", "contract"], "sources": ["local"] } },
+          { "path": "#.amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "#.token" } },
+          { "path": "#.recipientChain", "label": "Destination chain", "format": "enum", "params": { "$ref": "$.metadata.enums.wormholeChain" } },
+          { "path": "#.recipient", "label": "Recipient", "format": "raw" },
+          { "path": "#.arbiterFee", "label": "Relayer fee", "format": "tokenAmount", "params": { "tokenPath": "#.token" } },
+          { "path": "#.nonce", "label": "Nonce", "visible": "never" }
+        ]
+      },
+      "transferTokensWithPayload(address token,uint256 amount,uint16 recipientChain,bytes32 recipient,uint32 nonce,bytes payload)": {
+        "intent": "Bridge tokens with payload",
+        "fields": [
+          { "path": "#.token", "label": "Token", "format": "addressName", "params": { "types": ["token", "contract"], "sources": ["local"] } },
+          { "path": "#.amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "#.token" } },
+          { "path": "#.recipientChain", "label": "Destination chain", "format": "enum", "params": { "$ref": "$.metadata.enums.wormholeChain" } },
+          { "path": "#.recipient", "label": "Recipient", "format": "raw" },
+          { "path": "#.payload", "label": "Payload", "format": "raw" },
+          { "path": "#.nonce", "label": "Nonce", "visible": "never" }
+        ]
+      },
+      "wrapAndTransferETH(uint16 recipientChain,bytes32 recipient,uint256 arbiterFee,uint32 nonce)": {
+        "intent": "Wrap ETH and bridge",
+        "fields": [
+          { "path": "@.value", "label": "ETH amount", "format": "amount" },
+          { "path": "#.recipientChain", "label": "Destination chain", "format": "enum", "params": { "$ref": "$.metadata.enums.wormholeChain" } },
+          { "path": "#.recipient", "label": "Recipient", "format": "raw" },
+          { "path": "#.arbiterFee", "label": "Relayer fee", "format": "amount" },
+          { "path": "#.nonce", "label": "Nonce", "visible": "never" }
+        ]
+      },
+      "wrapAndTransferETHWithPayload(uint16 recipientChain,bytes32 recipient,uint32 nonce,bytes payload)": {
+        "intent": "Wrap ETH and bridge with payload",
+        "fields": [
+          { "path": "@.value", "label": "ETH amount", "format": "amount" },
+          { "path": "#.recipientChain", "label": "Destination chain", "format": "enum", "params": { "$ref": "$.metadata.enums.wormholeChain" } },
+          { "path": "#.recipient", "label": "Recipient", "format": "raw" },
+          { "path": "#.payload", "label": "Payload", "format": "raw" },
+          { "path": "#.nonce", "label": "Nonce", "visible": "never" }
+        ]
+      },
+      "attestToken(address tokenAddress,uint32 nonce)": {
+        "intent": "Attest token for bridging",
+        "fields": [
+          { "path": "#.tokenAddress", "label": "Token", "format": "addressName", "params": { "types": ["token", "contract"], "sources": ["local"] } },
+          { "path": "#.nonce", "label": "Nonce", "visible": "never" }
+        ]
+      },
+      "completeTransfer(bytes encodedVm)": {
+        "intent": "Complete token bridge transfer",
+        "fields": [
+          { "path": "#.encodedVm", "label": "Attestation", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
