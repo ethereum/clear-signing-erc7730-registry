@@ -113,11 +113,11 @@ Use a mix of normal-path transactions (the most common user actions) and edge ca
 
 ## Submitting your attestation
 
-After a full review passes, create an **EAS offchain attestation** (ERC-8176 schema):
+After a full review passes, create an **EAS onchain attestation** (ERC-8176 schema). Onchain attestations are publicly discoverable via EAS indexers.
 
 - Calculate the descriptor hash:
 
-`descriptorHash = keccak256(RFC 8785 JCS-canonicalized descriptor JSON)` — do not hash raw file bytes.
+`descriptorHash = keccak256(RFC 8785 JCS-canonicalized fully-resolved descriptor)` — `includes` MUST be resolved and merged per ERC-7730 rules before hashing; do not hash raw file bytes.
 
 With `clearsig` installed:
 
@@ -126,9 +126,9 @@ clearsig descriptor-hash registry/<project>/<descriptorname>.json
 # 0x...
 ```
 
-- Go to [Ethereum Attestation Service](https://easscan.org/schema/view/0xe023eef113c1670774801c34b377fdf612dd8a4d2fa92fe382e15bd91fafb5c2), select 'Attest with schema' and use 'Offchain'
-- Sign the attestation
-- Copy and save the raw attestation data on EAS as json file and submit it via PR to the registry at:
+- Go to [Ethereum Attestation Service](https://easscan.org/schema/view/0xe023eef113c1670774801c34b377fdf612dd8a4d2fa92fe382e15bd91fafb5c2), select 'Attest with schema' and use 'Onchain'
+- Sign and submit the transaction
+- Once confirmed, copy the attestation record from easscan as JSON and submit it via PR to the registry at:
 
 ```
 registry/<project>/sigs/<descriptorname>.eip155-1-0xYourAddress.json
