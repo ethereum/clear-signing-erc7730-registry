@@ -1,0 +1,51 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "EntryPoint 0.8 user operation",
+    "eip712": {
+      "domain": { "name": "ERC4337", "version": "1" },
+      "deployments": [
+        { "chainId": 1, "address": "0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108" },
+        { "chainId": 10, "address": "0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108" },
+        { "chainId": 56, "address": "0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108" },
+        { "chainId": 100, "address": "0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108" },
+        { "chainId": 137, "address": "0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108" },
+        { "chainId": 8453, "address": "0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108" },
+        { "chainId": 42161, "address": "0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108" },
+        { "chainId": 43114, "address": "0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108" },
+        { "chainId": 11155111, "address": "0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108" }
+      ]
+    }
+  },
+  "metadata": { "owner": "eth-infinitism", "info": { "url": "https://erc4337.io" }, "contractName": "EntryPoint 0.8" },
+  "display": {
+    "formats": {
+      "PackedUserOperation(address sender,uint256 nonce,bytes initCode,bytes callData,bytes32 accountGasLimits,uint256 preVerificationGas,bytes32 gasFees,bytes paymasterAndData)": {
+        "$id": "PackedUserOperation",
+        "intent": "Execute smart account action",
+        "fields": [
+          {
+            "path": "sender",
+            "label": "Account",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "callData",
+            "label": "Action",
+            "format": "calldata",
+            "params": { "calleePath": "sender", "spenderPath": "sender" },
+            "visible": "always"
+          },
+          { "path": "paymasterAndData", "label": "Paymaster", "format": "raw", "visible": { "ifNotIn": ["0x"] } },
+          { "path": "initCode", "label": "Account deployment", "format": "raw", "visible": { "ifNotIn": ["0x", "0x7702"] } },
+          { "path": "gasFees", "label": "Gas fees (packed)", "format": "raw", "visible": "optional" },
+          { "path": "accountGasLimits", "label": "Gas limits (packed)", "format": "raw", "visible": "optional" },
+          { "path": "preVerificationGas", "label": "Pre-verification gas", "format": "raw", "visible": "optional" },
+          { "path": "nonce", "label": "Nonce", "format": "raw", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
