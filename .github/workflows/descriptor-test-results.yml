@@ -197,6 +197,7 @@ jobs:
         env:
           RUN_ID: ${{ github.event.workflow_run.id }}
           RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
           RUN_STARTED_AT: ${{ github.event.workflow_run.run_started_at }}
           RUN_COMPLETED_AT: ${{ github.event.workflow_run.updated_at }}
           PR_NUMBER: ${{ steps.pr.outputs.number }}
@@ -243,6 +244,32 @@ jobs:
             // "1 function has", "2 functions have".
             const count = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
             const has = (n) => (n === 1 ? 'has' : 'have');
+
+            // The conclusion of the test run, from the event. When a runner
+            // job crashes before it writes results, it uploads no artifact,
+            // and the rows below hold only the other implementations. Every
+            // row can pass there, so the uploaded results alone must not
+            // give a green verdict on a run that did not succeed.
+            const conclusion = process.env.RUN_CONCLUSION || '';
+            // The jobs of the test run that did not succeed, to name the
+            // cause. The names come from the jobs API of this repository,
+            // not from an artifact, but they still go through cell(). When
+            // the API call fails, the sentence stands without the names.
+            let failedJobs = [];
+            if (conclusion !== 'success') {
+              try {
+                const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+                  owner, repo, run_id: Number(process.env.RUN_ID), per_page: 100,
+                });
+                failedJobs = jobs
+                  .filter((j) => ['failure', 'cancelled', 'timed_out'].includes(j.conclusion))
+                  .map((j) => cell(j.name));
+              } catch (e) {
+                core.warning(`Could not list the jobs of the test run: ${e.message}`);
+              }
+            }
+            const failedJobsSentence =
+              failedJobs.length > 0 ? ` Failed jobs: ${failedJobs.join(', ')}.` : '';
 
             // Each runner uploads one artifact that holds one
             // `<slug>__<entity>__<descriptor>.json` per descriptor. With
@@ -328,7 +355,7 @@ jobs:
             // The test run failed before it could describe itself.
             if (ctx === null) {
               await upsert(
-                `${RESULTS}\n\n❌ The test run stopped before it produced results. See the [run](${runUrl}).\n\n${footer}`,
+                `${RESULTS}\n\n❌ The test run stopped before it produced results.${failedJobsSentence} See the [run](${runUrl}).\n\n${footer}`,
               );
               return;
             }
@@ -411,11 +438,18 @@ jobs:
             if (!ctx.has_tests) {
               verdict = ['❌', ...problems, 'No tests ran.'].join(' ');
             } else if (!ran && problems.length === 0) {
-              verdict = `⚠️ The test runners produced no results. See the [run](${runUrl}).`;
+              verdict = `⚠️ The test runners produced no results.${failedJobsSentence} See the [run](${runUrl}).`;
             } else if (!ran) {
-              verdict = ['❌', ...problems, `The test runners produced no results. See the [run](${runUrl}).`].join(' ');
-            } else if (problems.length === 0) {
+              verdict = ['❌', ...problems, `The test runners produced no results.${failedJobsSentence} See the [run](${runUrl}).`].join(' ');
+            } else if (problems.length === 0 && conclusion === 'success') {
               verdict = `✅ ${passSentence}`;
+            } else if (problems.length === 0) {
+              // The results that were uploaded all pass, but the run is red,
+              // so a runner probably crashed before it wrote its results.
+              const uploadedPass = total === 1
+                ? 'The 1 test case in the uploaded results passes'
+                : `All ${total} test cases in the uploaded results pass`;
+              verdict = `⚠️ ${uploadedPass}, but the test run did not succeed.${failedJobsSentence} See the [run](${runUrl}).`;
             } else {
               verdict = `❌ ${[...problems, ...(failed === 0 ? [passSentence] : [])].join(' ')}`;
             }
