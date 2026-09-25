@@ -333,24 +333,25 @@ jobs:
             // before the branches below, which return early.
             await upsert('', RECOMMENDATIONS);
 
-            // The suggestions of check-recommended-fields.js. Only the count is
-            // used here; the test report lists them. The file comes from a
-            // fork, so only a version 1 file counts, and only the items that
-            // build-bundle.js keeps: an object with string type, file,
-            // pointer and message.
-            let suggestions = 0;
+            // The suggestions of check-recommended-fields.js. The comment
+            // counts them and lists them in a collapsed block. The file comes
+            // from a fork, so only a version 1 file counts, and only the
+            // items that build-bundle.js keeps: an object with string type,
+            // file, pointer and message.
+            let suggestionItems = [];
             try {
               const doc = JSON.parse(fs.readFileSync(path.join(contextRoot, 'recommendations.json'), 'utf8'));
               if (doc?.version === 1 && Array.isArray(doc.items)) {
-                suggestions = doc.items.filter(
+                suggestionItems = doc.items.filter(
                   (i) => i !== null && typeof i === 'object' &&
                     ['type', 'file', 'pointer', 'message'].every((k) => typeof i[k] === 'string'),
-                ).length;
+                );
               }
             } catch {
               // The test run failed before it could collect them, or an older
               // script wrote Markdown.
             }
+            const suggestions = suggestionItems.length;
 
             // The test run failed before it could describe itself.
             if (ctx === null) {
@@ -500,16 +501,28 @@ jobs:
               body += '\n';
             }
 
-            // Suggestions never block, so they do not change the verdict.
+            // Suggestions never block, so they do not change the verdict. The
+            // items come from a fork's file, so every value goes through the
+            // escape helpers, and none of them becomes a link.
             if (suggestions > 0) {
-              const one = suggestions === 1;
-              body += one
-                ? '💡 1 suggestion. It does not block this PR. '
-                : `💡 ${suggestions} suggestions. They do not block this PR. `;
-              body +=
-                reportUrl !== ''
-                  ? `The full test report lists ${one ? 'it' : 'them'}.\n\n`
-                  : `See \`recommendations.json\` in the pr-context artifact of the [run](${runUrl}).\n\n`;
+              body += suggestions === 1
+                ? '💡 1 suggestion. It does not block this PR.\n\n'
+                : `💡 ${suggestions} suggestions. They do not block this PR.\n\n`;
+              const MAX_SUGGESTIONS = 50;
+              body += '<details>\n<summary>Open the list</summary>\n\n';
+              for (const item of suggestionItems.slice(0, MAX_SUGGESTIONS)) {
+                // "format" for a missing interpolatedIntent, "key" for a
+                // deprecated key. Older files can have neither.
+                const target = typeof item.format === 'string' ? item.format
+                  : typeof item.key === 'string' ? item.key : '';
+                body += `- \`${cell(item.file)}\`` +
+                  (target === '' ? '' : ` — \`${cell(target)}\``) +
+                  `: ${line(item.message).slice(0, 500)}\n`;
+              }
+              if (suggestions > MAX_SUGGESTIONS) {
+                body += `\n… and ${suggestions - MAX_SUGGESTIONS} more. See the full test report.\n`;
+              }
+              body += '</details>\n\n';
             }
 
             // A pointer for a coding agent, when there is something to fix and
