@@ -1,0 +1,50 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "metadata": { "owner": "Flying Tulip", "contractName": "MintAndRedeem dev", "info": { "url": "https://flyingtulip.com" } },
+  "display": {
+    "formats": {
+      "mint(address collateralToken, uint256 collateralAmount, uint256 txDeadline, uint256 minFtUSDOut)": {
+        "intent": "Buy ftUSD",
+        "fields": [
+          {
+            "path": "collateralAmount",
+            "label": "Pay",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "collateralToken" },
+            "visible": "always"
+          },
+          {
+            "path": "minFtUSDOut",
+            "label": "Minimum receive",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.ftUSD" },
+            "visible": "always"
+          },
+          { "path": "txDeadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" }
+        ],
+        "interpolatedIntent": "Buy {minFtUSDOut}"
+      },
+      "redeem(address collateralToken, uint256 ftUSDAmount, uint256 txDeadline, uint256 minCollateralOut)": {
+        "intent": "Sell ftUSD",
+        "fields": [
+          {
+            "path": "ftUSDAmount",
+            "label": "Pay",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.ftUSD" },
+            "visible": "always"
+          },
+          {
+            "path": "minCollateralOut",
+            "label": "Minimum receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "collateralToken" },
+            "visible": "always"
+          },
+          { "path": "txDeadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" }
+        ],
+        "interpolatedIntent": "Sell {ftUSDAmount}"
+      }
+    }
+  }
+}

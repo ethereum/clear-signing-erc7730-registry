@@ -1,0 +1,23 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "metadata": { "owner": "Flying Tulip", "info": { "url": "https://flyingtulip.com" } },
+  "display": {
+    "formats": {
+      "invest(address token, uint256 amount, address recipient, uint256 proofAmount, bytes32[] proofWL)": {
+        "intent": "Invest in FT PUT",
+        "fields": [
+          { "path": "amount", "label": "Collateral", "format": "tokenAmount", "params": { "tokenPath": "token" }, "visible": "always" },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "proofAmount", "label": "Whitelist cap", "format": "raw", "visible": "optional" }
+        ],
+        "interpolatedIntent": "Invest {amount}"
+      }
+    }
+  }
+}

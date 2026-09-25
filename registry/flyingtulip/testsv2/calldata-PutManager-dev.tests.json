@@ -1,0 +1,56 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-PutManager-dev.json",
+  "dataProvider": {
+    "tokens": {
+      "0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38": { "decimals": 18, "name": "Wrapped Sonic", "symbol": "wS" },
+      "0x26382a5331DDB46e7c0c101fb53480EB64a94AD9": { "decimals": 18, "name": "Flying Tulip", "symbol": "FT" }
+    },
+    "nftCollectionNames": { "0x1d8051c90076FaA5b683A3551Ee4369d00f99D67": "pFT NFT" }
+  },
+  "tests": [
+    {
+      "description": "Invest in FT PUT",
+      "rawTx": "0x02f8f081920b850cec0ecb00850cec0ecb00830a887f94abd838e9977fc76430d637ed35eccfaf178ce07180b8c4de83db80000000000000000000000000039e2fb66102314ce7b64ce5ce3e5183bc94ad3800000000000000000000000000000000000000000000000002b4c777833380000000000000000000000000009ed39e18c31e10c773191b5ce0e9765f546ffa4600000000000000000000000000000000000000000000021e19e0c9bab240000000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0x65be21e5e8ed7253eef1fd8226326704a9b8d4d7275b99dc31e1c7667e5f0d17",
+      "expected": {
+        "intent": "Invest in FT PUT",
+        "owner": "Flying Tulip",
+        "fields": [
+          { "label": "Collateral", "value": "0.195 wS" },
+          { "label": "Recipient", "value": "0x9Ed39e18c31E10c773191B5Ce0e9765F546ffa46" },
+          { "label": "Whitelist cap", "value": "10000000000000000000000" }
+        ],
+        "interpolatedIntent": "Invest 0.195 wS"
+      }
+    },
+    {
+      "description": "Divest FT PUT",
+      "rawTx": "0x02f872819282011d850ba43cfaa0850ba43cfaa083032c7194abd838e9977fc76430d637ed35eccfaf178ce07180b8444696c7490000000000000000000000000000000000000000000000000000000000000089000000000000000000000000000000000000000000000000000aa87bee538000c0",
+      "txHash": "0xa927e453f347ce67cddb5c2e20044bed7ea89a9b2e53688d4d8265f4a9618a25",
+      "expected": {
+        "intent": "Divest FT PUT",
+        "owner": "Flying Tulip",
+        "fields": [
+          { "label": "Position", "value": "pFT NFT #137" },
+          { "label": "FT amount", "value": "0.003 FT" }
+        ],
+        "interpolatedIntent": "Divest 0.003 FT from pFT NFT #137"
+      }
+    },
+    {
+      "description": "Withdraw FT from PUT",
+      "rawTx": "0x02f8728192820309850d8111c400850d8111c4008304539094abd838e9977fc76430d637ed35eccfaf178ce07180b8448bb992e1000000000000000000000000000000000000000000000000000000000000008f0000000000000000000000000000000000000000000000000f654a3620b1fc00c0",
+      "txHash": "0x3b0481985d2a1622056e85cbfec88c113d2b817e2e9cba1dfe1ceb79983f3fe3",
+      "expected": {
+        "intent": "Withdraw FT from PUT",
+        "owner": "Flying Tulip",
+        "fields": [
+          { "label": "Position", "value": "pFT NFT #143" },
+          { "label": "FT amount", "value": "1.10937447955392 FT" }
+        ],
+        "interpolatedIntent": "Withdraw 1.10937447955392 FT from pFT NFT #143"
+      }
+    }
+  ]
+}
