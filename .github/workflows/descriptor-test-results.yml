@@ -182,9 +182,14 @@ jobs:
           TESTED_SHA: ${{ github.event.workflow_run.head_sha }}
           WORKDIR: reports
           SCRIPTS_DIR: scripts/.github/scripts
+        # The two links come from the same values as the file name that
+        # publish-report.sh writes, pr/<number>/<run id>.json: the event, not
+        # an artifact. url is the viewer; bundle_url is the raw bundle, for an
+        # agent.
         run: |
           bash scripts/.github/scripts/publish-report.sh
           echo "url=${REPORT_BASE_URL}?pr=${PR_NUMBER}&run=${RUN_ID}" >> "$GITHUB_OUTPUT"
+          echo "bundle_url=https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${BRANCH}/pr/${PR_NUMBER}/${RUN_ID}.json" >> "$GITHUB_OUTPUT"
 
       - name: Post PR comment
         if: steps.pr.outputs.found == 'true'
@@ -192,19 +197,20 @@ jobs:
         env:
           RUN_ID: ${{ github.event.workflow_run.id }}
           RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
           RUN_STARTED_AT: ${{ github.event.workflow_run.run_started_at }}
           RUN_COMPLETED_AT: ${{ github.event.workflow_run.updated_at }}
           PR_NUMBER: ${{ steps.pr.outputs.number }}
           # Empty when the report was not published, so the comment has no link.
           REPORT_URL: ${{ steps.publish.outcome == 'success' && steps.publish.outputs.url || '' }}
+          BUNDLE_URL: ${{ steps.publish.outcome == 'success' && steps.publish.outputs.bundle_url || '' }}
         with:
           script: |
             const fs = require('fs');
             const path = require('path');
 
-            const STATUS_ICONS = { pass: '✅', fail: '❌', error: '⚠️', skipped: '⏭️' };
-            const icon = (s) => (Object.hasOwn(STATUS_ICONS, s) ? STATUS_ICONS[s] : '—');
-            // GitHub rejects a comment body above 65536 characters.
+            // GitHub rejects a comment body above 65536 characters. The coverage
+            // messages have no fixed limit, so the guard stays.
             const MAX_BODY = 60000;
             const { owner, repo } = context.repo;
             const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${process.env.RUN_ID}`;
@@ -213,6 +219,9 @@ jobs:
             const contextRoot = path.join(workspace, 'pr-context');
             const issue_number = Number(process.env.PR_NUMBER);
             const reportUrl = process.env.REPORT_URL || '';
+            const bundleUrl = process.env.BUNDLE_URL || '';
+            const instructionsUrl =
+              `${context.serverUrl}/${owner}/${repo}/blob/master/.github/test-runner-docs/agent-instructions.md`;
 
             // The artifact can be absent when the test run failed early. Say so,
             // instead of leaving the "in progress" note on the pull request.
@@ -230,12 +239,37 @@ jobs:
                 .replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))
                 .replace(/\|/g, '\\|')
                 .replace(/[\r\n]+/g, ' ');
-            // And inside one table cell.
+            // And short.
             const cell = (v) => line(v).slice(0, 200);
-            const block = (v) => {
-              const text = v != null ? JSON.stringify(v, null, 2) : '(none)';
-              return text.length > 4000 ? `${text.slice(0, 4000)}\n… truncated` : text;
-            };
+            // "1 function has", "2 functions have".
+            const count = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+            const has = (n) => (n === 1 ? 'has' : 'have');
+
+            // The conclusion of the test run, from the event. When a runner
+            // job crashes before it writes results, it uploads no artifact,
+            // and the rows below hold only the other implementations. Every
+            // row can pass there, so the uploaded results alone must not
+            // give a green verdict on a run that did not succeed.
+            const conclusion = process.env.RUN_CONCLUSION || '';
+            // The jobs of the test run that did not succeed, to name the
+            // cause. The names come from the jobs API of this repository,
+            // not from an artifact, but they still go through cell(). When
+            // the API call fails, the sentence stands without the names.
+            let failedJobs = [];
+            if (conclusion !== 'success') {
+              try {
+                const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+                  owner, repo, run_id: Number(process.env.RUN_ID), per_page: 100,
+                });
+                failedJobs = jobs
+                  .filter((j) => ['failure', 'cancelled', 'timed_out'].includes(j.conclusion))
+                  .map((j) => cell(j.name));
+              } catch (e) {
+                core.warning(`Could not list the jobs of the test run: ${e.message}`);
+              }
+            }
+            const failedJobsSentence =
+              failedJobs.length > 0 ? ` Failed jobs: ${failedJobs.join(', ')}.` : '';
 
             // Each runner uploads one artifact that holds one
             // `<slug>__<entity>__<descriptor>.json` per descriptor. With
@@ -259,9 +293,23 @@ jobs:
               Number.isNaN(Date.parse(value))
                 ? 'an unknown time'
                 : `${new Date(value).toISOString().slice(0, 16).replace('T', ' ')} UTC`;
+            // "2026-09-24 14:35–14:36 UTC", or both full times when the dates differ.
+            const span = (start, end) => {
+              const [a, b] = [utc(start), utc(end)];
+              return a.slice(0, 10) === b.slice(0, 10) && !a.startsWith('an ')
+                ? `${a.slice(0, 16)}–${b.slice(11)}`
+                : `${a} – ${b}`;
+            };
+            const footer =
+              `<sub>Tested [\`${testedSha.slice(0, 7)}\`](${context.serverUrl}/${owner}/${repo}/commit/${testedSha})` +
+              ` · [run ${process.env.RUN_ID}](${runUrl})` +
+              ` · ${span(process.env.RUN_STARTED_AT, process.env.RUN_COMPLETED_AT)}</sub>\n`;
 
             // Writes, replaces or removes one comment. An empty text removes it.
             const RESULTS = '## Clear Signing Tests';
+            // The marker of the recommendations comment that older runs wrote.
+            // The suggestions are now in the test report, so the comment is
+            // only found here to delete it.
             const RECOMMENDATIONS = '<!-- erc7730-recommended-fields -->';
             const upsert = async (text, marker = RESULTS) => {
               const comments = await github.paginate(github.rest.issues.listComments, {
@@ -281,33 +329,35 @@ jobs:
               }
             };
 
-            // A separate comment, and not part of the results, because it never
-            // blocks the pull request. It is written before the branches below,
-            // which return early.
-            let recommendations = '';
+            // Delete the recommendations comment of an older run. This comes
+            // before the branches below, which return early.
+            await upsert('', RECOMMENDATIONS);
+
+            // The suggestions of check-recommended-fields.js. The comment
+            // counts them and lists them in a collapsed block. The file comes
+            // from a fork, so only a version 1 file counts, and only the
+            // items that build-bundle.js keeps: an object with string type,
+            // file, pointer and message.
+            let suggestionItems = [];
             try {
-              recommendations = fs.readFileSync(path.join(contextRoot, 'recommendations.md'), 'utf8').trim();
+              const doc = JSON.parse(fs.readFileSync(path.join(contextRoot, 'recommendations.json'), 'utf8'));
+              if (doc?.version === 1 && Array.isArray(doc.items)) {
+                suggestionItems = doc.items.filter(
+                  (i) => i !== null && typeof i === 'object' &&
+                    ['type', 'file', 'pointer', 'message'].every((k) => typeof i[k] === 'string'),
+                );
+              }
             } catch {
-              // The test run failed before it could collect them.
+              // The test run failed before it could collect them, or an older
+              // script wrote Markdown.
             }
-            await upsert(recommendations, RECOMMENDATIONS);
-
-            let body = '## Clear Signing Tests\n\n';
-            body += `Tested [\`${testedSha.slice(0, 7)}\`](${context.serverUrl}/${owner}/${repo}/commit/${testedSha})`;
-            body += ` · started ${utc(process.env.RUN_STARTED_AT)}`;
-            body += ` · finished ${utc(process.env.RUN_COMPLETED_AT)}\n\n`;
-
-            // The report page shows what each case rendered, the diff between
-            // the implementations, and the coverage. The URL is built by the
-            // workflow from the event, not from an artifact.
-            if (reportUrl !== '') {
-              body += `📊 [Open the test report](${reportUrl})\n\n`;
-            }
+            const suggestions = suggestionItems.length;
 
             // The test run failed before it could describe itself.
             if (ctx === null) {
-              body += `> The test run produced no results. See the [run](${runUrl}).\n`;
-              await upsert(body);
+              await upsert(
+                `${RESULTS}\n\n❌ The test run stopped before it produced results.${failedJobsSentence} See the [run](${runUrl}).\n\n${footer}`,
+              );
               return;
             }
 
@@ -320,15 +370,11 @@ jobs:
             // require-testsv2 already failed the run, but the annotations do
             // not explain how to fix it.
             const missing = ctx.missing_tests ?? [];
-            if (missing.length > 0) {
-              body += `❌ ${missing.length} affected descriptor(s) have no test file:\n\n`;
-              for (const descriptor of missing) body += `- \`${cell(descriptor)}\`\n`;
-              body +=
-                '\nCreate a test file at `registry/<entity>/testsv2/<descriptor-name>.tests.json`. ' +
-                'See [testing documentation](../blob/master/README.md#reference-test-cases) for details.\n\n';
-            }
 
             // check-test-coverage already failed the run, like require-testsv2.
+            // Its report maps each descriptor to its error messages. The usual
+            // message starts with "<n> of <m> function(s) have no test", so the
+            // functions can be counted. The other messages are about the test file.
             let coverage = {};
             try {
               coverage = JSON.parse(fs.readFileSync(path.join(workspace, 'test-coverage', 'coverage.json'), 'utf8'));
@@ -336,8 +382,168 @@ jobs:
               // The job did not run, or the run failed before it.
             }
             const gaps = Object.entries(coverage);
+            let untested = 0;
+            let otherGaps = false;
+            for (const [, messages] of gaps) {
+              for (const message of messages) {
+                const m = /^(\d+) of \d+ function\(s\) have no test/.exec(String(message));
+                if (m) untested += Number(m[1]);
+                else otherGaps = true;
+              }
+            }
+
+            // rows: keyed by entity|descriptor|description, with the status of
+            // each implementation.
+            const rows = new Map();
+            const impls = new Set();
+            for (const file of resultFiles) {
+              let data;
+              try { data = JSON.parse(fs.readFileSync(path.join(artifactsRoot, file), 'utf8')); }
+              catch (e) { core.warning(`Could not parse ${file}: ${e.message}`); continue; }
+              const impl = data.implementation || file;
+              impls.add(impl);
+              // filename: <slug>__<entity>__<descriptor>.json
+              const parts = file.replace(/\.json$/, '').split('__');
+              const entity = parts[1];
+              const descriptor = parts[2];
+              for (const c of data.cases || []) {
+                const key = `${entity}|${descriptor}|${c.description}`;
+                if (!rows.has(key)) rows.set(key, { entity, descriptor, byImpl: {} });
+                rows.get(key).byImpl[impl] = c.status;
+              }
+            }
+            const implList = [...impls].sort();
+            // A case passes only when every implementation reports pass. A fail,
+            // an error, a skip or no result all count as "does not pass".
+            const total = rows.size;
+            const failed = [...rows.values()].filter((r) => implList.some((i) => r.byImpl[i] !== 'pass')).length;
+            const ran = ctx.has_tests && total > 0;
+
+            // The verdict: one short sentence for each problem, then the pass
+            // sentence, so the author sees when only the missing tests block.
+            const problems = [];
+            if (ran && failed > 0) {
+              problems.push(`${failed} of ${count(total, 'test case')} ${failed === 1 ? 'does' : 'do'} not pass on every implementation.`);
+            }
+            if (missing.length > 0) problems.push(`${count(missing.length, 'descriptor')} ${has(missing.length)} no test file.`);
             if (gaps.length > 0) {
-              body += `❌ ${gaps.length} affected descriptor(s) failed the test coverage check:\n\n`;
+              problems.push(
+                otherGaps
+                  ? `${count(gaps.length, 'descriptor')} ${gaps.length === 1 ? 'fails' : 'fail'} the test coverage check.`
+                  : `${count(untested, 'function')} ${has(untested)} no test case.`,
+              );
+            }
+            const passSentence =
+              total === 1 ? 'The 1 test case passes on every implementation.' : `All ${total} test cases pass on every implementation.`;
+            let verdict;
+            if (!ctx.has_tests) {
+              verdict = ['❌', ...problems, 'No tests ran.'].join(' ');
+            } else if (!ran && problems.length === 0) {
+              verdict = `⚠️ The test runners produced no results.${failedJobsSentence} See the [run](${runUrl}).`;
+            } else if (!ran) {
+              verdict = ['❌', ...problems, `The test runners produced no results.${failedJobsSentence} See the [run](${runUrl}).`].join(' ');
+            } else if (problems.length === 0 && conclusion === 'success') {
+              verdict = `✅ ${passSentence}`;
+            } else if (problems.length === 0) {
+              // The results that were uploaded all pass, but the run is red,
+              // so a runner probably crashed before it wrote its results.
+              const uploadedPass = total === 1
+                ? 'The 1 test case in the uploaded results passes'
+                : `All ${total} test cases in the uploaded results pass`;
+              verdict = `⚠️ ${uploadedPass}, but the test run did not succeed.${failedJobsSentence} See the [run](${runUrl}).`;
+            } else {
+              verdict = `❌ ${[...problems, ...(failed === 0 ? [passSentence] : [])].join(' ')}`;
+            }
+
+            let body = `${RESULTS}\n\n${verdict}\n\n`;
+
+            // The report page shows what each case rendered, the diff between
+            // the implementations, and the coverage. The URL is built by the
+            // workflow from the event, not from an artifact.
+            if (reportUrl !== '') {
+              let host = reportUrl;
+              try { host = new URL(reportUrl).host; } catch {}
+              body += `📊 [Open Full Test Report on ${host}](${reportUrl})\n\n`;
+            } else if (failed > 0) {
+              body += `The test report could not be published. The [run](${runUrl}) shows each case that did not pass.\n\n`;
+            } else {
+              body += `The test report could not be published. See the [run](${runUrl}).\n\n`;
+            }
+
+            // One line per implementation, only when a case does not pass.
+            if (ran && failed > 0) {
+              for (const impl of implList) {
+                const kinds = {};
+                const where = [];
+                let passed = 0;
+                for (const r of rows.values()) {
+                  const status = r.byImpl[impl] ?? 'not run';
+                  if (status === 'pass') { passed++; continue; }
+                  const kind = ['fail', 'error', 'skipped'].includes(status) ? status : 'not run';
+                  kinds[kind] = (kinds[kind] ?? 0) + 1;
+                  const name = `\`${cell(r.entity)}/${cell(r.descriptor)}\``;
+                  if (!where.includes(name)) where.push(name);
+                }
+                let text = `- \`${cell(impl)}\`: ${passed} of ${total} pass`;
+                if (passed < total) {
+                  const shown = where.slice(0, 3);
+                  const rest = where.length - shown.length;
+                  const list = rest > 0
+                    ? `${shown.join(', ')} and ${rest} more`
+                    : shown.length > 1 ? `${shown.slice(0, -1).join(', ')} and ${shown.at(-1)}` : shown[0];
+                  const kindList = Object.entries(kinds);
+                  text += kindList.length === 1 && kinds.fail
+                    ? `. ${kinds.fail} fail in ${list}`
+                    : ` (${kindList.map(([k, n]) => `${n} ${k}`).join(', ')}). ${total - passed} do not pass in ${list}`;
+                }
+                body += `${text}\n`;
+              }
+              body += '\n';
+            }
+
+            // Suggestions never block, so they do not change the verdict. The
+            // items come from a fork's file, so every value goes through the
+            // escape helpers, and none of them becomes a link.
+            if (suggestions > 0) {
+              body += suggestions === 1
+                ? '💡 1 suggestion. It does not block this PR.\n\n'
+                : `💡 ${suggestions} suggestions. They do not block this PR.\n\n`;
+              const MAX_SUGGESTIONS = 50;
+              body += '<details>\n<summary>Open the list</summary>\n\n';
+              for (const item of suggestionItems.slice(0, MAX_SUGGESTIONS)) {
+                // "format" for a missing interpolatedIntent, "key" for a
+                // deprecated key. Older files can have neither.
+                const target = typeof item.format === 'string' ? item.format
+                  : typeof item.key === 'string' ? item.key : '';
+                body += `- \`${cell(item.file)}\`` +
+                  (target === '' ? '' : ` — \`${cell(target)}\``) +
+                  `: ${line(item.message).slice(0, 500)}\n`;
+              }
+              if (suggestions > MAX_SUGGESTIONS) {
+                body += `\n… and ${suggestions - MAX_SUGGESTIONS} more. See the full test report.\n`;
+              }
+              body += '</details>\n\n';
+            }
+
+            // A pointer for a coding agent, when there is something to fix and
+            // the bundle is published. Both links come from this workflow.
+            const toFix = (ran && failed > 0) || missing.length > 0 || gaps.length > 0 || suggestions > 0;
+            if (toFix && bundleUrl !== '') {
+              body +=
+                `🤖 For an agent: read the [test results as JSON](${bundleUrl}) ` +
+                `and follow the [fix instructions](${instructionsUrl}).\n\n`;
+            }
+
+            if (missing.length > 0) {
+              body += '**Descriptors without a test file**\n\n';
+              for (const descriptor of missing) body += `- \`${cell(descriptor)}\`\n`;
+              body +=
+                '\nCreate a test file at `registry/<entity>/testsv2/<descriptor-name>.tests.json`. ' +
+                'See [testing documentation](../blob/master/README.md#reference-test-cases) for details.\n\n';
+            }
+
+            if (gaps.length > 0) {
+              body += otherGaps ? '**Descriptors that fail the test coverage check**\n\n' : '**Functions without a test case**\n\n';
               for (const [descriptor, messages] of gaps) {
                 body += `- \`${cell(descriptor)}\`\n`;
                 for (const message of messages) body += `  - ${line(message).slice(0, 1000)}\n`;
@@ -345,102 +551,8 @@ jobs:
               body += '\n';
             }
 
-            // No descriptor had a test file, so no runner produced anything.
-            if (!ctx.has_tests) {
-              await upsert(body);
-              return;
-            }
-
-            if (resultFiles.length === 0) {
-              body += `> No implementation test results were uploaded. See the [run](${runUrl}).\n`;
-            } else {
-              // rows: keyed by entity|descriptor|description
-              // each row stores per-impl status + rendered (for diff blocks) + message
-              const rows = new Map();
-              const impls = new Set();
-
-              // The test files travel in the pr-context artifact, so the
-              // expected output is available without a checkout of the head.
-              const testFileCache = new Map();
-              const loadExpected = (entity, descriptor, description) => {
-                const key = `${entity}__${descriptor}`;
-                if (!testFileCache.has(key)) {
-                  const testPath = path.join(contextRoot, 'tests', `${key}.tests.json`);
-                  try {
-                    testFileCache.set(key, JSON.parse(fs.readFileSync(testPath, 'utf8')));
-                  } catch (e) {
-                    core.warning(`Could not read ${testPath}: ${e.message}`);
-                    testFileCache.set(key, null);
-                  }
-                }
-                const doc = testFileCache.get(key);
-                if (!doc || !Array.isArray(doc.tests)) return null;
-                const t = doc.tests.find(t => t.description === description);
-                return t ? t.expected : null;
-              };
-
-              for (const file of resultFiles) {
-                let data;
-                try { data = JSON.parse(fs.readFileSync(path.join(artifactsRoot, file), 'utf8')); }
-                catch (e) { core.warning(`Could not parse ${file}: ${e.message}`); continue; }
-                const impl = data.implementation || file;
-                impls.add(impl);
-                // filename: <slug>__<entity>__<descriptor>.json
-                const parts = file.replace(/\.json$/, '').split('__');
-                const entity = parts[1];
-                const descriptor = parts[2];
-                for (const c of data.cases || []) {
-                  const key = `${entity}|${descriptor}|${c.description}`;
-                  if (!rows.has(key)) rows.set(key, { entity, descriptor, description: c.description, byImpl: {} });
-                  rows.get(key).byImpl[impl] = {
-                    status: c.status,
-                    rendered: c.rendered,
-                    message: c.message,
-                  };
-                }
-              }
-
-              const implList = [...impls].sort();
-
-              // --- Compact status table ---
-              const header = ['Entity', 'Descriptor', 'Case', ...implList.map(cell)].join(' | ');
-              const sep = ['---', '---', '---', ...implList.map(() => ':---:')].join(' | ');
-              body += `| ${header} |\n| ${sep} |\n`;
-              for (const r of rows.values()) {
-                const cells = implList.map(i => icon((r.byImpl[i] || {}).status));
-                body += `| ${cell(r.entity)} | ${cell(r.descriptor)} | ${cell(r.description)} | ${cells.join(' | ')} |\n`;
-              }
-              body += '\n✅ pass · ❌ fail · ⚠️ error · ⏭️ skipped · — not run\n';
-
-              // --- Details for non-pass cases ---
-              const details = [];
-              for (const r of rows.values()) {
-                for (const impl of implList) {
-                  const result = r.byImpl[impl];
-                  if (!result || result.status === 'pass') continue;
-                  const summary = `${icon(result.status)} ${cell(r.entity)}/${cell(r.descriptor)} · ${cell(r.description)} · \`${cell(impl)}\``;
-                  let block_ = `<details>\n<summary>${summary}</summary>\n\n`;
-                  if (result.message) {
-                    block_ += `> ${cell(result.message)}\n\n`;
-                  }
-                  if (result.status === 'fail') {
-                    const expected = loadExpected(r.entity, r.descriptor, r.description);
-                    block_ += `**Expected:**\n\n\`\`\`json\n${block(expected)}\n\`\`\`\n\n`;
-                    block_ += `**Got:**\n\n\`\`\`json\n${block(result.rendered)}\n\`\`\`\n`;
-                  }
-                  block_ += '\n</details>\n';
-                  details.push(block_);
-                }
-              }
-              if (details.length > 0) {
-                body += '\n### Details\n\n' + details.join('\n');
-              }
-
-              body += `\n📋 [View test details](${runUrl})\n`;
-            }
-
             if (body.length > MAX_BODY) {
-              body = `${body.slice(0, MAX_BODY)}\n\n… truncated. See the [run](${runUrl}).\n`;
+              body = `${body.slice(0, MAX_BODY)}\n\n… truncated. See the [run](${runUrl}).\n\n`;
             }
 
-            await upsert(body);
+            await upsert(body + footer);
