@@ -4,12 +4,13 @@
   "dataProvider": {
     "tokens": {
       "0x6b175474e89094c44da98b954eedeac495271d0f": { "symbol": "DAI", "decimals": 18, "name": "Dai Stablecoin" },
-      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USD Coin", "symbol": "USDC" }
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USD Coin", "symbol": "USDC" },
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "decimals": 18, "name": "Wrapped Ether", "symbol": "WETH" }
     }
   },
   "tests": [
     {
-      "description": "1inch limit order - swap DAI for USDC",
+      "description": "1inch limit order - swap DAI for USDC, open to any taker",
       "data": {
         "types": {
           "EIP712Domain": [
@@ -18,18 +19,25 @@
             { "name": "chainId", "type": "uint256" },
             { "name": "verifyingContract", "type": "address" }
           ],
-          "OrderStructure": [
+          "Order": [
             { "name": "salt", "type": "uint256" },
-            { "name": "maker", "type": "address" },
-            { "name": "receiver", "type": "address" },
             { "name": "makerAsset", "type": "address" },
             { "name": "takerAsset", "type": "address" },
+            { "name": "maker", "type": "address" },
+            { "name": "receiver", "type": "address" },
+            { "name": "allowedSender", "type": "address" },
             { "name": "makingAmount", "type": "uint256" },
             { "name": "takingAmount", "type": "uint256" },
-            { "name": "makerTraits", "type": "uint256" }
+            { "name": "makerAssetData", "type": "bytes" },
+            { "name": "takerAssetData", "type": "bytes" },
+            { "name": "getMakerAmount", "type": "bytes" },
+            { "name": "getTakerAmount", "type": "bytes" },
+            { "name": "predicate", "type": "bytes" },
+            { "name": "permit", "type": "bytes" },
+            { "name": "interaction", "type": "bytes" }
           ]
         },
-        "primaryType": "OrderStructure",
+        "primaryType": "Order",
         "domain": {
           "name": "1inch Limit Order Protocol",
           "version": "2",
@@ -38,13 +46,20 @@
         },
         "message": {
           "salt": "12345678901234567890123456789012345678901234567890123456789012345678",
-          "maker": "0x1234567890123456789012345678901234567890",
-          "receiver": "0x0987654321098765432109876543210987654321",
           "makerAsset": "0x6b175474e89094c44da98b954eedeac495271d0f",
           "takerAsset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "maker": "0x1234567890123456789012345678901234567890",
+          "receiver": "0x0987654321098765432109876543210987654321",
+          "allowedSender": "0x0000000000000000000000000000000000000000",
           "makingAmount": "1000000000000000000000",
           "takingAmount": "999000000",
-          "makerTraits": "0"
+          "makerAssetData": "0x",
+          "takerAssetData": "0x",
+          "getMakerAmount": "0xf4a215c300000000000000000000000000000000000000000000003635c9adc5dea00000000000000000000000000000000000000000000000000000000000003b8b87c0",
+          "getTakerAmount": "0x296637bf00000000000000000000000000000000000000000000003635c9adc5dea00000000000000000000000000000000000000000000000000000000000003b8b87c0",
+          "predicate": "0x",
+          "permit": "0x",
+          "interaction": "0x"
         }
       },
       "expected": {
@@ -54,7 +69,174 @@
           { "label": "From", "value": "0x1234567890123456789012345678901234567890" },
           { "label": "Send", "value": "1000 DAI" },
           { "label": "Receive minimum", "value": "999 USDC" },
-          { "label": "To", "value": "0x0987654321098765432109876543210987654321" }
+          { "label": "To", "value": "0x0987654321098765432109876543210987654321" },
+          { "label": "Allowed sender", "value": "0x0000000000000000000000000000000000000000" },
+          { "label": "Maker asset data", "value": "0x" },
+          { "label": "Taker asset data", "value": "0x" },
+          {
+            "label": "Maker amount getter",
+            "value": "0xf4a215c300000000000000000000000000000000000000000000003635c9adc5dea00000000000000000000000000000000000000000000000000000000000003b8b87c0"
+          },
+          {
+            "label": "Taker amount getter",
+            "value": "0x296637bf00000000000000000000000000000000000000000000003635c9adc5dea00000000000000000000000000000000000000000000000000000000000003b8b87c0"
+          },
+          { "label": "Predicate", "value": "0x" },
+          { "label": "Permit", "value": "0x" },
+          { "label": "Interaction", "value": "0x" }
+        ]
+      }
+    },
+    {
+      "description": "1inch limit order - swap WETH for USDC, restricted taker, with predicate",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Order": [
+            { "name": "salt", "type": "uint256" },
+            { "name": "makerAsset", "type": "address" },
+            { "name": "takerAsset", "type": "address" },
+            { "name": "maker", "type": "address" },
+            { "name": "receiver", "type": "address" },
+            { "name": "allowedSender", "type": "address" },
+            { "name": "makingAmount", "type": "uint256" },
+            { "name": "takingAmount", "type": "uint256" },
+            { "name": "makerAssetData", "type": "bytes" },
+            { "name": "takerAssetData", "type": "bytes" },
+            { "name": "getMakerAmount", "type": "bytes" },
+            { "name": "getTakerAmount", "type": "bytes" },
+            { "name": "predicate", "type": "bytes" },
+            { "name": "permit", "type": "bytes" },
+            { "name": "interaction", "type": "bytes" }
+          ]
+        },
+        "primaryType": "Order",
+        "domain": {
+          "name": "1inch Limit Order Protocol",
+          "version": "2",
+          "chainId": 1,
+          "verifyingContract": "0x119c71d3bbac22029622cbaec24854d3d32d2828"
+        },
+        "message": {
+          "salt": "1777600000123",
+          "makerAsset": "0xC02aaA39b223FE8D0A0E5C4F27eAD9083C756Cc2",
+          "takerAsset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "maker": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "receiver": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "allowedSender": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+          "makingAmount": "1500000000000000000",
+          "takingAmount": "3750000000",
+          "makerAssetData": "0x",
+          "takerAssetData": "0x",
+          "getMakerAmount": "0x",
+          "getTakerAmount": "0x",
+          "predicate": "0x63592c2b0000000000000000000000000000000000000000000000000000000069f4d380",
+          "permit": "0x",
+          "interaction": "0x"
+        }
+      },
+      "expected": {
+        "intent": "1inch Order",
+        "owner": "1inch Limit Order Protocol",
+        "fields": [
+          { "label": "From", "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" },
+          { "label": "Send", "value": "1.5 WETH" },
+          { "label": "Receive minimum", "value": "3750 USDC" },
+          { "label": "To", "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" },
+          { "label": "Allowed sender", "value": "0xE592427A0AEce92De3Edee1F18E0157C05861564" },
+          { "label": "Maker asset data", "value": "0x" },
+          { "label": "Taker asset data", "value": "0x" },
+          { "label": "Maker amount getter", "value": "0x" },
+          { "label": "Taker amount getter", "value": "0x" },
+          {
+            "label": "Predicate",
+            "value": "0x63592c2b0000000000000000000000000000000000000000000000000000000069f4d380"
+          },
+          { "label": "Permit", "value": "0x" },
+          { "label": "Interaction", "value": "0x" }
+        ]
+      }
+    },
+    {
+      "description": "1inch limit order - swap DAI for USDC, zero receiver (maker is paid)",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Order": [
+            { "name": "salt", "type": "uint256" },
+            { "name": "makerAsset", "type": "address" },
+            { "name": "takerAsset", "type": "address" },
+            { "name": "maker", "type": "address" },
+            { "name": "receiver", "type": "address" },
+            { "name": "allowedSender", "type": "address" },
+            { "name": "makingAmount", "type": "uint256" },
+            { "name": "takingAmount", "type": "uint256" },
+            { "name": "makerAssetData", "type": "bytes" },
+            { "name": "takerAssetData", "type": "bytes" },
+            { "name": "getMakerAmount", "type": "bytes" },
+            { "name": "getTakerAmount", "type": "bytes" },
+            { "name": "predicate", "type": "bytes" },
+            { "name": "permit", "type": "bytes" },
+            { "name": "interaction", "type": "bytes" }
+          ]
+        },
+        "primaryType": "Order",
+        "domain": {
+          "name": "1inch Limit Order Protocol",
+          "version": "2",
+          "chainId": 1,
+          "verifyingContract": "0x119c71d3bbac22029622cbaec24854d3d32d2828"
+        },
+        "message": {
+          "salt": "12345678901234567890123456789012345678901234567890123456789012345679",
+          "makerAsset": "0x6b175474e89094c44da98b954eedeac495271d0f",
+          "takerAsset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "maker": "0x1234567890123456789012345678901234567890",
+          "receiver": "0x0000000000000000000000000000000000000000",
+          "allowedSender": "0x0000000000000000000000000000000000000000",
+          "makingAmount": "1000000000000000000000",
+          "takingAmount": "999000000",
+          "makerAssetData": "0x",
+          "takerAssetData": "0x",
+          "getMakerAmount": "0xf4a215c300000000000000000000000000000000000000000000003635c9adc5dea00000000000000000000000000000000000000000000000000000000000003b8b87c0",
+          "getTakerAmount": "0x296637bf00000000000000000000000000000000000000000000003635c9adc5dea00000000000000000000000000000000000000000000000000000000000003b8b87c0",
+          "predicate": "0x",
+          "permit": "0x",
+          "interaction": "0x"
+        }
+      },
+      "expected": {
+        "intent": "1inch Order",
+        "owner": "1inch Limit Order Protocol",
+        "fields": [
+          { "label": "From", "value": "0x1234567890123456789012345678901234567890" },
+          { "label": "Send", "value": "1000 DAI" },
+          { "label": "Receive minimum", "value": "999 USDC" },
+          { "label": "To", "value": "Sender" },
+          { "label": "Allowed sender", "value": "0x0000000000000000000000000000000000000000" },
+          { "label": "Maker asset data", "value": "0x" },
+          { "label": "Taker asset data", "value": "0x" },
+          {
+            "label": "Maker amount getter",
+            "value": "0xf4a215c300000000000000000000000000000000000000000000003635c9adc5dea00000000000000000000000000000000000000000000000000000000000003b8b87c0"
+          },
+          {
+            "label": "Taker amount getter",
+            "value": "0x296637bf00000000000000000000000000000000000000000000003635c9adc5dea00000000000000000000000000000000000000000000000000000000000003b8b87c0"
+          },
+          { "label": "Predicate", "value": "0x" },
+          { "label": "Permit", "value": "0x" },
+          { "label": "Interaction", "value": "0x" }
         ]
       }
     }
