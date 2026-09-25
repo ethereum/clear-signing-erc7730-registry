@@ -1,0 +1,83 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "eip712": {
+      "deployments": [
+        {
+          "chainId": 8453,
+          "address": "0x83f6aEbf9fc929BBEa92aF571c66436B360E324E"
+        },
+        {
+          "chainId": 84532,
+          "address": "0xc6d302506c59A57fa8d4fc7b8109F7B48168bE86"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "ZK Stables",
+    "info": {
+      "url": "https://zkstables.com"
+    },
+    "contractName": "UnorderedExecutor"
+  },
+  "display": {
+    "formats": {
+      "Exec(address safe,address to,uint256 value,bytes data,bytes32 requestId,uint256 deadline)": {
+        "intent": "Authorize Safe transaction",
+        "fields": [
+          {
+            "path": "safe",
+            "label": "From safe",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "value",
+            "label": "Value",
+            "format": "amount"
+          },
+          {
+            "path": "deadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "requestId",
+            "label": "Request id",
+            "format": "raw"
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "data",
+            "label": "Action",
+            "format": "calldata",
+            "params": {
+              "calleePath": "to"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
