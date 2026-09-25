@@ -27,9 +27,11 @@
  * "includes" is there so that the test report can give each descriptor the
  * items of the files it includes. It maps each descriptor named in
  * AFFECTED_DESCRIPTORS (a JSON array of repository paths) to its transitive
- * "includes" chain, nearest first. The test report runs in another workflow,
- * without the files of the pull request, so the chain must travel with the
- * items. It is empty when AFFECTED_DESCRIPTORS is not set.
+ * "includes" chain, nearest first, with the same walk that
+ * list-affected-descriptors.js uses to find the affected descriptors. The
+ * test report runs in another workflow, without the files of the pull
+ * request, so the chain must travel with the items. It is empty when
+ * AFFECTED_DESCRIPTORS is not set.
  *
  * The test report bundle reads this output, see
  * .github/test-runner-docs/bundle.md.
@@ -37,6 +39,9 @@
 
 const fs = require('fs');
 const path = require('path');
+// The same include walk as the affected-descriptors detection, so the two
+// scripts cannot disagree on what a descriptor includes.
+const { includeClosure } = require('./list-affected-descriptors');
 
 const MESSAGES = {
   'no-interpolated-intent':
@@ -55,36 +60,6 @@ function repoPath(absPath) {
   const rel = path.relative(process.cwd(), absPath);
   if (rel === '' || rel.startsWith('..') || path.isAbsolute(rel)) return null;
   return rel.split(path.sep).join('/');
-}
-
-/**
- * The transitive "includes" chain of a descriptor, nearest first, as
- * repository paths. It follows the same rule as resolve-erc7730-includes.js:
- * a relative path, from the directory of the file that names it. The chain
- * stops at an external URL, a file outside the repository, a file that cannot
- * be read, and a loop.
- */
-function includeChain(descriptor) {
-  const chain = [];
-  const seen = new Set([path.resolve(descriptor)]);
-  let current = path.resolve(descriptor);
-  for (;;) {
-    let doc;
-    try {
-      doc = JSON.parse(fs.readFileSync(current, 'utf8'));
-    } catch (error) {
-      warn(`cannot read ${repoPath(current) ?? current}: ${error.message}`);
-      return chain;
-    }
-    const ref = doc?.includes;
-    if (typeof ref !== 'string' || ref === '' || /^[a-z]+:\/\//i.test(ref)) return chain;
-    const target = path.resolve(path.dirname(current), ref);
-    const rel = repoPath(target);
-    if (rel === null || seen.has(target)) return chain;
-    seen.add(target);
-    chain.push(rel);
-    current = target;
-  }
 }
 
 function main() {
@@ -145,7 +120,7 @@ function main() {
   }
   for (const descriptor of Array.isArray(affected) ? affected : []) {
     if (typeof descriptor !== 'string' || repoPath(path.resolve(descriptor)) === null) continue;
-    includes[descriptor] = includeChain(descriptor);
+    includes[descriptor] = [...includeClosure(path.resolve(descriptor))];
   }
 
   process.stdout.write(`${JSON.stringify({ version: 1, items, includes }, null, 2)}\n`);
@@ -155,4 +130,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { pointer, includeChain };
+module.exports = { pointer };

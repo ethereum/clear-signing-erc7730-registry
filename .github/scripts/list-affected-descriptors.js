@@ -176,3 +176,7 @@ function main() {
 if (require.main === module) {
   main();
 }
+
+// check-recommended-fields.js reuses the include walk, so the two scripts
+// cannot disagree on what a descriptor includes.
+module.exports = { includeClosure, rel };
