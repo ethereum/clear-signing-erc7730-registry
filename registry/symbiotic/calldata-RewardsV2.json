@@ -1,0 +1,117 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0xa13e65cA0FeFa52cCb9615108fF400EF4806866B" }] } },
+  "metadata": {
+    "owner": "Symbiotic",
+    "info": { "url": "https://symbiotic.fi" },
+    "contractName": "Rewards V2",
+    "enums": { "rewardType": { "0": "Vault snapshot", "1": "Cumulative Merkle" } }
+  },
+  "display": {
+    "formats": {
+      "claimRewards(address recipient,address token,bytes data)": {
+        "intent": "Claim rewards",
+        "interpolatedIntent": "Claim {token} to {recipient}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Rewards contract",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.token", "label": "Reward token", "format": "tokenTicker", "visible": "always" },
+          {
+            "path": "#.data.[0:8]",
+            "label": "Reward type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.rewardType" },
+            "visible": "always"
+          },
+          {
+            "path": "#.data.[20:40]",
+            "label": "Network",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.data", "label": "Claim data", "format": "raw", "visible": "always" }
+        ]
+      },
+      "claimCuratorFees(address recipient,address vault,address token)": {
+        "intent": "Claim curator fees",
+        "interpolatedIntent": "Claim {token} fees",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Rewards contract",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.vault",
+            "label": "Vault",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.token", "label": "Fee token", "format": "tokenTicker", "visible": "always" },
+          {
+            "path": "#.recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "claimVaultSnapshotRewards(address recipient,address network,address token,address vault,uint256 lastUnclaimedRewards,uint256 firstRewardToClaim,uint256 rewardsToClaim,bytes[] activeSharesHints)": {
+        "intent": "Claim vault snapshot rewards",
+        "interpolatedIntent": "Claim {token} rewards",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Rewards contract",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.vault",
+            "label": "Vault",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.network",
+            "label": "Network",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.token", "label": "Reward token", "format": "tokenTicker", "visible": "always" },
+          {
+            "path": "#.recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.lastUnclaimedRewards", "label": "Expected index", "format": "raw", "visible": "always" },
+          { "path": "#.firstRewardToClaim", "label": "Requested start", "format": "raw", "visible": "always" },
+          { "path": "#.rewardsToClaim", "label": "Max distributions", "format": "raw", "visible": "always" },
+          { "path": "#.activeSharesHints.[]", "label": "Active shares hints", "format": "raw", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
