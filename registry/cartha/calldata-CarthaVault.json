@@ -1,0 +1,132 @@
+{
+  "$schema": "../../specs/erc7730-v1.schema.json",
+  "context": {
+    "$id": "CarthaVault",
+    "contract": {
+      "deployments": [
+        { "chainId": 8453, "address": "0xD090239EaE0d756726b6afd57E0b23A24FCABe86" },
+        { "chainId": 8453, "address": "0x47EbDBE398733664250356F7F19fd516a5f1Dd0a" },
+        { "chainId": 8453, "address": "0x8AE6DDb449b3D8d1fE961483Fbe1329b5e4cbD86" },
+        { "chainId": 8453, "address": "0x9Eed917485e08FdFee977629bf933E8C0B33e539" },
+        { "chainId": 8453, "address": "0xf2e3f581A7dE8B055c0122E3bFb445A67b485831" },
+        { "chainId": 8453, "address": "0xabc777A16E41CF6E2F02A768D1f9f4d8aa68e58F" }
+      ],
+      "abi": [
+        {
+          "type": "function",
+          "name": "lock",
+          "inputs": [
+            { "name": "poolId_", "type": "bytes32", "internalType": "bytes32" },
+            { "name": "amount", "type": "uint256", "internalType": "uint256" },
+            { "name": "lockDays", "type": "uint64", "internalType": "uint64" },
+            { "name": "hotkey", "type": "bytes32", "internalType": "bytes32" },
+            { "name": "timestamp", "type": "uint256", "internalType": "uint256" },
+            { "name": "signature", "type": "bytes", "internalType": "bytes" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "lockTopUp",
+          "inputs": [
+            { "name": "poolId_", "type": "bytes32", "internalType": "bytes32" },
+            { "name": "amount", "type": "uint256", "internalType": "uint256" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "extendLock",
+          "inputs": [
+            { "name": "poolId_", "type": "bytes32", "internalType": "bytes32" },
+            { "name": "extensionDays", "type": "uint64", "internalType": "uint64" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "release",
+          "inputs": [
+            { "name": "poolId_", "type": "bytes32", "internalType": "bytes32" },
+            { "name": "amount", "type": "uint256", "internalType": "uint256" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Cartha",
+    "info": { "legalName": "Cartha Protocol", "url": "https://cartha.xyz", "deploymentDate": "2026-03-01T00:00:00Z" },
+    "enums": {
+      "poolId": {
+        "0xee62665949c883f9e0f6f002eac32e00bd59dfe6c34e92a91c37d6a8322d6489": "BTC/USD",
+        "0x0b43555ace6b39aae1b894097d0a9fc17f504c62fea598fa206cc6f5088e6e45": "ETH/USD",
+        "0xa9226449042e36bf6865099eec57482aa55e3ad026c315a0e4a692b776c318ca": "EUR/USD",
+        "0xfd121bde813a3463e16ad2a4ea4103a6a122fbe2cdb07a80d4d293be07bb29fa": "GBP/USD",
+        "0xf9e627ddbdb060c1c9126daeb9addcd1d1ce7d49dbb540e2677f1c572bc8d195": "JPY/USD",
+        "0x5656b83664973a9b4e2c18d45b7578e6746ee4a565da62e3ac579fb9e05acc55": "GOLD/USD"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "lock(bytes32 poolId_, uint256 amount, uint64 lockDays, bytes32 hotkey, uint256 timestamp, bytes signature)": {
+        "$id": "lock",
+        "intent": "Lock Position",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "USDC Amount",
+            "format": "tokenAmount",
+            "params": { "token": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" }
+          },
+          { "path": "lockDays", "label": "Lock Duration (days)", "format": "raw" },
+          { "path": "hotkey", "label": "Bittensor Hotkey", "format": "raw" },
+          { "path": "timestamp", "label": "Expires At", "format": "date", "params": { "encoding": "timestamp" } }
+        ],
+        "required": ["amount", "lockDays"],
+        "excluded": ["poolId_", "signature"]
+      },
+      "lockTopUp(bytes32 poolId_, uint256 amount)": {
+        "$id": "lockTopUp",
+        "intent": "Top Up Lock",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "USDC Amount",
+            "format": "tokenAmount",
+            "params": { "token": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" }
+          }
+        ],
+        "required": ["amount"],
+        "excluded": ["poolId_"]
+      },
+      "extendLock(bytes32 poolId_, uint64 extensionDays)": {
+        "$id": "extendLock",
+        "intent": "Extend Lock",
+        "fields": [{ "path": "extensionDays", "label": "Extension (days)", "format": "raw" }],
+        "required": ["extensionDays"],
+        "excluded": ["poolId_"]
+      },
+      "release(bytes32 poolId_, uint256 amount)": {
+        "$id": "release",
+        "intent": "Release Position",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "USDC Amount",
+            "format": "tokenAmount",
+            "params": { "token": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" }
+          }
+        ],
+        "required": ["amount"],
+        "excluded": ["poolId_"]
+      }
+    }
+  }
+}
