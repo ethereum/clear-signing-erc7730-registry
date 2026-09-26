@@ -1,0 +1,209 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+
+  "context": {
+    "$id": "PolicyGuard",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 11155111,
+          "address": "0x6912A1247952dd082839d93c79f6e64c5898F939"
+        }
+      ],
+      "abi": [
+        {
+          "name": "updatePolicy",
+          "type": "function",
+          "stateMutability": "nonpayable",
+          "inputs": [
+            { "name": "namehash_",  "type": "bytes32" },
+            { "name": "policyHash", "type": "bytes32" }
+          ],
+          "outputs": []
+        },
+        {
+          "name": "checkWithHumanApproval",
+          "type": "function",
+          "stateMutability": "nonpayable",
+          "inputs": [
+            { "name": "namehash_", "type": "bytes32" },
+            { "name": "target",    "type": "address" },
+            { "name": "value",     "type": "uint256" },
+            { "name": "data",      "type": "bytes" },
+            {
+              "name": "policy",
+              "type": "tuple",
+              "components": [
+                { "name": "dailyCap", "type": "tuple", "components": [
+                    { "name": "amount",  "type": "uint256" },
+                    { "name": "enabled", "type": "bool" }
+                ]},
+                { "name": "approvalThreshold", "type": "tuple", "components": [
+                    { "name": "amount",  "type": "uint256" },
+                    { "name": "enabled", "type": "bool" }
+                ]},
+                { "name": "perCounterpartyCap", "type": "tuple", "components": [
+                    { "name": "amount",  "type": "uint256" },
+                    { "name": "enabled", "type": "bool" }
+                ]},
+                { "name": "timeWindow", "type": "tuple", "components": [
+                    { "name": "start",   "type": "uint32" },
+                    { "name": "end",     "type": "uint32" },
+                    { "name": "enabled", "type": "bool" }
+                ]},
+                { "name": "allowlist",        "type": "address[]" },
+                { "name": "allowlistEnabled", "type": "bool" }
+              ]
+            },
+            { "name": "policyJson", "type": "string" },
+            { "name": "humanSig",   "type": "bytes"  }
+          ],
+          "outputs": [{ "name": "", "type": "bool" }]
+        },
+        {
+          "name": "transferPolicyOwnership",
+          "type": "function",
+          "stateMutability": "nonpayable",
+          "inputs": [
+            { "name": "namehash_", "type": "bytes32" },
+            { "name": "newOwner",  "type": "address" }
+          ],
+          "outputs": []
+        },
+        {
+          "name": "setHumanApprover",
+          "type": "function",
+          "stateMutability": "nonpayable",
+          "inputs": [
+            { "name": "namehash_", "type": "bytes32" },
+            { "name": "approver",  "type": "address" }
+          ],
+          "outputs": []
+        }
+      ]
+    }
+  },
+
+  "metadata": {
+    "owner": "Allowance.eth",
+    "info": {
+      "url": "https://github.com/dankot12/allowance.eth",
+      "deploymentDate": "2026-06-14T00:00:00Z"
+    }
+  },
+
+  "display": {
+    "formats": {
+
+      "updatePolicy(bytes32 namehash_, bytes32 policyHash)": {
+        "$id": "updatePolicy",
+        "intent": "Register Spending Policy",
+        "fields": [
+          {
+            "path": "namehash_",
+            "label": "ENS Name Hash",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "policyHash",
+            "label": "Policy Hash (keccak256 of JSON)",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+
+      "checkWithHumanApproval(bytes32 namehash_, address target, uint256 value, bytes data, ((uint256,bool),(uint256,bool),(uint256,bool),(uint32,uint32,bool),address[],bool) policy, string policyJson, bytes humanSig)": {
+        "$id": "checkWithHumanApproval",
+        "intent": "Approve Agent Transaction",
+        "fields": [
+          {
+            "path": "target",
+            "label": "Destination",
+            "format": "addressName",
+            "params": {
+              "types": ["contract"],
+              "sources": ["local", "ens"]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "policy.dailyCap.amount",
+            "label": "Daily Cap",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "policy.approvalThreshold.amount",
+            "label": "Approval Threshold",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+
+      "transferPolicyOwnership(bytes32 namehash_, address newOwner)": {
+        "$id": "transferPolicyOwnership",
+        "intent": "Transfer Policy Control",
+        "fields": [
+          {
+            "path": "namehash_",
+            "label": "ENS Name Hash",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "newOwner",
+            "label": "New Owner",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "wallet"],
+              "sources": ["local", "ens"]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+
+      "setHumanApprover(bytes32 namehash_, address approver)": {
+        "$id": "setHumanApprover",
+        "intent": "Authorize Ledger for Human Approvals",
+        "fields": [
+          {
+            "path": "namehash_",
+            "label": "ENS Name Hash",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "approver",
+            "label": "Ledger Approver Address",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa"],
+              "sources": ["local", "ens"]
+            },
+            "visible": "always"
+          }
+        ]
+      }
+
+    }
+  }
+}
