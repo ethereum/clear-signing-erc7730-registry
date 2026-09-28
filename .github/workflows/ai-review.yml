@@ -53,31 +53,27 @@ jobs:
     steps:
       # A pull request can edit the workflows that check it, so one that
       # touches anything outside the registry could have made Registry Checks
-      # and Descriptor Tests green itself. No checkout: the action reads the
-      # file list through the API, and a rename counts by both names.
-      - name: List the changed files outside the registry
-        id: outside
-        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
-        with:
-          files: "**"
-          files_ignore: |
-            registry/**
-            ercs/**
-          output_renamed_files_as_deleted_and_added: true
-
+      # and Descriptor Tests green itself. The file names stay inside jq: they
+      # are pull request data and never reach a shell line. A rename counts
+      # by both names.
       - name: Stop when the pull request changes files outside the registry
-        if: steps.outside.outputs.any_changed == 'true'
         env:
-          FILES: ${{ steps.outside.outputs.all_changed_files }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
+          gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" --paginate \
+            --jq '.[] | .filename, (.previous_filename // empty)' \
+            | jq -R . | jq -s 'map(select(startswith("registry/") or startswith("ercs/") | not))' > outside.json
+          count=$(jq length outside.json)
+          if [ "$count" -eq 0 ]; then exit 0; fi
           {
             echo "## AI review: not run"
             echo
             echo "This pull request changes files outside \`registry/\` and \`ercs/\`, so it is not reviewed:"
             echo
-            for f in $FILES; do echo "- \`$f\`"; done
+            jq -r '.[] | "- `\(gsub("[^A-Za-z0-9/._-]"; ""))`"' outside.json
           } >> "$GITHUB_STEP_SUMMARY"
-          echo "::error::The pull request changes files outside registry/ and ercs/: $FILES"
+          echo "::error::The pull request changes $count file(s) outside registry/ and ercs/. See the job summary."
           exit 1
 
       # The latest pull_request run of each workflow for the head commit.
