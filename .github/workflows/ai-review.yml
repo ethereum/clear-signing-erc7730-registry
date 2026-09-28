@@ -1,24 +1,28 @@
 name: AI Review
 
 # An advisory review of the descriptors of a pull request by an LLM. It runs
-# after the deterministic checks and never blocks a merge.
+# after the deterministic checks and never blocks a merge: it is not a
+# required check, and a red result only means the review could not run.
 #
 # The workflow runs on pull_request_target, like the queued note and the
 # labels: it starts with the pull request, so it shows among its checks, and
-# it runs the workflow file of the base branch with secrets and a token that
-# can write, which a pull_request run from a fork never gets. Nothing from
-# the pull request is executed here, and nothing from it reaches a shell
-# line: the gate reads the run conclusions, the changed file list and the
-# test report bundle through the GitHub API, as data, and the only checkout
-# is the scripts of the base branch. Keep it that way in every job.
+# it runs the workflow file of the base branch with secrets, which a
+# pull_request run from a fork never gets. Nothing from the pull request is
+# executed here, and nothing from it reaches a shell line: the steps read the
+# changed files, the run conclusions and the test report bundle through the
+# GitHub API, as data. Keep it that way in every job.
 #
-# The gate starts alongside Registry Checks and Descriptor Tests, so it
-# waits for both to complete, then for Descriptor Test Results to publish the
-# test report bundle on the test-reports branch. A new push cancels the
-# waiting run through the concurrency group.
-#
-# workflow_dispatch runs the same jobs on a given pull request, to re-run a
-# review by hand. It needs a version of this file on the default branch.
+# The review job is bound to the Environment ai-review, which holds the API
+# key and requires a maintainer's approval. So every descriptor pull request
+# shows this check as waiting until a maintainer clicks, and only then does
+# the job run. It first reads GitHub once: the pull request changes only
+# descriptors and shared files, Registry Checks and Descriptor Tests are
+# green for the head commit, and the test report bundle of the commit is on
+# the test-reports branch. When one of these does not hold, the job fails
+# with the reason, and a maintainer re-runs it later, which asks for approval
+# again. Descriptor Test Results publishes the bundle one to three minutes
+# after the tests complete, so a click inside that window fails on the
+# bundle: wait and re-run.
 on:
   pull_request_target:
     types: [opened, reopened, synchronize]
@@ -27,12 +31,6 @@ on:
     paths:
       - "registry/**/*.json"
       - "ercs/**/*.json"
-  workflow_dispatch:
-    inputs:
-      pull_request:
-        description: "Pull request number"
-        required: true
-        type: number
 
 permissions:
   contents: read
@@ -40,39 +38,123 @@ permissions:
   pull-requests: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.inputs.pull_request }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
+env:
+  REPORTS_BRANCH: test-reports
+
 jobs:
-  gate:
-    name: Gate
+  review:
+    name: Review (optional, needs a maintainer's approval)
+    environment: ai-review
     runs-on: ubuntu-latest
-    # The wait for Registry Checks and Descriptor Tests, then for the bundle.
-    timeout-minutes: 60
-    outputs:
-      proceed: ${{ steps.gate.outputs.proceed }}
-      reason: ${{ steps.gate.outputs.reason }}
-      pr_number: ${{ steps.gate.outputs.pr_number }}
-      head_sha: ${{ steps.gate.outputs.head_sha }}
-      run_id: ${{ steps.gate.outputs.run_id }}
+    timeout-minutes: 30
     steps:
-      # Under pull_request_target a checkout without ref is the base branch,
-      # never the pull request.
-      - name: Checkout the scripts
+      # A pull request can edit the workflows that check it, so one that
+      # touches anything outside the registry could have made Registry Checks
+      # and Descriptor Tests green itself. No checkout: the action reads the
+      # file list through the API, and a rename counts by both names.
+      - name: List the changed files outside the registry
+        id: outside
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
+        with:
+          files: "**"
+          files_ignore: |
+            registry/**
+            ercs/**
+          output_renamed_files_as_deleted_and_added: true
+
+      - name: Stop when the pull request changes files outside the registry
+        if: steps.outside.outputs.any_changed == 'true'
+        env:
+          FILES: ${{ steps.outside.outputs.all_changed_files }}
+        run: |
+          {
+            echo "## AI review: not run"
+            echo
+            echo "This pull request changes files outside \`registry/\` and \`ercs/\`, so it is not reviewed:"
+            echo
+            for f in $FILES; do echo "- \`$f\`"; done
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error::The pull request changes files outside registry/ and ercs/: $FILES"
+          exit 1
+
+      # The latest pull_request run of each workflow for the head commit.
+      # Registry Checks and Descriptor Tests must have succeeded; any other
+      # workflow that failed stops the review too, so a check added later
+      # counts without an edit here. Cancelled or skipped runs do not.
+      - name: Check that Registry Checks and Descriptor Tests are green
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${HEAD_SHA}&event=pull_request&per_page=100" \
+            --jq '[.workflow_runs[]] | group_by(.name) | map(max_by(.created_at))
+                  | map({name, status, conclusion, url: .html_url})' > runs.json
+          jq -r '.[] | "\(.name): \(.status) \(.conclusion // "-")"' runs.json
+
+          verdict() {
+            echo "## AI review: not run" >> "$GITHUB_STEP_SUMMARY"
+            echo >> "$GITHUB_STEP_SUMMARY"
+            echo "$1" >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::$1"
+            exit 1
+          }
+          for name in "Registry Checks" "Descriptor Tests"; do
+            run=$(jq -c --arg n "$name" '.[] | select(.name == $n)' runs.json)
+            [ -n "$run" ] || verdict "No $name run for this commit. Nothing to review."
+            [ "$(jq -r .status <<< "$run")" = "completed" ] \
+              || verdict "$name has not finished for this commit. Re-run this job once it is green."
+            [ "$(jq -r .conclusion <<< "$run")" = "success" ] \
+              || verdict "$name concluded with $(jq -r .conclusion <<< "$run") ($(jq -r .url <<< "$run")). The review only runs on green checks."
+          done
+          red=$(jq -r '.[] | select(.status == "completed")
+                       | select(.conclusion == "failure" or .conclusion == "timed_out" or .conclusion == "action_required" or .conclusion == "startup_failure")
+                       | "\(.name) (\(.url))"' runs.json)
+          [ -z "$red" ] || verdict "A check of this commit failed: $red. The review only runs on green checks."
+
+      # The bundle is the JSON that Descriptor Test Results publishes on the
+      # test-reports branch for every test run (see
+      # .github/test-runner-docs/bundle.md). The index of the pull request
+      # says which run tested which commit.
+      - name: Checkout the test reports of the pull request
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          sparse-checkout: .github/scripts
+          ref: ${{ env.REPORTS_BRANCH }}
+          sparse-checkout: pr/${{ github.event.pull_request.number }}
+          path: reports
           persist-credentials: false
 
-      - name: Check the pull request and fetch its test report bundle
-        id: gate
+      - name: Find the test report bundle of the head commit
+        id: bundle
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pull_request }}
-        run: node .github/scripts/ai-review-gate.js --pr "$PR_NUMBER" --out ai-review
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          index="reports/pr/${PR_NUMBER}/index.json"
+          run_id=$( [ -f "$index" ] && jq -r --arg sha "$HEAD_SHA" \
+            '[.runs[] | select(.headSha == $sha)] | max_by(.runId) | .runId // empty' "$index" || true)
+          bundle="reports/pr/${PR_NUMBER}/${run_id}.json"
+          if [ -z "$run_id" ] || [ ! -f "$bundle" ]; then
+            msg="No test report bundle for commit ${HEAD_SHA:0:7} on ${REPORTS_BRANCH} yet. Descriptor Test Results publishes it one to three minutes after Descriptor Tests completes: wait, then re-run this job."
+            printf '## AI review: not run\n\n%s\n' "$msg" >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::$msg"
+            exit 1
+          fi
+          mkdir -p ai-review
+          cp "$bundle" ai-review/bundle.json
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          {
+            echo "## AI review: checks passed"
+            echo
+            echo "Commit \`${HEAD_SHA:0:7}\`, test report bundle of run ${run_id}, $(jq '.descriptors | length' "$bundle") descriptor(s):"
+            echo
+            jq -r '.descriptors[] | "- `\(.path | gsub("[^A-Za-z0-9/._-]"; ""))`"' "$bundle"
+          } >> "$GITHUB_STEP_SUMMARY"
 
+      # The hand-off to the review itself, which the next pull request adds.
       - name: Upload the test report bundle
-        if: steps.gate.outputs.proceed == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ai-review-bundle
