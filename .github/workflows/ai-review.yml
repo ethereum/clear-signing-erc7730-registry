@@ -3,25 +3,30 @@ name: AI Review
 # An advisory review of the descriptors of a pull request by an LLM. It runs
 # after the deterministic checks and never blocks a merge.
 #
-# The gate job below runs on workflow_run of Descriptor Tests, the slower of
-# the two workflows that check a pull request. workflow_run uses the workflow
-# file of the default branch and has access to secrets, so nothing from the
-# pull request is ever executed here: the gate reads the run conclusions, the
-# changed file list and the test report bundle through the GitHub API, as
-# data. When Registry Checks is still running, the gate waits for it, in the
-# same loop that waits for the bundle.
+# The workflow runs on pull_request_target, like the queued note and the
+# labels: it starts with the pull request, so it shows among its checks, and
+# it runs the workflow file of the base branch with secrets and a token that
+# can write, which a pull_request run from a fork never gets. Nothing from
+# the pull request is executed here, and nothing from it reaches a shell
+# line: the gate reads the run conclusions, the changed file list and the
+# test report bundle through the GitHub API, as data, and the only checkout
+# is the scripts of the base branch. Keep it that way in every job.
 #
-# Descriptor Test Results, the workflow that publishes the bundle, is not the
-# trigger: a run started by workflow_run is recorded against the default
-# branch, so it does not identify the pull request.
+# The gate starts alongside Registry Checks and Descriptor Tests, so it
+# waits for both to complete, then for Descriptor Test Results to publish the
+# test report bundle on the test-reports branch. A new push cancels the
+# waiting run through the concurrency group.
 #
-# workflow_dispatch runs the same jobs on a given pull request. It tests a
-# branch of this workflow before it reaches the default branch, and re-runs
-# a review by hand.
+# workflow_dispatch runs the same jobs on a given pull request, to re-run a
+# review by hand. It needs a version of this file on the default branch.
 on:
-  workflow_run:
-    workflows: ["Descriptor Tests"]
-    types: [completed]
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+    # The same files as Descriptor Tests: without a descriptor change there
+    # is no test run and no bundle, so nothing to review.
+    paths:
+      - "registry/**/*.json"
+      - "ercs/**/*.json"
   workflow_dispatch:
     inputs:
       pull_request:
@@ -35,22 +40,15 @@ permissions:
   pull-requests: read
 
 concurrency:
-  # The workflow_run payload has no pull request number, so the head
-  # repository and branch identify the pull request instead.
-  group: ${{ github.workflow }}-${{ github.event.inputs.pull_request || format('{0}-{1}', github.event.workflow_run.head_repository.full_name, github.event.workflow_run.head_branch) }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.inputs.pull_request }}
   cancel-in-progress: true
 
 jobs:
   gate:
     name: Gate
-    # Red tests cannot pass the gate, so the job does not start. The gate
-    # script checks Registry Checks.
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.event == 'pull_request' &&
-       github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # The wait for Registry Checks and Descriptor Tests, then for the bundle.
+    timeout-minutes: 60
     outputs:
       proceed: ${{ steps.gate.outputs.proceed }}
       reason: ${{ steps.gate.outputs.reason }}
@@ -58,7 +56,8 @@ jobs:
       head_sha: ${{ steps.gate.outputs.head_sha }}
       run_id: ${{ steps.gate.outputs.run_id }}
     steps:
-      # The default branch, or the dispatched branch: never the pull request.
+      # Under pull_request_target a checkout without ref is the base branch,
+      # never the pull request.
       - name: Checkout the scripts
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -69,13 +68,8 @@ jobs:
         id: gate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.inputs.pull_request }}
-        run: |
-          if [ -n "$PR_NUMBER" ]; then
-            node .github/scripts/ai-review-gate.js --pr "$PR_NUMBER" --out ai-review
-          else
-            node .github/scripts/ai-review-gate.js --out ai-review
-          fi
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pull_request }}
+        run: node .github/scripts/ai-review-gate.js --pr "$PR_NUMBER" --out ai-review
 
       - name: Upload the test report bundle
         if: steps.gate.outputs.proceed == 'true'

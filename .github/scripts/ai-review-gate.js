@@ -5,14 +5,13 @@
  * JSON that the Descriptor Test Results workflow publishes on the
  * test-reports branch for every test run (see .github/test-runner-docs/bundle.md).
  *
- * Usage:
- *   node ai-review-gate.js --pr <number> --out <dir>      (workflow_dispatch, or locally)
- *   node ai-review-gate.js --out <dir>                    (workflow_run: reads GITHUB_EVENT_PATH)
+ * Usage: node ai-review-gate.js --pr <number> --out <dir>
  *
  * Environment: GITHUB_TOKEN, GITHUB_REPOSITORY, and when set GITHUB_OUTPUT
- * and GITHUB_STEP_SUMMARY. Options: --wait-minutes (default 10), the time
- * given to Registry Checks to finish and to the Descriptor Test Results
- * workflow to publish the bundle; --reports-branch (default test-reports).
+ * and GITHUB_STEP_SUMMARY. Options: --wait-minutes (default 45), the time
+ * given to Registry Checks and Descriptor Tests to finish and to the
+ * Descriptor Test Results workflow to publish the bundle; --reports-branch
+ * (default test-reports).
  *
  * The review is skipped, never failed, when a condition does not hold. The
  * script always exits 0 and writes the decision to GITHUB_OUTPUT:
@@ -43,6 +42,9 @@ const RED_CONCLUSIONS = new Set(['failure', 'timed_out', 'action_required', 'sta
 // check it, so its green checks prove nothing.
 const ALLOWED_PREFIXES = ['registry/', 'ercs/'];
 const POLL_SECONDS = 30;
+// The workflow starts with the pull request, so the runs it waits for may
+// not be listed yet. A run still absent after this long never started.
+const START_GRACE_SECONDS = 180;
 
 const { values: opts } = parseArgs({
   options: {
@@ -50,7 +52,7 @@ const { values: opts } = parseArgs({
     // For local runs on a merged pull request, e.g. the price simulation.
     'allow-closed': { type: 'boolean', default: false },
     out: { type: 'string', default: 'ai-review' },
-    'wait-minutes': { type: 'string', default: '10' },
+    'wait-minutes': { type: 'string', default: '45' },
     'reports-branch': { type: 'string', default: 'test-reports' },
   },
 });
@@ -106,21 +108,12 @@ function stop(reason, message, extra = {}) {
   process.exit(0);
 }
 
-/** The pull request under review, from the dispatch input or from the workflow_run event. */
+/** The pull request under review. Its head commit comes from the API, not from the caller. */
 async function findPullRequest() {
-  if (opts.pr) {
-    const pr = await api(`/pulls/${opts.pr}`);
-    if (!pr || (pr.state !== 'open' && !opts['allow-closed'])) return null;
-    return pr;
-  }
-  const event = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
-  const run = event.workflow_run;
-  if (!run) throw new Error('no --pr and no workflow_run event');
-  // The event names the head repository, branch and commit, which a fork
-  // cannot change. workflow_run.pull_requests is empty for a fork.
-  const headRepo = run.head_repository.full_name;
-  const open = await paginate('/pulls', { state: 'open', head: `${headRepo.split('/')[0]}:${run.head_branch}` });
-  return open.find((p) => p.head.sha === run.head_sha && p.head.repo?.full_name === headRepo) ?? null;
+  if (!opts.pr) throw new Error('--pr is required');
+  const pr = await api(`/pulls/${opts.pr}`);
+  if (!pr || (pr.state !== 'open' && !opts['allow-closed'])) return null;
+  return pr;
 }
 
 /** The latest pull_request run of each workflow for the commit, by workflow name. */
@@ -172,23 +165,25 @@ async function main() {
   const notGreen = (name, run) =>
     stop('not-green', `${where}: ${name} concluded with \`${run.conclusion}\` ([run](${run.html_url})). The AI review only runs on green checks.`, { pr_number: number, head_sha: sha });
 
-  // Gate 1: every check of the commit is green. The trigger is the completion
-  // of Descriptor Tests, so Registry Checks is usually done already; when it
-  // is not, wait for it. A red run stops now, whichever it is.
+  // Gate 1: every check of the commit is green. This workflow starts with
+  // the pull request, alongside Registry Checks and Descriptor Tests, so
+  // wait for both. A red run stops now, whichever it is.
+  const startGrace = Date.now() + START_GRACE_SECONDS * 1000;
   let runs = await latestRuns(sha);
-  if (!runs['Descriptor Tests']) {
-    // The tests only run when a descriptor, a shared file or a test changed.
-    stop('no-descriptor-tests', `${where}: no Descriptor Tests run, so no descriptor changed. Nothing to review.`, { pr_number: number, head_sha: sha });
-  }
   for (;;) {
-    const pending = REQUIRED_WORKFLOWS.filter((name) => !runs[name] || runs[name].status !== 'completed');
     for (const [name, run] of Object.entries(runs)) {
       if (run.status !== 'completed') continue;
       if (REQUIRED_WORKFLOWS.includes(name) ? run.conclusion !== 'success' : RED_CONCLUSIONS.has(run.conclusion)) notGreen(name, run);
     }
+    const missing = REQUIRED_WORKFLOWS.filter((name) => !runs[name]);
+    if (missing.includes('Descriptor Tests') && Date.now() >= startGrace) {
+      // The tests only run when a descriptor, a shared file or a test changed.
+      stop('no-descriptor-tests', `${where}: no Descriptor Tests run, so no descriptor changed. Nothing to review.`, { pr_number: number, head_sha: sha });
+    }
+    const pending = REQUIRED_WORKFLOWS.filter((name) => !runs[name] || runs[name].status !== 'completed');
     if (pending.length === 0) break;
     if (Date.now() >= deadline) {
-      stop('waiting', `${where}: ${pending.join(' and ')} still running after ${opts['wait-minutes']} minutes. Re-run this workflow by hand once it is green.`, { pr_number: number, head_sha: sha });
+      stop('waiting', `${where}: ${pending.join(' and ')} still not finished after ${opts['wait-minutes']} minutes. Re-run this workflow by hand once it is green.`, { pr_number: number, head_sha: sha });
     }
     console.log(`${pending.join(' and ')} not finished for ${where}, next look in ${POLL_SECONDS}s`);
     await sleep(POLL_SECONDS * 1000);
