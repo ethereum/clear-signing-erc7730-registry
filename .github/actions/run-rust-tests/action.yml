@@ -1,18 +1,21 @@
 name: Run Rust (llbartekll/clear-signing) clear-signing tests
-description: Install llbartekll/clear-signing's cs-test binary via cargo, run it against a .tests.json fixture, and produce a results.json conforming to the format in .github/test-runner-docs/.
+description: Install llbartekll/clear-signing's cs-test binary via cargo, run it against the .tests.json fixture of each descriptor in the test matrix and write one results.json per descriptor, in the format in .github/test-runner-docs/.
 
 inputs:
-  test-file:
-    description: Absolute path to the .tests.json fixture.
+  test-matrix:
+    description: JSON array of the descriptors to test, as detect-testsv2 outputs it. Each entry has entity, descriptor_name and test_file.
     required: true
-  output:
-    description: Absolute path where results.json should be written.
+  registry-root:
+    description: Absolute path of the registry checkout. The test_file paths of the matrix are relative to it.
+    required: true
+  output-dir:
+    description: Absolute path of the directory that receives one <entity>__<descriptor>.json per descriptor.
     required: true
 
 outputs:
-  results-path:
-    description: Path to the produced results.json.
-    value: ${{ inputs.output }}
+  results-dir:
+    description: The directory that holds the results files.
+    value: ${{ inputs.output-dir }}
 
 runs:
   using: composite
@@ -39,12 +42,23 @@ runs:
     - name: Run tests
       shell: bash
       env:
-        TEST_FILE: ${{ inputs.test-file }}
-        OUTPUT: ${{ inputs.output }}
+        TEST_MATRIX: ${{ inputs.test-matrix }}
+        REGISTRY_ROOT: ${{ inputs.registry-root }}
+        OUTPUT_DIR: ${{ inputs.output-dir }}
       run: |
-        # Registry root = two levels up from the test file's `testsv2` dir
-        # (.../registry/<entity>/testsv2/<name>.tests.json). This lets the runner
-        # resolve nested-call descriptors (e.g. Safe inner call, kiln inner
-        # deposit) from anywhere in the tree, not just beside the test file.
-        REGISTRY_ROOT="$(cd "$(dirname "$TEST_FILE")/../.." && pwd)"
-        cs-test run "$TEST_FILE" --registry "$REGISTRY_ROOT" --output "$OUTPUT"
+        mkdir -p "$OUTPUT_DIR"
+        # --registry points at the registry tree, so the runner resolves a
+        # nested-call descriptor (Safe inner call, kiln inner deposit) from
+        # anywhere in the tree, not only beside the test file.
+        #
+        # The runner exits 0 for a failed case and non-zero only for a crash.
+        # A crash must not stop the other descriptors; upload-test-results
+        # reports the missing results file.
+        echo "$TEST_MATRIX" | jq -r '.[] | "\(.entity)\t\(.descriptor_name)\t\(.test_file)"' |
+          while IFS=$'\t' read -r entity descriptor test_file; do
+            echo "::group::${entity}/${descriptor}"
+            cs-test run "$REGISTRY_ROOT/$test_file" --registry "$REGISTRY_ROOT/registry" \
+              --output "$OUTPUT_DIR/${entity}__${descriptor}.json" ||
+              echo "::error file=${test_file}::The Rust runner exited with status $? for ${entity}/${descriptor}"
+            echo "::endgroup::"
+          done

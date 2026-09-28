@@ -1,7 +1,12 @@
 {
   "$schema": "../../specs/erc7730-v2.schema.json",
   "context": { "contract": { "deployments": [{ "chainId": 146, "address": "0x9bB958D459a97e3E37E11BeCf842E728167d9114" }] } },
-  "metadata": { "owner": "Flying Tulip", "contractName": "pFT Marketplace", "info": { "url": "https://flyingtulip.com" } },
+  "metadata": {
+    "owner": "Flying Tulip",
+    "contractName": "pFT Marketplace",
+    "info": { "url": "https://flyingtulip.com" },
+    "constants": { "addressAsNull": "0x0000000000000000000000000000000000000000" }
+  },
   "display": {
     "formats": {
       "addListing(uint256 tokenId, address token, uint256 price, uint40 expires)": {
@@ -14,7 +19,13 @@
             "params": { "collection": "0x1d8051c90076FaA5b683A3551Ee4369d00f99D67" },
             "visible": "always"
           },
-          { "path": "price", "label": "Price", "format": "tokenAmount", "params": { "tokenPath": "token" }, "visible": "always" },
+          {
+            "path": "price",
+            "label": "Price",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
+            "visible": "always"
+          },
           { "path": "expires", "label": "Expires", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" }
         ],
         "interpolatedIntent": "List PUT {tokenId}"
@@ -29,7 +40,13 @@
             "params": { "collection": "0x1d8051c90076FaA5b683A3551Ee4369d00f99D67" },
             "visible": "always"
           },
-          { "path": "price", "label": "Price", "format": "tokenAmount", "params": { "tokenPath": "token" }, "visible": "always" },
+          {
+            "path": "price",
+            "label": "Price",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
+            "visible": "always"
+          },
           { "path": "expires", "label": "Expires", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" }
         ],
         "interpolatedIntent": "Edit PUT {tokenId}"
@@ -61,7 +78,7 @@
             "path": "expectedPrice",
             "label": "Price",
             "format": "tokenAmount",
-            "params": { "tokenPath": "expectedToken" },
+            "params": { "tokenPath": "expectedToken", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
             "visible": "always"
           },
           {

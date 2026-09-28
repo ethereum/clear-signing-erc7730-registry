@@ -1,6 +1,6 @@
 # Test runner guide
 
-A test runner is a small program that consumes one `.tests.json` fixture from the registry, drives a clear-signing implementation against each case, and writes a `results.json` describing what the implementation rendered. The CI workflow ([`clear-signing-tests.yml`](../workflows/clear-signing-tests.yml)) wraps the runner in a composite action, uploads the `results.json` as an artifact, and the `post-results` job aggregates per-implementation columns onto the PR.
+A test runner is a small program that consumes one `.tests.json` fixture from the registry, drives a clear-signing implementation against each case, and writes a `results.json` describing what the implementation rendered. The CI workflow ([`descriptor-tests.yml`](../workflows/descriptor-tests.yml)) wraps the runner in a composite action that runs it once per affected descriptor in one job per implementation, uploads the `results.json` files as one artifact per implementation, and the results workflow ([`descriptor-test-results.yml`](../workflows/descriptor-test-results.yml)) aggregates per-implementation columns onto the PR.
 
 ## Input
 
@@ -105,6 +105,6 @@ The optional keys are read by the test report bundle, see [`bundle.md`](./bundle
 
 ## Wiring into CI
 
-Wrap the runner in a composite action under `.github/actions/run-<name>-tests/` and add a sibling job in [`clear-signing-tests.yml`](../workflows/clear-signing-tests.yml). The action should call [`upload-test-results`](../actions/upload-test-results/action.yml) to publish the artifact.
+Wrap the runner in a composite action under `.github/actions/run-<name>-tests/` that takes the test matrix of the `detect-testsv2` job, runs the runner once per entry and writes one `<entity>__<descriptor>.json` per entry into an output directory. Add a sibling job in [`descriptor-tests.yml`](../workflows/descriptor-tests.yml) that calls the action and then [`upload-test-results`](../actions/upload-test-results/action.yml), which validates the files, publishes them as one artifact and fails the job on a case that did not pass. One job per implementation, not one per descriptor, keeps the checks of a pull request short.
 
 See [`run-sourcify-tests`](../actions/run-sourcify-tests/action.yml) for a complete reference implementation.
