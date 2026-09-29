@@ -64,15 +64,27 @@ jobs:
               -o "specs/${name}"
           done < upstream-schema-files.txt
 
+          # A descriptor that still points at a removed schema would break, so
+          # refuse to remove it. Move those descriptors to the final version
+          # first, then run the sync again.
+          IN_USE=0
           for local in specs/erc7730-v[0-9]*.schema.json; do
             name=$(basename "$local")
-            if ! grep -qxF "$name" upstream-schema-files.txt; then
-              echo "Removing ${local}: no longer published upstream"
-              git rm -q "$local"
+            grep -qxF "$name" upstream-schema-files.txt && continue
+            users=$(grep -rlF "specs/${name}\"" registry ercs || true)
+            if [ -n "$users" ]; then
+              while IFS= read -r user; do
+                echo "::error file=${user},line=1::${local} is no longer published upstream, but this file still points at it"
+              done <<< "$users"
+              IN_USE=1
+              continue
             fi
+            echo "Removing ${local}: no longer published upstream"
+            git rm -q "$local"
           done
 
           rm -f upstream-schema-files.txt
+          [ "$IN_USE" -eq 0 ]
 
       - name: Check changes
         id: changes

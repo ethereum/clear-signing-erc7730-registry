@@ -146,7 +146,7 @@ jobs:
 
       - name: Setup python
         timeout-minutes: 10
-        if: steps.changed-schema-files.outputs.any_changed == 'true'
+        if: steps.changed-schema-files.outputs.any_changed == 'true' || steps.changed-schema-files.outputs.any_deleted == 'true'
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.12"
@@ -154,12 +154,12 @@ jobs:
 
       - name: Install check-jsonschema
         timeout-minutes: 10
-        if: steps.changed-schema-files.outputs.any_changed == 'true'
+        if: steps.changed-schema-files.outputs.any_changed == 'true' || steps.changed-schema-files.outputs.any_deleted == 'true'
         run: pip install -r .github/requirements-schema.txt
 
       - name: Validate every registry file against the schemas
         timeout-minutes: 20
-        if: steps.changed-schema-files.outputs.any_changed == 'true'
+        if: steps.changed-schema-files.outputs.any_changed == 'true' || steps.changed-schema-files.outputs.any_deleted == 'true'
         # A schema change is checked against the whole registry, not only
         # against the files a pull request touches. Under the ERC-7730
         # versioning rules a schema change that keeps every existing
