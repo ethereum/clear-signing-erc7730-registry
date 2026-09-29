@@ -1,0 +1,98 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-permit-FXRP.json",
+  "dataProvider": {
+    "tokens": {
+      "0xad552a648c74d49e10027ab8a618a3ad4901c5be": {
+        "symbol": "FXRP",
+        "decimals": 6,
+        "name": "FXRP"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Authorize spending of FXRP",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "FXRP",
+          "version": "1",
+          "chainId": 14,
+          "verifyingContract": "0xAd552A648C74D49E10027AB8a618A3ad4901c5bE"
+        },
+        "message": {
+          "owner": "0x3333333333333333333333333333333333333333",
+          "spender": "0x2222222222222222222222222222222222222222",
+          "value": "100000000",
+          "nonce": "1",
+          "deadline": "1782864000"
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of tokens",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x2222222222222222222222222222222222222222"
+          },
+          {
+            "label": "Max spending amount",
+            "value": "100 FXRP"
+          },
+          {
+            "label": "Valid until",
+            "value": "2026-07-01 00:00:00Z"
+          },
+          {
+            "label": "Owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          }
+        ]
+      }
+    }
+  ]
+}
