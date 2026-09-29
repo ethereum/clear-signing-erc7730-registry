@@ -1,0 +1,51 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "$comment": "Blockscout verifies FAssetOFTAdapter, but Sourcify does not yet. erc7730 lint --require-verified cannot check these field paths until the proxy or implementation is on Sourcify.",
+  "context": {
+    "$id": "FXRP-OFT-Flare",
+    "contract": { "deployments": [{ "chainId": 14, "address": "0xd70659a6396285BF7214d7Ea9673184e7C72E07E" }] }
+  },
+  "metadata": {
+    "owner": "Flare Foundation",
+    "info": { "url": "https://flare.network/" },
+    "contractName": "FXRP-OFT-Flare",
+    "constants": { "fxrp": "0xAd552A648C74D49E10027AB8a618A3ad4901c5bE" }
+  },
+  "display": {
+    "formats": {
+      "send((uint32 dstEid, bytes32 to, uint256 amountLD, uint256 minAmountLD, bytes extraOptions, bytes composeMsg, bytes oftCmd) _sendParam, (uint256 nativeFee, uint256 lzTokenFee) _fee, address _refundAddress)": {
+        "intent": "Bridge FXRP",
+        "fields": [
+          {
+            "path": "#._sendParam.amountLD",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.fxrp" },
+            "visible": "always"
+          },
+          {
+            "path": "#._sendParam.minAmountLD",
+            "label": "Minimum to receive",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.fxrp" },
+            "visible": "always"
+          },
+          { "path": "#._sendParam.dstEid", "label": "Destination EID", "format": "raw", "visible": "always" },
+          { "path": "#._sendParam.to", "label": "Recipient", "format": "raw", "visible": "always" },
+          { "path": "#._fee.nativeFee", "label": "Bridge fee", "format": "amount", "visible": "always" },
+          {
+            "path": "#._refundAddress",
+            "label": "Refund to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "label": "Extra options", "path": "#._sendParam.extraOptions", "visible": "never" },
+          { "label": "Compose message", "path": "#._sendParam.composeMsg", "visible": "never" },
+          { "label": "OFT command", "path": "#._sendParam.oftCmd", "visible": "never" },
+          { "label": "LZ token fee", "path": "#._fee.lzTokenFee", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
