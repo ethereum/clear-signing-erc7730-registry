@@ -1,0 +1,98 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-permit-usdt0-Flare.json",
+  "dataProvider": {
+    "tokens": {
+      "0xe7cd86e13ac4309349f30b3435a9d337750fc82d": {
+        "symbol": "USDT0",
+        "decimals": 6,
+        "name": "USD₮0"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Authorize spending of USDT0",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Permit": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "USD₮0",
+          "version": "1",
+          "chainId": 14,
+          "verifyingContract": "0xe7cd86e13AC4309349F30B3435a9d337750fC82D"
+        },
+        "message": {
+          "owner": "0x3333333333333333333333333333333333333333",
+          "spender": "0x2222222222222222222222222222222222222222",
+          "value": "100000000",
+          "nonce": "1",
+          "deadline": "1782864000"
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of tokens",
+        "owner": "Tether Limited",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x2222222222222222222222222222222222222222"
+          },
+          {
+            "label": "Max spending amount",
+            "value": "100 USDT0"
+          },
+          {
+            "label": "Valid until",
+            "value": "2026-07-01 00:00:00Z"
+          },
+          {
+            "label": "Owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          }
+        ]
+      }
+    }
+  ]
+}
