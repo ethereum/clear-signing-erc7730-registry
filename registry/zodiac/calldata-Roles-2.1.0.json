@@ -73,6 +73,7 @@
     "formats": {
       "allowTarget(bytes32 roleKey,address targetAddress,uint8 options)": {
         "intent": "Allow all calls to target",
+        "interpolatedIntent": "Allow all calls to {targetAddress} ({options})",
         "fields": [
           { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
           { "path": "targetAddress", "$ref": "$.display.definitions.target", "visible": "always" },
@@ -81,6 +82,7 @@
       },
       "scopeTarget(bytes32 roleKey,address targetAddress)": {
         "intent": "Scope target",
+        "interpolatedIntent": "Scope {targetAddress}",
         "fields": [
           { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
           { "path": "targetAddress", "$ref": "$.display.definitions.target", "visible": "always" }
@@ -88,6 +90,7 @@
       },
       "revokeTarget(bytes32 roleKey,address targetAddress)": {
         "intent": "Revoke target",
+        "interpolatedIntent": "Revoke {targetAddress}",
         "fields": [
           { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
           { "path": "targetAddress", "$ref": "$.display.definitions.target", "visible": "always" }
@@ -95,6 +98,7 @@
       },
       "allowFunction(bytes32 roleKey,address targetAddress,bytes4 selector,uint8 options)": {
         "intent": "Allow function",
+        "interpolatedIntent": "Allow {selector} on {targetAddress} ({options})",
         "fields": [
           { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
           { "path": "targetAddress", "$ref": "$.display.definitions.target", "visible": "always" },
@@ -123,6 +127,7 @@
       },
       "revokeFunction(bytes32 roleKey,address targetAddress,bytes4 selector)": {
         "intent": "Revoke function",
+        "interpolatedIntent": "Revoke {selector} on {targetAddress}",
         "fields": [
           { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
           { "path": "targetAddress", "$ref": "$.display.definitions.target", "visible": "always" },
@@ -139,6 +144,7 @@
       },
       "setDefaultRole(address module,bytes32 roleKey)": {
         "intent": "Set default role",
+        "interpolatedIntent": "Set default role of {module}",
         "fields": [
           { "path": "module", "label": "Member", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] }, "visible": "always" },
           { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" }
@@ -146,6 +152,7 @@
       },
       "setAllowance(bytes32 key,uint128 balance,uint128 maxRefill,uint128 refill,uint64 period,uint64 timestamp)": {
         "intent": "Set allowance",
+        "interpolatedIntent": "Set allowance to {balance}, refill {refill} every {period}",
         "fields": [
           { "path": "key", "label": "Allowance", "format": "raw", "visible": "always" },
           { "path": "balance", "label": "Balance", "format": "raw", "visible": "always" },
@@ -157,6 +164,7 @@
       },
       "setTransactionUnwrapper(address to,bytes4 selector,address adapter)": {
         "intent": "Set transaction unwrapper",
+        "interpolatedIntent": "Unwrap {selector} on {to} with {adapter}",
         "fields": [
           { "path": "to", "$ref": "$.display.definitions.target", "visible": "always" },
           { "path": "selector", "$ref": "$.display.definitions.selector", "visible": "always" },
@@ -201,10 +209,12 @@
       },
       "enableModule(address module)": {
         "intent": "Enable module",
+        "interpolatedIntent": "Enable module {module}",
         "fields": [{ "path": "module", "$ref": "$.display.definitions.module", "visible": "always" }]
       },
       "disableModule(address prevModule,address module)": {
         "intent": "Disable module",
+        "interpolatedIntent": "Disable module {module}",
         "fields": [
           { "path": "module", "$ref": "$.display.definitions.module", "visible": "always" },
           { "path": "prevModule", "label": "Previous module", "visible": "never" }
@@ -212,18 +222,21 @@
       },
       "setAvatar(address _avatar)": {
         "intent": "Change avatar",
+        "interpolatedIntent": "Change avatar to {_avatar}",
         "fields": [
           { "path": "_avatar", "label": "New avatar", "format": "addressName", "params": { "types": ["wallet", "contract"] }, "visible": "always" }
         ]
       },
       "setTarget(address _target)": {
         "intent": "Change execution target",
+        "interpolatedIntent": "Change execution target to {_target}",
         "fields": [
           { "path": "_target", "label": "New target", "format": "addressName", "params": { "types": ["wallet", "contract"] }, "visible": "always" }
         ]
       },
       "transferOwnership(address newOwner)": {
         "intent": "Transfer ownership",
+        "interpolatedIntent": "Transfer ownership to {newOwner}",
         "fields": [
           { "path": "newOwner", "label": "New owner", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] }, "visible": "always" }
         ]
