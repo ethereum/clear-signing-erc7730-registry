@@ -55,7 +55,7 @@ const DEFAULT_EFFORT = { openai: 'xhigh', anthropic: 'low' };
 // toward the OpenAI limit, so that one is larger.
 const MAX_OUTPUT_TOKENS = { openai: 64_000, anthropic: 16_000 };
 const TOKENS_PER_BYTE = 1 / 3;
-const SECTIONS = ['## Critical', '## Warning', '## Info', '## What was reviewed'];
+const SECTIONS = ['## Critical', '## Warning', '## Info'];
 
 const { values: opts } = parseArgs({
   options: {
