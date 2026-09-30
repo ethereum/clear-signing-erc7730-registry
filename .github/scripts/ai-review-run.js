@@ -8,7 +8,8 @@
  *          [--max-units 10] [--parallel 3] [--dry-run]
  *
  * Environment: OPENAI_API_KEY or ANTHROPIC_API_KEY, for the provider used
- * (not needed with --dry-run).
+ * (not needed with --dry-run). ANTHROPIC_WORKSPACE_ID when the Anthropic key
+ * is not scoped to a workspace.
  *
  * <repo> is a checkout of the base branch. The prompt
  * (docs/ai-review/REVIEW_PROMPT.md) and the specification (specs/erc-7730.md)
@@ -161,7 +162,12 @@ const providers = {
     client() {
       const Anthropic = require('@anthropic-ai/sdk');
       this.Anthropic = Anthropic;
-      return new Anthropic({ maxRetries: 5, timeout: 20 * 60 * 1000 });
+      const workspace = process.env.ANTHROPIC_WORKSPACE_ID;
+      return new Anthropic({
+        maxRetries: 5,
+        timeout: 20 * 60 * 1000,
+        ...(workspace ? { defaultHeaders: { 'anthropic-workspace-id': workspace } } : {}),
+      });
     },
     fatal(e) { return e instanceof this.Anthropic.AuthenticationError; },
     describe(e) { return e instanceof this.Anthropic.APIError ? `${e.constructor.name}: ${e.message}` : String(e.message ?? e); },

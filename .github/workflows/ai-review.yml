@@ -245,6 +245,8 @@ jobs:
       - name: Review the inputs with Claude
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Only for a key that is not scoped to a workspace.
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.ANTHROPIC_WORKSPACE_ID }}
         run: |
           node scripts/.github/scripts/ai-review-run.js --inputs ai-review/inputs --out ai-review --repo scripts \
             --provider anthropic --model "$AI_REVIEW_ANTHROPIC_MODEL" --effort "$AI_REVIEW_ANTHROPIC_EFFORT" \
