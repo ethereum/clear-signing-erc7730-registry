@@ -29,6 +29,20 @@ name: AI Review
 # descriptor the verified sources, the ABI and the proxy resolution from
 # Sourcify, grouped into one input per descriptor and distinct
 # implementation. The inputs are the artifact ai-review-inputs.
+#
+# The same job sends each input to the models, one request per input and
+# model, one turn, no tools, with the prompt (docs/ai-review/REVIEW_PROMPT.md)
+# and the specification from the base branch, so a pull request cannot
+# change what a model is told. Two models run for now, to compare them on
+# real pull requests; one will stay. The answers and the token usage are the
+# artifact ai-review-answers.
+#
+# A second job, post, turns the answers into one comment per model on the
+# pull request, created on the first run and updated on the next ones,
+# headed as AI-generated and advisory. Only that job can write comments, and
+# it holds no key: the keys and the write permission never meet in one job.
+# Every answer is model output about pull request data, so the renderer
+# escapes it before it is posted.
 on:
   pull_request_target:
     types: [opened, reopened, synchronize]
@@ -49,6 +63,15 @@ concurrency:
 
 env:
   REPORTS_BRANCH: test-reports
+  # The models compared, their reasoning effort, and the most review units
+  # one run sends to each. Step 3 of #3057 (#3069) measured Claude Sonnet 5.5
+  # at low effort at 90% of the benchmark objectives for about $0.17 per unit,
+  # and GPT-6 Luna at xhigh at 81% for about $0.013.
+  AI_REVIEW_ANTHROPIC_MODEL: claude-sonnet-5-5
+  AI_REVIEW_ANTHROPIC_EFFORT: low
+  AI_REVIEW_OPENAI_MODEL: gpt-6-luna
+  AI_REVIEW_OPENAI_EFFORT: xhigh
+  AI_REVIEW_MAX_UNITS: "10"
 
 jobs:
   review:
@@ -155,15 +178,18 @@ jobs:
             jq -r '.descriptors[] | "- `\(.path | gsub("[^A-Za-z0-9/._-]"; ""))`"' "$bundle"
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # The scripts and their dependencies come from the base branch. The
-      # install runs no package scripts and restores no cache.
-      - name: Checkout the scripts
+      # The scripts, their dependencies, the prompt and the specification come
+      # from the base branch. The install runs no package scripts and restores
+      # no cache.
+      - name: Checkout the scripts, the prompt and the spec
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           path: scripts
           persist-credentials: false
           sparse-checkout: |
             .github/scripts
+            docs/ai-review/REVIEW_PROMPT.md
+            specs/erc-7730.md
             package.json
             package-lock.json
 
@@ -211,3 +237,104 @@ jobs:
           name: ai-review-inputs
           path: ai-review/inputs
           retention-days: 30
+
+      # One request per input and model. A key is the only secret of its
+      # step; the script gets no token for GitHub and writes nothing but the
+      # answers. The second model runs even when the first failed, so one
+      # provider's outage does not hide the other's review.
+      - name: Review the inputs with Claude
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node scripts/.github/scripts/ai-review-run.js --inputs ai-review/inputs --out ai-review --repo scripts \
+            --provider anthropic --model "$AI_REVIEW_ANTHROPIC_MODEL" --effort "$AI_REVIEW_ANTHROPIC_EFFORT" \
+            --max-units "$AI_REVIEW_MAX_UNITS"
+
+      - name: Review the inputs with GPT
+        if: ${{ !cancelled() && steps.collect.outcome == 'success' }}
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          node scripts/.github/scripts/ai-review-run.js --inputs ai-review/inputs --out ai-review --repo scripts \
+            --provider openai --model "$AI_REVIEW_OPENAI_MODEL" --effort "$AI_REVIEW_OPENAI_EFFORT" \
+            --max-units "$AI_REVIEW_MAX_UNITS"
+
+      - name: Upload the answers of the review
+        if: ${{ !cancelled() && steps.collect.outcome == 'success' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ai-review-answers
+          path: ai-review/answers
+          retention-days: 90
+          if-no-files-found: ignore
+
+  # The only job that can write on the pull request. It reads the answers
+  # from the artifact of the review job and nothing from the pull request.
+  # It runs when the review job failed too, so the answers of one model are
+  # posted when the other failed.
+  post:
+    name: Post the review
+    needs: review
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Download the answers of the review
+        id: download
+        continue-on-error: true
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: ai-review-answers
+          path: answers
+
+      - name: Checkout the renderer
+        if: steps.download.outcome == 'success'
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: scripts
+          persist-credentials: false
+          sparse-checkout: .github/scripts
+
+      - name: Setup node
+        if: steps.download.outcome == 'success'
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "22"
+
+      - name: Render the comments
+        if: steps.download.outcome == 'success'
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          node scripts/.github/scripts/ai-review-render.js --answers answers --out comments \
+            --run-url "$RUN_URL" --head-sha "$HEAD_SHA"
+
+      # One comment per model and pull request: the comment that starts with
+      # the same marker is updated, otherwise a new one is created.
+      - name: Post the comments
+        if: steps.download.outcome == 'success'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        with:
+          script: |
+            const fs = require('fs');
+            const { owner, repo } = context.repo;
+            const issue_number = Number(process.env.PR_NUMBER);
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number, per_page: 100 });
+            for (const file of fs.readdirSync('comments').filter((f) => f.endsWith('.md')).sort()) {
+              const body = fs.readFileSync(`comments/${file}`, 'utf8');
+              const marker = body.slice(0, body.indexOf('\n'));
+              const existing = comments.find((c) => c.user.type === 'Bot' && c.body.startsWith(marker));
+              if (existing) {
+                await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+                core.info(`${file}: updated comment ${existing.id}`);
+              } else {
+                const { data } = await github.rest.issues.createComment({ owner, repo, issue_number, body });
+                core.info(`${file}: created comment ${data.id}`);
+              }
+            }
