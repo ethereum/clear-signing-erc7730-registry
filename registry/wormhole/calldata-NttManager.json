@@ -1,0 +1,52 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "WormholeNttManagerWCT",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x164Be303480f542336bE0bBe0432A13b85e6FD1b" },
+        { "chainId": 10, "address": "0x164Be303480f542336bE0bBe0432A13b85e6FD1b" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Wormhole",
+    "contractName": "NttManager",
+    "info": { "url": "https://wormhole.com/" },
+    "constants": {
+      "wct": "0xeF4461891DfB3AC8572cCf7C794664A8DD927945"
+    },
+    "enums": {
+      "wormholeChain": {
+        "1": "Solana",
+        "2": "Ethereum",
+        "23": "Arbitrum",
+        "24": "Optimism",
+        "30": "Base"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "transfer(uint256 amount,uint16 recipientChain,bytes32 recipient)": {
+        "intent": "NTT transfer",
+        "fields": [
+          { "path": "#.amount", "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.wct" } },
+          { "path": "#.recipientChain", "label": "Destination chain", "format": "enum", "params": { "$ref": "$.metadata.enums.wormholeChain" } },
+          { "path": "#.recipient", "label": "Recipient", "format": "raw" }
+        ]
+      },
+      "transfer(uint256 amount,uint16 recipientChain,bytes32 recipient,bytes32 refundAddress,bool shouldQueue,bytes transceiverInstructions)": {
+        "intent": "NTT transfer",
+        "fields": [
+          { "path": "#.amount", "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.wct" } },
+          { "path": "#.recipientChain", "label": "Destination chain", "format": "enum", "params": { "$ref": "$.metadata.enums.wormholeChain" } },
+          { "path": "#.recipient", "label": "Recipient", "format": "raw" },
+          { "path": "#.refundAddress", "label": "Refund address", "format": "raw" },
+          { "path": "#.shouldQueue", "label": "Queue if limited", "format": "raw" },
+          { "path": "#.transceiverInstructions", "label": "Instructions", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
