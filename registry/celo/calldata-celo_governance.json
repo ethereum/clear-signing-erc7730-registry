@@ -35,12 +35,18 @@
       },
       "executeHotfix(uint256[] values, address[] destinations, bytes data, uint256[] dataLengths, bytes32 salt)": {
         "$id": "executeHotfix",
-        "intent": "Execute Hotfix",
+        "intent": "Execute Hotfix Calls",
         "fields": [
-          { "path": "values.[]", "label": "CELO to Send", "format": "amount" },
-          { "path": "destinations.[]", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
-          { "label": "Data", "path": "data", "visible": "never" },
-          { "label": "Data Lengths", "path": "dataLengths", "visible": "never" },
+          {
+            "path": "destinations.[]",
+            "label": "Call Target",
+            "format": "addressName",
+            "params": { "types": ["contract", "eoa"] },
+            "visible": "always"
+          },
+          { "path": "values.[]", "label": "Call Value", "format": "amount", "visible": "always" },
+          { "path": "data", "label": "Calldata", "format": "raw", "visible": "always" },
+          { "path": "dataLengths.[]", "label": "Calldata Length", "format": "raw", "visible": "always" },
           { "label": "Salt", "path": "salt", "visible": "never" }
         ]
       },
@@ -51,14 +57,20 @@
       },
       "propose(uint256[] values, address[] destinations, bytes data, uint256[] dataLengths, string descriptionUrl)": {
         "$id": "propose",
-        "intent": "Propose",
+        "intent": "Submit Governance Proposal",
         "fields": [
-          { "path": "values.[]", "label": "Amount to Send", "format": "amount" },
-          { "path": "destinations.[]", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          {
+            "path": "destinations.[]",
+            "label": "Call Target",
+            "format": "addressName",
+            "params": { "types": ["contract", "eoa"] },
+            "visible": "always"
+          },
+          { "path": "values.[]", "label": "Call Value", "format": "amount", "visible": "always" },
+          { "path": "data", "label": "Calldata", "format": "raw", "visible": "always" },
+          { "path": "dataLengths.[]", "label": "Calldata Length", "format": "raw", "visible": "always" },
           { "path": "@.value", "label": "Deposit", "format": "amount", "visible": "always" },
-          { "path": "descriptionUrl", "label": "Description URL", "format": "raw" },
-          { "label": "Data", "path": "data", "visible": "never" },
-          { "label": "Data Lengths", "path": "dataLengths", "visible": "never" }
+          { "path": "descriptionUrl", "label": "Description URL", "format": "raw", "visible": "always" }
         ]
       },
       "revokeUpvote(uint256 lesser, uint256 greater)": {
@@ -113,9 +125,9 @@
         "intent": "Partial Vote",
         "fields": [
           { "path": "proposalId", "label": "Proposal ID", "format": "raw", "visible": "always" },
-          { "path": "yesVotes", "label": "Yes Votes", "format": "raw", "visible": "always" },
-          { "path": "noVotes", "label": "No Votes", "format": "raw", "visible": "always" },
-          { "path": "abstainVotes", "label": "Abstain Votes", "format": "raw", "visible": "always" },
+          { "path": "yesVotes", "label": "Yes Votes (CELO)", "format": "amount", "visible": "always" },
+          { "path": "noVotes", "label": "No Votes (CELO)", "format": "amount", "visible": "always" },
+          { "path": "abstainVotes", "label": "Abstain Votes (CELO)", "format": "amount", "visible": "always" },
           { "label": "Index", "path": "index", "visible": "never" }
         ]
       },
