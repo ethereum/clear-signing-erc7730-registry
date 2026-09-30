@@ -1,0 +1,158 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "WNat-Flare",
+    "contract": { "deployments": [{ "chainId": 14, "address": "0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d" }] }
+  },
+  "metadata": {
+    "owner": "Flare Foundation",
+    "info": { "url": "https://flare.network/" },
+    "contractName": "WNat-Flare",
+    "constants": { "wflr": "0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d" }
+  },
+  "display": {
+    "formats": {
+      "deposit()": { "intent": "Wrap FLR", "fields": [{ "label": "Amount", "format": "amount", "path": "@.value", "visible": "always" }] },
+      "depositTo(address recipient)": {
+        "intent": "Wrap FLR",
+        "fields": [
+          { "label": "Amount", "format": "amount", "path": "@.value", "visible": "always" },
+          {
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.recipient",
+            "visible": "always"
+          }
+        ]
+      },
+      "withdraw(uint256 amount)": {
+        "intent": "Unwrap WFLR",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.wflr" },
+            "path": "#.amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "withdrawFrom(address owner, uint256 amount)": {
+        "intent": "Unwrap WFLR",
+        "fields": [
+          {
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.owner",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.wflr" },
+            "path": "#.amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "transfer(address recipient, uint256 amount)": {
+        "intent": "Send WFLR",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.wflr" },
+            "path": "#.amount",
+            "visible": "always"
+          },
+          {
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "path": "#.recipient",
+            "visible": "always"
+          }
+        ]
+      },
+      "approve(address spender, uint256 amount)": {
+        "intent": "Approve WFLR",
+        "fields": [
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "path": "#.spender",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.wflr", "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000" },
+            "path": "#.amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "delegate(address _to, uint256 _bips)": {
+        "intent": "Delegate FTSO vote power",
+        "fields": [
+          {
+            "label": "Provider",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "path": "#._to",
+            "visible": "always"
+          },
+          { "label": "Share", "format": "unit", "params": { "decimals": 2, "base": "%" }, "path": "#._bips", "visible": "always" }
+        ]
+      },
+      "delegateExplicit(address _to, uint256 _amount)": {
+        "intent": "Delegate FTSO vote power",
+        "fields": [
+          {
+            "label": "Provider",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "path": "#._to",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.wflr" },
+            "path": "#._amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "batchDelegate(address[] _delegatees, uint256[] _bips)": {
+        "intent": "Delegate FTSO vote power",
+        "fields": [
+          {
+            "label": "Provider",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "path": "#._delegatees.[]",
+            "visible": "always"
+          },
+          { "label": "Share", "format": "unit", "params": { "decimals": 2, "base": "%" }, "path": "#._bips.[]", "visible": "always" }
+        ]
+      },
+      "undelegateAll()": { "intent": "Undelegate FTSO vote power", "fields": [] },
+      "undelegateAllExplicit(address[] _delegateAddresses)": {
+        "intent": "Undelegate FTSO vote power",
+        "fields": [
+          {
+            "label": "Provider",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "path": "#._delegateAddresses.[]",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
