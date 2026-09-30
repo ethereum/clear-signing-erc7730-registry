@@ -1,0 +1,189 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-DelegationAccount-Flare.json",
+  "dataProvider": {
+    "addressNames": {
+      "0x9642b23ed1e01df1092b92641051881a322f5d4e": "My wallet",
+      "0x1234567890123456789012345678901234567890": "Savings",
+      "0x2222222222222222222222222222222222222222": "Provider A",
+      "0x3333333333333333333333333333333333333333": "Provider B",
+      "0x5555555555555555555555555555555555555555": "Recovered token",
+      "0x1d80c49bbbcd1c0911346656b529df9e5c2f783d": "WFLR",
+      "0x6666666666666666666666666666666666666666": "Governance Vote Power"
+    },
+    "tokens": {
+      "0x5555555555555555555555555555555555555555": {
+        "symbol": "RTKN",
+        "decimals": 6,
+        "name": "Recovered token"
+      },
+      "0x1d80c49bbbcd1c0911346656b529df9e5c2f783d": {
+        "symbol": "WFLR",
+        "decimals": 18,
+        "name": "WFLR"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Delegate FTSO vote power - chain 14",
+      "rawTx": "0x02f8d10e01843b9aca0085051f4d5c00830493e0947fbc8623ac906bd3d636389b6d577e95b7d21ef580b864c26f3acf0000000000000000000000001d80c49bbbcd1c0911346656b529df9e5c2f783d00000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000000001770c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Delegate FTSO vote power",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "WFLR"
+          },
+          {
+            "label": "Provider",
+            "value": "Provider A"
+          },
+          {
+            "label": "Share",
+            "value": "60%"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Batch delegate FTSO vote power - chain 14",
+      "rawTx": "0x02f901920e02843b9aca0085051f4d5c00830493e0947fbc8623ac906bd3d636389b6d577e95b7d21ef580b90124ba75294e0000000000000000000000001d80c49bbbcd1c0911346656b529df9e5c2f783d000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000200000000000000000000000022222222222222222222222222222222222222220000000000000000000000003333333333333333333333333333333333333333000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000009c400000000000000000000000000000000000000000000000000000000000009c4c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Delegate FTSO vote power",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "WFLR"
+          },
+          {
+            "label": "Provider",
+            "value": "Provider A"
+          },
+          {
+            "label": "Provider",
+            "value": "Provider B"
+          },
+          {
+            "label": "Share",
+            "value": "25%"
+          },
+          {
+            "label": "Share",
+            "value": "25%"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Undelegate FTSO vote power - chain 14",
+      "rawTx": "0x02f8900e03843b9aca0085051f4d5c00830493e0947fbc8623ac906bd3d636389b6d577e95b7d21ef580a45eb71cfb0000000000000000000000001d80c49bbbcd1c0911346656b529df9e5c2f783dc001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Undelegate FTSO vote power",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "WFLR"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Revoke delegation at block - chain 14",
+      "rawTx": "0x02f8d10e04843b9aca0085051f4d5c00830493e0947fbc8623ac906bd3d636389b6d577e95b7d21ef580b864a3ea6d1b0000000000000000000000001d80c49bbbcd1c0911346656b529df9e5c2f783d00000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000005397fb1c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Revoke delegation at block",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "WFLR"
+          },
+          {
+            "label": "Who",
+            "value": "Provider A"
+          },
+          {
+            "label": "Block Number",
+            "value": "87654321"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Delegate governance VP - chain 14",
+      "rawTx": "0x02f8b10e05843b9aca0085051f4d5c00830493e0947fbc8623ac906bd3d636389b6d577e95b7d21ef580b8441d75e42a00000000000000000000000066666666666666666666666666666666666666660000000000000000000000001234567890123456789012345678901234567890c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Delegate governance VP",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Governance VP",
+            "value": "Governance Vote Power"
+          },
+          {
+            "label": "To",
+            "value": "Savings"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Undelegate governance VP - chain 14",
+      "rawTx": "0x02f8900e06843b9aca0085051f4d5c00830493e0947fbc8623ac906bd3d636389b6d577e95b7d21ef580a497c9c8f80000000000000000000000006666666666666666666666666666666666666666c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Undelegate governance VP",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Governance VP",
+            "value": "Governance Vote Power"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw funds from delegation account - chain 14",
+      "rawTx": "0x02f8b10e07843b9aca0085051f4d5c00830493e0947fbc8623ac906bd3d636389b6d577e95b7d21ef580b844f3fef3a30000000000000000000000001d80c49bbbcd1c0911346656b529df9e5c2f783d00000000000000000000000000000000000000000000000029a2241af62c0000c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Withdraw funds",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "WFLR"
+          },
+          {
+            "label": "Amount",
+            "value": "3 FLR"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Recover external token from delegation account - chain 14",
+      "rawTx": "0x02f8d10e08843b9aca0085051f4d5c00830493e0947fbc8623ac906bd3d636389b6d577e95b7d21ef580b8642fbd24320000000000000000000000001d80c49bbbcd1c0911346656b529df9e5c2f783d000000000000000000000000555555555555555555555555555555555555555500000000000000000000000000000000000000000000000000000000002625a0c001a01111111111111111111111111111111111111111111111111111111111111111a01111111111111111111111111111111111111111111111111111111111111111",
+      "expected": {
+        "intent": "Recover external token",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "Account Token",
+            "value": "WFLR"
+          },
+          {
+            "label": "Token",
+            "value": "Recovered token"
+          },
+          {
+            "label": "Amount",
+            "value": "2.5 RTKN"
+          }
+        ]
+      }
+    }
+  ]
+}
