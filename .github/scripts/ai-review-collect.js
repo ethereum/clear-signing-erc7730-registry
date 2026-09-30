@@ -13,8 +13,10 @@
  * An input holds the descriptor, its test cases and results from the bundle,
  * and for every contract of the unit the verified sources, the ABI, the
  * NatSpec, the proxy resolution and the decoded constructor arguments from
- * Sourcify. Everything in it comes from the pull request or from Sourcify and
- * is data for the model, never code to run.
+ * Sourcify, focused on the functions the descriptor covers: the files that
+ * define them, their base contracts, one level of callees, and the ABI and
+ * NatSpec of those functions. Everything in it comes from the pull request or
+ * from Sourcify and is data for the model, never code to run.
  */
 
 const fs = require('fs');
@@ -23,22 +25,10 @@ const crypto = require('crypto');
 const { parseArgs } = require('util');
 const { decodeAbiParameters } = require('viem');
 
-const { values: opts } = parseArgs({
-  options: {
-    bundle: { type: 'string' },
-    out: { type: 'string', default: 'ai-review' },
-    'max-bytes': { type: 'string', default: String(1_500_000) },
-  },
-});
-if (!opts.bundle) {
-  console.error('usage: ai-review-collect.js --bundle <file> --out <dir> [--max-bytes <n>]');
-  process.exit(1);
-}
-
 const SOURCIFY_URL = (process.env.SOURCIFY_URL || 'https://sourcify.dev/server').replace(/\/$/, '');
 const SOURCIFY_TOKEN = process.env.SOURCIFY_TOKEN || '';
 const CONCURRENCY = 2;
-const MAX_BYTES = Number(opts['max-bytes']);
+let MAX_BYTES = 400_000;
 
 const warn = (message) => process.stderr.write(`warning: ${message}\n`);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -189,29 +179,168 @@ function calldataFormats(head) {
 }
 
 // ---------------------------------------------------------------------------
-// Size cap: drop the largest source files first, never the main file of a contract
+// Focus: keep the source files, ABI entries and NatSpec of the reviewed functions
+// ---------------------------------------------------------------------------
+
+const RANKS = Symbol('source ranks');
+const ENTRY = 0, BASE = 1, CALLEE = 2;
+
+/** The function names (calldata) or primary types (eip712) of the format keys. */
+function namesOf(head) {
+  return [...new Set(Object.keys(head?.display?.formats ?? {}).map((k) => k.split('(')[0].trim()).filter(Boolean))];
+}
+
+/** Top-level Solidity declarations of a file: kind, name, base contracts. */
+function declarationsOf(content) {
+  const out = [];
+  const re = /\b(abstract\s+contract|contract|library|interface)\s+([A-Za-z_$][\w$]*)(?:\s+is\s+([^{]+))?\s*\{/g;
+  for (let m; (m = re.exec(content)); ) {
+    out.push({ kind: m[1].startsWith('abstract') ? 'abstract contract' : m[1], name: m[2], bases: (m[3] ?? '').split(',').map((b) => b.trim().split(/[\s(]/)[0]).filter(Boolean) });
+  }
+  return out;
+}
+
+/** Whether the file defines a function of that name with a body (Solidity) or at all (Vyper). */
+function definesFunction(content, name) {
+  const re = new RegExp(`\\b(function|def)\\s+${name}\\s*\\(`, 'g');
+  for (let m; (m = re.exec(content)); ) {
+    if (m[1] === 'def') return true;
+    const rest = content.slice(m.index, m.index + 4000);
+    const brace = rest.indexOf('{');
+    const semi = rest.indexOf(';');
+    if (brace >= 0 && (semi < 0 || brace < semi)) return true;
+  }
+  return false;
+}
+
+/** Whether the file takes part in EIP-712 hashing of that primary type. */
+function hashesType(content, name) {
+  return content.includes(`"${name}(`) || content.includes(`'${name}(`) || new RegExp(`\\b${name.toUpperCase()}_TYPEHASH\\b`).test(content) || definesFunction(content, name.charAt(0).toLowerCase() + name.slice(1));
+}
+
+/** A large library that can move no value: no calls, no transfers, no self-destruct, no storage writes in assembly. */
+function isPureLibrary(file) {
+  return file.content.length > 4000 && file.decls.length > 0 && file.decls.every((d) => d.kind === 'library')
+    && !/\b(call|delegatecall|staticcall|callcode|selfdestruct|create|create2)\s*\(|\.(transfer|send|transferFrom|approve|safeTransfer|safeTransferFrom)\s*\(|\bsstore\b/.test(file.content);
+}
+
+/** Rank of every source file of a contract: entry, base contract, callee, or omitted. */
+function rankSources(contract, names, kind) {
+  const sources = contract.sources ?? {};
+  const main = contract.fullyQualifiedName ? contract.fullyQualifiedName.split(':')[0] : null;
+  // The same file under several paths counts once; the main file wins, then the first path
+  const seen = new Set();
+  const files = [];
+  for (const [p, content] of [...Object.entries(sources)].sort(([a], [b]) => (a === main ? -1 : b === main ? 1 : 0))) {
+    const digest = crypto.createHash('sha256').update(content.replace(/\s+/g, '')).digest('hex');
+    if (seen.has(digest)) continue;
+    seen.add(digest);
+    const decls = declarationsOf(content);
+    files.push({ path: p, content, decls, interfaceOnly: decls.length > 0 && decls.every((d) => d.kind === 'interface') });
+  }
+  const byName = new Map();
+  for (const f of files) for (const d of f.decls) if (!byName.has(d.name)) byName.set(d.name, f);
+  const ranks = new Map();
+
+  for (const f of files) {
+    const entry = f.path === main
+      || (kind === 'eip712' ? names.some((n) => hashesType(f.content, n)) : names.some((n) => definesFunction(f.content, n)));
+    if (entry && (!f.interfaceOnly || f.path === main)) ranks.set(f.path, ENTRY);
+  }
+  // Base contracts, recursively: modifiers, state and helpers of the reviewed functions live there
+  const queue = [...ranks.keys()];
+  while (queue.length > 0) {
+    const current = queue.shift();
+    const f = files.find((x) => x.path === current);
+    for (const d of f.decls) for (const b of d.bases) {
+      const target = byName.get(b);
+      if (target && !target.interfaceOnly && !ranks.has(target.path)) { ranks.set(target.path, BASE); queue.push(target.path); }
+    }
+  }
+  // One level of callees: libraries and contracts named in the kept files; large pure libraries only by name
+  const pure = [];
+  for (const f of files.filter((x) => ranks.has(x.path))) {
+    const re = /\b([A-Z][\w$]*)\s*[.(]|\busing\s+([A-Z][\w$]*)\b/g;
+    for (let m; (m = re.exec(f.content)); ) {
+      const target = byName.get(m[1] ?? m[2]);
+      if (!target || target.interfaceOnly || ranks.has(target.path) || pure.includes(target.path)) continue;
+      if (isPureLibrary(target)) pure.push(target.path);
+      else ranks.set(target.path, CALLEE);
+    }
+  }
+  return { ranks, pure };
+}
+
+/** Trims a contract to what the review of the named functions needs. */
+function focusContract(contract, names, kind) {
+  const { ranks, pure } = rankSources(contract, names, kind);
+  const kept = [...ranks.entries()].sort((a, b) => a[1] - b[1]);
+  contract.omittedSources = Object.keys(contract.sources ?? {}).length - kept.length;
+  contract.omittedPureLibraries = pure;
+  contract.sources = Object.fromEntries(kept.map(([p]) => [p, contract.sources[p]]));
+  contract[RANKS] = ranks;
+
+  const lower = names.map((n) => n.toLowerCase());
+  const keepAbi = (e) => e.type === 'function' && (kind === 'eip712'
+    ? lower.some((n) => e.name.toLowerCase().includes(n)) || /typehash|separator|eip712|nonces/i.test(e.name)
+    : names.includes(e.name));
+  const abi = (contract.abi ?? []).filter(keepAbi);
+  contract.abi = abi.length > 0 ? abi : contract.abi;
+  const keepDoc = (doc) => {
+    if (!doc) return doc;
+    const { methods, stateVariables, events, errors, ...rest } = doc;
+    const kept = Object.fromEntries(Object.entries(methods ?? {}).filter(([sig]) => (contract.abi ?? []).some((e) => sig.startsWith(`${e.name}(`))));
+    return { ...rest, methods: kept };
+  };
+  contract.devdoc = keepDoc(contract.devdoc);
+  contract.userdoc = keepDoc(contract.userdoc);
+}
+
+/** A proxy in front of an implementation: its main file only, no ABI or NatSpec. */
+function focusProxy(contract) {
+  const main = contract.fullyQualifiedName ? contract.fullyQualifiedName.split(':')[0] : null;
+  contract.omittedSources = Object.keys(contract.sources ?? {}).length - (main && contract.sources?.[main] ? 1 : 0);
+  contract.sources = main && contract.sources?.[main] ? { [main]: contract.sources[main] } : {};
+  contract[RANKS] = new Map(Object.keys(contract.sources).map((p) => [p, ENTRY]));
+  contract.abi = null;
+  contract.devdoc = null;
+  contract.userdoc = null;
+}
+
+function focus(input) {
+  const names = namesOf(input.head);
+  const proxied = input.contracts.some((c) => c.role === 'implementation');
+  for (const c of input.contracts) {
+    if (c.match === null) continue;
+    if (proxied && c.role === 'deployment') focusProxy(c);
+    else focusContract(c, names, input.descriptor.kind);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Size cap: drop callees before base contracts, largest first, never an entry file
 // ---------------------------------------------------------------------------
 
 function bytesOf(input) {
   return Buffer.byteLength(JSON.stringify(input));
 }
 
-function cap(input) {
+function cap(input, maxBytes = MAX_BYTES) {
   input.dropped = [];
-  while (bytesOf(input) > MAX_BYTES) {
-    let largest = null;
+  while (bytesOf(input) > maxBytes) {
+    let victim = null;
     for (const c of input.contracts) {
-      const main = c.fullyQualifiedName ? c.fullyQualifiedName.split(':')[0] : null;
       for (const [p, content] of Object.entries(c.sources ?? {})) {
-        if (p === main) continue;
-        if (!largest || content.length > largest.bytes) largest = { contract: c, path: p, bytes: content.length };
+        const rank = c[RANKS]?.get(p) ?? CALLEE;
+        if (rank === ENTRY) continue;
+        if (!victim || rank > victim.rank || (rank === victim.rank && content.length > victim.bytes)) victim = { contract: c, path: p, rank, bytes: content.length };
       }
     }
-    if (!largest) break;
-    delete largest.contract.sources[largest.path];
-    input.dropped.push({ chainId: largest.contract.chainId, address: largest.contract.address, path: largest.path, bytes: largest.bytes });
+    if (!victim) break;
+    delete victim.contract.sources[victim.path];
+    input.dropped.push({ chainId: victim.contract.chainId, address: victim.contract.address, path: victim.path, bytes: victim.bytes });
   }
-  if (input.dropped.length > 0 || bytesOf(input) > MAX_BYTES) {
+  if (input.dropped.length > 0 || bytesOf(input) > maxBytes) {
     warn(`${input.file}: ${input.dropped.length} source file(s) dropped, ${bytesOf(input)} bytes`);
   }
 }
@@ -220,52 +349,58 @@ function cap(input) {
 // Main: one input per descriptor and distinct implementation
 // ---------------------------------------------------------------------------
 
-async function main() {
-  const bundle = JSON.parse(fs.readFileSync(opts.bundle, 'utf8'));
-  const outDir = path.join(opts.out, 'inputs');
+/** The review units of one bundle descriptor: its deployments grouped by implementation source. */
+async function unitsOf(descriptor) {
+  const byKey = new Map();
+  for (const deployment of deploymentsOf(descriptor.head)) {
+    const contracts = await contractsOf(deployment);
+    const key = implementationKey(contracts);
+    if (!byKey.has(key)) byKey.set(key, { key, deployments: [], contracts });
+    byKey.get(key).deployments.push(deployment);
+  }
+  return [...byKey.values()];
+}
+
+function inputOf(bundle, descriptor, group, unit, of, maxBytes = MAX_BYTES) {
+  const input = {
+    schemaVersion: 1,
+    file: `${descriptor.entity}__${descriptor.name}__${unit}.json`,
+    pr: bundle.pr ?? null,
+    run: bundle.run ?? null,
+    descriptor: {
+      path: descriptor.path,
+      entity: descriptor.entity,
+      name: descriptor.name,
+      kind: descriptor.kind,
+      change: descriptor.change ?? null,
+      testFile: descriptor.testFile ?? null,
+    },
+    unit: { index: unit, of, implementationKey: group.key, deployments: group.deployments },
+    head: descriptor.head,
+    base: descriptor.base ?? null,
+    formats: descriptor.formats ?? null,
+    recommendations: descriptor.recommendations ?? [],
+    calldataFormats: calldataFormats(descriptor.head),
+    cases: pruneCases(descriptor.cases),
+    contracts: group.contracts,
+  };
+  focus(input);
+  cap(input, maxBytes);
+  return input;
+}
+
+async function collect(bundle, out, maxBytes = MAX_BYTES) {
+  const outDir = path.join(out, 'inputs');
   fs.mkdirSync(outDir, { recursive: true });
   const index = [];
-
   for (const descriptor of bundle.descriptors ?? []) {
     if (!descriptor.head) continue;
-    const deployments = deploymentsOf(descriptor.head);
-    const byKey = new Map();
-    for (const deployment of deployments) {
-      const contracts = await contractsOf(deployment);
-      const key = implementationKey(contracts);
-      if (!byKey.has(key)) byKey.set(key, { deployments: [], contracts });
-      byKey.get(key).deployments.push(deployment);
-    }
-
-    let unit = 0;
-    for (const [key, group] of byKey) {
-      const file = `${descriptor.entity}__${descriptor.name}__${unit}.json`;
-      const input = {
-        schemaVersion: 1,
-        file,
-        pr: bundle.pr,
-        run: bundle.run,
-        descriptor: {
-          path: descriptor.path,
-          entity: descriptor.entity,
-          name: descriptor.name,
-          kind: descriptor.kind,
-          change: descriptor.change,
-          testFile: descriptor.testFile,
-        },
-        unit: { index: unit, of: byKey.size, implementationKey: key, deployments: group.deployments },
-        head: descriptor.head,
-        base: descriptor.base,
-        formats: descriptor.formats,
-        recommendations: descriptor.recommendations,
-        calldataFormats: calldataFormats(descriptor.head),
-        cases: pruneCases(descriptor.cases),
-        contracts: group.contracts,
-      };
-      cap(input);
-      fs.writeFileSync(path.join(outDir, file), JSON.stringify(input, null, 2));
+    const units = await unitsOf(descriptor);
+    units.forEach((group, unit) => {
+      const input = inputOf(bundle, descriptor, group, unit, units.length, maxBytes);
+      fs.writeFileSync(path.join(outDir, input.file), JSON.stringify(input, null, 2));
       index.push({
-        file,
+        file: input.file,
         descriptor: descriptor.path,
         unit,
         deployments: group.deployments.length,
@@ -274,16 +409,30 @@ async function main() {
         bytes: bytesOf(input),
         dropped: input.dropped.length,
       });
-      console.log(`${file}: ${group.deployments.length} deployment(s), ${group.contracts.length} contract(s), ${bytesOf(input)} bytes`);
-      unit++;
-    }
+      console.log(`${input.file}: ${group.deployments.length} deployment(s), ${group.contracts.length} contract(s), ${bytesOf(input)} bytes`);
+    });
   }
-
-  fs.writeFileSync(path.join(outDir, 'index.json'), JSON.stringify({ pr: bundle.pr, run: bundle.run, units: index }, null, 2));
+  fs.writeFileSync(path.join(outDir, 'index.json'), JSON.stringify({ pr: bundle.pr ?? null, run: bundle.run ?? null, units: index }, null, 2));
   console.log(`${index.length} input(s) in ${outDir}`);
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+module.exports = { sourcify, unitsOf, inputOf, collect, deploymentsOf, calldataFormats, pruneCases, focus, cap };
+
+if (require.main === module) {
+  const { values: opts } = parseArgs({
+    options: {
+      bundle: { type: 'string' },
+      out: { type: 'string', default: 'ai-review' },
+      'max-bytes': { type: 'string', default: String(MAX_BYTES) },
+    },
+  });
+  if (!opts.bundle) {
+    console.error('usage: ai-review-collect.js --bundle <file> --out <dir> [--max-bytes <n>]');
+    process.exit(1);
+  }
+  MAX_BYTES = Number(opts['max-bytes']);
+  collect(JSON.parse(fs.readFileSync(opts.bundle, 'utf8')), opts.out, MAX_BYTES).catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}
