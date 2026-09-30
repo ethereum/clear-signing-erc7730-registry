@@ -71,6 +71,10 @@ erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
 # Validate all descriptors (exclude the tests/ and testsv2/ fixtures and the sigs/ attestations, which are not descriptors)
 erc7730 lint $(find registry -type f \( -name 'calldata-*.json' -o -name 'eip712-*.json' \) -not -path '*/tests/*' -not -path '*/testsv2/*' -not -path '*/sigs/*' -not -name '*.tests.json')
 
+# Check the "$schema" key of each file and validate each file against the schema it names, like CI does
+# (needs jq and check-jsonschema: pip install -r .github/requirements-schema.txt)
+.github/scripts/validate-json-schemas.sh registry/<entity>/*.json registry/<entity>/testsv2/*.json
+
 # Format all descriptors
 erc7730 format
 
