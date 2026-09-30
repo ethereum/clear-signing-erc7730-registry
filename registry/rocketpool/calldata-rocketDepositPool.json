@@ -9,11 +9,7 @@
       ]
     }
   },
-  "metadata": {
-    "owner": "Rocket Pool",
-    "info": { "url": "https://rocketpool.net" },
-    "contractName": "rocketDepositPool"
-  },
+  "metadata": { "owner": "Rocket Pool", "info": { "url": "https://rocketpool.net" }, "contractName": "rocketDepositPool" },
   "display": {
     "formats": {
       "deposit()": {
@@ -34,6 +30,35 @@
           },
           { "label": "Validator ID", "format": "raw", "path": "#._validatorId", "visible": "always" },
           { "label": "Express queue", "format": "raw", "path": "#._expressQueue", "visible": "always" }
+        ]
+      },
+      "assignDeposits(uint256 _max)": {
+        "intent": "Assign deposits",
+        "interpolatedIntent": "Assign up to {_max} deposits",
+        "fields": [{ "label": "Max assignments", "format": "raw", "path": "#._max", "visible": "always" }]
+      },
+      "maybeAssignDeposits(uint256 _max)": {
+        "intent": "Assign deposits if enabled",
+        "interpolatedIntent": "Assign up to {_max} deposits if enabled",
+        "fields": [{ "label": "Max assignments", "format": "raw", "path": "#._max", "visible": "always" }]
+      },
+      "withdrawCredit(uint256 _amount)": {
+        "intent": "Withdraw ETH credit as rETH",
+        "interpolatedIntent": "Withdraw {_amount} credit as rETH",
+        "fields": [{ "label": "Credit withdrawn", "format": "amount", "path": "#._amount", "visible": "always" }]
+      },
+      "withdrawCreditFor(address _nodeAddress, uint256 _amount)": {
+        "intent": "Withdraw ETH credit as rETH",
+        "interpolatedIntent": "Withdraw {_amount} credit for {_nodeAddress}",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          { "label": "Credit withdrawn", "format": "amount", "path": "#._amount", "visible": "always" }
         ]
       }
     }
