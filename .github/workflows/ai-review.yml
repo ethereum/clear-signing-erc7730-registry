@@ -24,10 +24,11 @@ name: AI Review
 # after the tests complete, so a click inside that window fails on the
 # bundle: wait and re-run.
 #
-# Then the job collects the inputs of the review: for every deployment of
-# every affected descriptor, the verified sources, the ABI and the proxy
-# resolution from Sourcify, grouped into one input per descriptor and
-# distinct implementation. The inputs are the artifact ai-review-inputs.
+# Then the job collects the inputs of the review: the description and the
+# discussion of the pull request, and for every deployment of every affected
+# descriptor the verified sources, the ABI and the proxy resolution from
+# Sourcify, grouped into one input per descriptor and distinct
+# implementation. The inputs are the artifact ai-review-inputs.
 on:
   pull_request_target:
     types: [opened, reopened, synchronize]
@@ -175,10 +176,34 @@ jobs:
         working-directory: scripts
         run: npm ci --ignore-scripts
 
+      # The description and the discussion of the pull request go to the model
+      # as data, like the descriptors: they say what the author meant and
+      # what reviewers asked. Read through the API, saved as JSON, never
+      # echoed on a shell line.
+      - name: Read the pull request description and its discussion
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          api="repos/${GITHUB_REPOSITORY}"
+          gh api "${api}/pulls/${PR_NUMBER}" \
+            --jq '{number, title, body, author: .user.login, authorType: .user.type, createdAt: .created_at}' > pr.json
+          gh api "${api}/issues/${PR_NUMBER}/comments" --paginate \
+            --jq '.[] | {kind: "comment", author: .user.login, authorType: .user.type, createdAt: .created_at, body}' | jq -s . > comments.json
+          gh api "${api}/pulls/${PR_NUMBER}/reviews" --paginate \
+            --jq '.[] | select(.body != null and .body != "") | {kind: "review", state, author: .user.login, authorType: .user.type, createdAt: .submitted_at, body}' | jq -s . > reviews.json
+          gh api "${api}/pulls/${PR_NUMBER}/comments" --paginate \
+            --jq '.[] | {kind: "review-comment", path, line, author: .user.login, authorType: .user.type, createdAt: .created_at, body}' | jq -s . > review-comments.json
+          jq -s '.[0] + {comments: ((.[1] + .[2] + .[3]) | sort_by(.createdAt))}' pr.json comments.json reviews.json review-comments.json > ai-review/pull-request.json
+          echo "$(jq '.comments | length' ai-review/pull-request.json) comment(s)"
+
       - name: Collect the inputs of the review from Sourcify
+        id: collect
         env:
           SOURCIFY_TOKEN: ${{ secrets.SOURCIFY_TOKEN_CLEAR_SIGNING_CI }}
-        run: node scripts/.github/scripts/ai-review-collect.js --bundle ai-review/bundle.json --out ai-review
+        run: |
+          node scripts/.github/scripts/ai-review-collect.js --bundle ai-review/bundle.json \
+            --pull-request ai-review/pull-request.json --out ai-review
 
       - name: Upload the inputs of the review
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

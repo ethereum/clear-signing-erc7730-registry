@@ -4,14 +4,15 @@
  * per review unit, where a unit is a descriptor together with one distinct
  * implementation source. Deployments that share a source are reviewed once.
  *
- * Usage: node ai-review-collect.js --bundle <file> --out <dir> [--max-bytes <n>]
+ * Usage: node ai-review-collect.js --bundle <file> --out <dir> [--pull-request <file>] [--max-bytes <n>]
  *
  * Environment: SOURCIFY_TOKEN (optional), SOURCIFY_URL (default
  * https://sourcify.dev/server).
  *
  * Writes <out>/inputs/<entity>__<name>__<unit>.json and <out>/inputs/index.json.
  * An input holds the descriptor, its test cases and results from the bundle,
- * and for every contract of the unit the verified sources, the ABI, the
+ * the description and the discussion of the pull request when a file with
+ * them is given, and for every contract of the unit the verified sources, the ABI, the
  * NatSpec, the proxy resolution and the decoded constructor arguments from
  * Sourcify, limited to the files the deployed code was compiled from (per the
  * compiler's source maps) and to the ABI and NatSpec of the functions the
@@ -318,6 +319,44 @@ function cap(input, maxBytes = MAX_BYTES) {
 }
 
 // ---------------------------------------------------------------------------
+// The pull request: title, description and discussion, as the workflow read
+// them from the GitHub API. Bot comments are left out (test results, this
+// review's own comments); long texts are cut, and only the latest comments
+// are kept when there are many.
+// ---------------------------------------------------------------------------
+
+const MAX_PR_BODY = 20_000;
+const MAX_PR_COMMENT = 4_000;
+const MAX_PR_COMMENTS = 60;
+
+function pullRequestOf(pr) {
+  if (!pr || typeof pr !== 'object') return null;
+  const text = (value, max) => {
+    const t = String(value ?? '');
+    return t.length > max ? `${t.slice(0, max)}\n[cut after ${max} characters]` : t;
+  };
+  const comments = (Array.isArray(pr.comments) ? pr.comments : [])
+    .filter((c) => c && c.authorType !== 'Bot')
+    .map((c) => ({
+      kind: c.kind ?? 'comment',
+      author: String(c.author ?? ''),
+      createdAt: c.createdAt ?? null,
+      ...(c.state ? { state: c.state } : {}),
+      ...(c.path ? { path: String(c.path), line: c.line ?? null } : {}),
+      body: text(c.body, MAX_PR_COMMENT),
+    }));
+  return {
+    number: pr.number ?? null,
+    title: text(pr.title, 500),
+    author: String(pr.author ?? ''),
+    createdAt: pr.createdAt ?? null,
+    body: text(pr.body, MAX_PR_BODY),
+    comments: comments.slice(-MAX_PR_COMMENTS),
+    omittedComments: Math.max(0, comments.length - MAX_PR_COMMENTS),
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Main: one input per descriptor and distinct implementation
 // ---------------------------------------------------------------------------
 
@@ -339,6 +378,7 @@ function inputOf(bundle, descriptor, group, unit, of, maxBytes = MAX_BYTES) {
     file: `${descriptor.entity}__${descriptor.name}__${unit}.json`,
     pr: bundle.pr ?? null,
     run: bundle.run ?? null,
+    pullRequest: bundle.pullRequest ?? null,
     descriptor: {
       path: descriptor.path,
       entity: descriptor.entity,
@@ -388,22 +428,25 @@ async function collect(bundle, out, maxBytes = MAX_BYTES) {
   console.log(`${index.length} input(s) in ${outDir}`);
 }
 
-module.exports = { sourcify, unitsOf, inputOf, collect, deploymentsOf, calldataFormats, pruneCases, focus, cap };
+module.exports = { sourcify, unitsOf, inputOf, collect, deploymentsOf, calldataFormats, pruneCases, focus, cap, pullRequestOf };
 
 if (require.main === module) {
   const { values: opts } = parseArgs({
     options: {
       bundle: { type: 'string' },
       out: { type: 'string', default: 'ai-review' },
+      'pull-request': { type: 'string' },
       'max-bytes': { type: 'string', default: String(MAX_BYTES) },
     },
   });
   if (!opts.bundle) {
-    console.error('usage: ai-review-collect.js --bundle <file> --out <dir> [--max-bytes <n>]');
+    console.error('usage: ai-review-collect.js --bundle <file> --out <dir> [--pull-request <file>] [--max-bytes <n>]');
     process.exit(1);
   }
   MAX_BYTES = Number(opts['max-bytes']);
-  collect(JSON.parse(fs.readFileSync(opts.bundle, 'utf8')), opts.out, MAX_BYTES).catch((e) => {
+  const bundle = JSON.parse(fs.readFileSync(opts.bundle, 'utf8'));
+  if (opts['pull-request']) bundle.pullRequest = pullRequestOf(JSON.parse(fs.readFileSync(opts['pull-request'], 'utf8')));
+  collect(bundle, opts.out, MAX_BYTES).catch((e) => {
     console.error(e);
     process.exit(1);
   });
