@@ -1,0 +1,32 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "$id": "PunkBid", "eip712": { "deployments": [{ "chainId": 1, "address": "0x00000000000060D035a8002956B5fb02e3968eec" }] } },
+  "metadata": {
+    "owner": "CryptoPunks",
+    "contractName": "Stash",
+    "info": { "url": "https://cryptopunks.app", "deploymentDate": "2024-01-17T22:48:47Z" }
+  },
+  "display": {
+    "formats": {
+      "PunkBid(Order order,uint256 accountNonce,uint256 bidNonce,uint256 expiration,bytes32 root)Order(uint16 numberOfUnits,uint80 pricePerUnit,address auction)": {
+        "$id": "PunkBid",
+        "intent": "Place Punk Bid",
+        "interpolatedIntent": "Punk Bid: {order.pricePerUnit}",
+        "fields": [
+          { "path": "order.pricePerUnit", "label": "Bid Amount", "format": "amount" },
+          { "path": "expiration", "label": "Expires", "format": "date", "params": { "encoding": "timestamp" } },
+          {
+            "path": "order.auction",
+            "label": "Marketplace",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "order.numberOfUnits", "label": "Quantity", "format": "raw" },
+          { "path": "root", "label": "Punk Set Root", "format": "raw" },
+          { "path": "accountNonce", "label": "Account Nonce", "format": "raw", "visible": "never" },
+          { "path": "bidNonce", "label": "Bid ID", "format": "raw", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
