@@ -12,8 +12,11 @@ permissions:
   contents: read
   pull-requests: write
 
+# On pull_request_target, github.ref is the base branch, so a group on
+# github.ref is one group for all pull requests, and each new pull request
+# cancels the labeling of the one before it. The group is per pull request.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
