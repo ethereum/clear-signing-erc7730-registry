@@ -1,0 +1,43 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "EnsoRouter",
+    "contract": { "deployments": [{ "chainId": 137, "address": "0xF75584eF6673aD213a685a1B58Cc0330B8eA22Cf" }] }
+  },
+  "metadata": { "owner": "Enso", "contractName": "EnsoRouter", "info": { "url": "https://www.enso.build" } },
+  "display": {
+    "formats": {
+      "routeSingle((uint8 tokenType,bytes data) tokenIn,bytes data)": {
+        "$id": "routeSingle",
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {#.tokenIn.data.[32:64]}",
+        "fields": [
+          {
+            "path": "#.tokenIn.data.[32:64]",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.tokenIn.data.[12:32]" },
+            "visible": "always"
+          },
+          { "path": "#.tokenIn.tokenType", "label": "Token type", "format": "raw", "visible": { "mustMatch": [1] } },
+          { "path": "#.data", "label": "Route", "visible": "never" }
+        ]
+      },
+      "routeMulti((uint8 tokenType,bytes data)[] tokensIn,bytes data)": {
+        "$id": "routeMulti",
+        "intent": "Swap",
+        "fields": [
+          {
+            "path": "#.tokensIn.[].data.[32:64]",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.tokensIn.[].data.[12:32]" },
+            "visible": "always"
+          },
+          { "path": "#.tokensIn.[].tokenType", "label": "Token type", "format": "raw", "visible": { "mustMatch": [1] } },
+          { "path": "#.data", "label": "Route", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
