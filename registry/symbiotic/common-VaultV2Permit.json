@@ -1,0 +1,80 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "eip712": {}
+  },
+  "metadata": {
+    "owner": "Symbiotic",
+    "info": {
+      "url": "https://symbiotic.fi"
+    }
+  },
+  "display": {
+    "formats": {
+      "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)": {
+        "intent": "Authorize share spending",
+        "interpolatedIntent": "Approve {value} for {spender}",
+        "fields": [
+          {
+            "path": "#.owner",
+            "label": "Share owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.value",
+            "label": "Allowance amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to",
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.deadline",
+            "label": "Signature deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.nonce",
+            "label": "Nonce",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
