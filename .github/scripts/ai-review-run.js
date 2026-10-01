@@ -279,12 +279,13 @@ async function main() {
   fs.mkdirSync(outDir, { recursive: true });
 
   const units = index.units.map((unit, i) => ({ ...unit, skipped: i >= maxUnits ? `cap of ${maxUnits} units per run` : null }));
+  const tooLarge = (unit) => `the unit is ${Math.round(unit.bytes / 1000)} KB, above the limit of ${Math.round((index.maxBytes ?? 0) / 1000)} KB; nothing is trimmed to make it fit`;
   const summary = { provider, model, effort, maxUnits, pr: index.pr ?? null, run: index.run ?? null, ranAt: new Date().toISOString(), units: [] };
 
   if (opts['dry-run']) {
     let tokens = 0;
     for (const unit of units) {
-      if (unit.skipped) continue;
+      if (unit.skipped || unit.tooLarge) continue;
       const size = Buffer.byteLength(prefix + nonceSection('0000000000000000')) + unit.bytes;
       tokens += size * TOKENS_PER_BYTE;
       console.log(`${unit.file}: about ${Math.round(size * TOKENS_PER_BYTE / 1000)}K input tokens`);
@@ -299,7 +300,9 @@ async function main() {
   const one = async (unit) => {
     const started = new Date().toISOString().slice(11, 19);
     const input = JSON.parse(fs.readFileSync(path.join(opts.inputs, unit.file), 'utf8'));
-    const answer = unit.skipped ? { ok: false, error: null, skipped: unit.skipped } : await review(client, input);
+    const answer = unit.skipped ? { ok: false, error: null, skipped: unit.skipped }
+      : unit.tooLarge ? { ok: false, error: tooLarge(unit) }
+        : await review(client, input);
     const record = {
       file: unit.file,
       descriptor: input.descriptor,
@@ -353,7 +356,8 @@ async function main() {
   if (process.env.GITHUB_STEP_SUMMARY) {
     fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `\n## AI review: ${model}, effort ${effort}\n\n${line}\n`);
   }
-  if (records.length > 0 && t.reviewed === 0 && t.skipped < records.length) throw new Error('no unit was reviewed');
+  // Red when any unit could not be reviewed: the comment says which and why.
+  if (t.failed > 0) throw new Error(`${t.failed} unit(s) could not be reviewed`);
 }
 
 main().catch((e) => {
