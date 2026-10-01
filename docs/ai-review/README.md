@@ -38,7 +38,7 @@ Deployments are grouped by a key: the SHA-256 hash of the ABI and of every verif
 
 A verified contract comes with every file of its compilation, often with interfaces and unrelated contracts of the same project. The unit keeps the files the deployed code was compiled from, as the compiler's source maps list them: the contract, its base contracts, the libraries inlined into it. The ABI and the NatSpec are limited to the reviewed functions. A proxy keeps its main file only.
 
-A unit is capped at 400 KB. Above the cap, the largest files are dropped first, never the main file of a contract; the dropped files are listed in the unit so the model can say what it could not check.
+A unit above 600 KB, about 200K tokens, is not reviewed: the review fails for that unit and the comment says so. Nothing is trimmed to make a unit fit.
 
 </details>
 
@@ -70,7 +70,7 @@ Two models run for now, so the team can compare them on real pull requests: Clau
 <details>
 <summary>What the answer looks like</summary>
 
-The answer is Markdown with fixed sections: a one-paragraph summary, then Critical, Warning and Info, each a list of findings or `None.`. A section "What could not be reviewed" appears only when something limited the review, such as source files dropped to fit the size cap. A finding names its check, where it is in the descriptor and the source, why it matters, the code it rests on, and a fix when there is one.
+The answer is Markdown with fixed sections: a one-paragraph summary, then Critical, Warning and Info, each a list of findings or `None.`. A section "What could not be reviewed" appears only when something limited the review, such as a contract Sourcify does not have. A finding names its check, where it is in the descriptor and the source, why it matters, the code it rests on, and a fix when there is one.
 
 Severity: `critical` when the signer can lose money or sign something other than what the screen says; `warning` when the screen is wrong or incomplete without a direct loss; `info` for limitations and suggestions.
 

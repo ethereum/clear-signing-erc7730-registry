@@ -16,7 +16,6 @@ The unit holds:
 - `calldataFormats`: the fields that use the embedded `calldata` format, with their `calleePath`, `selector`, `amountPath` and `spenderPath`.
 - `cases`: the test cases. Each has the input (chain, target, selector or primary type), the `expected` screen from the test file, and per runner the status, and the rendered screen and the diff when the runner disagreed with the expected screen. A rendered screen that equals the expected one is omitted.
 - `contracts`: for each address of the unit, the role (`deployment`, or `implementation` behind a proxy), the Sourcify match, the fully qualified name, the compiler version, the deployer, the proxy resolution, the decoded constructor arguments, the raw immutable values, and the verified source files. Only the files the deployed code was compiled from are included, as the compiler's source maps list them: the contract, its base contracts, the libraries inlined into it. `omittedSources` counts the verified files left out (interfaces, unused files). The ABI and the NatSpec (`devdoc`, `userdoc`) are limited to the reviewed functions. A proxy in front of an implementation keeps its main file only.
-- `dropped`: source files removed to fit the size cap. Say under "What could not be reviewed" when a dropped or omitted file limits what you could check.
 
 ## What is already checked and must not be reported
 
@@ -85,7 +84,7 @@ Answer in Markdown and nothing else: no text before the first heading, none afte
 
 ## What could not be reviewed
 
-<Only when something limited the review: a file dropped or omitted from the unit, a missing or unverified source, an unresolved proxy. Say what and why, in a few lines. Leave the whole section out otherwise.>
+<Only when something limited the review: a file omitted from the unit, a missing or unverified source, an unresolved proxy. Say what and why, in a few lines. Leave the whole section out otherwise.>
 ````
 
 A finding is one block, worst first inside its section:
@@ -108,6 +107,6 @@ A finding is one block, worst first inside its section:
 Rules:
 
 - One finding per issue. No finding without evidence: quote the code or the descriptor text it rests on, with file and lines. A finding you cannot back with a quote is not a finding; a doubt you could not resolve goes under "What could not be reviewed".
-- No findings proves nothing: when a dropped or omitted file, a missing source or an unresolved proxy kept you from checking something, say so under "What could not be reviewed", and leave that section out when nothing did.
+- No findings proves nothing: when an omitted file, a missing source or an unresolved proxy kept you from checking something, say so under "What could not be reviewed", and leave that section out when nothing did.
 - Do not repeat the deterministic checks. Do not pad. Keep the whole answer under 12,000 characters: fewer, better findings.
 - A unit with nothing wrong gets `None.` in the three sections.

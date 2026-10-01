@@ -28,7 +28,9 @@ const { decodeAbiParameters } = require('viem');
 const SOURCIFY_URL = (process.env.SOURCIFY_URL || 'https://sourcify.dev/server').replace(/\/$/, '');
 const SOURCIFY_TOKEN = process.env.SOURCIFY_TOKEN || '';
 const CONCURRENCY = 2;
-let MAX_BYTES = 400_000;
+// The most a review unit may weigh, about 200K tokens. A unit above it is not
+// reviewed, and the review fails for it: nothing is trimmed to make it fit.
+let MAX_BYTES = 600_000;
 
 const warn = (message) => process.stderr.write(`warning: ${message}\n`);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -279,32 +281,8 @@ function focus(input) {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Size cap: drop the largest source file first, never the main file of a contract
-// ---------------------------------------------------------------------------
-
 function bytesOf(input) {
   return Buffer.byteLength(JSON.stringify(input));
-}
-
-function cap(input, maxBytes = MAX_BYTES) {
-  input.dropped = [];
-  while (bytesOf(input) > maxBytes) {
-    let victim = null;
-    for (const c of input.contracts) {
-      const main = mainFileOf(c);
-      for (const [p, content] of Object.entries(c.sources ?? {})) {
-        if (p === main) continue;
-        if (!victim || content.length > victim.bytes) victim = { contract: c, path: p, bytes: content.length };
-      }
-    }
-    if (!victim) break;
-    delete victim.contract.sources[victim.path];
-    input.dropped.push({ chainId: victim.contract.chainId, address: victim.contract.address, path: victim.path, bytes: victim.bytes });
-  }
-  if (input.dropped.length > 0 || bytesOf(input) > maxBytes) {
-    warn(`${input.file}: ${input.dropped.length} source file(s) dropped, ${bytesOf(input)} bytes`);
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -323,7 +301,7 @@ async function unitsOf(descriptor) {
   return [...byKey.values()];
 }
 
-function inputOf(bundle, descriptor, group, unit, of, maxBytes = MAX_BYTES) {
+function inputOf(bundle, descriptor, group, unit, of) {
   const input = {
     schemaVersion: 1,
     file: `${descriptor.entity}__${descriptor.name}__${unit}.json`,
@@ -347,7 +325,6 @@ function inputOf(bundle, descriptor, group, unit, of, maxBytes = MAX_BYTES) {
     contracts: group.contracts,
   };
   focus(input);
-  cap(input, maxBytes);
   return input;
 }
 
@@ -359,8 +336,9 @@ async function collect(bundle, out, maxBytes = MAX_BYTES) {
     if (!descriptor.head) continue;
     const units = await unitsOf(descriptor);
     units.forEach((group, unit) => {
-      const input = inputOf(bundle, descriptor, group, unit, units.length, maxBytes);
+      const input = inputOf(bundle, descriptor, group, unit, units.length);
       fs.writeFileSync(path.join(outDir, input.file), JSON.stringify(input, null, 2));
+      const bytes = bytesOf(input);
       index.push({
         file: input.file,
         descriptor: descriptor.path,
@@ -368,17 +346,18 @@ async function collect(bundle, out, maxBytes = MAX_BYTES) {
         deployments: group.deployments.length,
         contracts: group.contracts.length,
         unverified: group.contracts.filter((c) => c.match === null).length,
-        bytes: bytesOf(input),
-        dropped: input.dropped.length,
+        bytes,
+        tooLarge: bytes > maxBytes,
       });
-      console.log(`${input.file}: ${group.deployments.length} deployment(s), ${group.contracts.length} contract(s), ${bytesOf(input)} bytes`);
+      if (bytes > maxBytes) warn(`${input.file}: ${bytes} bytes, above the limit of ${maxBytes}; it will not be reviewed`);
+      console.log(`${input.file}: ${group.deployments.length} deployment(s), ${group.contracts.length} contract(s), ${bytes} bytes`);
     });
   }
-  fs.writeFileSync(path.join(outDir, 'index.json'), JSON.stringify({ pr: bundle.pr ?? null, run: bundle.run ?? null, units: index }, null, 2));
+  fs.writeFileSync(path.join(outDir, 'index.json'), JSON.stringify({ pr: bundle.pr ?? null, run: bundle.run ?? null, maxBytes, units: index }, null, 2));
   console.log(`${index.length} input(s) in ${outDir}`);
 }
 
-module.exports = { sourcify, unitsOf, inputOf, collect, deploymentsOf, calldataFormats, pruneCases, focus, cap };
+module.exports = { sourcify, unitsOf, inputOf, collect, deploymentsOf, calldataFormats, pruneCases, focus, bytesOf };
 
 if (require.main === module) {
   const { values: opts } = parseArgs({
