@@ -13,10 +13,10 @@
  * An input holds the descriptor, its test cases and results from the bundle,
  * and for every contract of the unit the verified sources, the ABI, the
  * NatSpec, the proxy resolution and the decoded constructor arguments from
- * Sourcify, focused on the functions the descriptor covers: the files that
- * define them, their base contracts, one level of callees, and the ABI and
- * NatSpec of those functions. Everything in it comes from the pull request or
- * from Sourcify and is data for the model, never code to run.
+ * Sourcify, limited to the files the deployed code was compiled from (per the
+ * compiler's source maps) and to the ABI and NatSpec of the functions the
+ * descriptor covers. Everything in it comes from the pull request or from
+ * Sourcify and is data for the model, never code to run.
  */
 
 const fs = require('fs');
@@ -116,7 +116,36 @@ function subset(chainId, address, role, response) {
     // Raw 32-byte words keyed by AST id: the names need the AST, which is not kept.
     immutables: response.runtimeBytecode?.transformationValues?.immutables ?? null,
     sources: Object.fromEntries(Object.entries(response.sources ?? {}).map(([p, s]) => [p, s.content])),
+    codeFiles: codeFilesOf(response),
   };
+}
+
+/**
+ * The source files the deployed code was compiled from, or null when the
+ * response has no source map.
+ *
+ * The compiler numbers the input files (stdJsonOutput.sources[path].id) and
+ * writes a source map for the bytecode: one entry per instruction, in the
+ * form "start:length:fileId:jump:depth", where a field left empty repeats the
+ * previous entry's. The file ids that occur in the runtime and the creation
+ * source maps are the files whose code is on chain; -1 is compiler-generated
+ * code with no file. Sourcify keeps both maps from the compilation that
+ * matched the on-chain bytecode, so they describe the deployed code exactly.
+ */
+function codeFilesOf(response) {
+  const byId = new Map(Object.entries(response.stdJsonOutput?.sources ?? {}).map(([path, s]) => [s.id, path]));
+  const maps = [response.runtimeBytecode?.sourceMap, response.creationBytecode?.sourceMap].filter(Boolean);
+  if (byId.size === 0 || maps.length === 0) return null;
+  const files = new Set();
+  for (const map of maps) {
+    let id = null;
+    for (const entry of map.split(';')) {
+      const field = entry.split(':')[2];
+      if (field !== undefined && field !== '') id = Number(field);
+      if (id !== null && byId.has(id)) files.add(byId.get(id));
+    }
+  }
+  return [...files];
 }
 
 // ---------------------------------------------------------------------------
@@ -179,49 +208,13 @@ function calldataFormats(head) {
 }
 
 // ---------------------------------------------------------------------------
-// Focus: keep the source files, ABI entries and NatSpec of the reviewed functions
+// Focus: keep the source files the deployed code comes from, and the ABI
+// entries and NatSpec of the reviewed functions
 // ---------------------------------------------------------------------------
-
-const RANKS = Symbol('source ranks');
-const ENTRY = 0, BASE = 1, CALLEE = 2;
 
 /** The function names (calldata) or primary types (eip712) of the format keys. */
 function namesOf(head) {
   return [...new Set(Object.keys(head?.display?.formats ?? {}).map((k) => k.split('(')[0].trim()).filter(Boolean))];
-}
-
-/** Top-level Solidity declarations of a file: kind, name, base contracts. */
-function declarationsOf(content) {
-  const out = [];
-  const re = /\b(abstract\s+contract|contract|library|interface)\s+([A-Za-z_$][\w$]*)(?:\s+is\s+([^{]+))?\s*\{/g;
-  for (let m; (m = re.exec(content)); ) {
-    out.push({ kind: m[1].startsWith('abstract') ? 'abstract contract' : m[1], name: m[2], bases: (m[3] ?? '').split(',').map((b) => b.trim().split(/[\s(]/)[0]).filter(Boolean) });
-  }
-  return out;
-}
-
-/** Whether the file defines a function of that name with a body (Solidity) or at all (Vyper). */
-function definesFunction(content, name) {
-  const re = new RegExp(`\\b(function|def)\\s+${name}\\s*\\(`, 'g');
-  for (let m; (m = re.exec(content)); ) {
-    if (m[1] === 'def') return true;
-    const rest = content.slice(m.index, m.index + 4000);
-    const brace = rest.indexOf('{');
-    const semi = rest.indexOf(';');
-    if (brace >= 0 && (semi < 0 || brace < semi)) return true;
-  }
-  return false;
-}
-
-/** Whether the file takes part in EIP-712 hashing of that primary type. */
-function hashesType(content, name) {
-  return content.includes(`"${name}(`) || content.includes(`'${name}(`) || new RegExp(`\\b${name.toUpperCase()}_TYPEHASH\\b`).test(content) || definesFunction(content, name.charAt(0).toLowerCase() + name.slice(1));
-}
-
-/** A large library that can move no value: no calls, no transfers, no self-destruct, no storage writes in assembly. */
-function isPureLibrary(file) {
-  return file.content.length > 4000 && file.decls.length > 0 && file.decls.every((d) => d.kind === 'library')
-    && !/\b(call|delegatecall|staticcall|callcode|selfdestruct|create|create2)\s*\(|\.(transfer|send|transferFrom|approve|safeTransfer|safeTransferFrom)\s*\(|\bsstore\b/.test(file.content);
 }
 
 /** The file the contract itself is declared in, from "path/File.sol:Name". */
@@ -230,113 +223,33 @@ function mainFileOf(contract) {
 }
 
 /**
- * The source files of a contract, each with its top-level declarations. The
- * same content under several paths counts once: the main file wins, then the
- * first path.
+ * A large file that declares only libraries and can move no value: no calls,
+ * no transfers, no self-destruct, no storage writes in assembly. Math and
+ * encoding helpers, which the model does not need to read.
  */
-function distinctFiles(contract) {
-  const main = mainFileOf(contract);
-  const mainFirst = ([a], [b]) => (a === main ? -1 : b === main ? 1 : 0);
-  const seen = new Set();
-  const files = [];
-  for (const [path, content] of Object.entries(contract.sources ?? {}).sort(mainFirst)) {
-    const digest = crypto.createHash('sha256').update(content.replace(/\s+/g, '')).digest('hex');
-    if (seen.has(digest)) continue;
-    seen.add(digest);
-    const decls = declarationsOf(content);
-    files.push({ path, content, decls, interfaceOnly: decls.length > 0 && decls.every((d) => d.kind === 'interface') });
-  }
-  return files;
-}
-
-/** Which file declares each contract, library or interface name. */
-function fileByDeclaration(files) {
-  const byName = new Map();
-  for (const f of files) for (const d of f.decls) if (!byName.has(d.name)) byName.set(d.name, f);
-  return byName;
-}
-
-/** The names a file calls or uses: `Name.member`, `Name(...)`, `using Name for ...`. */
-function namesUsedIn(content) {
-  const names = [];
-  const re = /\b([A-Z][\w$]*)\s*[.(]|\busing\s+([A-Z][\w$]*)\b/g;
-  for (let m; (m = re.exec(content)); ) names.push(m[1] ?? m[2]);
-  return names;
-}
-
-/**
- * Decides which source files of a contract the model gets.
- *
- * A verified contract comes with every file of its compilation: the contract
- * itself, what it inherits from, the libraries it uses, interfaces, and often
- * unrelated contracts of the same project. Sending all of it costs tokens and
- * buries what matters. So every file gets a rank, and the rest is left out:
- *
- *   ENTRY  (0)  the main file, and every file that defines one of the
- *               reviewed functions (for an EIP-712 descriptor: that takes
- *               part in hashing the signed type).
- *   BASE   (1)  a contract that an ENTRY or BASE file inherits from, found by
- *               following `is` until nothing new appears. Modifiers, state
- *               and helpers of the reviewed functions live there.
- *   CALLEE (2)  a library or contract that a kept file calls or uses, one
- *               level deep. A large library that moves no value is not kept
- *               but listed by name, so the model knows it exists.
- *
- * Interfaces are never kept, except as the main file: the kept files already
- * show how they are called. The ranks also decide what the size cap drops
- * first: callees, then bases, never entries.
- *
- * Returns { ranks: Map<path, rank>, pure: [paths of the libraries left out] }.
- */
-function rankSources(contract, names, kind) {
-  const files = distinctFiles(contract);
-  const byName = fileByDeclaration(files);
-  const main = mainFileOf(contract);
-  const ranks = new Map();
-
-  // 1. Entries: the main file, and the files that define the reviewed functions.
-  const defines = (file) => names.some((n) => (kind === 'eip712' ? hashesType(file.content, n) : definesFunction(file.content, n)));
-  for (const file of files) {
-    if (file.path !== main && (file.interfaceOnly || !defines(file))) continue;
-    ranks.set(file.path, ENTRY);
-  }
-
-  // 2. Base contracts: what the kept files inherit from, and what those inherit from, and so on.
-  const queue = [...ranks.keys()];
-  while (queue.length > 0) {
-    const current = queue.shift();
-    const file = files.find((f) => f.path === current);
-    for (const decl of file.decls) {
-      for (const baseName of decl.bases) {
-        const base = byName.get(baseName);
-        if (!base || base.interfaceOnly || ranks.has(base.path)) continue;
-        ranks.set(base.path, BASE);
-        queue.push(base.path);
-      }
-    }
-  }
-
-  // 3. Callees: the libraries and contracts the kept files use, one level deep.
-  const pure = [];
-  for (const file of files.filter((f) => ranks.has(f.path))) {
-    for (const name of namesUsedIn(file.content)) {
-      const callee = byName.get(name);
-      if (!callee || callee.interfaceOnly || ranks.has(callee.path) || pure.includes(callee.path)) continue;
-      if (isPureLibrary(callee)) pure.push(callee.path);
-      else ranks.set(callee.path, CALLEE);
-    }
-  }
-  return { ranks, pure };
+function isPureLibrary(content) {
+  const declares = /\b(abstract\s+contract|contract|interface)\s+[A-Za-z_$][\w$]*(\s+is\s+[^{]+)?\s*\{/;
+  const movesValue = /\b(call|delegatecall|staticcall|callcode|selfdestruct|create|create2)\s*\(|\.(transfer|send|transferFrom|approve|safeTransfer|safeTransferFrom)\s*\(|\bsstore\b/;
+  return content.length > 4000 && /\blibrary\s+[A-Za-z_$][\w$]*\s*\{/.test(content) && !declares.test(content) && !movesValue.test(content);
 }
 
 /** Trims a contract to what the review of the named functions needs. */
 function focusContract(contract, names, kind) {
-  const { ranks, pure } = rankSources(contract, names, kind);
-  const kept = [...ranks.entries()].sort((a, b) => a[1] - b[1]);
-  contract.omittedSources = Object.keys(contract.sources ?? {}).length - kept.length;
+  // The files whose code is on chain, per the source maps: the contract, its
+  // base contracts, the libraries inlined into it. Interfaces and files that
+  // compiled to nothing are out. Without a source map every file stays and
+  // the size cap decides.
+  const main = mainFileOf(contract);
+  const all = Object.keys(contract.sources ?? {});
+  const code = contract.codeFiles;
+  const inCode = code ? all.filter((p) => p === main || code.includes(p)) : all;
+  const pure = inCode.filter((p) => p !== main && isPureLibrary(contract.sources[p]));
+  const kept = inCode.filter((p) => !pure.includes(p));
+  contract.sourceSelection = code ? 'the files in the compiler source maps' : 'all files: no source map';
+  contract.omittedSources = all.length - kept.length;
   contract.omittedPureLibraries = pure;
-  contract.sources = Object.fromEntries(kept.map(([p]) => [p, contract.sources[p]]));
-  contract[RANKS] = ranks;
+  contract.sources = Object.fromEntries(kept.map((p) => [p, contract.sources[p]]));
+  delete contract.codeFiles;
 
   const lower = names.map((n) => n.toLowerCase());
   const keepAbi = (e) => e.type === 'function' && (kind === 'eip712'
@@ -356,10 +269,11 @@ function focusContract(contract, names, kind) {
 
 /** A proxy in front of an implementation: its main file only, no ABI or NatSpec. */
 function focusProxy(contract) {
-  const main = contract.fullyQualifiedName ? contract.fullyQualifiedName.split(':')[0] : null;
+  const main = mainFileOf(contract);
   contract.omittedSources = Object.keys(contract.sources ?? {}).length - (main && contract.sources?.[main] ? 1 : 0);
   contract.sources = main && contract.sources?.[main] ? { [main]: contract.sources[main] } : {};
-  contract[RANKS] = new Map(Object.keys(contract.sources).map((p) => [p, ENTRY]));
+  contract.sourceSelection = 'the main file of the proxy';
+  delete contract.codeFiles;
   contract.abi = null;
   contract.devdoc = null;
   contract.userdoc = null;
@@ -376,7 +290,7 @@ function focus(input) {
 }
 
 // ---------------------------------------------------------------------------
-// Size cap: drop callees before base contracts, largest first, never an entry file
+// Size cap: drop the largest source file first, never the main file of a contract
 // ---------------------------------------------------------------------------
 
 function bytesOf(input) {
@@ -388,10 +302,10 @@ function cap(input, maxBytes = MAX_BYTES) {
   while (bytesOf(input) > maxBytes) {
     let victim = null;
     for (const c of input.contracts) {
+      const main = mainFileOf(c);
       for (const [p, content] of Object.entries(c.sources ?? {})) {
-        const rank = c[RANKS]?.get(p) ?? CALLEE;
-        if (rank === ENTRY) continue;
-        if (!victim || rank > victim.rank || (rank === victim.rank && content.length > victim.bytes)) victim = { contract: c, path: p, rank, bytes: content.length };
+        if (p === main) continue;
+        if (!victim || content.length > victim.bytes) victim = { contract: c, path: p, bytes: content.length };
       }
     }
     if (!victim) break;
