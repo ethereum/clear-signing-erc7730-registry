@@ -224,48 +224,106 @@ function isPureLibrary(file) {
     && !/\b(call|delegatecall|staticcall|callcode|selfdestruct|create|create2)\s*\(|\.(transfer|send|transferFrom|approve|safeTransfer|safeTransferFrom)\s*\(|\bsstore\b/.test(file.content);
 }
 
-/** Rank of every source file of a contract: entry, base contract, callee, or omitted. */
-function rankSources(contract, names, kind) {
-  const sources = contract.sources ?? {};
-  const main = contract.fullyQualifiedName ? contract.fullyQualifiedName.split(':')[0] : null;
-  // The same file under several paths counts once; the main file wins, then the first path
+/** The file the contract itself is declared in, from "path/File.sol:Name". */
+function mainFileOf(contract) {
+  return contract.fullyQualifiedName ? contract.fullyQualifiedName.split(':')[0] : null;
+}
+
+/**
+ * The source files of a contract, each with its top-level declarations. The
+ * same content under several paths counts once: the main file wins, then the
+ * first path.
+ */
+function distinctFiles(contract) {
+  const main = mainFileOf(contract);
+  const mainFirst = ([a], [b]) => (a === main ? -1 : b === main ? 1 : 0);
   const seen = new Set();
   const files = [];
-  for (const [p, content] of [...Object.entries(sources)].sort(([a], [b]) => (a === main ? -1 : b === main ? 1 : 0))) {
+  for (const [path, content] of Object.entries(contract.sources ?? {}).sort(mainFirst)) {
     const digest = crypto.createHash('sha256').update(content.replace(/\s+/g, '')).digest('hex');
     if (seen.has(digest)) continue;
     seen.add(digest);
     const decls = declarationsOf(content);
-    files.push({ path: p, content, decls, interfaceOnly: decls.length > 0 && decls.every((d) => d.kind === 'interface') });
+    files.push({ path, content, decls, interfaceOnly: decls.length > 0 && decls.every((d) => d.kind === 'interface') });
   }
+  return files;
+}
+
+/** Which file declares each contract, library or interface name. */
+function fileByDeclaration(files) {
   const byName = new Map();
   for (const f of files) for (const d of f.decls) if (!byName.has(d.name)) byName.set(d.name, f);
+  return byName;
+}
+
+/** The names a file calls or uses: `Name.member`, `Name(...)`, `using Name for ...`. */
+function namesUsedIn(content) {
+  const names = [];
+  const re = /\b([A-Z][\w$]*)\s*[.(]|\busing\s+([A-Z][\w$]*)\b/g;
+  for (let m; (m = re.exec(content)); ) names.push(m[1] ?? m[2]);
+  return names;
+}
+
+/**
+ * Decides which source files of a contract the model gets.
+ *
+ * A verified contract comes with every file of its compilation: the contract
+ * itself, what it inherits from, the libraries it uses, interfaces, and often
+ * unrelated contracts of the same project. Sending all of it costs tokens and
+ * buries what matters. So every file gets a rank, and the rest is left out:
+ *
+ *   ENTRY  (0)  the main file, and every file that defines one of the
+ *               reviewed functions (for an EIP-712 descriptor: that takes
+ *               part in hashing the signed type).
+ *   BASE   (1)  a contract that an ENTRY or BASE file inherits from, found by
+ *               following `is` until nothing new appears. Modifiers, state
+ *               and helpers of the reviewed functions live there.
+ *   CALLEE (2)  a library or contract that a kept file calls or uses, one
+ *               level deep. A large library that moves no value is not kept
+ *               but listed by name, so the model knows it exists.
+ *
+ * Interfaces are never kept, except as the main file: the kept files already
+ * show how they are called. The ranks also decide what the size cap drops
+ * first: callees, then bases, never entries.
+ *
+ * Returns { ranks: Map<path, rank>, pure: [paths of the libraries left out] }.
+ */
+function rankSources(contract, names, kind) {
+  const files = distinctFiles(contract);
+  const byName = fileByDeclaration(files);
+  const main = mainFileOf(contract);
   const ranks = new Map();
 
-  for (const f of files) {
-    const entry = f.path === main
-      || (kind === 'eip712' ? names.some((n) => hashesType(f.content, n)) : names.some((n) => definesFunction(f.content, n)));
-    if (entry && (!f.interfaceOnly || f.path === main)) ranks.set(f.path, ENTRY);
+  // 1. Entries: the main file, and the files that define the reviewed functions.
+  const defines = (file) => names.some((n) => (kind === 'eip712' ? hashesType(file.content, n) : definesFunction(file.content, n)));
+  for (const file of files) {
+    if (file.path !== main && (file.interfaceOnly || !defines(file))) continue;
+    ranks.set(file.path, ENTRY);
   }
-  // Base contracts, recursively: modifiers, state and helpers of the reviewed functions live there
+
+  // 2. Base contracts: what the kept files inherit from, and what those inherit from, and so on.
   const queue = [...ranks.keys()];
   while (queue.length > 0) {
     const current = queue.shift();
-    const f = files.find((x) => x.path === current);
-    for (const d of f.decls) for (const b of d.bases) {
-      const target = byName.get(b);
-      if (target && !target.interfaceOnly && !ranks.has(target.path)) { ranks.set(target.path, BASE); queue.push(target.path); }
+    const file = files.find((f) => f.path === current);
+    for (const decl of file.decls) {
+      for (const baseName of decl.bases) {
+        const base = byName.get(baseName);
+        if (!base || base.interfaceOnly || ranks.has(base.path)) continue;
+        ranks.set(base.path, BASE);
+        queue.push(base.path);
+      }
     }
   }
-  // One level of callees: libraries and contracts named in the kept files; large pure libraries only by name
+
+  // 3. Callees: the libraries and contracts the kept files use, one level deep.
   const pure = [];
-  for (const f of files.filter((x) => ranks.has(x.path))) {
-    const re = /\b([A-Z][\w$]*)\s*[.(]|\busing\s+([A-Z][\w$]*)\b/g;
-    for (let m; (m = re.exec(f.content)); ) {
-      const target = byName.get(m[1] ?? m[2]);
-      if (!target || target.interfaceOnly || ranks.has(target.path) || pure.includes(target.path)) continue;
-      if (isPureLibrary(target)) pure.push(target.path);
-      else ranks.set(target.path, CALLEE);
+  for (const file of files.filter((f) => ranks.has(f.path))) {
+    for (const name of namesUsedIn(file.content)) {
+      const callee = byName.get(name);
+      if (!callee || callee.interfaceOnly || ranks.has(callee.path) || pure.includes(callee.path)) continue;
+      if (isPureLibrary(callee)) pure.push(callee.path);
+      else ranks.set(callee.path, CALLEE);
     }
   }
   return { ranks, pure };
