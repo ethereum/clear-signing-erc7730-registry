@@ -10,10 +10,13 @@ This repository maintains records of past and current metadata files in the `reg
 README.md                                    # top-level README file with submission process
 index.calldata.json                          # index of calldata descriptors (see "Index files")
 index.eip712.json                            # index of EIP-712 descriptors (see "Index files")
-specs/
+specs/                                       # see specs/README.md
   erc-7730.md                                # most advanced version of the spec but reference should be the ERC
-  erc7730-v2.schema.json                     # the json schema of the latest version of the extension
-  erc7730-v1.schema.json                     # legacy json schema, kept for reference
+  erc7730-v*.schema.json                     # every descriptor schema published upstream (synced weekly):
+                                             #   erc7730-v2.schema.json is the latest released version,
+                                             #   erc7730-v1.schema.json the legacy one; exact versions
+                                             #   (erc7730-v2.0.0), release candidates (-rc.N) and the
+                                             #   in-development draft (-next) can also appear here
   erc7730-tests.schema.json                  # legacy json schema for test files (tests/)
   erc7730-tests-v2.schema.json               # json schema for test files (testsv2/)
 registry/
@@ -48,6 +51,7 @@ ercs/
 - Each entity folder includes **at least one file that is compatible with ERC-7730**, located at the root of the entity's folder.
 - All ERC-7730 compatible files are prefixed with either `calldata` for smart contracts or `eip712` for EIP-712 messages.
 - All ERC-7730 compatible files are correctly validated against the schema file located at `specs/erc7730-v2.schema.json`.
+- The `$schema` key of each ERC-7730 file points at that schema file by a relative path: `"$schema": "../../specs/erc7730-v2.schema.json"`. Do not use a URL, even the one in the examples of the ERC. CI rejects a URL, and a path that does not resolve to a file under `specs/`.
 - Do not use the `calldata` or `eip712` prefixes for common files which are included by the ERC-7730 files and placed at the top level of the entity folder. Name them `common-*.json` instead.
 - Each descriptor added or changed is accompanied by a test file so descriptors can be verified against the formatter implementations. For a calldata descriptor, the test file has at least one test case for every function in `display.formats`: CI derives the selector of each format and looks for it in the calldata of the test cases. See [Reference test cases](#reference-test-cases).
 - To change a descriptor that has an attestation, delete its attestation file(s) from `sigs/` in the same PR. For now this is the only way, because the [index](#index-files) allows only one descriptor per deployment.
@@ -67,6 +71,10 @@ erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
 
 # Validate all descriptors (exclude the tests/ and testsv2/ fixtures and the sigs/ attestations, which are not descriptors)
 erc7730 lint $(find registry -type f \( -name 'calldata-*.json' -o -name 'eip712-*.json' \) -not -path '*/tests/*' -not -path '*/testsv2/*' -not -path '*/sigs/*' -not -name '*.tests.json')
+
+# Check the "$schema" key of each file and validate each file against the schema it names, like CI does
+# (needs jq and check-jsonschema: pip install -r .github/requirements-schema.txt)
+.github/scripts/validate-json-schemas.sh registry/<entity>/*.json registry/<entity>/testsv2/*.json
 
 # Format all descriptors
 erc7730 format
