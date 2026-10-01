@@ -194,9 +194,14 @@ function deploymentsOf(head) {
 }
 
 // ---------------------------------------------------------------------------
-// The descriptor side: cases without the redundant rendered screens, calldata formats
+// The descriptor side: test cases and embedded calldata formats
 // ---------------------------------------------------------------------------
 
+/**
+ * Every test case holds the expected screen and, per runner, the rendered
+ * one. When the runner passed they are the same screen, so the rendered copy
+ * is dropped. It stays when the runner failed or the two differ.
+ */
 function pruneCases(cases) {
   return (cases ?? []).map((c) => ({
     ...c,
