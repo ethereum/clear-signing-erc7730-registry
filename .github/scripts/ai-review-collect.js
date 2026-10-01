@@ -115,8 +115,23 @@ function subset(chainId, address, role, response) {
     constructorArguments: constructorArguments(response),
     // Raw 32-byte words keyed by AST id: the names need the AST, which is not kept.
     immutables: response.runtimeBytecode?.transformationValues?.immutables ?? null,
-    sources: Object.fromEntries(Object.entries(response.sources ?? {}).map(([p, s]) => [p, s.content])),
-    codeFiles: codeFilesOf(response),
+    ...sourcesOf(response),
+  };
+}
+
+/**
+ * The source files the deployed code was compiled from, and how many of the
+ * verified files were left out (interfaces, unused files). Without a source
+ * map, which a match should always have, every file stays.
+ */
+function sourcesOf(response) {
+  const all = Object.fromEntries(Object.entries(response.sources ?? {}).map(([p, s]) => [p, s.content]));
+  const code = codeFilesOf(response);
+  const main = response.compilation?.fullyQualifiedName?.split(':')[0];
+  const kept = code ? Object.keys(all).filter((p) => p === main || code.includes(p)) : Object.keys(all);
+  return {
+    sources: Object.fromEntries(kept.map((p) => [p, all[p]])),
+    omittedSources: Object.keys(all).length - kept.length,
   };
 }
 
@@ -208,8 +223,7 @@ function calldataFormats(head) {
 }
 
 // ---------------------------------------------------------------------------
-// Focus: keep the source files the deployed code comes from, and the ABI
-// entries and NatSpec of the reviewed functions
+// Focus: the ABI entries and the NatSpec of the reviewed functions only
 // ---------------------------------------------------------------------------
 
 /** The function names (calldata) or primary types (eip712) of the format keys. */
@@ -222,35 +236,8 @@ function mainFileOf(contract) {
   return contract.fullyQualifiedName ? contract.fullyQualifiedName.split(':')[0] : null;
 }
 
-/**
- * A large file that declares only libraries and can move no value: no calls,
- * no transfers, no self-destruct, no storage writes in assembly. Math and
- * encoding helpers, which the model does not need to read.
- */
-function isPureLibrary(content) {
-  const declares = /\b(abstract\s+contract|contract|interface)\s+[A-Za-z_$][\w$]*(\s+is\s+[^{]+)?\s*\{/;
-  const movesValue = /\b(call|delegatecall|staticcall|callcode|selfdestruct|create|create2)\s*\(|\.(transfer|send|transferFrom|approve|safeTransfer|safeTransferFrom)\s*\(|\bsstore\b/;
-  return content.length > 4000 && /\blibrary\s+[A-Za-z_$][\w$]*\s*\{/.test(content) && !declares.test(content) && !movesValue.test(content);
-}
-
-/** Trims a contract to what the review of the named functions needs. */
-function focusContract(contract, names, kind) {
-  // The files whose code is on chain, per the source maps: the contract, its
-  // base contracts, the libraries inlined into it. Interfaces and files that
-  // compiled to nothing are out. Without a source map every file stays and
-  // the size cap decides.
-  const main = mainFileOf(contract);
-  const all = Object.keys(contract.sources ?? {});
-  const code = contract.codeFiles;
-  const inCode = code ? all.filter((p) => p === main || code.includes(p)) : all;
-  const pure = inCode.filter((p) => p !== main && isPureLibrary(contract.sources[p]));
-  const kept = inCode.filter((p) => !pure.includes(p));
-  contract.sourceSelection = code ? 'the files in the compiler source maps' : 'all files: no source map';
-  contract.omittedSources = all.length - kept.length;
-  contract.omittedPureLibraries = pure;
-  contract.sources = Object.fromEntries(kept.map((p) => [p, contract.sources[p]]));
-  delete contract.codeFiles;
-
+/** Keeps the ABI entries of the named functions and the NatSpec of those entries. */
+function trimAbiAndDocs(contract, names, kind) {
   const lower = names.map((n) => n.toLowerCase());
   const keepAbi = (e) => e.type === 'function' && (kind === 'eip712'
     ? lower.some((n) => e.name.toLowerCase().includes(n)) || /typehash|separator|eip712|nonces/i.test(e.name)
@@ -270,10 +257,8 @@ function focusContract(contract, names, kind) {
 /** A proxy in front of an implementation: its main file only, no ABI or NatSpec. */
 function focusProxy(contract) {
   const main = mainFileOf(contract);
-  contract.omittedSources = Object.keys(contract.sources ?? {}).length - (main && contract.sources?.[main] ? 1 : 0);
+  contract.omittedSources += Object.keys(contract.sources ?? {}).length - (main && contract.sources?.[main] ? 1 : 0);
   contract.sources = main && contract.sources?.[main] ? { [main]: contract.sources[main] } : {};
-  contract.sourceSelection = 'the main file of the proxy';
-  delete contract.codeFiles;
   contract.abi = null;
   contract.devdoc = null;
   contract.userdoc = null;
@@ -285,7 +270,7 @@ function focus(input) {
   for (const c of input.contracts) {
     if (c.match === null) continue;
     if (proxied && c.role === 'deployment') focusProxy(c);
-    else focusContract(c, names, input.descriptor.kind);
+    else trimAbiAndDocs(c, names, input.descriptor.kind);
   }
 }
 
