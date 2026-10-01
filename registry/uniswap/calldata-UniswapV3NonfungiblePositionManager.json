@@ -1,0 +1,121 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Uniswap V3 Positions NFT",
+    "contract": { "deployments": [{ "chainId": 137, "address": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88" }] }
+  },
+  "metadata": {
+    "owner": "Uniswap Labs",
+    "info": { "deploymentDate": "2021-12-20T19:26:29Z", "url": "https://uniswap.org/" },
+    "contractName": "NonfungiblePositionManager"
+  },
+  "display": {
+    "definitions": {
+      "position": { "label": "Position", "format": "nftName", "params": { "collectionPath": "@.to" } },
+      "recipient": { "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] } },
+      "deadline": { "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+      "nativeAmount": { "label": "Native amount", "format": "amount" }
+    },
+    "formats": {
+      "mint((address token0,address token1,uint24 fee,int24 tickLower,int24 tickUpper,uint256 amount0Desired,uint256 amount1Desired,uint256 amount0Min,uint256 amount1Min,address recipient,uint256 deadline) params)": {
+        "$id": "mint",
+        "intent": "Create position",
+        "fields": [
+          {
+            "path": "params.amount0Desired",
+            "label": "Max amount 0",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.token0" },
+            "visible": "always"
+          },
+          {
+            "path": "params.amount1Desired",
+            "label": "Max amount 1",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.token1" },
+            "visible": "always"
+          },
+          {
+            "path": "params.amount0Min",
+            "label": "Min amount 0",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.token0" },
+            "visible": "always"
+          },
+          {
+            "path": "params.amount1Min",
+            "label": "Min amount 1",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.token1" },
+            "visible": "always"
+          },
+          {
+            "path": "params.fee",
+            "label": "Fee tier",
+            "format": "unit",
+            "params": { "decimals": 4, "base": "%", "prefix": false },
+            "visible": "always"
+          },
+          { "path": "params.tickLower", "label": "Lower tick", "format": "raw", "visible": "never" },
+          { "path": "params.tickUpper", "label": "Upper tick", "format": "raw", "visible": "never" },
+          { "path": "params.recipient", "$ref": "$.display.definitions.recipient", "visible": "always" },
+          { "path": "params.deadline", "$ref": "$.display.definitions.deadline", "visible": "always" },
+          { "path": "@.value", "$ref": "$.display.definitions.nativeAmount", "visible": "always" }
+        ]
+      },
+      "increaseLiquidity((uint256 tokenId,uint256 amount0Desired,uint256 amount1Desired,uint256 amount0Min,uint256 amount1Min,uint256 deadline) params)": {
+        "$id": "increaseLiquidity",
+        "intent": "Add liquidity",
+        "fields": [
+          { "path": "params.tokenId", "$ref": "$.display.definitions.position", "visible": "always" },
+          { "path": "params.amount0Desired", "label": "Max amount 0", "format": "raw", "visible": "always" },
+          { "path": "params.amount1Desired", "label": "Max amount 1", "format": "raw", "visible": "always" },
+          { "path": "params.amount0Min", "label": "Min amount 0", "format": "raw", "visible": "always" },
+          { "path": "params.amount1Min", "label": "Min amount 1", "format": "raw", "visible": "always" },
+          { "path": "params.deadline", "$ref": "$.display.definitions.deadline", "visible": "always" },
+          { "path": "@.value", "$ref": "$.display.definitions.nativeAmount", "visible": "always" }
+        ]
+      },
+      "decreaseLiquidity((uint256 tokenId,uint128 liquidity,uint256 amount0Min,uint256 amount1Min,uint256 deadline) params)": {
+        "$id": "decreaseLiquidity",
+        "intent": "Remove liquidity",
+        "fields": [
+          { "path": "params.tokenId", "$ref": "$.display.definitions.position", "visible": "always" },
+          { "path": "params.liquidity", "label": "Liquidity", "format": "raw", "visible": "always" },
+          { "path": "params.amount0Min", "label": "Min amount 0", "format": "raw", "visible": "always" },
+          { "path": "params.amount1Min", "label": "Min amount 1", "format": "raw", "visible": "always" },
+          { "path": "params.deadline", "$ref": "$.display.definitions.deadline", "visible": "always" }
+        ]
+      },
+      "collect((uint256 tokenId,address recipient,uint128 amount0Max,uint128 amount1Max) params)": {
+        "$id": "collect",
+        "intent": "Collect from position",
+        "fields": [
+          { "path": "params.tokenId", "$ref": "$.display.definitions.position", "visible": "always" },
+          { "path": "params.recipient", "$ref": "$.display.definitions.recipient", "visible": "always" },
+          { "path": "params.amount0Max", "label": "Max amount 0", "format": "raw", "visible": "always" },
+          { "path": "params.amount1Max", "label": "Max amount 1", "format": "raw", "visible": "always" }
+        ]
+      },
+      "burn(uint256 tokenId)": {
+        "$id": "burn",
+        "intent": "Burn position",
+        "fields": [{ "path": "tokenId", "$ref": "$.display.definitions.position", "visible": "always" }]
+      },
+      "approve(address to,uint256 tokenId)": {
+        "$id": "approve",
+        "intent": "Approve position",
+        "fields": [
+          {
+            "path": "to",
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "tokenId", "$ref": "$.display.definitions.position", "visible": "always" }
+        ]
+      }
+    }
+  }
+}
