@@ -5,24 +5,24 @@
       "domain": {
         "name": "ERC-8128 Delegation",
         "version": "1",
-        "verifyingContract": "0xE6ea89ebF649325c98E4B7CBc110ff611a1A054A"
+        "verifyingContract": "0xE997dedb0F549431D7120A21c53ad0dA437E8220"
       },
       "deployments": [
         {
           "chainId": 1,
-          "address": "0xE6ea89ebF649325c98E4B7CBc110ff611a1A054A"
+          "address": "0xE997dedb0F549431D7120A21c53ad0dA437E8220"
         },
         {
           "chainId": 10,
-          "address": "0xE6ea89ebF649325c98E4B7CBc110ff611a1A054A"
+          "address": "0xE997dedb0F549431D7120A21c53ad0dA437E8220"
         },
         {
           "chainId": 8453,
-          "address": "0xE6ea89ebF649325c98E4B7CBc110ff611a1A054A"
+          "address": "0xE997dedb0F549431D7120A21c53ad0dA437E8220"
         },
         {
           "chainId": 42161,
-          "address": "0xE6ea89ebF649325c98E4B7CBc110ff611a1A054A"
+          "address": "0xE997dedb0F549431D7120A21c53ad0dA437E8220"
         }
       ]
     }
@@ -32,9 +32,9 @@
   },
   "display": {
     "formats": {
-      "Delegation(string issuer,string delegate,string[] audiences,bytes32 id,uint64 epoch,uint64 validAfter,uint64 validUntil,uint32 maxRequestValiditySeconds,uint32 remainingDelegations,string delegateProfile,bool requireNonReplayable,string[] requiredComponents,string[] permissions,bytes32 parentGrantHash)": {
+      "Delegation(string issuer,string delegate,AudiencePermission[] permissions,bytes32 id,uint64 epoch,uint64 validAfter,uint64 validUntil,uint32 maxRequestValiditySeconds,uint32 remainingDelegations,string delegateProfile,bool requireNonReplayable,string[] requiredComponents,bytes32 parentGrantHash)AudiencePermission(string audience,string[] permissions)": {
         "intent": "Authorize delegated access",
-        "interpolatedIntent": "Allow {delegate} to act on behalf of {issuer} at {audiences.[]}, with the listed permissions, from {validAfter} until {validUntil}. Allow up to {remainingDelegations} further levels of delegation. Each request may remain valid for {maxRequestValiditySeconds}. This grant requires single-use requests: {requireNonReplayable}. Additional signed request requirements and any parent authorization still apply.",
+        "interpolatedIntent": "Allow {delegate} to act on behalf of {issuer} at {permissions.[].audience}, with the listed permissions, from {validAfter} until {validUntil}. Allow up to {remainingDelegations} further levels of delegation. Each request may remain valid for {maxRequestValiditySeconds}. This grant requires single-use requests: {requireNonReplayable}. Additional signed request requirements and any parent authorization still apply.",
         "fields": [
           {
             "label": "You are allowing",
@@ -54,10 +54,17 @@
                 "path": "delegate",
                 "label": "Authorized delegate",
                 "format": "raw"
-              },
+              }
+            ]
+          },
+          {
+            "$id": "services",
+            "path": "permissions.[]",
+            "label": "Allowed services",
+            "fields": [
               {
-                "path": "audiences.[]",
-                "label": "Allowed services",
+                "path": "audience",
+                "label": "Service",
                 "format": "raw"
               },
               {

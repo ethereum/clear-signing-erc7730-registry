@@ -9,7 +9,7 @@
           "name": "ERC-8128 Delegation",
           "version": "1",
           "chainId": 1,
-          "verifyingContract": "0xE6ea89ebF649325c98E4B7CBc110ff611a1A054A"
+          "verifyingContract": "0xE997dedb0F549431D7120A21c53ad0dA437E8220"
         },
         "types": {
           "Delegation": [
@@ -22,8 +22,8 @@
               "type": "string"
             },
             {
-              "name": "audiences",
-              "type": "string[]"
+              "name": "permissions",
+              "type": "AudiencePermission[]"
             },
             {
               "name": "id",
@@ -62,12 +62,18 @@
               "type": "string[]"
             },
             {
-              "name": "permissions",
-              "type": "string[]"
-            },
-            {
               "name": "parentGrantHash",
               "type": "bytes32"
+            }
+          ],
+          "AudiencePermission": [
+            {
+              "name": "audience",
+              "type": "string"
+            },
+            {
+              "name": "permissions",
+              "type": "string[]"
             }
           ]
         },
@@ -75,8 +81,13 @@
         "message": {
           "issuer": "eip155:1:0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
           "delegate": "{\"crv\":\"P-256\",\"kty\":\"EC\",\"x\":\"sBoXKnakYCyS0yQsuJfd4wJMdA3rshW0xrCq6Twikak\",\"y\":\"6FwQdDI32tVv7A4t-6cDeRwA93Acfha9_XxIU4_Hf-I\"}",
-          "audiences": [
-            "https://api.example"
+          "permissions": [
+            {
+              "audience": "https://api.example",
+              "permissions": [
+                "resource:read"
+              ]
+            }
           ],
           "id": "0x3333333333333333333333333333333333333333333333333333333333333333",
           "epoch": "7",
@@ -88,9 +99,6 @@
           "requireNonReplayable": true,
           "requiredComponents": [
             "@authority"
-          ],
-          "permissions": [
-            "resource:read"
           ],
           "parentGrantHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
         }
@@ -113,7 +121,7 @@
             "value": "{\"crv\":\"P-256\",\"kty\":\"EC\",\"x\":\"sBoXKnakYCyS0yQsuJfd4wJMdA3rshW0xrCq6Twikak\",\"y\":\"6FwQdDI32tVv7A4t-6cDeRwA93Acfha9_XxIU4_Hf-I\"}"
           },
           {
-            "label": "Allowed services",
+            "label": "Service",
             "value": "https://api.example"
           },
           {
@@ -160,13 +168,13 @@
       }
     },
     {
-      "description": "Multiple services and permissions, with no additional required components (chain 10)",
+      "description": "Multiple services, each with its own permissions, and no additional required components (chain 10)",
       "data": {
         "domain": {
           "name": "ERC-8128 Delegation",
           "version": "1",
           "chainId": 10,
-          "verifyingContract": "0xE6ea89ebF649325c98E4B7CBc110ff611a1A054A"
+          "verifyingContract": "0xE997dedb0F549431D7120A21c53ad0dA437E8220"
         },
         "types": {
           "Delegation": [
@@ -179,8 +187,8 @@
               "type": "string"
             },
             {
-              "name": "audiences",
-              "type": "string[]"
+              "name": "permissions",
+              "type": "AudiencePermission[]"
             },
             {
               "name": "id",
@@ -219,12 +227,18 @@
               "type": "string[]"
             },
             {
-              "name": "permissions",
-              "type": "string[]"
-            },
-            {
               "name": "parentGrantHash",
               "type": "bytes32"
+            }
+          ],
+          "AudiencePermission": [
+            {
+              "name": "audience",
+              "type": "string"
+            },
+            {
+              "name": "permissions",
+              "type": "string[]"
             }
           ]
         },
@@ -232,9 +246,20 @@
         "message": {
           "issuer": "eip155:10:0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
           "delegate": "eip155:10:0x6813eb9362372eef6200f3b1dbc3f819671cba69",
-          "audiences": [
-            "https://api.example",
-            "https://backup.example"
+          "permissions": [
+            {
+              "audience": "https://api.example",
+              "permissions": [
+                "resource:read",
+                "resource:write"
+              ]
+            },
+            {
+              "audience": "https://backup.example",
+              "permissions": [
+                "resource:read"
+              ]
+            }
           ],
           "id": "0x3333333333333333333333333333333333333333333333333333333333333333",
           "epoch": "7",
@@ -245,10 +270,6 @@
           "delegateProfile": "erc8128-eoa",
           "requireNonReplayable": true,
           "requiredComponents": [],
-          "permissions": [
-            "resource:read",
-            "resource:write"
-          ],
           "parentGrantHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
         }
       },
@@ -270,12 +291,8 @@
             "value": "eip155:10:0x6813eb9362372eef6200f3b1dbc3f819671cba69"
           },
           {
-            "label": "Allowed services",
+            "label": "Service",
             "value": "https://api.example"
-          },
-          {
-            "label": "Allowed services",
-            "value": "https://backup.example"
           },
           {
             "label": "Permissions",
@@ -284,6 +301,14 @@
           {
             "label": "Permissions",
             "value": "resource:write"
+          },
+          {
+            "label": "Service",
+            "value": "https://backup.example"
+          },
+          {
+            "label": "Permissions",
+            "value": "resource:read"
           },
           {
             "label": "Valid from",
@@ -321,13 +346,13 @@
       }
     },
     {
-      "description": "Empty permission set, no further delegation, replay not prohibited by this grant (chain 8453)",
+      "description": "A service without permissions, no further delegation, replay not prohibited by this grant (chain 8453)",
       "data": {
         "domain": {
           "name": "ERC-8128 Delegation",
           "version": "1",
           "chainId": 8453,
-          "verifyingContract": "0xE6ea89ebF649325c98E4B7CBc110ff611a1A054A"
+          "verifyingContract": "0xE997dedb0F549431D7120A21c53ad0dA437E8220"
         },
         "types": {
           "Delegation": [
@@ -340,8 +365,8 @@
               "type": "string"
             },
             {
-              "name": "audiences",
-              "type": "string[]"
+              "name": "permissions",
+              "type": "AudiencePermission[]"
             },
             {
               "name": "id",
@@ -380,12 +405,18 @@
               "type": "string[]"
             },
             {
-              "name": "permissions",
-              "type": "string[]"
-            },
-            {
               "name": "parentGrantHash",
               "type": "bytes32"
+            }
+          ],
+          "AudiencePermission": [
+            {
+              "name": "audience",
+              "type": "string"
+            },
+            {
+              "name": "permissions",
+              "type": "string[]"
             }
           ]
         },
@@ -393,8 +424,11 @@
         "message": {
           "issuer": "eip155:8453:0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
           "delegate": "{\"crv\":\"P-256\",\"kty\":\"EC\",\"x\":\"sBoXKnakYCyS0yQsuJfd4wJMdA3rshW0xrCq6Twikak\",\"y\":\"6FwQdDI32tVv7A4t-6cDeRwA93Acfha9_XxIU4_Hf-I\"}",
-          "audiences": [
-            "https://api.example"
+          "permissions": [
+            {
+              "audience": "https://api.example",
+              "permissions": []
+            }
           ],
           "id": "0x3333333333333333333333333333333333333333333333333333333333333333",
           "epoch": "7",
@@ -405,7 +439,6 @@
           "delegateProfile": "ecdsa-p256-sha256",
           "requireNonReplayable": false,
           "requiredComponents": [],
-          "permissions": [],
           "parentGrantHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
         }
       },
@@ -427,7 +460,7 @@
             "value": "{\"crv\":\"P-256\",\"kty\":\"EC\",\"x\":\"sBoXKnakYCyS0yQsuJfd4wJMdA3rshW0xrCq6Twikak\",\"y\":\"6FwQdDI32tVv7A4t-6cDeRwA93Acfha9_XxIU4_Hf-I\"}"
           },
           {
-            "label": "Allowed services",
+            "label": "Service",
             "value": "https://api.example"
           },
           {
@@ -472,7 +505,7 @@
           "name": "ERC-8128 Delegation",
           "version": "1",
           "chainId": 42161,
-          "verifyingContract": "0xE6ea89ebF649325c98E4B7CBc110ff611a1A054A"
+          "verifyingContract": "0xE997dedb0F549431D7120A21c53ad0dA437E8220"
         },
         "types": {
           "Delegation": [
@@ -485,8 +518,8 @@
               "type": "string"
             },
             {
-              "name": "audiences",
-              "type": "string[]"
+              "name": "permissions",
+              "type": "AudiencePermission[]"
             },
             {
               "name": "id",
@@ -525,12 +558,18 @@
               "type": "string[]"
             },
             {
-              "name": "permissions",
-              "type": "string[]"
-            },
-            {
               "name": "parentGrantHash",
               "type": "bytes32"
+            }
+          ],
+          "AudiencePermission": [
+            {
+              "name": "audience",
+              "type": "string"
+            },
+            {
+              "name": "permissions",
+              "type": "string[]"
             }
           ]
         },
@@ -538,8 +577,13 @@
         "message": {
           "issuer": "eip155:42161:0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
           "delegate": "{\"crv\":\"P-256\",\"kty\":\"EC\",\"x\":\"sBoXKnakYCyS0yQsuJfd4wJMdA3rshW0xrCq6Twikak\",\"y\":\"6FwQdDI32tVv7A4t-6cDeRwA93Acfha9_XxIU4_Hf-I\"}",
-          "audiences": [
-            "https://api.example"
+          "permissions": [
+            {
+              "audience": "https://api.example",
+              "permissions": [
+                "resource:read"
+              ]
+            }
           ],
           "id": "0x3333333333333333333333333333333333333333333333333333333333333333",
           "epoch": "7",
@@ -551,9 +595,6 @@
           "requireNonReplayable": true,
           "requiredComponents": [
             "@authority"
-          ],
-          "permissions": [
-            "resource:read"
           ],
           "parentGrantHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
         }
@@ -576,7 +617,7 @@
             "value": "{\"crv\":\"P-256\",\"kty\":\"EC\",\"x\":\"sBoXKnakYCyS0yQsuJfd4wJMdA3rshW0xrCq6Twikak\",\"y\":\"6FwQdDI32tVv7A4t-6cDeRwA93Acfha9_XxIU4_Hf-I\"}"
           },
           {
-            "label": "Allowed services",
+            "label": "Service",
             "value": "https://api.example"
           },
           {
@@ -629,7 +670,7 @@
           "name": "ERC-8128 Delegation",
           "version": "1",
           "chainId": 10,
-          "verifyingContract": "0xE6ea89ebF649325c98E4B7CBc110ff611a1A054A"
+          "verifyingContract": "0xE997dedb0F549431D7120A21c53ad0dA437E8220"
         },
         "types": {
           "Delegation": [
@@ -642,8 +683,8 @@
               "type": "string"
             },
             {
-              "name": "audiences",
-              "type": "string[]"
+              "name": "permissions",
+              "type": "AudiencePermission[]"
             },
             {
               "name": "id",
@@ -682,12 +723,18 @@
               "type": "string[]"
             },
             {
-              "name": "permissions",
-              "type": "string[]"
-            },
-            {
               "name": "parentGrantHash",
               "type": "bytes32"
+            }
+          ],
+          "AudiencePermission": [
+            {
+              "name": "audience",
+              "type": "string"
+            },
+            {
+              "name": "permissions",
+              "type": "string[]"
             }
           ]
         },
@@ -695,8 +742,13 @@
         "message": {
           "issuer": "eip155:10:0x6813eb9362372eef6200f3b1dbc3f819671cba69",
           "delegate": "{\"crv\":\"P-256\",\"kty\":\"EC\",\"x\":\"sBoXKnakYCyS0yQsuJfd4wJMdA3rshW0xrCq6Twikak\",\"y\":\"6FwQdDI32tVv7A4t-6cDeRwA93Acfha9_XxIU4_Hf-I\"}",
-          "audiences": [
-            "https://api.example"
+          "permissions": [
+            {
+              "audience": "https://api.example",
+              "permissions": [
+                "resource:read"
+              ]
+            }
           ],
           "id": "0x4444444444444444444444444444444444444444444444444444444444444444",
           "epoch": "7",
@@ -709,10 +761,7 @@
           "requiredComponents": [
             "@authority"
           ],
-          "permissions": [
-            "resource:read"
-          ],
-          "parentGrantHash": "0x2b8db0e49021a4c4a05357c1807424fe6124664cdb773297b7f7f1316c864107"
+          "parentGrantHash": "0x2d958a9216415508e8ba5cb3f87f905c3cd4a77fb2183f8a5e71ffb95f0575fc"
         }
       },
       "expected": {
@@ -733,7 +782,7 @@
             "value": "{\"crv\":\"P-256\",\"kty\":\"EC\",\"x\":\"sBoXKnakYCyS0yQsuJfd4wJMdA3rshW0xrCq6Twikak\",\"y\":\"6FwQdDI32tVv7A4t-6cDeRwA93Acfha9_XxIU4_Hf-I\"}"
           },
           {
-            "label": "Allowed services",
+            "label": "Service",
             "value": "https://api.example"
           },
           {
@@ -778,7 +827,7 @@
           },
           {
             "label": "Parent grant hash",
-            "value": "0x2b8db0e49021a4c4a05357c1807424fe6124664cdb773297b7f7f1316c864107"
+            "value": "0x2d958a9216415508e8ba5cb3f87f905c3cd4a77fb2183f8a5e71ffb95f0575fc"
           }
         ]
       }
@@ -790,7 +839,7 @@
           "name": "ERC-8128 Delegation",
           "version": "1",
           "chainId": 1,
-          "verifyingContract": "0xE6ea89ebF649325c98E4B7CBc110ff611a1A054A"
+          "verifyingContract": "0xE997dedb0F549431D7120A21c53ad0dA437E8220"
         },
         "types": {
           "Delegation": [
@@ -803,8 +852,8 @@
               "type": "string"
             },
             {
-              "name": "audiences",
-              "type": "string[]"
+              "name": "permissions",
+              "type": "AudiencePermission[]"
             },
             {
               "name": "id",
@@ -843,12 +892,18 @@
               "type": "string[]"
             },
             {
-              "name": "permissions",
-              "type": "string[]"
-            },
-            {
               "name": "parentGrantHash",
               "type": "bytes32"
+            }
+          ],
+          "AudiencePermission": [
+            {
+              "name": "audience",
+              "type": "string"
+            },
+            {
+              "name": "permissions",
+              "type": "string[]"
             }
           ]
         },
@@ -856,8 +911,13 @@
         "message": {
           "issuer": "eip155:1:0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
           "delegate": "{\"crv\":\"P-256\",\"kty\":\"EC\",\"x\":\"sBoXKnakYCyS0yQsuJfd4wJMdA3rshW0xrCq6Twikak\",\"y\":\"6FwQdDI32tVv7A4t-6cDeRwA93Acfha9_XxIU4_Hf-I\"}",
-          "audiences": [
-            "https://api.example"
+          "permissions": [
+            {
+              "audience": "https://api.example",
+              "permissions": [
+                "resource:read"
+              ]
+            }
           ],
           "id": "0x3333333333333333333333333333333333333333333333333333333333333333",
           "epoch": "7",
@@ -869,9 +929,6 @@
           "requireNonReplayable": false,
           "requiredComponents": [
             "@authority"
-          ],
-          "permissions": [
-            "resource:read"
           ],
           "parentGrantHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
         }
@@ -894,7 +951,7 @@
             "value": "{\"crv\":\"P-256\",\"kty\":\"EC\",\"x\":\"sBoXKnakYCyS0yQsuJfd4wJMdA3rshW0xrCq6Twikak\",\"y\":\"6FwQdDI32tVv7A4t-6cDeRwA93Acfha9_XxIU4_Hf-I\"}"
           },
           {
-            "label": "Allowed services",
+            "label": "Service",
             "value": "https://api.example"
           },
           {
