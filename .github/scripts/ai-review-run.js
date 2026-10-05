@@ -332,9 +332,17 @@ function totalsOf(records) {
   };
 }
 
+/** The order of review, which the cap cuts: the descriptors the pull request added or modified first, then the rest, smaller units first in each group so more of them fit. */
+function ordered(units) {
+  const changed = (unit) => (unit.change === 'added' || unit.change === 'modified' ? 0 : 1);
+  return [...units]
+    .sort((a, b) => changed(a) - changed(b) || (a.bytes ?? 0) - (b.bytes ?? 0))
+    .map((unit, position) => ({ ...unit, position }));
+}
+
 async function main() {
   const index = JSON.parse(fs.readFileSync(path.join(opts.inputs, 'index.json'), 'utf8'));
-  const units = index.units.map((unit, position) => ({ ...unit, position }));
+  const units = ordered(index.units);
   const outDir = path.join(opts.out, 'answers', label);
   fs.mkdirSync(outDir, { recursive: true });
 

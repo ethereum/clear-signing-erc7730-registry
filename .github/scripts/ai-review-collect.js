@@ -383,6 +383,7 @@ async function collect(bundle, out, maxBytes = MAX_BYTES) {
       index.push({
         file: input.file,
         descriptor: descriptor.path,
+        change: descriptor.change?.descriptor ?? null,
         unit,
         deployments: group.deployments.length,
         contracts: group.contracts.length,
