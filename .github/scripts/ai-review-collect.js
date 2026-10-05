@@ -291,13 +291,16 @@ function bytesOf(input) {
 
 /** The review units of one bundle descriptor: its deployments grouped by implementation source. */
 async function unitsOf(descriptor) {
+  // All deployments at once; the Sourcify limiter above keeps two requests in flight.
+  const deployments = deploymentsOf(descriptor.head);
+  const fetched = await Promise.all(deployments.map(contractsOf));
   const byKey = new Map();
-  for (const deployment of deploymentsOf(descriptor.head)) {
-    const contracts = await contractsOf(deployment);
+  deployments.forEach((deployment, i) => {
+    const contracts = fetched[i];
     const key = implementationKey(contracts);
     if (!byKey.has(key)) byKey.set(key, { key, deployments: [], contracts });
     byKey.get(key).deployments.push(deployment);
-  }
+  });
   return [...byKey.values()];
 }
 
