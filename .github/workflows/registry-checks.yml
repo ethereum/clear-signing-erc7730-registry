@@ -302,7 +302,7 @@ jobs:
             name=$(basename "$descriptor" .json)
             for sig in "$(dirname "$descriptor")"/sigs/"$name".eip155-*.json; do
               [ -e "$sig" ] || continue
-              echo "::error file=${descriptor},line=1::An auditor attested this descriptor in ${sig}, and this pull request changes it. Add a new descriptor file instead — the file name carries the version. The attestation then stays valid for the old descriptor, and an auditor can attest the new one later."
+              echo "::error file=${descriptor},line=1::An auditor attested this descriptor in ${sig}, and this pull request changes it. The index allows only one descriptor per deployment, so you cannot add the new version as a second file. To change the descriptor, delete the attestation file(s) from sigs/ in this pull request. An auditor can attest the new version later."
               FOUND=$((FOUND + 1))
             done
           done <<< "$AFFECTED"
@@ -324,7 +324,7 @@ jobs:
             name=$(basename "$sig" | sed -E 's/\.eip155-[0-9]+-0x[0-9a-fA-F]+\.json$//')
             descriptor="$(dirname "$(dirname "$sig")")/${name}.json"
             [ -e "$descriptor" ] && continue
-            echo "::error file=${sig},line=1::An auditor attested ${name}, but that descriptor is no longer here. Do not delete or rename an attested descriptor. Add a new descriptor file instead, and keep the attested one."
+            echo "::error file=${sig},line=1::An auditor attested ${name}, but that descriptor is no longer here. To delete or rename an attested descriptor, also delete its attestation file(s) from sigs/ in this pull request."
             FOUND=$((FOUND + 1))
           done < <(find registry -path '*/sigs/*.json')
 
