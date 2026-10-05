@@ -73,7 +73,7 @@ jobs:
     name: Review (optional, needs a maintainer's approval)
     environment: ai-review
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       # A pull request can edit the workflows that check it, so one that
       # touches anything outside the registry could have made Registry Checks
@@ -213,8 +213,11 @@ jobs:
       # One request per input and model. A key is the only secret of its
       # step; the script gets no token for GitHub and writes nothing but the
       # answers. The second model runs even when the first failed, so one
-      # provider's outage does not hide the other's review.
+      # provider's outage does not hide the other's review, and each step has
+      # its own timeout, so a slow model fails its step and the answers of
+      # the other are still uploaded and posted.
       - name: Review the inputs with Claude
+        timeout-minutes: 15
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
@@ -224,6 +227,7 @@ jobs:
 
       - name: Review the inputs with GPT
         if: ${{ !cancelled() && steps.collect.outcome == 'success' }}
+        timeout-minutes: 15
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
