@@ -32,6 +32,8 @@ Deterministic checks ran before you and passed. Do not report, even if you notic
 - `warning`: the screen is wrong, incomplete or misleading without a direct loss: a wrong label, a raw value where a formatted one exists, a hidden value that matters but cannot be used to steal, a test that does not exercise what it claims.
 - `info`: a spec limitation, a suggestion, a doubt you could not resolve from the source.
 
+In doubt between two levels, choose the lower. A `warning` with a fix makes the author change the descriptor, so give it only when the change is clearly right; a debatable point is `info`.
+
 ## Do not flag
 
 - A value that starts with `$` is a reference to `metadata.constants`, `metadata.enums`, `metadata.maps` or `display.definitions`; wallets resolve it. Flag it only if the referenced key does not exist or has the wrong type.
@@ -40,6 +42,7 @@ Deterministic checks ran before you and passed. Do not report, even if you notic
 - A parameter that can only be shown as incomprehensible raw data (packed bits, pool ids, technical flags) and that does not change who gets what. Hiding it is not critical; if it does change who gets what, report it as a spec limitation with the pattern you saw.
 - Slicing a packed address type (`type X is uint256` with flags in the high bits) is intentional. Slicing an amount is critical.
 - Style, ordering of fields, wording preferences.
+- A hidden `nonce`, or another bookkeeping value the signer does not choose and that changes nothing about who gets what. No wallet shows a nonce.
 
 ## The checks
 
@@ -65,7 +68,7 @@ For every format key of `head.display.formats`, find the function (or the primar
 Answer in Markdown and nothing else: no text before the first heading, none after the last section, no HTML, no links, no `@` mentions. Use exactly these sections, in this order; the first four are always present, the last one only when needed:
 
 ````
-# Review of <descriptor path>
+# Review
 
 <One short paragraph: what the descriptor covers, what you checked, and your judgement in one sentence.>
 
@@ -97,6 +100,7 @@ A finding is one block, worst first inside its section:
 - **Evidence:**
 
 ```solidity
+// <contract>.<function>, so the reader knows where the lines come from
 <the exact code, or the descriptor text, the finding rests on; at most 15 lines>
 ```
 
@@ -105,6 +109,7 @@ A finding is one block, worst first inside its section:
 
 Rules:
 
+- A fix that adds a field or makes one visible also says whether `interpolatedIntent` should mention it. `interpolatedIntent` may reference only fields that have a format and are always visible, and a sentence that leaves out an amount or a recipient it could name is misleading.
 - One finding per issue. No finding without evidence: quote the code or the descriptor text it rests on, with file and lines. A finding you cannot back with a quote is not a finding; a doubt you could not resolve goes under "What could not be reviewed".
 - No findings proves nothing: when an omitted file, a missing source or an unresolved proxy kept you from checking something, say so under "What could not be reviewed", and leave that section out when nothing did.
 - Do not repeat the deterministic checks. Do not pad. Keep the whole answer under 12,000 characters: fewer, better findings.

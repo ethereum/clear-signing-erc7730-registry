@@ -24,6 +24,8 @@ const { parseArgs } = require('util');
 // GitHub rejects a comment body above 65536 characters.
 const MAX_BODY = 60_000;
 const MAX_ANSWER = 16_000;
+const ICONS = { critical: '🔴', warning: '🟠', info: '🔵' };
+const LABELS = { critical: 'Critical', warning: 'Warning', info: 'Info' };
 
 const { values: opts } = parseArgs({
   options: {
@@ -71,6 +73,8 @@ function clean(markdown) {
   }
   const out = [];
   let fence = null;
+  let severity = null;
+  let first = true;
   for (const raw of text.split('\n')) {
     const open = raw.match(/^\s{0,3}(`{3,}|~{3,})/);
     if (fence) {
@@ -83,7 +87,16 @@ function clean(markdown) {
       out.push(raw);
       continue;
     }
-    out.push(prose(raw).replace(/^(\s{0,3})(#{1,6})(\s)/, (m, indent, hashes, space) => `${indent}${'#'.repeat(Math.min(6, hashes.length + 3))}${space}`));
+    // The answer's own title repeats the descriptor path the comment already shows.
+    if (first && /^# /.test(raw)) { first = false; continue; }
+    if (raw.trim()) first = false;
+    const section = raw.match(/^## (Critical|Warning|Info)\b/);
+    if (section) severity = section[1].toLowerCase();
+    else if (/^## /.test(raw)) severity = null;
+    // Each finding says its severity, not only the section it sits in.
+    const finding = severity && raw.match(/^### (.*)$/);
+    const line = finding ? `### ${ICONS[severity]} ${LABELS[severity]}: ${finding[1]}` : raw;
+    out.push(prose(line).replace(/^(\s{0,3})(#{1,6})(\s)/, (m, indent, hashes, space) => `${indent}${'#'.repeat(Math.min(6, hashes.length + 3))}${space}`));
   }
   if (fence) out.push(fence);
   if (cut) out.push('', '*The answer was longer than this comment shows. The whole of it is in the artifact `ai-review-answers` of the run.*');
@@ -117,15 +130,8 @@ function render(folder) {
   const t = summary.totals ?? {};
 
   let body = `<!-- ai-review: ${folder.replace(/[^A-Za-z0-9._-]/g, '')} -->\n## 🤖 AI review by ${modelName} (advisory)\n\n`;
-  body += `A language model (${modelName}, effort ${ticks(summary.effort, 20)}) read the descriptors of ${sha ? `commit \`${sha.slice(0, 7)}\`` : 'this pull request'}, their tests, the pull request discussion and the verified source code of their deployments, and wrote the notes below${runUrl ? ` ([run](${runUrl}))` : ''}. `;
-  body += 'It can be wrong and it can miss things. Nothing here is a check: it never blocks a merge, and a note is a question for the reviewer, not a verdict. Read each one against the source before acting on it.\n\n';
-  const costLine = [
-    `${t.reviewed ?? 0} unit(s) reviewed`,
-    t.inputTokens != null ? `${t.inputTokens} input tokens (${t.cacheReadTokens ?? 0} cached), ${t.outputTokens} output tokens` : null,
-    t.seconds != null ? `${t.seconds}s of model time` : null,
-    t.costUSD != null ? `about $${Number(t.costUSD).toFixed(3)} at list price` : null,
-  ].filter(Boolean).join(' · ');
-  body += `Cost: ${costLine}.\n\n`;
+  body += `A language model (${modelName}) read the descriptors of ${sha ? `commit \`${sha.slice(0, 7)}\`` : 'this pull request'}, their tests, the pull request discussion and the verified source code of their deployments, and wrote the notes below${runUrl ? ` ([run](${runUrl}))` : ''}. `;
+  body += 'It can be wrong and it can miss things. Nothing here is a check: it never blocks a merge, and a note is a question for the reviewer. Read each one against the source before acting on it.\n\n';
 
   const byDescriptor = new Map();
   for (const record of records) {
@@ -140,25 +146,32 @@ function render(folder) {
     for (const record of units) {
       const of = Number(record.unit?.of) || units.length;
       const deployments = Array.isArray(record.unit?.deployments) ? record.unit.deployments : [];
-      const implementation = record.contracts?.find((c) => c.role === 'implementation') ?? record.contracts?.[0];
-      const where = [
-        of > 1 ? `Implementation ${(Number(record.unit?.index) || 0) + 1} of ${of}` : 'One implementation',
-        implementation?.name ? ticks(implementation.name, 80) : null,
-        deployments.length > 0 ? `${deployments.length} deployment${deployments.length > 1 ? 's' : ''} (${deployments.slice(0, 5).map((d) => `chain ${Number(d.chainId) || '?'}, ${address(d.address)}`).join('; ')}${deployments.length > 5 ? '; …' : ''})` : null,
-      ].filter(Boolean).join(' · ');
+      const contracts = Array.isArray(record.contracts) ? record.contracts : [];
+      const named = (role) => contracts.filter((c) => c.role === role && c.name).map((c) => ticks(c.name, 80));
+      const implementations = named('implementation');
+      const codeLine = implementations.length > 0
+        ? `${named('deployment')[0] ?? 'a proxy'} is a proxy; the code reviewed is ${implementations.join(', ')}`
+        : (named('deployment')[0] ?? 'unnamed');
+      const sourcify = (d) => `chain ${Number(d.chainId) || '?'}: [\`${address(d.address)}\`](https://repo.sourcify.dev/${Number(d.chainId) || 0}/${address(d.address)})`;
+      let where = of > 1 ? `**Group ${(Number(record.unit?.index) || 0) + 1} of ${of}**, the deployments of this descriptor that run different code are reviewed separately.\n\n` : '';
+      where += `- **Deployments:** ${deployments.length > 0 ? deployments.slice(0, 8).map(sourcify).join(', ') + (deployments.length > 8 ? `, and ${deployments.length - 8} more` : '') : 'none listed'}\n`;
+      where += `- **Contract:** ${codeLine}\n`;
 
       if (record.skipped) {
-        section += `${where}: **not reviewed**, ${line(record.skipped)}.\n\n`;
+        section += `${where}- **Findings:** not reviewed, ${line(record.skipped)}\n\n`;
         continue;
       }
       if (!record.answer) {
-        section += `${where}: **the review did not run**. ${line(record.error, 400)}\n\n`;
+        section += `${where}- **Findings:** the review did not run. ${line(record.error, 400)}\n\n`;
         continue;
       }
       const c = countFindings(String(record.answer));
       const answer = clean(record.answer);
-      const counts = [['critical', c.critical], ['warning', c.warning], ['info', c.info]].filter(([, n]) => n > 0).map(([s, n]) => `${n} ${s}`).join(', ');
-      section += `${where}: **${counts || 'nothing to report'}**.${record.ok ? '' : ` The answer does not follow the expected format (${line(record.error, 300)}); it is shown as it came.`}\n\n`;
+      const counts = [['critical', c.critical], ['warning', c.warning], ['info', c.info]]
+        .filter(([, n]) => n > 0)
+        .map(([s, n]) => `${ICONS[s]} ${n} ${n === 1 ? s : `${s}s`}`)
+        .join(', ');
+      section += `${where}- **Findings:** ${counts || 'none'}${record.ok ? '' : `. The answer does not follow the expected format (${line(record.error, 300)}); it is shown as it came`}\n\n`;
       section += `<details${c.critical > 0 ? ' open' : ''}>\n<summary>The review</summary>\n\n${answer}\n\n</details>\n\n`;
     }
     sections.push(section);
