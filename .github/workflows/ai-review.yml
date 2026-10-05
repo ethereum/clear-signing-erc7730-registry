@@ -156,8 +156,7 @@ jobs:
           path: scripts
           persist-credentials: false
           sparse-checkout: |
-            .github/scripts
-            docs/ai-review/REVIEW_PROMPT.md
+            .github/scripts/ai-review
             specs/erc-7730.md
             package.json
             package-lock.json
@@ -175,7 +174,7 @@ jobs:
         id: collect
         env:
           SOURCIFY_TOKEN: ${{ secrets.SOURCIFY_TOKEN_CLEAR_SIGNING_CI }}
-        run: node scripts/.github/scripts/ai-review-collect.js --bundle ai-review/bundle.json --out ai-review
+        run: node scripts/.github/scripts/ai-review/collect.js --bundle ai-review/bundle.json --out ai-review
 
       - name: Upload the inputs of the review
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -195,7 +194,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          node scripts/.github/scripts/ai-review-run.js --inputs ai-review/inputs --out ai-review --repo scripts \
+          node scripts/.github/scripts/ai-review/run.js --inputs ai-review/inputs --out ai-review --repo scripts \
             --provider anthropic --model "$AI_REVIEW_ANTHROPIC_MODEL" --effort "$AI_REVIEW_ANTHROPIC_EFFORT" \
             --max-units "$AI_REVIEW_MAX_UNITS"
 
@@ -205,7 +204,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          node scripts/.github/scripts/ai-review-run.js --inputs ai-review/inputs --out ai-review --repo scripts \
+          node scripts/.github/scripts/ai-review/run.js --inputs ai-review/inputs --out ai-review --repo scripts \
             --provider openai --model "$AI_REVIEW_OPENAI_MODEL" --effort "$AI_REVIEW_OPENAI_EFFORT" \
             --max-units "$AI_REVIEW_MAX_UNITS"
 
@@ -246,7 +245,7 @@ jobs:
         with:
           path: scripts
           persist-credentials: false
-          sparse-checkout: .github/scripts
+          sparse-checkout: .github/scripts/ai-review
 
       - name: Setup node
         if: steps.download.outcome == 'success'
@@ -260,7 +259,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          node scripts/.github/scripts/ai-review-render.js --answers answers --out comments \
+          node scripts/.github/scripts/ai-review/render.js --answers answers --out comments \
             --run-url "$RUN_URL" --head-sha "$HEAD_SHA"
 
       # One comment per model and pull request: the comment that starts with

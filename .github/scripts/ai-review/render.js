@@ -3,9 +3,9 @@
  * Renders the answers of the AI review as pull request comments: one comment
  * per model.
  *
- * Usage: node ai-review-render.js --answers <dir> --out <dir> --run-url <url> --head-sha <sha>
+ * Usage: node render.js --answers <dir> --out <dir> --run-url <url> --head-sha <sha>
  *
- * <answers> holds one folder per model, as ai-review-run.js writes them.
+ * <answers> holds one folder per model, as run.js writes them.
  * Every answer was written by a model from data that came from the pull
  * request, so it is untrusted: the Markdown is kept, but HTML is escaped,
  * headings are demoted under the comment's own, and links, mentions and
@@ -20,6 +20,7 @@
 const fs = require('fs');
 const path = require('path');
 const { parseArgs } = require('util');
+const { countFindings } = require('./findings');
 
 // GitHub rejects a comment body above 65536 characters.
 const MAX_BODY = 60_000;
@@ -36,7 +37,7 @@ const { values: opts } = parseArgs({
   },
 });
 if (!opts.answers || !opts.out) {
-  console.error('usage: ai-review-render.js --answers <dir> --out <dir> --run-url <url> --head-sha <sha>');
+  console.error('usage: render.js --answers <dir> --out <dir> --run-url <url> --head-sha <sha>');
   process.exit(1);
 }
 
@@ -107,18 +108,6 @@ function clean(markdown) {
   if (fence) out.push(fence);
   if (cut) out.push('', '*The answer was longer than this comment shows. The whole of it is in the artifact `ai-review-answers` of the run.*');
   return out.join('\n');
-}
-
-/** Findings per severity: the "###" headings inside each section. */
-function countFindings(text) {
-  const counts = { critical: 0, warning: 0, info: 0 };
-  for (const [severity, heading] of [['critical', '## Critical'], ['warning', '## Warning'], ['info', '## Info']]) {
-    const start = text.indexOf(`\n${heading}`);
-    if (start < 0) continue;
-    const next = text.indexOf('\n## ', start + 1);
-    counts[severity] = (text.slice(start, next < 0 ? undefined : next).match(/^### /gm) ?? []).length;
-  }
-  return counts;
 }
 
 // ---------------------------------------------------------------------------

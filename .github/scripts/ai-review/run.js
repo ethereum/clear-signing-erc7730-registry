@@ -3,24 +3,24 @@
  * Reviews the inputs of the AI review with one model: one request per review
  * unit, one answer per unit.
  *
- * Usage: node ai-review-run.js --inputs <dir> --out <dir> --repo <dir>
+ * Usage: node run.js --inputs <dir> --out <dir> --repo <dir>
  *          --provider openai|anthropic --model <model> --effort <effort>
  *          [--max-units 10] [--parallel 3]
  *
  * Environment: OPENAI_API_KEY or ANTHROPIC_API_KEY, for the provider used.
  *
  * A review unit is one descriptor with one implementation, as
- * ai-review-collect.js wrote it under <inputs>. Everything in a unit comes
+ * collect.js wrote it under <inputs>. Everything in a unit comes
  * from the pull request or from Sourcify, and it goes to the model as data
  * inside a tag marked with a random nonce. <repo> is a checkout of the base
- * branch: the prompt (docs/ai-review/REVIEW_PROMPT.md) and the specification
+ * branch: the prompt (prompt.md, next to this script) and the specification
  * (specs/erc-7730.md) come from there, so a pull request cannot change what
  * the model is told.
  *
  * Each request is one turn with no tools: the prompt and the spec as the
  * system prompt, the unit as the user message. The model answers in Markdown
  * with the sections the prompt fixes; the answer is checked for those
- * sections here and rendered by ai-review-render.js, which escapes it. There
+ * sections here and rendered by render.js, which escapes it. There
  * is no conversation and nothing is stored at the provider.
  *
  * Writes, under <out>/answers/<provider>-<model>/, one <unit>.json per unit
@@ -32,6 +32,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { parseArgs } = require('util');
+const { countFindings } = require('./findings');
 
 // Prices in dollars per million tokens, to record what a run cost: uncached
 // input, cache reads, cache writes, output. An unknown model gets no price.
@@ -68,7 +69,7 @@ const { values: opts } = parseArgs({
   },
 });
 if (!opts.inputs || !opts.out || !opts.repo || !opts.model || !opts.effort || !PRICES[opts.provider]) {
-  console.error('usage: ai-review-run.js --inputs <dir> --out <dir> --repo <dir> --provider openai|anthropic --model <model> --effort <effort> [--max-units n] [--parallel n]');
+  console.error('usage: run.js --inputs <dir> --out <dir> --repo <dir> --provider openai|anthropic --model <model> --effort <effort> [--max-units n] [--parallel n]');
   process.exit(1);
 }
 const { provider, model, effort } = opts;
@@ -99,7 +100,7 @@ function spec() {
   ].join('\n');
 }
 
-const prefix = `${fs.readFileSync(path.join(opts.repo, 'docs/ai-review/REVIEW_PROMPT.md'), 'utf8')}\n${spec()}\n`;
+const prefix = `${fs.readFileSync(path.join(opts.repo, '.github/scripts/ai-review/prompt.md'), 'utf8')}\n${spec()}\n`;
 
 const nonceSection = (nonce) => `
 ## The nonce
@@ -214,19 +215,6 @@ function checkAnswer(text) {
   }
   if ((text.match(/^\s*(```|~~~)/gm) ?? []).length % 2 !== 0) problems.push('an unclosed code fence');
   return problems;
-}
-
-/** Findings per severity: the "###" headings inside each section. */
-function countFindings(text) {
-  const counts = { critical: 0, warning: 0, info: 0 };
-  for (const [severity, heading] of [['critical', '## Critical'], ['warning', '## Warning'], ['info', '## Info']]) {
-    const start = text.indexOf(`\n${heading}`);
-    if (start < 0) continue;
-    const next = text.indexOf('\n## ', start + 1);
-    const body = text.slice(start, next < 0 ? undefined : next);
-    counts[severity] = (body.match(/^### /gm) ?? []).length;
-  }
-  return counts;
 }
 
 // ---------------------------------------------------------------------------

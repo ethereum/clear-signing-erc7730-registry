@@ -4,7 +4,7 @@
  * per review unit, where a unit is a descriptor together with one distinct
  * implementation source. Deployments that share a source are reviewed once.
  *
- * Usage: node ai-review-collect.js --bundle <file> --out <dir> [--max-bytes <n>]
+ * Usage: node collect.js --bundle <file> --out <dir> [--max-bytes <n>]
  *
  * Environment: SOURCIFY_TOKEN (optional), SOURCIFY_URL (default
  * https://sourcify.dev/server).
@@ -410,7 +410,7 @@ if (require.main === module) {
     },
   });
   if (!opts.bundle) {
-    console.error('usage: ai-review-collect.js --bundle <file> --out <dir> [--max-bytes <n>]');
+    console.error('usage: collect.js --bundle <file> --out <dir> [--max-bytes <n>]');
     process.exit(1);
   }
   MAX_BYTES = Number(opts['max-bytes']);

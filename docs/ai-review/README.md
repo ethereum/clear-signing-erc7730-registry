@@ -43,7 +43,7 @@ A unit above 600 KB, about 200K tokens, is not reviewed: the review fails for th
 
 ## 3. The review
 
-Each unit goes to a model in one request: the [prompt](REVIEW_PROMPT.md) and the relevant sections of the ERC-7730 specification as the system prompt, the unit as the user message, no tools, no conversation. The model answers in Markdown, critical findings first, and the answer is posted on the pull request.
+Each unit goes to a model in one request: the [prompt](../../.github/scripts/ai-review/prompt.md) and the relevant sections of the ERC-7730 specification as the system prompt, the unit as the user message, no tools, no conversation. The model answers in Markdown, critical findings first, and the answer is posted on the pull request.
 
 The prompt asks fourteen questions:
 
