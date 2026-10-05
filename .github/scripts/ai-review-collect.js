@@ -157,17 +157,19 @@ function sourcesOf(response) {
  */
 function createdContractFiles(kept, all) {
   const creates = /\bnew\s+([A-Za-z_$][\w$]*)\s*(?:\{[^}]*\})?\s*\(|\btype\s*\(\s*([A-Za-z_$][\w$]*)\s*\)\s*\.\s*(?:creationCode|runtimeCode)\b/g;
-  const declares = (name) => new RegExp(`\\b(?:abstract\\s+contract|contract)\\s+${name}\\b`);
+  // A declaration starts a line; a comment or a string that names the contract does not count.
+  const declares = (name) => new RegExp(`^\\s*(?:abstract\\s+)?contract\\s+${name.replace(/[$]/g, '\\$&')}\\b`, 'm');
   const added = [];
   const queue = [...kept];
   while (queue.length > 0) {
     const content = all[queue.shift()];
     for (const m of content.matchAll(creates)) {
-      const name = m[1] ?? m[2];
-      const file = Object.keys(all).find((p) => declares(name).test(all[p]));
-      if (!file || kept.includes(file) || added.includes(file)) continue;
-      added.push(file);
-      queue.push(file);
+      const pattern = declares(m[1] ?? m[2]);
+      for (const file of Object.keys(all).filter((p) => pattern.test(all[p]))) {
+        if (kept.includes(file) || added.includes(file)) continue;
+        added.push(file);
+        queue.push(file);
+      }
     }
   }
   return added;
