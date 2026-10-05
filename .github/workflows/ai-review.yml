@@ -62,10 +62,6 @@ concurrency:
 
 env:
   REPORTS_BRANCH: test-reports
-  # The models compared, their reasoning effort, and the most review units
-  # one run sends to each. Step 3 of #3057 (#3069) measured Claude Sonnet 5.5
-  # at low effort at 90% of the benchmark objectives for about $0.17 per unit,
-  # and GPT-6 Luna at xhigh at 81% for about $0.013.
   AI_REVIEW_ANTHROPIC_MODEL: claude-sonnet-5-5
   AI_REVIEW_ANTHROPIC_EFFORT: low
   AI_REVIEW_OPENAI_MODEL: gpt-6-luna
@@ -221,8 +217,6 @@ jobs:
       - name: Review the inputs with Claude
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          # Only for a key that is not scoped to a workspace.
-          ANTHROPIC_WORKSPACE_ID: ${{ secrets.ANTHROPIC_WORKSPACE_ID }}
         run: |
           node scripts/.github/scripts/ai-review-run.js --inputs ai-review/inputs --out ai-review --repo scripts \
             --provider anthropic --model "$AI_REVIEW_ANTHROPIC_MODEL" --effort "$AI_REVIEW_ANTHROPIC_EFFORT" \

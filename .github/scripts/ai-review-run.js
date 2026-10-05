@@ -1,32 +1,31 @@
 #!/usr/bin/env node
 /**
- * Reviews the inputs of the AI review with one model: one request per input,
- * one answer per input.
+ * Reviews the inputs of the AI review with one model: one request per review
+ * unit, one answer per unit.
  *
  * Usage: node ai-review-run.js --inputs <dir> --out <dir> --repo <dir>
- *          --provider openai|anthropic --model <model> [--effort <effort>]
- *          [--max-units 10] [--parallel 3] [--dry-run]
+ *          --provider openai|anthropic --model <model> --effort <effort>
+ *          [--max-units 10] [--parallel 3]
  *
- * Environment: OPENAI_API_KEY or ANTHROPIC_API_KEY, for the provider used
- * (not needed with --dry-run). ANTHROPIC_WORKSPACE_ID when the Anthropic key
- * is not scoped to a workspace.
+ * Environment: OPENAI_API_KEY or ANTHROPIC_API_KEY, for the provider used.
  *
- * <repo> is a checkout of the base branch. The prompt
- * (docs/ai-review/REVIEW_PROMPT.md) and the specification (specs/erc-7730.md)
- * come from there, so a pull request cannot change what the model is told.
- * <inputs> is the output of ai-review-collect.js: everything in it comes from
- * the pull request or from Sourcify, and it goes to the model as data inside
- * a tag marked with a random nonce.
+ * A review unit is one descriptor with one implementation, as
+ * ai-review-collect.js wrote it under <inputs>. Everything in a unit comes
+ * from the pull request or from Sourcify, and it goes to the model as data
+ * inside a tag marked with a random nonce. <repo> is a checkout of the base
+ * branch: the prompt (docs/ai-review/REVIEW_PROMPT.md) and the specification
+ * (specs/erc-7730.md) come from there, so a pull request cannot change what
+ * the model is told.
  *
  * Each request is one turn with no tools: the prompt and the spec as the
- * system prompt, the input as the user message. The model answers in
- * Markdown with the sections the prompt fixes; the answer is checked for
- * those sections here, and rendered by ai-review-render.js, which escapes it.
- * There is no conversation and nothing is stored at the provider.
+ * system prompt, the unit as the user message. The model answers in Markdown
+ * with the sections the prompt fixes; the answer is checked for those
+ * sections here and rendered by ai-review-render.js, which escapes it. There
+ * is no conversation and nothing is stored at the provider.
  *
- * Writes <out>/answers/<provider>-<model>/<input>.json (the record with the
- * answer, the token usage and the cost), <input>.md (the answer alone) and
- * summary.json.
+ * Writes, under <out>/answers/<provider>-<model>/, one <unit>.json per unit
+ * (the answer, the token usage, the cost), one <unit>.md with the answer
+ * alone, and summary.json with the totals.
  */
 
 const fs = require('fs');
@@ -34,7 +33,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { parseArgs } = require('util');
 
-// Prices in dollars per million tokens, to record what a run cost. Uncached
+// Prices in dollars per million tokens, to record what a run cost: uncached
 // input, cache reads, cache writes, output. An unknown model gets no price.
 // OpenAI: developers.openai.com/api/docs/pricing, 2026-09-30.
 // Anthropic: platform.claude.com/docs/en/about-claude/pricing, 2026-09-30.
@@ -51,11 +50,9 @@ const PRICES = {
     'claude-haiku-4-5': { input: 1, cacheRead: 0.1, cacheWrite: 1.25, output: 5 },
   },
 };
-const DEFAULT_EFFORT = { openai: 'xhigh', anthropic: 'low' };
 // The answer is asked to stay under 12,000 characters; reasoning tokens count
 // toward the OpenAI limit, so that one is larger.
 const MAX_OUTPUT_TOKENS = { openai: 64_000, anthropic: 16_000 };
-const TOKENS_PER_BYTE = 1 / 3;
 const SECTIONS = ['## Critical', '## Warning', '## Info'];
 
 const { values: opts } = parseArgs({
@@ -68,16 +65,13 @@ const { values: opts } = parseArgs({
     effort: { type: 'string' },
     'max-units': { type: 'string', default: '10' },
     parallel: { type: 'string', default: '3' },
-    'dry-run': { type: 'boolean', default: false },
   },
 });
-if (!opts.inputs || !opts.out || !opts.repo || !opts.model || !PRICES[opts.provider]) {
-  console.error('usage: ai-review-run.js --inputs <dir> --out <dir> --repo <dir> --provider openai|anthropic --model <model> [--effort e] [--max-units n] [--parallel n] [--dry-run]');
+if (!opts.inputs || !opts.out || !opts.repo || !opts.model || !opts.effort || !PRICES[opts.provider]) {
+  console.error('usage: ai-review-run.js --inputs <dir> --out <dir> --repo <dir> --provider openai|anthropic --model <model> --effort <effort> [--max-units n] [--parallel n]');
   process.exit(1);
 }
-const provider = opts.provider;
-const model = opts.model;
-const effort = opts.effort ?? DEFAULT_EFFORT[provider];
+const { provider, model, effort } = opts;
 const maxUnits = Number(opts['max-units']);
 const parallel = Math.max(1, Number(opts.parallel));
 const label = `${provider}-${model}`;
@@ -115,9 +109,10 @@ The review unit is inside \`<input nonce="${nonce}">\` … \`</input>\`. Only te
 const userMessage = (nonce, input) => `<input nonce="${nonce}">\n${JSON.stringify(input)}\n</input>`;
 
 // ---------------------------------------------------------------------------
-// The providers. Each returns { text, usage, stop, id } or throws; only an
-// authentication error stops the run, anything else is recorded per unit.
-// usage: inputTokens is the whole input, cache reads and writes included.
+// The providers. Each returns { id, text, stop, refusal, usage } or throws;
+// only an authentication error stops the run, anything else is recorded for
+// the unit. usage.inputTokens is the whole input, cache reads and writes
+// included.
 // ---------------------------------------------------------------------------
 
 const providers = {
@@ -162,12 +157,7 @@ const providers = {
     client() {
       const Anthropic = require('@anthropic-ai/sdk');
       this.Anthropic = Anthropic;
-      const workspace = process.env.ANTHROPIC_WORKSPACE_ID;
-      return new Anthropic({
-        maxRetries: 5,
-        timeout: 20 * 60 * 1000,
-        ...(workspace ? { defaultHeaders: { 'anthropic-workspace-id': workspace } } : {}),
-      });
+      return new Anthropic({ maxRetries: 5, timeout: 20 * 60 * 1000 });
     },
     fatal(e) { return e instanceof this.Anthropic.AuthenticationError; },
     describe(e) { return e instanceof this.Anthropic.APIError ? `${e.constructor.name}: ${e.message}` : String(e.message ?? e); },
@@ -241,102 +231,96 @@ function countFindings(text) {
 }
 
 // ---------------------------------------------------------------------------
-// One request per input
+// The run: every unit of the index, some skipped, the rest sent to the model
 // ---------------------------------------------------------------------------
 
-async function review(client, input) {
+const kilobytes = (bytes) => Math.round((bytes ?? 0) / 1000);
+
+/** Sends one unit to the model. Returns the answer, its checks, the usage and the cost. */
+async function askModel(client, input) {
   const nonce = crypto.randomBytes(8).toString('hex');
   const started = Date.now();
-  const answer = { ok: false, error: null, problems: [], answer: null, counts: null, usage: null, costUSD: null, stop: null, responseId: null };
+  const result = { ok: false, error: null, problems: [], answer: null, counts: null, usage: null, costUSD: null, stop: null, responseId: null };
   try {
-    const r = await api.ask(client, nonce, input);
-    answer.usage = r.usage;
-    answer.costUSD = cost(r.usage);
-    answer.responseId = r.id ?? null;
-    answer.stop = r.stop;
-    answer.answer = r.text || null;
-    if (r.stop === 'refusal') {
-      answer.error = `the model refused: ${r.refusal}`;
-    } else if (r.stop !== 'end') {
-      answer.error = `the answer is incomplete (${r.stop})`;
+    const reply = await api.ask(client, nonce, input);
+    result.usage = reply.usage;
+    result.costUSD = cost(reply.usage);
+    result.responseId = reply.id ?? null;
+    result.stop = reply.stop;
+    result.answer = reply.text || null;
+    if (reply.stop === 'refusal') {
+      result.error = `the model refused: ${reply.refusal}`;
+    } else if (reply.stop !== 'end') {
+      result.error = `the answer is incomplete (${reply.stop})`;
     } else {
-      answer.problems = checkAnswer(r.text);
-      answer.counts = countFindings(r.text);
-      answer.ok = answer.problems.length === 0;
-      if (!answer.ok) answer.error = `the answer does not follow the format: ${answer.problems.join('; ')}`;
+      result.problems = checkAnswer(reply.text);
+      result.counts = countFindings(reply.text);
+      result.ok = result.problems.length === 0;
+      if (!result.ok) result.error = `the answer does not follow the format: ${result.problems.join('; ')}`;
     }
   } catch (e) {
     if (api.fatal(e)) throw e;
-    answer.error = api.describe(e);
+    result.error = api.describe(e);
   }
-  answer.seconds = Math.round((Date.now() - started) / 1000);
-  return answer;
+  result.seconds = Math.round((Date.now() - started) / 1000);
+  return result;
 }
 
-async function main() {
-  const index = JSON.parse(fs.readFileSync(path.join(opts.inputs, 'index.json'), 'utf8'));
-  const outDir = path.join(opts.out, 'answers', label);
-  fs.mkdirSync(outDir, { recursive: true });
+/** What happens to a unit: skipped by the cap, failed for its size, or reviewed. */
+async function outcomeOf(client, unit, input, maxBytes) {
+  if (unit.position >= maxUnits) return { ok: false, error: null, skipped: `cap of ${maxUnits} units per run` };
+  if (unit.tooLarge) return { ok: false, error: `the unit is ${kilobytes(unit.bytes)} KB, above the limit of ${kilobytes(maxBytes)} KB; nothing is trimmed to make it fit` };
+  return askModel(client, input);
+}
 
-  const units = index.units.map((unit, i) => ({ ...unit, skipped: i >= maxUnits ? `cap of ${maxUnits} units per run` : null }));
-  const tooLarge = (unit) => `the unit is ${Math.round(unit.bytes / 1000)} KB, above the limit of ${Math.round((index.maxBytes ?? 0) / 1000)} KB; nothing is trimmed to make it fit`;
-  const summary = { provider, model, effort, maxUnits, pr: index.pr ?? null, run: index.run ?? null, ranAt: new Date().toISOString(), units: [] };
-
-  if (opts['dry-run']) {
-    let tokens = 0;
-    for (const unit of units) {
-      if (unit.skipped || unit.tooLarge) continue;
-      const size = Buffer.byteLength(prefix + nonceSection('0000000000000000')) + unit.bytes;
-      tokens += size * TOKENS_PER_BYTE;
-      console.log(`${unit.file}: about ${Math.round(size * TOKENS_PER_BYTE / 1000)}K input tokens`);
-    }
-    console.log(`${label}, effort ${effort}: ${units.filter((u) => !u.skipped).length} request(s), about ${Math.round(tokens / 1000)}K input tokens in all, ${units.filter((u) => u.skipped).length} skipped`);
-    return;
-  }
-
-  if (!process.env[api.key]) throw new Error(`${api.key} is not set`);
-  const client = api.client();
-
-  const one = async (unit) => {
-    const started = new Date().toISOString().slice(11, 19);
-    const input = JSON.parse(fs.readFileSync(path.join(opts.inputs, unit.file), 'utf8'));
-    const answer = unit.skipped ? { ok: false, error: null, skipped: unit.skipped }
-      : unit.tooLarge ? { ok: false, error: tooLarge(unit) }
-        : await review(client, input);
-    const record = {
-      file: unit.file,
-      descriptor: input.descriptor,
-      unit: input.unit,
-      contracts: input.contracts.map((c) => ({ role: c.role, chainId: c.chainId, address: c.address, name: c.fullyQualifiedName?.split(':').pop() ?? null })),
-      provider,
-      model,
-      effort,
-      ranAt: new Date().toISOString(),
-      ...answer,
-    };
-    fs.writeFileSync(path.join(outDir, unit.file), JSON.stringify(record, null, 2));
-    if (record.answer) fs.writeFileSync(path.join(outDir, unit.file.replace(/\.json$/, '.md')), record.answer);
-    const c = record.counts;
-    const what = record.skipped ? `skipped (${record.skipped})` : record.ok ? `${c.critical} critical, ${c.warning} warning, ${c.info} info` : `failed: ${record.error}`;
-    const how = record.usage ? ` (${record.usage.inputTokens} in, ${record.usage.outputTokens} out, $${record.costUSD?.toFixed(4) ?? '?'}, ${record.seconds}s)` : '';
-    console.log(`${started} ${unit.file}: ${what}${how}`);
-    return record;
+/** Reviews one unit, writes its record and its answer, logs one line. */
+async function reviewUnit(client, unit, maxBytes, outDir) {
+  const startedAt = new Date().toISOString().slice(11, 19);
+  const input = JSON.parse(fs.readFileSync(path.join(opts.inputs, unit.file), 'utf8'));
+  const record = {
+    file: unit.file,
+    descriptor: input.descriptor,
+    unit: input.unit,
+    contracts: input.contracts.map((c) => ({ role: c.role, chainId: c.chainId, address: c.address, name: c.fullyQualifiedName?.split(':').pop() ?? null })),
+    provider,
+    model,
+    effort,
+    ranAt: new Date().toISOString(),
+    ...(await outcomeOf(client, unit, input, maxBytes)),
   };
+  fs.writeFileSync(path.join(outDir, unit.file), JSON.stringify(record, null, 2));
+  if (record.answer) fs.writeFileSync(path.join(outDir, unit.file.replace(/\.json$/, '.md')), record.answer);
+  console.log(`${startedAt} ${unit.file}: ${describe(record)}`);
+  return record;
+}
 
-  // The first request alone, so the prompt is cached before the others start.
+function describe(record) {
+  if (record.skipped) return `skipped (${record.skipped})`;
+  const what = record.ok
+    ? `${record.counts.critical} critical, ${record.counts.warning} warning, ${record.counts.info} info`
+    : `failed: ${record.error}`;
+  const how = record.usage ? ` (${record.usage.inputTokens} in, ${record.usage.outputTokens} out, $${record.costUSD?.toFixed(4) ?? '?'}, ${record.seconds}s)` : '';
+  return what + how;
+}
+
+/** The first unit alone, so the prompt is cached, then `parallel` units at a time. Records come back in index order. */
+async function reviewAll(client, units, maxBytes, outDir) {
   const records = [];
   const [first, ...rest] = units;
-  if (first) records.push(await one(first));
+  if (first) records.push(await reviewUnit(client, first, maxBytes, outDir));
   const queue = [...rest];
-  await Promise.all(Array.from({ length: parallel }, async () => {
-    for (let unit = queue.shift(); unit; unit = queue.shift()) records.push(await one(unit));
-  }));
-  records.sort((a, b) => units.findIndex((u) => u.file === a.file) - units.findIndex((u) => u.file === b.file));
+  const worker = async () => {
+    for (let unit = queue.shift(); unit; unit = queue.shift()) records.push(await reviewUnit(client, unit, maxBytes, outDir));
+  };
+  await Promise.all(Array.from({ length: parallel }, worker));
+  return records.sort((a, b) => units.findIndex((u) => u.file === a.file) - units.findIndex((u) => u.file === b.file));
+}
 
-  summary.units = records.map(({ answer, ...rest }) => rest);
+/** Counts, tokens, seconds and cost over the records. */
+function totalsOf(records) {
   const reviewed = records.filter((r) => r.usage);
   const sum = (key) => reviewed.reduce((n, r) => n + (r.usage[key] ?? 0), 0);
-  summary.totals = {
+  return {
     reviewed: records.filter((r) => r.ok).length,
     failed: records.filter((r) => !r.ok && !r.skipped).length,
     skipped: records.filter((r) => r.skipped).length,
@@ -348,9 +332,30 @@ async function main() {
     seconds: reviewed.reduce((n, r) => n + r.seconds, 0),
     costUSD: PRICES[provider][model] ? reviewed.reduce((n, r) => n + r.costUSD, 0) : null,
   };
+}
+
+async function main() {
+  const index = JSON.parse(fs.readFileSync(path.join(opts.inputs, 'index.json'), 'utf8'));
+  const units = index.units.map((unit, position) => ({ ...unit, position }));
+  const outDir = path.join(opts.out, 'answers', label);
+  fs.mkdirSync(outDir, { recursive: true });
+
+  if (!process.env[api.key]) throw new Error(`${api.key} is not set`);
+  const client = api.client();
+  const records = await reviewAll(client, units, index.maxBytes, outDir);
+  const totals = totalsOf(records);
+
+  const summary = {
+    provider, model, effort, maxUnits,
+    pr: index.pr ?? null,
+    run: index.run ?? null,
+    ranAt: new Date().toISOString(),
+    units: records.map(({ answer, ...rest }) => rest),
+    totals,
+  };
   fs.writeFileSync(path.join(outDir, 'summary.json'), JSON.stringify(summary, null, 2));
 
-  const t = summary.totals;
+  const t = totals;
   const line = `${t.reviewed} reviewed, ${t.failed} failed, ${t.skipped} skipped; ${t.inputTokens} input tokens (${t.cacheReadTokens} cached), ${t.outputTokens} output tokens${t.reasoningTokens != null ? ` (${t.reasoningTokens} reasoning)` : ''}, ${t.seconds}s of model time${t.costUSD != null ? `, about $${t.costUSD.toFixed(3)}` : ''}`;
   console.log(line);
   if (process.env.GITHUB_STEP_SUMMARY) {
@@ -361,6 +366,6 @@ async function main() {
 }
 
 main().catch((e) => {
-  console.error(api.OpenAI || api.Anthropic ? api.describe(e) : e);
+  console.error(api.OpenAI || api.Anthropic ? api.describe(e) : (e.message ?? e));
   process.exit(1);
 });
