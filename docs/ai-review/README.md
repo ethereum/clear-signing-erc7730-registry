@@ -85,7 +85,7 @@ The deterministic checks ran before it and passed, so the prompt tells the model
 <details>
 <summary>Prompt injection</summary>
 
-Everything the model reads can carry text written to steer it: descriptor labels, test names, Solidity comments, the pull request discussion. The unit is wrapped in a tag with a random nonce, and the prompt says that only text outside that tag is an instruction; the model is asked to report such text as a `prompt-injection` finding. The prompt and the spec come from the base branch, so a pull request cannot change them.
+Everything the model reads can carry text written to steer it: descriptor labels, test names, Solidity comments. The unit is wrapped in a tag with a random nonce, and the prompt says that only text outside that tag is an instruction; the model is asked to report such text as a `prompt-injection` finding. The prompt and the spec come from the base branch, so a pull request cannot change them.
 
 </details>
 
