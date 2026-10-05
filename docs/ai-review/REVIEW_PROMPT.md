@@ -28,11 +28,11 @@ Deterministic checks ran before you and passed. Do not report, even if you notic
 
 ## Severity
 
-- `critical`: the signer can lose money or sign something other than what the screen says. The screen shows a recipient, an amount, a token, a spender, a deadline or an action that differs from what the code does, or hides a value that changes any of those. Be conservative: only when a normal signer would be shocked by what actually happens.
+- `critical`: the signer can lose money or sign something other than what the screen says. The screen shows a recipient, an amount, a token, a spender, a deadline or an action that differs from what the code does, or hides a value that changes any of those. Be conservative: only when a normal signer would be shocked by what actually happens. A fee, tax, burn or cut taken from the amount on the screen and not stated there is critical, whatever its size and whoever receives it: the recipient gets less than the signer was told.
 - `warning`: the screen is wrong, incomplete or misleading without a direct loss: a wrong label, a raw value where a formatted one exists, a hidden value that matters but cannot be used to steal, a test that does not exercise what it claims.
 - `info`: a spec limitation, a suggestion, a doubt you could not resolve from the source.
 
-In doubt between two levels, choose the lower. A `warning` with a fix makes the author change the descriptor, so give it only when the change is clearly right; a debatable point is `info`.
+In doubt between `warning` and `info`, choose `info`: a `warning` with a fix makes the author change the descriptor, so give it only when the change is clearly right. Never downgrade a `critical`: when the screen misstates who gets how much, it is critical even if the loss is small.
 
 ## Do not flag
 
