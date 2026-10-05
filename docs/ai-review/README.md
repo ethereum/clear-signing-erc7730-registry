@@ -1,6 +1,6 @@
 # AI review of descriptor pull requests
 
-A language model reads the descriptors of a pull request, their tests, the pull request discussion and the verified source code of the contracts, and posts what it finds as a comment. It runs after the deterministic checks pass and only when a maintainer approves it. It is advisory: it never blocks a merge, and every note is a question for the reviewer.
+A language model reads the descriptors of a pull request, their tests and the verified source code of the contracts, and posts what it finds as a comment. It runs after the deterministic checks pass and only when a maintainer approves it. It is advisory: it never blocks a merge, and every note is a question for the reviewer.
 
 The pipeline has three steps: a gate, the information retrieval, and the review itself.
 
@@ -21,7 +21,6 @@ For every affected descriptor the job builds one or more review units and saves 
 Each unit holds:
 
 - From the test report bundle: the descriptor before and after the pull request, its test cases, and what each test runner rendered.
-- From the pull request: the title, the description and the discussion (comments, reviews, review comments), bot comments removed. It tells the model what the author meant and what reviewers asked.
 - From [Sourcify](https://sourcify.dev): for every address of the unit, the verified source files, the ABI, the NatSpec, the proxy resolution, the compiler version, the deployer and the decoded constructor arguments.
 
 <details>

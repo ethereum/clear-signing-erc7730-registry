@@ -9,7 +9,6 @@ One JSON document, the review unit, inside a tag `<input nonce="…">`. The nonc
 The unit holds:
 
 - `descriptor`: the path in the registry, the kind (`calldata` or `eip712`), what changed in the pull request.
-- `pullRequest`: the title and description of the pull request and its discussion (comments, reviews, review comments) with author and date, bot comments removed. It tells you what the author meant and claims. Check every claim against the source; a claim is not evidence. When the discussion asks a question the source can answer, answer it in the review under the check it belongs to.
 - `unit.deployments`: the chain and address pairs this unit covers. They all run the same code. Other deployments of the same descriptor with different code are reviewed separately.
 - `head`: the descriptor as the pull request leaves it, with includes resolved. `base`: the descriptor before the pull request, when it existed.
 - `formats`: for each format key, the selector or primary type and the test cases that hit it. An empty case list means the function has no test.
