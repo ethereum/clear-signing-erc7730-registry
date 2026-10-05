@@ -130,19 +130,47 @@ function subset(chainId, address, role, response) {
 }
 
 /**
- * The source files the deployed code was compiled from, and how many of the
- * verified files were left out (interfaces, unused files). Without a source
- * map, which a match should always have, every file stays.
+ * The source files the deployed code was compiled from, plus the files of
+ * the contracts that code creates, and how many of the verified files were
+ * left out (interfaces, unused files). Without a source map, which a match
+ * should always have, every file stays.
  */
 function sourcesOf(response) {
   const all = Object.fromEntries(Object.entries(response.sources ?? {}).map(([p, s]) => [p, s.content]));
   const code = codeFilesOf(response);
   const main = response.compilation?.fullyQualifiedName?.split(':')[0];
   const kept = code ? Object.keys(all).filter((p) => p === main || code.includes(p)) : Object.keys(all);
+  for (const p of createdContractFiles(kept, all)) kept.push(p);
   return {
     sources: Object.fromEntries(kept.map((p) => [p, all[p]])),
     omittedSources: Object.keys(all).length - kept.length,
   };
+}
+
+/**
+ * The files of the contracts that the kept files create with `new X(...)`,
+ * `new X{value: v}(...)` or `type(X).creationCode` / `runtimeCode`. The
+ * compiler emits that code as a sub-object with its own source map, which
+ * Sourcify does not return, so the source maps of the creator leave these
+ * files out. Only names declared as a contract in the verified sources
+ * count, so `new uint256[](n)` does not. Followed until nothing new appears.
+ */
+function createdContractFiles(kept, all) {
+  const creates = /\bnew\s+([A-Za-z_$][\w$]*)\s*(?:\{[^}]*\})?\s*\(|\btype\s*\(\s*([A-Za-z_$][\w$]*)\s*\)\s*\.\s*(?:creationCode|runtimeCode)\b/g;
+  const declares = (name) => new RegExp(`\\b(?:abstract\\s+contract|contract)\\s+${name}\\b`);
+  const added = [];
+  const queue = [...kept];
+  while (queue.length > 0) {
+    const content = all[queue.shift()];
+    for (const m of content.matchAll(creates)) {
+      const name = m[1] ?? m[2];
+      const file = Object.keys(all).find((p) => declares(name).test(all[p]));
+      if (!file || kept.includes(file) || added.includes(file)) continue;
+      added.push(file);
+      queue.push(file);
+    }
+  }
+  return added;
 }
 
 /**

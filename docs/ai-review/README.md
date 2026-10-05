@@ -35,7 +35,7 @@ Deployments are grouped by a key: the SHA-256 hash of the ABI and of every verif
 <details>
 <summary>What is kept and what is dropped</summary>
 
-A verified contract comes with every file of its compilation, often with interfaces and unrelated contracts of the same project. The unit keeps the files the deployed code was compiled from, as the compiler's source maps list them: the contract, its base contracts, the libraries inlined into it. The ABI and the NatSpec are limited to the reviewed functions. A proxy keeps its main file only.
+A verified contract comes with every file of its compilation, often with interfaces and unrelated contracts of the same project. The unit keeps the files the deployed code was compiled from, as the compiler's source maps list them: the contract, its base contracts, the libraries inlined into it. Contracts that the code creates with `new` are not in those maps, so the files that declare them are added by name. The ABI and the NatSpec are limited to the reviewed functions. A proxy keeps its main file only.
 
 A unit above 600 KB, about 200K tokens, is not reviewed: the review fails for that unit and the comment says so. Nothing is trimmed to make a unit fit.
 
