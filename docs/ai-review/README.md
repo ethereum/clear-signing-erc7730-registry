@@ -43,7 +43,7 @@ A unit above 600 KB, about 200K tokens, is not reviewed: the review fails for th
 
 ## 3. The review
 
-Each unit goes to a model in one request: the [prompt](REVIEW_PROMPT.md) and the relevant sections of the ERC-7730 specification as the system prompt, the unit as the user message, no tools, no conversation. The model answers in Markdown, critical findings first, and the answer is posted on the pull request.
+Each unit goes to a model in one request: the [prompt](../../.github/scripts/ai-review/prompt.md) and the relevant sections of the ERC-7730 specification as the system prompt, the unit as the user message, no tools, no conversation. The model answers in Markdown, critical findings first, and the answer is posted on the pull request.
 
 The prompt asks fourteen questions:
 
@@ -99,6 +99,6 @@ Measured in the benchmark of #3069 on 25 cases with 31 planted or real defects, 
 | Claude Sonnet 5.5, low effort | 90% | 8 of 8 | about $0.17 |
 | GPT-6 Luna, xhigh effort | 81% | 7 of 8 | about $0.013 |
 
-A run reviews at most 10 units per model; the rest are listed as not reviewed. The token usage of every request is in the artifact `ai-review-answers` of the run and in the footer of each comment.
+A run reviews at most 10 units per model, the descriptors the pull request added or modified first and the smaller units first; the rest are listed as not reviewed. The token usage of every request is in the artifact `ai-review-answers` of the run and in the footer of each comment.
 
 </details>

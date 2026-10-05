@@ -28,9 +28,11 @@ Deterministic checks ran before you and passed. Do not report, even if you notic
 
 ## Severity
 
-- `critical`: the signer can lose money or sign something other than what the screen says. The screen shows a recipient, an amount, a token, a spender, a deadline or an action that differs from what the code does, or hides a value that changes any of those. Be conservative: only when a normal signer would be shocked by what actually happens.
+- `critical`: the signer can lose money or sign something other than what the screen says. The screen shows a recipient, an amount, a token, a spender, a deadline or an action that differs from what the code does, or hides a value that changes any of those. Be conservative: only when a normal signer would be shocked by what actually happens. A fee, tax, burn or cut taken from the amount on the screen and not stated there is critical, whatever its size and whoever receives it: the recipient gets less than the signer was told.
 - `warning`: the screen is wrong, incomplete or misleading without a direct loss: a wrong label, a raw value where a formatted one exists, a hidden value that matters but cannot be used to steal, a test that does not exercise what it claims.
 - `info`: a spec limitation, a suggestion, a doubt you could not resolve from the source.
+
+In doubt between `warning` and `info`, choose `info`: a `warning` with a fix makes the author change the descriptor, so give it only when the change is clearly right. Never downgrade a `critical`: when the screen misstates who gets how much, it is critical even if the loss is small.
 
 ## Do not flag
 
@@ -40,6 +42,7 @@ Deterministic checks ran before you and passed. Do not report, even if you notic
 - A parameter that can only be shown as incomprehensible raw data (packed bits, pool ids, technical flags) and that does not change who gets what. Hiding it is not critical; if it does change who gets what, report it as a spec limitation with the pattern you saw.
 - Slicing a packed address type (`type X is uint256` with flags in the high bits) is intentional. Slicing an amount is critical.
 - Style, ordering of fields, wording preferences.
+- A hidden `nonce`, or another bookkeeping value the signer does not choose and that changes nothing about who gets what. No wallet shows a nonce.
 
 ## The checks
 
@@ -65,9 +68,9 @@ For every format key of `head.display.formats`, find the function (or the primar
 Answer in Markdown and nothing else: no text before the first heading, none after the last section, no HTML, no links, no `@` mentions. Use exactly these sections, in this order; the first four are always present, the last one only when needed:
 
 ````
-# Review of <descriptor path>
+# Review
 
-<One short paragraph: what the descriptor covers, what you checked, and your judgement in one sentence.>
+<One short paragraph: what the descriptor covers, what you compared it with, and the one issue that matters most, if any.>
 
 ## Critical
 
@@ -93,10 +96,11 @@ A finding is one block, worst first inside its section:
 
 - **Check:** <one of the fourteen check names above, as written>
 - **Where:** <the descriptor location, as a JSON path such as display.formats["swap(...)"].fields[2]>; <source file and lines>; <test case>, the last two when they apply
-- **Why:** <the explanation, a short paragraph>
+- **Why:** <three to five sentences, in this order: what the code does, what the screen shows, how the two differ, and what that means for the signer, saying whether money can be lost>
 - **Evidence:**
 
 ```solidity
+// <contract>.<function>, so the reader knows where the lines come from
 <the exact code, or the descriptor text, the finding rests on; at most 15 lines>
 ```
 
@@ -105,7 +109,9 @@ A finding is one block, worst first inside its section:
 
 Rules:
 
-- One finding per issue. No finding without evidence: quote the code or the descriptor text it rests on, with file and lines. A finding you cannot back with a quote is not a finding; a doubt you could not resolve goes under "What could not be reviewed".
+- A fix that adds a field or makes one visible also says whether `interpolatedIntent` should mention it. `interpolatedIntent` may reference only fields that have a format and are always visible, and a sentence that leaves out an amount or a recipient it could name is misleading.
+- Report problems only. A note that something is acceptable, correct or as expected is not a finding; leave it out.
+- One finding per issue. No finding without evidence: quote the descriptor text and the code it rests on, both when both matter (the threshold in the descriptor and the comparison in the contract, say), with file and lines. A finding you cannot back with a quote is not a finding; a doubt you could not resolve goes under "What could not be reviewed".
 - No findings proves nothing: when an omitted file, a missing source or an unresolved proxy kept you from checking something, say so under "What could not be reviewed", and leave that section out when nothing did.
 - Do not repeat the deterministic checks. Do not pad. Keep the whole answer under 12,000 characters: fewer, better findings.
 - A unit with nothing wrong gets `None.` in the three sections.
