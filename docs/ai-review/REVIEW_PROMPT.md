@@ -70,7 +70,7 @@ Answer in Markdown and nothing else: no text before the first heading, none afte
 ````
 # Review
 
-<One short paragraph: what the descriptor covers, what you checked, and your judgement in one sentence.>
+<One short paragraph: what the descriptor covers, what you compared it with, and the one issue that matters most, if any.>
 
 ## Critical
 
@@ -96,7 +96,7 @@ A finding is one block, worst first inside its section:
 
 - **Check:** <one of the fourteen check names above, as written>
 - **Where:** <the descriptor location, as a JSON path such as display.formats["swap(...)"].fields[2]>; <source file and lines>; <test case>, the last two when they apply
-- **Why:** <the explanation, a short paragraph>
+- **Why:** <three to five sentences, in this order: what the code does, what the screen shows, how the two differ, and what that means for the signer, saying whether money can be lost>
 - **Evidence:**
 
 ```solidity
