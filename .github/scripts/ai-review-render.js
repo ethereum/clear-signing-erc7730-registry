@@ -71,6 +71,9 @@ function clean(markdown) {
     text = text.slice(0, MAX_ANSWER);
     cut = true;
   }
+  // A "What could not be reviewed" section that says nothing limited the
+  // review is noise: the prompt asks to leave it out, low effort writes it anyway.
+  text = text.replace(/\n## What could not be reviewed\s*\n+\s*(nothing|none)\b[^\n]*\s*$/i, '\n');
   const out = [];
   let fence = null;
   let severity = null;
@@ -169,7 +172,7 @@ function render(folder) {
       const answer = clean(record.answer);
       const counts = [['critical', c.critical], ['warning', c.warning], ['info', c.info]]
         .filter(([, n]) => n > 0)
-        .map(([s, n]) => `${ICONS[s]} ${n} ${n === 1 ? s : `${s}s`}`)
+        .map(([s, n]) => `${ICONS[s]} ${n} ${s === 'warning' && n > 1 ? 'warnings' : s}`)
         .join(', ');
       section += `${where}- **Findings:** ${counts || 'none'}${record.ok ? '' : `. The answer does not follow the expected format (${line(record.error, 300)}); it is shown as it came`}\n\n`;
       section += `<details${c.critical > 0 ? ' open' : ''}>\n<summary>The review</summary>\n\n${answer}\n\n</details>\n\n`;

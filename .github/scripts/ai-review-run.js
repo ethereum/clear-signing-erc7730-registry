@@ -307,7 +307,7 @@ async function main() {
       file: unit.file,
       descriptor: input.descriptor,
       unit: input.unit,
-      contracts: input.contracts.map((c) => ({ role: c.role, chainId: c.chainId, address: c.address, name: c.name ?? null })),
+      contracts: input.contracts.map((c) => ({ role: c.role, chainId: c.chainId, address: c.address, name: c.fullyQualifiedName?.split(':').pop() ?? null })),
       provider,
       model,
       effort,
