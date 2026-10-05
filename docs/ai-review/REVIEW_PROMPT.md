@@ -110,7 +110,8 @@ A finding is one block, worst first inside its section:
 Rules:
 
 - A fix that adds a field or makes one visible also says whether `interpolatedIntent` should mention it. `interpolatedIntent` may reference only fields that have a format and are always visible, and a sentence that leaves out an amount or a recipient it could name is misleading.
-- One finding per issue. No finding without evidence: quote the code or the descriptor text it rests on, with file and lines. A finding you cannot back with a quote is not a finding; a doubt you could not resolve goes under "What could not be reviewed".
+- Report problems only. A note that something is acceptable, correct or as expected is not a finding; leave it out.
+- One finding per issue. No finding without evidence: quote the descriptor text and the code it rests on, both when both matter (the threshold in the descriptor and the comparison in the contract, say), with file and lines. A finding you cannot back with a quote is not a finding; a doubt you could not resolve goes under "What could not be reviewed".
 - No findings proves nothing: when an omitted file, a missing source or an unresolved proxy kept you from checking something, say so under "What could not be reviewed", and leave that section out when nothing did.
 - Do not repeat the deterministic checks. Do not pad. Keep the whole answer under 12,000 characters: fewer, better findings.
 - A unit with nothing wrong gets `None.` in the three sections.
