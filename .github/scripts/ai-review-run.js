@@ -213,7 +213,6 @@ function checkAnswer(text) {
     else at = i + 1;
   }
   if ((text.match(/^\s*(```|~~~)/gm) ?? []).length % 2 !== 0) problems.push('an unclosed code fence');
-  if (/<[a-zA-Z!/]/.test(text)) problems.push('contains HTML');
   return problems;
 }
 
