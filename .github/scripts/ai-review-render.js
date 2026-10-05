@@ -45,13 +45,16 @@ if (!opts.answers || !opts.out) {
 // ---------------------------------------------------------------------------
 
 const ZW = '​';
-// One line of prose, escaped: no HTML, no links, no mentions, no references.
-const prose = (line) => line
+// Text escaped: no HTML, no links, no mentions, no references.
+const escape = (text) => text
   .replace(/[<>]/g, (c) => (c === '<' ? '&lt;' : '&gt;'))
   .replace(/@/g, `@${ZW}`)
   .replace(/#(\d)/g, `#${ZW}$1`)
   .replace(/\]\(/g, `]${ZW}(`)
   .replace(/:\/\//g, `:${ZW}//`);
+// One line of prose, escaped outside its code spans: GitHub shows a code span
+// as written, entities included, and nothing in one links or pings.
+const prose = (line) => line.replace(/(`+)(.*?)\1|[^`]+|`+/g, (m, ticks) => (ticks ? m : escape(m)));
 // One line, for a summary or a table cell.
 const line = (value, max = 200) => prose(String(value ?? '').slice(0, max)).replace(/\s+/g, ' ').replace(/\|/g, '\\|');
 const ticks = (value, max = 300) => `\`${line(value, max).replace(/`/g, "'")}\``;
