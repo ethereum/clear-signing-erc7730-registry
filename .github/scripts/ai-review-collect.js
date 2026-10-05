@@ -28,6 +28,14 @@ const { decodeAbiParameters } = require('viem');
 const SOURCIFY_URL = (process.env.SOURCIFY_URL || 'https://sourcify.dev/server').replace(/\/$/, '');
 const SOURCIFY_TOKEN = process.env.SOURCIFY_TOKEN || '';
 const CONCURRENCY = 2;
+// The fields the collector reads; `match` comes by default. `fields=all` would
+// also bring the compiler input and output, the bytecodes, the metadata and
+// the storage layout, four times as much for nothing.
+const FIELDS = [
+  'compilation', 'deployment', 'proxyResolution', 'abi', 'devdoc', 'userdoc', 'sources', 'sourceIds',
+  'runtimeBytecode.sourceMap', 'runtimeBytecode.transformationValues',
+  'creationBytecode.sourceMap', 'creationBytecode.transformationValues',
+].join(',');
 // The most a review unit may weigh, about 200K tokens. A unit above it is not
 // reviewed, and the review fails for it: nothing is trimmed to make it fit.
 let MAX_BYTES = 600_000;
@@ -57,7 +65,7 @@ async function fetchContract(chainId, address, key) {
     for (;;) {
       const wait = pauseUntil - Date.now();
       if (wait > 0) await sleep(wait);
-      const res = await fetch(`${SOURCIFY_URL}/v2/contract/${chainId}/${address}?fields=all`, {
+      const res = await fetch(`${SOURCIFY_URL}/v2/contract/${chainId}/${address}?fields=${FIELDS}`, {
         headers: SOURCIFY_TOKEN ? { 'X-Sourcify-Token': SOURCIFY_TOKEN } : {},
       });
       if (res.status === 429) {
@@ -141,7 +149,7 @@ function sourcesOf(response) {
  * The source files the deployed code was compiled from, or null when the
  * response has no source map.
  *
- * The compiler numbers the input files (stdJsonOutput.sources[path].id) and
+ * The compiler numbers the input files (Sourcify's sourceIds, path to id) and
  * writes a source map for the bytecode: one entry per instruction, in the
  * form "start:length:fileId:jump:depth", where a field left empty repeats the
  * previous entry's. The file ids that occur in the runtime and the creation
@@ -150,7 +158,7 @@ function sourcesOf(response) {
  * matched the on-chain bytecode, so they describe the deployed code exactly.
  */
 function codeFilesOf(response) {
-  const byId = new Map(Object.entries(response.stdJsonOutput?.sources ?? {}).map(([path, s]) => [s.id, path]));
+  const byId = new Map(Object.entries(response.sourceIds ?? {}).map(([path, s]) => [s.id, path]));
   const maps = [response.runtimeBytecode?.sourceMap, response.creationBytecode?.sourceMap].filter(Boolean);
   if (byId.size === 0 || maps.length === 0) return null;
   const files = new Set();
