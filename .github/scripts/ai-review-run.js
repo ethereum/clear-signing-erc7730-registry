@@ -247,13 +247,13 @@ async function askModel(client, input) {
     result.responseId = reply.id ?? null;
     result.stop = reply.stop;
     result.answer = reply.text || null;
+    if (result.answer) result.counts = countFindings(result.answer);
     if (reply.stop === 'refusal') {
       result.error = `the model refused: ${reply.refusal}`;
     } else if (reply.stop !== 'end') {
       result.error = `the answer is incomplete (${reply.stop})`;
     } else {
       result.problems = checkAnswer(reply.text);
-      result.counts = countFindings(reply.text);
       result.ok = result.problems.length === 0;
       if (!result.ok) result.error = `the answer does not follow the format: ${result.problems.join('; ')}`;
     }
@@ -295,9 +295,8 @@ async function reviewUnit(client, unit, maxBytes, outDir) {
 
 function describe(record) {
   if (record.skipped) return `skipped (${record.skipped})`;
-  const what = record.ok
-    ? `${record.counts.critical} critical, ${record.counts.warning} warning, ${record.counts.info} info`
-    : `failed: ${record.error}`;
+  if (!record.answer) return `failed: ${record.error}`;
+  const what = `${record.counts.critical} critical, ${record.counts.warning} warning, ${record.counts.info} info${record.ok ? '' : ` (${record.error})`}`;
   const how = record.usage ? ` (${record.usage.inputTokens} in, ${record.usage.outputTokens} out, $${record.costUSD?.toFixed(4) ?? '?'}, ${record.seconds}s)` : '';
   return what + how;
 }
@@ -320,8 +319,8 @@ function totalsOf(records) {
   const reviewed = records.filter((r) => r.usage);
   const sum = (key) => reviewed.reduce((n, r) => n + (r.usage[key] ?? 0), 0);
   return {
-    reviewed: records.filter((r) => r.ok).length,
-    failed: records.filter((r) => !r.ok && !r.skipped).length,
+    reviewed: records.filter((r) => r.answer).length,
+    failed: records.filter((r) => !r.answer && !r.skipped).length,
     skipped: records.filter((r) => r.skipped).length,
     inputTokens: sum('inputTokens'),
     cacheReadTokens: sum('cacheReadTokens'),
@@ -360,7 +359,9 @@ async function main() {
   if (process.env.GITHUB_STEP_SUMMARY) {
     fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `\n## AI review: ${model}, effort ${effort}\n\n${line}\n`);
   }
-  // Red when any unit could not be reviewed: the comment says which and why.
+  // Red when any unit got no answer: refused, an API error, too large. The
+  // comment says which and why. An answer that strays from the format is
+  // posted with a note and does not fail the step.
   if (t.failed > 0) throw new Error(`${t.failed} unit(s) could not be reviewed`);
 }
 
