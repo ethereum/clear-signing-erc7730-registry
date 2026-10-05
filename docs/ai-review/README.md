@@ -1,6 +1,6 @@
 # AI review of descriptor pull requests
 
-A language model reads the descriptors of a pull request, their tests, the pull request discussion and the verified source code of the contracts, and posts what it finds as a comment. It runs after the deterministic checks pass and only when a maintainer approves it. It is advisory: it never blocks a merge, and every note is a question for the reviewer.
+A language model reads the descriptors of a pull request, their tests and the verified source code of the contracts, and posts what it finds as a comment. It runs after the deterministic checks pass and only when a maintainer approves it. It is advisory: it never blocks a merge, and every note is a question for the reviewer.
 
 The pipeline has three steps: a gate, the information retrieval, and the review itself.
 
@@ -21,7 +21,6 @@ For every affected descriptor the job builds one or more review units and saves 
 Each unit holds:
 
 - From the test report bundle: the descriptor before and after the pull request, its test cases, and what each test runner rendered.
-- From the pull request: the title, the description and the discussion (comments, reviews, review comments), bot comments removed. It tells the model what the author meant and what reviewers asked.
 - From [Sourcify](https://sourcify.dev): for every address of the unit, the verified source files, the ABI, the NatSpec, the proxy resolution, the compiler version, the deployer and the decoded constructor arguments.
 
 <details>
@@ -36,9 +35,9 @@ Deployments are grouped by a key: the SHA-256 hash of the ABI and of every verif
 <details>
 <summary>What is kept and what is dropped</summary>
 
-The verified source is focused on what the descriptor covers: the files that define the functions in the descriptor (or that hash the EIP-712 type), their base contracts, and the contracts and libraries they call, one level deep. Interfaces, duplicate files and large pure libraries are left out and listed by name. The ABI and the NatSpec are limited to the reviewed functions. A proxy keeps its main file only.
+A verified contract comes with every file of its compilation, often with interfaces and unrelated contracts of the same project. The unit keeps the files the deployed code was compiled from, as the compiler's source maps list them: the contract, its base contracts, the libraries inlined into it. Contracts that the code creates with `new` are not in those maps, so the files that declare them are added by name. The ABI and the NatSpec are limited to the reviewed functions. A proxy keeps its main file only.
 
-A unit is capped at 400 KB. Above the cap, callee files are dropped first, then base contracts, never the files that define the reviewed functions; the dropped files are listed in the unit so the model can say what it could not check.
+A unit above 600 KB, about 200K tokens, is not reviewed: the review fails for that unit and the comment says so. Nothing is trimmed to make a unit fit.
 
 </details>
 
@@ -70,7 +69,7 @@ Two models run for now, so the team can compare them on real pull requests: Clau
 <details>
 <summary>What the answer looks like</summary>
 
-The answer is Markdown with fixed sections: a one-paragraph summary, then Critical, Warning and Info, each a list of findings or `None.`. A section "What could not be reviewed" appears only when something limited the review, such as source files dropped to fit the size cap. A finding names its check, where it is in the descriptor and the source, why it matters, the code it rests on, and a fix when there is one.
+The answer is Markdown with fixed sections: a one-paragraph summary, then Critical, Warning and Info, each a list of findings or `None.`. A section "What could not be reviewed" appears only when something limited the review, such as a contract Sourcify does not have. A finding names its check, where it is in the descriptor and the source, why it matters, the code it rests on, and a fix when there is one.
 
 Severity: `critical` when the signer can lose money or sign something other than what the screen says; `warning` when the screen is wrong or incomplete without a direct loss; `info` for limitations and suggestions.
 
@@ -86,7 +85,7 @@ The deterministic checks ran before it and passed, so the prompt tells the model
 <details>
 <summary>Prompt injection</summary>
 
-Everything the model reads can carry text written to steer it: descriptor labels, test names, Solidity comments, the pull request discussion. The unit is wrapped in a tag with a random nonce, and the prompt says that only text outside that tag is an instruction; the model is asked to report such text as a `prompt-injection` finding. The prompt and the spec come from the base branch, so a pull request cannot change them.
+Everything the model reads can carry text written to steer it: descriptor labels, test names, Solidity comments. The unit is wrapped in a tag with a random nonce, and the prompt says that only text outside that tag is an instruction; the model is asked to report such text as a `prompt-injection` finding. The prompt and the spec come from the base branch, so a pull request cannot change them.
 
 </details>
 

@@ -23,6 +23,11 @@ name: AI Review
 # again. Descriptor Test Results publishes the bundle one to three minutes
 # after the tests complete, so a click inside that window fails on the
 # bundle: wait and re-run.
+#
+# Then the job collects the inputs of the review: for every deployment of
+# every affected descriptor, the verified sources, the ABI and the proxy
+# resolution from Sourcify, grouped into one input per descriptor and
+# distinct implementation. The inputs are the artifact ai-review-inputs.
 on:
   pull_request_target:
     types: [opened, reopened, synchronize]
@@ -149,10 +154,35 @@ jobs:
             jq -r '.descriptors[] | "- `\(.path | gsub("[^A-Za-z0-9/._-]"; ""))`"' "$bundle"
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # The hand-off to the review itself, which the next pull request adds.
-      - name: Upload the test report bundle
+      # The scripts and their dependencies come from the base branch. The
+      # install runs no package scripts and restores no cache.
+      - name: Checkout the scripts
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: scripts
+          persist-credentials: false
+          sparse-checkout: |
+            .github/scripts
+            package.json
+            package-lock.json
+
+      - name: Setup node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "22"
+
+      - name: Install the dependencies of the scripts
+        working-directory: scripts
+        run: npm ci --ignore-scripts
+
+      - name: Collect the inputs of the review from Sourcify
+        env:
+          SOURCIFY_TOKEN: ${{ secrets.SOURCIFY_TOKEN_CLEAR_SIGNING_CI }}
+        run: node scripts/.github/scripts/ai-review-collect.js --bundle ai-review/bundle.json --out ai-review
+
+      - name: Upload the inputs of the review
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: ai-review-bundle
-          path: ai-review/bundle.json
-          retention-days: 7
+          name: ai-review-inputs
+          path: ai-review/inputs
+          retention-days: 30
