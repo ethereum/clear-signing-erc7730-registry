@@ -50,6 +50,7 @@ ercs/
 - All ERC-7730 compatible files are correctly validated against the schema file located at `specs/erc7730-v2.schema.json`.
 - Do not use the `calldata` or `eip712` prefixes for common files which are included by the ERC-7730 files and placed at the top level of the entity folder. Name them `common-*.json` instead.
 - Each descriptor added or changed is accompanied by a test file so descriptors can be verified against the formatter implementations. For a calldata descriptor, the test file has at least one test case for every function in `display.formats`: CI derives the selector of each format and looks for it in the calldata of the test cases. See [Reference test cases](#reference-test-cases).
+- To change a descriptor that has an attestation, delete its attestation file(s) from `sigs/` in the same PR. For now this is the only way, because the [index](#index-files) allows only one descriptor per deployment.
 
 Reviewers check each PR against the [review guidelines](docs/REVIEWING.md).
 
