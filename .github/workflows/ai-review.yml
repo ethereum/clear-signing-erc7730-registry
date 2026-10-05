@@ -1,47 +1,21 @@
 name: AI Review
 
-# An advisory review of the descriptors of a pull request by an LLM. It runs
-# after the deterministic checks and never blocks a merge: it is not a
-# required check, and a red result only means the review could not run.
+# An advisory review of the descriptors of a pull request by an LLM. It
+# never blocks a merge: it is not a required check, and a red result only
+# means the review could not run. How it works: docs/ai-review/README.md.
 #
-# The workflow runs on pull_request_target, like the queued note and the
-# labels: it starts with the pull request, so it shows among its checks, and
-# it runs the workflow file of the base branch with secrets, which a
-# pull_request run from a fork never gets. Nothing from the pull request is
-# executed here, and nothing from it reaches a shell line: the steps read the
-# changed files, the run conclusions and the test report bundle through the
-# GitHub API, as data. Keep it that way in every job.
+# It runs on pull_request_target, so it runs the workflow file of the base
+# branch with secrets on pull requests from forks too. Two rules hold in
+# every job: nothing from the pull request is executed, and nothing from it
+# reaches a shell line (the steps read the changed files, the run
+# conclusions and the test report bundle through the GitHub API, as data);
+# the API keys and the permission to write comments never share a job.
 #
-# The review job is bound to the Environment ai-review, which holds the API
-# key and requires a maintainer's approval. So every descriptor pull request
-# shows this check as waiting until a maintainer clicks, and only then does
-# the job run. It first reads GitHub once: the pull request changes only
-# descriptors and shared files, Registry Checks and Descriptor Tests are
-# green for the head commit, and the test report bundle of the commit is on
-# the test-reports branch. When one of these does not hold, the job fails
-# with the reason, and a maintainer re-runs it later, which asks for approval
-# again. Descriptor Test Results publishes the bundle one to three minutes
-# after the tests complete, so a click inside that window fails on the
-# bundle: wait and re-run.
-#
-# Then the job collects the inputs of the review: for every deployment of
-# every affected descriptor, the verified sources, the ABI and the proxy
-# resolution from Sourcify, grouped into one input per descriptor and
-# distinct implementation. The inputs are the artifact ai-review-inputs.
-#
-# The same job sends each input to the models, one request per input and
-# model, one turn, no tools, with the prompt (docs/ai-review/REVIEW_PROMPT.md)
-# and the specification from the base branch, so a pull request cannot
-# change what a model is told. Two models run for now, to compare them on
-# real pull requests; one will stay. The answers and the token usage are the
-# artifact ai-review-answers.
-#
-# A second job, post, turns the answers into one comment per model on the
-# pull request, created on the first run and updated on the next ones,
-# headed as AI-generated and advisory. Only that job can write comments, and
-# it holds no key: the keys and the write permission never meet in one job.
-# Every answer is model output about pull request data, so the renderer
-# escapes it before it is posted.
+# The review job is bound to the Environment ai-review, which holds the keys
+# and requires a maintainer's approval: the check waits until a maintainer
+# clicks. Descriptor Test Results publishes the bundle one to three minutes
+# after the tests complete; a click inside that window fails on the bundle,
+# wait and re-run.
 on:
   pull_request_target:
     types: [opened, reopened, synchronize]
