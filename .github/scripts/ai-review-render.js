@@ -133,7 +133,7 @@ function render(folder) {
   const t = summary.totals ?? {};
 
   let body = `<!-- ai-review: ${folder.replace(/[^A-Za-z0-9._-]/g, '')} -->\n## 🤖 AI review by ${modelName} (advisory)\n\n`;
-  body += `A language model (${modelName}) read the descriptors of ${sha ? `commit \`${sha.slice(0, 7)}\`` : 'this pull request'}, their tests, the pull request discussion and the verified source code of their deployments, and wrote the notes below${runUrl ? ` ([run](${runUrl}))` : ''}. `;
+  body += `A language model (${modelName}) read the descriptors of ${sha ? `commit \`${sha.slice(0, 7)}\`` : 'this pull request'}, their tests and the verified source code of their deployments, and wrote the notes below${runUrl ? ` ([run](${runUrl}))` : ''}. `;
   body += 'It can be wrong and it can miss things. Nothing here is a check: it never blocks a merge, and a note is a question for the reviewer. Read each one against the source before acting on it.\n\n';
 
   const byDescriptor = new Map();
