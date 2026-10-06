@@ -9,7 +9,7 @@ The pipeline has three steps: a gate, the information retrieval, and the review 
 The workflow `ai-review.yml` starts on every pull request that changes a descriptor. It shows up among the checks as "Review (optional, needs a maintainer's approval)" and waits there. When a maintainer approves it, the job checks three things, then goes on:
 
 - The pull request changes only files under `registry/` and `ercs/`.
-- Registry Checks and Descriptor Tests are green for the head commit, and no other check failed.
+- Registry Checks, Descriptor Lint and Descriptor Tests are green for the head commit, and no other check failed.
 - The test report bundle of the head commit is published on the `test-reports` branch.
 
 When one of these does not hold, the job fails and says why in its summary. A maintainer re-runs it later, which asks for approval again. A red AI Review never blocks a merge: it is not a required check.
