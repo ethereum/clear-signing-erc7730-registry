@@ -1,0 +1,106 @@
+name: Descriptor Lint
+
+# pull_request_target gives fork PRs the Sourcify token, and it runs before a
+# maintainer approves a first-time contributor: add no secret that must not
+# reach an unreviewed PR. No PR code runs, only registry/ and ercs/ come from it.
+on:
+  pull_request_target:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+# github.ref is the base branch on pull_request_target.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  # The erc7730 linter fails when a display field points to a parameter
+  # that is not in the ABI of the deployed contract, or when an EIP-712
+  # key is malformed. Such a descriptor shows wrong or missing data on the
+  # wallet screen. Text length and missing display fields are only warnings.
+  validate_descriptors:
+    name: Descriptors pass the ERC-7730 linter
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        timeout-minutes: 10
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Get all changed descriptor and shared files
+        timeout-minutes: 5
+        id: changed-descriptor-files
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
+        with:
+          use_rest_api: true
+          files: |
+            registry/**/*.json
+            ercs/**/*.json
+          files_ignore: |
+            registry/**/tests/**
+            registry/**/testsv2/**
+            registry/**/sigs/**
+            registry/**/*.tests.json
+
+      - name: Use the registry files of the pull request
+        timeout-minutes: 5
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # The merge of base and head, as a pull_request run saw it. The ref
+          # can lag behind a push: it must have the head commit as parent.
+          if git fetch --no-tags --depth=1 origin "refs/pull/${PR_NUMBER}/merge" \
+             && git cat-file -p FETCH_HEAD | grep -q "^parent ${HEAD_SHA}$"; then
+            echo "Using the merge of ${HEAD_SHA} into the base"
+          else
+            echo "No merge ref for ${HEAD_SHA}, using the head commit"
+            git fetch --no-tags --depth=1 origin "$HEAD_SHA"
+          fi
+          rm -rf registry ercs
+          git checkout FETCH_HEAD -- registry ercs
+          find registry ercs -type l -delete
+
+      - name: Resolve affected descriptors
+        timeout-minutes: 5
+        id: affected-descriptors
+        if: steps.changed-descriptor-files.outputs.any_changed == 'true'
+        env:
+          CHANGED_FILES: ${{ steps.changed-descriptor-files.outputs.all_changed_files }}
+          DELETED_FILES: ${{ steps.changed-descriptor-files.outputs.deleted_files }}
+        run: |
+          # A changed shared file (ercs/*.json or an entity-local common file)
+          # affects every descriptor whose "includes" chain contains it, so
+          # those descriptors must be linted too. Shared files are not linted
+          # standalone — they are partial descriptors, validated through their
+          # includers.
+          RESULT=$(CHANGED_FILES="$CHANGED_FILES $DELETED_FILES" \
+            node .github/scripts/list-affected-descriptors.js)
+          echo "$RESULT" | jq .
+          echo "descriptors=$(echo "$RESULT" | jq -r '.affected_descriptors | join(" ")')" >> $GITHUB_OUTPUT
+          echo "any_affected=$(echo "$RESULT" | jq -r '.has_affected')" >> $GITHUB_OUTPUT
+
+      - name: Setup python
+        timeout-minutes: 10
+        if: steps.affected-descriptors.outputs.any_affected == 'true'
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install ERC-7730 library
+        timeout-minutes: 10
+        if: steps.affected-descriptors.outputs.any_affected == 'true'
+        run: pip install -r .github/requirements.txt
+
+      - name: Validate ERC-7730 descriptors affected by pull request
+        timeout-minutes: 120
+        if: steps.affected-descriptors.outputs.any_affected == 'true'
+        env:
+          AFFECTED_FILES: ${{ steps.affected-descriptors.outputs.descriptors }}
+          SOURCIFY_TOKEN: ${{ secrets.SOURCIFY_TOKEN_CLEAR_SIGNING_CI }}
+        run: erc7730 lint --require-verified $AFFECTED_FILES --gha
