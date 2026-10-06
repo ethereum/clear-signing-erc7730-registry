@@ -231,10 +231,11 @@
       }
     },
     {
-      "description": "Set unstETH operator approval - chain 1",
+      "description": "Grant unstETH operator approval - chain 1",
       "rawTx": "0x02f86d0101843b9aca00847735940083061a8094889edc2edab5f40e902b864ad4d7ade8e412f9b180b844a22cb4650000000000000000000000002aed99855fed0259e5774b50a9f589d2bc1e15970000000000000000000000000000000000000000000000000000000000000001c0",
       "expected": {
-        "intent": "Set unstETH operator approval",
+        "intent": "Manage ALL unstETH NFTs",
+        "interpolatedIntent": "Allow all unstETH NFTs",
         "owner": "Lido DAO",
         "fields": [
           {
@@ -242,8 +243,107 @@
             "value": "0x2aeD99855FED0259e5774B50a9f589D2BC1E1597"
           },
           {
-            "label": "Approved",
-            "value": "true"
+            "label": "Access",
+            "value": "Allow all"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Request Withdrawal, owner zero - chain 1",
+      "rawTx": "0x02f8ad01098405f5e100840bad32608306680994889edc2edab5f40e902b864ad4d7ade8e412f9b180b884d66810420000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000003e99b888f3eb3c0",
+      "from": "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
+      "expected": {
+        "intent": "Request Withdrawal",
+        "interpolatedIntent": "Withdraw 0.001101279150423731 stETH",
+        "owner": "Lido DAO",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "0.001101279150423731 stETH"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "Sender"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Request wstETH withdrawal, owner zero - chain 1",
+      "rawTx": "0x02f8ad0109843b9aca00847735940083061a8094889edc2edab5f40e902b864ad4d7ade8e412f9b180b88419aa625700000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000006f05b59d3b20000c0",
+      "from": "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
+      "expected": {
+        "intent": "Request withdrawal",
+        "interpolatedIntent": "Withdraw 0.5 wstETH",
+        "owner": "Lido DAO",
+        "fields": [
+          {
+            "label": "Amount to withdraw",
+            "value": "0.5 wstETH"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "Sender"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Request Withdrawal with permit, owner zero - chain 1",
+      "rawTx": "0x02f9014e0109843b9aca00847735940083061a8094889edc2edab5f40e902b864ad4d7ade8e412f9b180b90124acf41e4d00000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000014d1120d7b160000000000000000000000000000000000000000000000000000000000006b36ec80000000000000000000000000000000000000000000000000000000000000001bd925c9dc4daf2b97326adca692aba99dd40a1394c841772f5a724c2dc35953867e99359d1f68b310a5c7f88d01abaf6956d58334b3ec60f8b70f32380d9474fc000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000014d1120d7b160000c0",
+      "from": "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
+      "expected": {
+        "intent": "Request Withdrawal",
+        "interpolatedIntent": "Withdraw 1.5 stETH",
+        "owner": "Lido DAO",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "1.5 stETH"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "Sender"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Request wstETH withdrawal with permit, owner zero - chain 1",
+      "rawTx": "0x02f9014e0109843b9aca00847735940083061a8094889edc2edab5f40e902b864ad4d7ade8e412f9b180b901247951b76f00000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000014d1120d7b160000000000000000000000000000000000000000000000000000000000006b36ec80000000000000000000000000000000000000000000000000000000000000001bd925c9dc4daf2b97326adca692aba99dd40a1394c841772f5a724c2dc35953867e99359d1f68b310a5c7f88d01abaf6956d58334b3ec60f8b70f32380d9474fc000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000006f05b59d3b20000c0",
+      "from": "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
+      "expected": {
+        "intent": "Request withdrawal",
+        "interpolatedIntent": "Withdraw 0.5 wstETH",
+        "owner": "Lido DAO",
+        "fields": [
+          {
+            "label": "Amount to withdraw",
+            "value": "0.5 wstETH"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "Sender"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Revoke unstETH operator approval - chain 1",
+      "rawTx": "0x02f86d0102843b9aca00847735940083061a8094889edc2edab5f40e902b864ad4d7ade8e412f9b180b844a22cb4650000000000000000000000002aed99855fed0259e5774b50a9f589d2bc1e15970000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Manage ALL unstETH NFTs",
+        "interpolatedIntent": "Revoke all unstETH NFTs",
+        "owner": "Lido DAO",
+        "fields": [
+          {
+            "label": "Operator",
+            "value": "0x2aeD99855FED0259e5774B50a9f589D2BC1E1597"
+          },
+          {
+            "label": "Access",
+            "value": "Revoke all"
           }
         ]
       }

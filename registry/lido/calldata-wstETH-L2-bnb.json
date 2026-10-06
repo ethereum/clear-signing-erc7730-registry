@@ -1,0 +1,71 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "wstETH-L2-bnb",
+    "contract": { "deployments": [{ "chainId": 56, "address": "0x26c5e01524d2E6280A48F2c50fF6De7e52E9611C" }] }
+  },
+  "metadata": { "owner": "Lido DAO", "info": { "url": "https://lido.fi" }, "contractName": "wstETH" },
+  "display": {
+    "formats": {
+      "approve(address spender, uint256 value)": {
+        "intent": "Authorize spending",
+        "interpolatedIntent": "Allow to spend {value}",
+        "fields": [
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#.spender",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.value",
+            "params": {
+              "tokenPath": "@.to",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "transfer(address to, uint256 value)": {
+        "intent": "Transfer wstETH",
+        "interpolatedIntent": "Send {value} to {to}",
+        "fields": [
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.to",
+            "visible": "always"
+          },
+          { "label": "Amount", "format": "tokenAmount", "path": "#.value", "params": { "tokenPath": "@.to" }, "visible": "always" }
+        ]
+      },
+      "transferFrom(address from, address to, uint256 value)": {
+        "intent": "Transfer wstETH",
+        "interpolatedIntent": "Send {value} to {to}",
+        "fields": [
+          {
+            "label": "Sender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.from",
+            "visible": "always"
+          },
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.to",
+            "visible": "always"
+          },
+          { "label": "Amount", "format": "tokenAmount", "path": "#.value", "params": { "tokenPath": "@.to" }, "visible": "always" }
+        ]
+      }
+    }
+  }
+}

@@ -6,7 +6,8 @@
       "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" },
       "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" },
       "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": { "symbol": "WBTC", "decimals": 8, "name": "Wrapped BTC" },
-      "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0": { "symbol": "wstETH", "decimals": 18, "name": "Wrapped liquid staked Ether 2.0" }
+      "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0": { "symbol": "wstETH", "decimals": 18, "name": "Wrapped liquid staked Ether 2.0" },
+      "0x1abaea1f7c830bd89acc67ec4af516284b1bc33c": { "symbol": "EURC", "decimals": 6, "name": "Euro Coin" }
     }
   },
   "tests": [
@@ -87,6 +88,109 @@
         "fields": [
           { "label": "Amount to supply", "value": "470 wstETH" },
           { "label": "Collateral recipient", "value": "0x6C413690c19CFC80c3db3211c80993BF642C6456" }
+        ]
+      }
+    },
+    {
+      "description": "Repay loan with permit - chain 1",
+      "rawTx": "0x02f901300182011e8408f0d180841d4a2b40830557309487870bca3f3fd6335c3f4ce8392d69350b4fa4e280b90104ee3e210b000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000627ea69fbc1fb269a94c5832a804b8ea99042154000000000000000000000000000000000000000000000000000000006ab1208d000000000000000000000000000000000000000000000000000000000000001b19c3c2e77be56763f7b65414fade53e3afc11b4673b88adefabded69d0dd3275259890c5f760285fdb0e7b335920c7e9f632e5fbd61e0ae629be4ae80fd0585bc0",
+      "txHash": "0x121752f4d9559b47f2fa7aeb3dc945038cba5aa14995b88c7bead805a7c62d34",
+      "expected": {
+        "intent": "Repay loan",
+        "owner": "Aave DAO",
+        "fields": [
+          { "label": "Amount to repay", "value": "All USDC" },
+          { "label": "Interest rate mode", "value": "variable" },
+          { "label": "For debt holder", "value": "0x627eA69FBC1Fb269a94c5832a804B8Ea99042154" }
+        ]
+      }
+    },
+    {
+      "description": "Repay with aTokens - chain 1",
+      "rawTx": "0x02f88d0168840fefaf36845116e7368305cac59487870bca3f3fd6335c3f4ce8392d69350b4fa4e280b8642dad97d40000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c5990000000000000000000000000000000000000000000000000000000000124f800000000000000000000000000000000000000000000000000000000000000002c0",
+      "from": "0x40f5E510509531a2371971fA4AA27d0EaFcE329C",
+      "txHash": "0x4b057c366e2921c760d680ae6f077aaf1edfa2a185e3a9d57026b72de12b491a",
+      "expected": {
+        "intent": "Repay with aTokens",
+        "owner": "Aave DAO",
+        "fields": [
+          { "label": "Amount to repay", "value": "0.012 WBTC" },
+          { "label": "Interest rate mode", "value": "variable" },
+          { "label": "For debt holder", "value": "0x40f5E510509531a2371971fA4AA27d0EaFcE329C" }
+        ]
+      }
+    },
+    {
+      "description": "Multicall (set eMode and supply) - chain 1",
+      "rawTx": "0x02f901ce01058408f0d180843f2e51008305fe4f9487870bca3f3fd6335c3f4ce8392d69350b4fa4e280b901a4ac9650d800000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000002428530a470000000000000000000000000000000000000000000000000000000000000029000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000084617ba0370000000000000000000000001abaea1f7c830bd89acc67ec4af516284b1bc33c0000000000000000000000000000000000000000000000000000002ea39a9158000000000000000000000000ee01c2f5be9b09ae4cfcb33a80d91b253eab6e62000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0xEE01c2f5be9b09Ae4CfCB33a80D91b253eAb6e62",
+      "txHash": "0xd086fdda078678550a6cc5a50743403e217c31dd5a2860229ee05e7161a02998",
+      "expected": {
+        "intent": "Multicall",
+        "owner": "Aave DAO",
+        "fields": [
+          { "label": "Call", "value": "0x28530a470000000000000000000000000000000000000000000000000000000000000029" },
+          {
+            "label": "Call",
+            "value": {
+              "intent": "Supply",
+              "owner": "Aave DAO",
+              "fields": [
+                { "label": "Amount to supply", "value": "200313.311576 EURC" },
+                { "label": "Collateral recipient", "value": "0xEE01c2f5be9b09Ae4CfCB33a80D91b253eAb6e62" }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "Manage collateral on behalf of (synthetic, no real transaction found) - chain 1",
+      "rawTx": "0x02f88e0101843b9aca008506fc23ac008307a1209487870bca3f3fd6335c3f4ce8392d69350b4fa4e280b864972b35fa000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000000010000000000000000000000002c62c80ad86785dd3bfc7b616400a98e1903b672c0",
+      "expected": {
+        "intent": "Manage collateral",
+        "owner": "Aave DAO",
+        "fields": [
+          { "label": "For asset", "value": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" },
+          { "label": "Use as collateral", "value": "true" },
+          { "label": "Debtor", "value": "0x2c62C80aD86785DD3bfC7B616400A98E1903b672" }
+        ]
+      }
+    },
+    {
+      "description": "Supply via deposit (synthetic, no real transaction found) - chain 1",
+      "rawTx": "0x02f8ae0101843b9aca008506fc23ac008307a1209487870bca3f3fd6335c3f4ce8392d69350b4fa4e280b884e8eda9df000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000003b9aca000000000000000000000000002c62c80ad86785dd3bfc7b616400a98e1903b6720000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Supply",
+        "owner": "Aave DAO",
+        "fields": [
+          { "label": "Amount to supply", "value": "1000 USDC" },
+          { "label": "Collateral recipient", "value": "0x2c62C80aD86785DD3bfC7B616400A98E1903b672" }
+        ]
+      }
+    },
+    {
+      "description": "Approve position manager (synthetic, contract manager, no real transaction found) - chain 1",
+      "rawTx": "0x02f86e0101843b9aca008506fc23ac008307a1209487870bca3f3fd6335c3f4ce8392d69350b4fa4e280b844b8caa7c50000000000000000000000001c81e8ff21a4cdf9cb8c8bd7c1c7bb8e9ac4e3f30000000000000000000000000000000000000000000000000000000000000001c0",
+      "expected": {
+        "intent": "Approve Manager",
+        "owner": "Aave DAO",
+        "fields": [
+          { "label": "Position manager", "value": "0x1C81e8ff21A4cDF9cb8C8Bd7c1c7BB8e9Ac4e3f3" },
+          { "label": "Approve", "value": "true" }
+        ]
+      }
+    },
+    {
+      "description": "Revoke position manager role (synthetic, no real transaction found) - chain 1",
+      "rawTx": "0x02f84d0101843b9aca008506fc23ac008307a1209487870bca3f3fd6335c3f4ce8392d69350b4fa4e280a4fea149a60000000000000000000000002c62c80ad86785dd3bfc7b616400a98e1903b672c0",
+      "from": "0x1C81e8ff21A4cDF9cb8C8Bd7c1c7BB8e9Ac4e3f3",
+      "expected": {
+        "intent": "Revoke Manager Role",
+        "owner": "Aave DAO",
+        "fields": [
+          { "label": "Position manager", "value": "0x1C81e8ff21A4cDF9cb8C8Bd7c1c7BB8e9Ac4e3f3" },
+          { "label": "User", "value": "0x2c62C80aD86785DD3bfC7B616400A98E1903b672" }
         ]
       }
     }

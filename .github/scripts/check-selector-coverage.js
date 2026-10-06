@@ -208,4 +208,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { selectorOf, testSelector };
+module.exports = { selectorOf, testSelector, reason };

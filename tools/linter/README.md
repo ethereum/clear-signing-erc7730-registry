@@ -1,6 +1,6 @@
 # ERC-7730 Linter Local Setup
 
-This document describes how to set up and use the [python-erc7730](https://github.com/LedgerHQ/python-erc7730) linter locally.
+This document describes how to set up and use the [python-erc7730](https://github.com/sourcifyeth/python-erc7730) linter locally. The registry uses the sourcifyeth fork of [LedgerHQ/python-erc7730](https://github.com/LedgerHQ/python-erc7730).
 
 ## Prerequisites
 
@@ -9,23 +9,23 @@ This document describes how to set up and use the [python-erc7730](https://githu
 
 ## Setup
 
-### Option 1: Install from PyPI (recommended)
+### Option 1: Install the version used by CI (recommended)
 
-The simplest way to get started is to install the released package directly from [PyPI](https://pypi.org/project/erc7730/):
+The registry workflows install `erc7730` from the [sourcifyeth/python-erc7730](https://github.com/sourcifyeth/python-erc7730) fork, pinned to a commit in `.github/requirements.txt`. Install the same version from the repository root:
 
 ```bash
-pip install erc7730
+pip install -r .github/requirements.txt
 ```
 
 Or with uv:
 
 ```bash
-uv tool install erc7730
+uv pip install -r .github/requirements.txt
 ```
 
 ### Option 2: Local clone (for development)
 
-The setup script clones the [python-erc7730](https://github.com/LedgerHQ/python-erc7730) repository and installs it locally. This is useful if you need the latest unreleased changes or want to contribute:
+The setup script clones the [python-erc7730](https://github.com/sourcifyeth/python-erc7730) fork and installs it locally. This is useful if you need the latest unreleased changes or want to contribute:
 
 ```bash
 cd tools/linter
@@ -33,23 +33,23 @@ cd tools/linter
 ```
 
 This will:
-1. Clone the [python-erc7730](https://github.com/LedgerHQ/python-erc7730) repository
+1. Clone the [python-erc7730](https://github.com/sourcifyeth/python-erc7730) fork
 2. Install dependencies (using `uv` if available, otherwise `pip` with editable install)
 
 ## Usage
 
 ### Activate the environment
 
-Before running any commands, source the `.env` file (for API keys) and activate the virtual environment:
+Before running any commands, activate the virtual environment:
 
 ```bash
-source .env && source tools/linter/.venv/bin/activate
+source tools/linter/.venv/bin/activate
 ```
 
 Or as a one-liner from the repository root:
 
 ```bash
-source .env && source tools/linter/.venv/bin/activate && erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
+source tools/linter/.venv/bin/activate && erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
 ```
 
 ### Lint descriptor files
@@ -90,23 +90,9 @@ erc7730 resolve <path>
 erc7730 schema
 ```
 
-## Configuration
+## ABI source
 
-### Etherscan API Key
-
-To validate ABIs fetched from Etherscan, the `ETHERSCAN_API_KEY` environment variable must be set.
-
-The repository root contains a `.env` file with this key. Source it before running the linter:
-
-```bash
-source .env
-```
-
-**Note:** The Python tool does not automatically load `.env` files - you must source it manually or export the variable directly:
-
-```bash
-export ETHERSCAN_API_KEY=your_api_key_here
-```
+The linter fetches reference ABIs from [Sourcify](https://sourcify.dev) and follows proxies to their implementation. No API key is needed. A deployment that is not verified on Sourcify cannot be validated against its ABI.
 
 ## Documentation
 
