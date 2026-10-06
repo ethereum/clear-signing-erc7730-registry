@@ -74,7 +74,8 @@ jobs:
           echo "::error::The pull request changes $count file(s) outside registry/ and ercs/. See the job summary."
           exit 1
 
-      # The latest pull_request run of each workflow for the head commit.
+      # The latest pull_request run of each workflow for the head commit
+      # (pull_request_target for Registry Checks).
       # Registry Checks and Descriptor Tests must have succeeded; any other
       # workflow that failed stops the review too, so a check added later
       # counts without an edit here. Cancelled or skipped runs do not.
@@ -83,8 +84,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${HEAD_SHA}&event=pull_request&per_page=100" \
-            --jq '[.workflow_runs[]] | group_by(.name) | map(max_by(.created_at))
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${HEAD_SHA}&per_page=100" \
+            --jq '[.workflow_runs[] | select(.event == "pull_request" or (.event == "pull_request_target" and .name == "Registry Checks"))]
+                  | group_by(.name) | map(max_by(.created_at))
                   | map({name, status, conclusion, url: .html_url})' > runs.json
           jq -r '.[] | "\(.name): \(.status) \(.conclusion // "-")"' runs.json
 

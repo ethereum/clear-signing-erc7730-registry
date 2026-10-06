@@ -4,14 +4,19 @@ name: Registry Checks
 # rule, so a failed check names the broken rule. A job that needs network or
 # tooling looks only at the files that the pull request changes, and at the
 # descriptors that include them. A cheap job scans the whole registry.
+#
+# pull_request_target gives fork PRs the Sourcify token. No PR code runs: each
+# job checks out the base branch and only takes registry/ and ercs/ from the PR.
 on:
-  pull_request:
+  pull_request_target:
 
 permissions:
   contents: read
+  pull-requests: read
 
+# github.ref is the base branch on pull_request_target.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
@@ -27,12 +32,15 @@ jobs:
       - name: Checkout
         timeout-minutes: 10
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Get all changed descriptor and shared files
         timeout-minutes: 5
         id: changed-descriptor-files
         uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
         with:
+          use_rest_api: true
           files: |
             registry/**/*.json
             ercs/**/*.json
@@ -41,6 +49,16 @@ jobs:
             registry/**/testsv2/**
             registry/**/sigs/**
             registry/**/*.tests.json
+
+      - name: Use the registry files of the pull request
+        timeout-minutes: 5
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$HEAD_SHA"
+          rm -rf registry ercs
+          git checkout FETCH_HEAD -- registry ercs
+          find registry ercs -type l -delete
 
       - name: Resolve affected descriptors
         timeout-minutes: 5
@@ -93,15 +111,28 @@ jobs:
       - name: Checkout
         timeout-minutes: 10
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Get all changed JSON files
         timeout-minutes: 5
         id: changed-json-files
         uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
         with:
+          use_rest_api: true
           files: |
             registry/**/*.json
             ercs/**/*.json
+
+      - name: Use the registry files of the pull request
+        timeout-minutes: 5
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$HEAD_SHA"
+          rm -rf registry ercs
+          git checkout FETCH_HEAD -- registry ercs
+          find registry ercs -type l -delete
 
       - name: Setup python
         timeout-minutes: 10
@@ -191,12 +222,15 @@ jobs:
       - name: Checkout
         timeout-minutes: 10
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Get all changed descriptor and shared files
         timeout-minutes: 5
         id: changed-files
         uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
         with:
+          use_rest_api: true
           files: |
             registry/**/*.json
             ercs/**/*.json
@@ -205,6 +239,16 @@ jobs:
             registry/**/testsv2/**
             registry/**/sigs/**
             registry/**/*.tests.json
+
+      - name: Use the registry files of the pull request
+        timeout-minutes: 5
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$HEAD_SHA"
+          rm -rf registry ercs
+          git checkout FETCH_HEAD -- registry ercs
+          find registry ercs -type l -delete
 
       - name: Setup node
         timeout-minutes: 10
@@ -235,6 +279,18 @@ jobs:
       - name: Checkout
         timeout-minutes: 10
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Use the registry files of the pull request
+        timeout-minutes: 5
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$HEAD_SHA"
+          rm -rf registry ercs
+          git checkout FETCH_HEAD -- registry ercs
+          find registry ercs -type l -delete
 
       - name: Check the file names in each entity folder
         timeout-minutes: 5
@@ -266,12 +322,15 @@ jobs:
       - name: Checkout
         timeout-minutes: 10
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Get all changed descriptor and shared files
         timeout-minutes: 5
         id: changed-files
         uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
         with:
+          use_rest_api: true
           files: |
             registry/**/*.json
             ercs/**/*.json
@@ -280,6 +339,16 @@ jobs:
             registry/**/testsv2/**
             registry/**/sigs/**
             registry/**/*.tests.json
+
+      - name: Use the registry files of the pull request
+        timeout-minutes: 5
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$HEAD_SHA"
+          rm -rf registry ercs
+          git checkout FETCH_HEAD -- registry ercs
+          find registry ercs -type l -delete
 
       - name: Check that no attested descriptor changed
         timeout-minutes: 5
