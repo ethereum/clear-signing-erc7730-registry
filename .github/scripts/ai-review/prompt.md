@@ -34,6 +34,8 @@ Deterministic checks ran before you and passed. Do not report, even if you notic
 
 In doubt between `warning` and `info`, choose `info`: a `warning` with a fix makes the author change the descriptor, so give it only when the change is clearly right. Never downgrade a `critical`: when the screen misstates who gets how much, it is critical even if the loss is small.
 
+A value that lives in the contract's storage and not in the calldata (a treasury or beneficiary address, an owner, a fee setting, a price) cannot be shown by any descriptor. Its absence is a `spec-limitation` `info` at most, never a `critical`, unless the screen states something different from what the code does with it: a payment that goes to the contract's treasury is what a purchase screen implies, an amount the recipient does not receive in full is not.
+
 ## Do not flag
 
 - A value that starts with `$` is a reference to `metadata.constants`, `metadata.enums`, `metadata.maps` or `display.definitions`; wallets resolve it. Flag it only if the referenced key does not exist or has the wrong type.
