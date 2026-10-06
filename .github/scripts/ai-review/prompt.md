@@ -36,6 +36,8 @@ In doubt between `warning` and `info`, choose `info`: a `warning` with a fix mak
 
 A value that lives in the contract's storage and not in the calldata (a treasury or beneficiary address, an owner, a fee setting, a price) cannot be shown by any descriptor. Its absence is a `spec-limitation` `info` at most, never a `critical`, unless the screen states something different from what the code does with it: a payment that goes to the contract's treasury is what a purchase screen implies, an amount the recipient does not receive in full is not.
 
+An intent that overstates or understates the step this call performs is not critical by itself. When the signer's assets, allowances, ownership and delegations end up exactly as the screen implies, a wording that names the goal of a multi-step flow ("Migrate", "Purchase") instead of the step ("Initiate migration") is a `warning` if it could make the signer skip a step or expect funds that do not arrive in this call, and an `info` otherwise. A `critical` needs a different outcome: a recipient, an amount, a token, a spender, a deadline, an approval, an owner or a delegate other than the one the screen shows.
+
 ## Do not flag
 
 - A value that starts with `$` is a reference to `metadata.constants`, `metadata.enums`, `metadata.maps` or `display.definitions`; wallets resolve it. Flag it only if the referenced key does not exist or has the wrong type.
