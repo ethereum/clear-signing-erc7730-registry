@@ -49,9 +49,18 @@ jobs:
       - name: Use the registry files of the pull request
         timeout-minutes: 5
         env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          git fetch --no-tags --depth=1 origin "$HEAD_SHA"
+          # The merge of base and head, as a pull_request run saw it. The ref
+          # can lag behind a push: it must have the head commit as parent.
+          if git fetch --no-tags --depth=1 origin "refs/pull/${PR_NUMBER}/merge" \
+             && git cat-file -p FETCH_HEAD | grep -q "^parent ${HEAD_SHA}$"; then
+            echo "Using the merge of ${HEAD_SHA} into the base"
+          else
+            echo "No merge ref for ${HEAD_SHA}, using the head commit"
+            git fetch --no-tags --depth=1 origin "$HEAD_SHA"
+          fi
           rm -rf registry ercs
           git checkout FETCH_HEAD -- registry ercs
           find registry ercs -type l -delete
