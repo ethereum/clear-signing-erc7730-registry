@@ -37,6 +37,15 @@
         "2": "Delegate call",
         "3": "Send + delegate call"
       },
+      "parameterType": {
+        "0": "None",
+        "1": "Static",
+        "2": "Dynamic",
+        "3": "Tuple",
+        "4": "Array",
+        "5": "Calldata",
+        "6": "ABI encoded"
+      },
       "conditionOperator": {
         "0": "Pass",
         "1": "And",
@@ -114,6 +123,14 @@
           { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
           { "path": "targetAddress", "$ref": "$.display.definitions.target", "visible": "always" },
           { "path": "selector", "$ref": "$.display.definitions.selector", "visible": "always" },
+          { "path": "conditions.[].parent", "label": "Condition parent", "format": "raw", "visible": "always" },
+          {
+            "path": "conditions.[].paramType",
+            "label": "Parameter type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.parameterType" },
+            "visible": "always"
+          },
           {
             "path": "conditions.[].operator",
             "label": "Condition",
@@ -122,9 +139,7 @@
             "visible": "always"
           },
           { "path": "conditions.[].compValue", "label": "Compared value", "format": "raw", "visible": "always" },
-          { "path": "options", "$ref": "$.display.definitions.executionOptions", "visible": "always" },
-          { "path": "conditions.[].parent", "label": "Condition parent", "visible": "never" },
-          { "path": "conditions.[].paramType", "label": "Condition type", "visible": "never" }
+          { "path": "options", "$ref": "$.display.definitions.executionOptions", "visible": "always" }
         ]
       },
       "revokeFunction(bytes32 roleKey,address targetAddress,bytes4 selector)": {
