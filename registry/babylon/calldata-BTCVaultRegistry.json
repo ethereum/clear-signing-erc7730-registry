@@ -1,0 +1,110 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "BTCVaultRegistry",
+    "contract": {
+      "deployments": [{ "chainId": 11155111, "address": "0xE976a4f2B90E64A9A9374453bC526e67625cC750" }]
+    }
+  },
+  "metadata": {
+    "owner": "Babylon Labs",
+    "info": { "url": "https://babylonlabs.io" },
+    "contractName": "BTCVaultRegistry"
+  },
+  "display": {
+    "formats": {
+      "submitPeginRequestBatch(address depositor, address vaultProvider, uint16 maxAcceptableCommissionBps, bytes32 expectedFingerprint, (bytes32 depositorBtcPubKey, bytes btcPopSignature, bytes unsignedPrePeginTx, bytes depositorSignedPeginTx, bytes32 hashlock, uint8 htlcVout, uint32 referralCode, bytes depositorPayoutBtcAddress, bytes32 depositorWotsPkHash)[] requests)": {
+        "$id": "submitPeginRequestBatch",
+        "intent": "Register BTC vaults",
+        "fields": [
+          { "path": "@.value", "label": "Peg-in fee", "format": "amount", "visible": "always" },
+          {
+            "path": "vaultProvider",
+            "label": "Vault provider",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local"] },
+            "visible": "always"
+          },
+          {
+            "path": "maxAcceptableCommissionBps",
+            "label": "Max commission",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 2, "prefix": false },
+            "visible": "always"
+          },
+          {
+            "path": "depositor",
+            "label": "Depositor",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "requests.[].depositorPayoutBtcAddress", "label": "BTC payout script", "format": "raw", "visible": "always" },
+          { "path": "expectedFingerprint", "label": "Expected fingerprint", "visible": "never" },
+          { "path": "requests.[].depositorBtcPubKey", "label": "Depositor BTC key", "visible": "never" },
+          { "path": "requests.[].btcPopSignature", "label": "BTC PoP signature", "visible": "never" },
+          { "path": "requests.[].unsignedPrePeginTx", "label": "Pre-PegIn tx", "visible": "never" },
+          { "path": "requests.[].depositorSignedPeginTx", "label": "PegIn tx", "visible": "never" },
+          { "path": "requests.[].hashlock", "label": "Hashlock", "visible": "never" },
+          { "path": "requests.[].htlcVout", "label": "HTLC output index", "visible": "never" },
+          { "path": "requests.[].referralCode", "label": "Referral code", "visible": "never" },
+          { "path": "requests.[].depositorWotsPkHash", "label": "WOTS public key hash", "visible": "never" }
+        ]
+      },
+      "submitPeginRequest(address depositor, bytes32 depositorBtcPubKey, bytes btcPopSignature, bytes unsignedPrePeginTx, bytes depositorSignedPeginTx, address vaultProvider, uint16 maxAcceptableCommissionBps, bytes32 hashlock, uint8 htlcVout, bytes depositorPayoutBtcAddress, bytes32 depositorWotsPkHash, bytes32 expectedFingerprint)": {
+        "$id": "submitPeginRequest",
+        "intent": "Register BTC vault",
+        "fields": [
+          { "path": "@.value", "label": "Peg-in fee", "format": "amount", "visible": "always" },
+          {
+            "path": "vaultProvider",
+            "label": "Vault provider",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local"] },
+            "visible": "always"
+          },
+          {
+            "path": "maxAcceptableCommissionBps",
+            "label": "Max commission",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 2, "prefix": false },
+            "visible": "always"
+          },
+          {
+            "path": "depositor",
+            "label": "Depositor",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "depositorPayoutBtcAddress", "label": "BTC payout script", "format": "raw", "visible": "always" },
+          { "path": "depositorBtcPubKey", "label": "Depositor BTC key", "visible": "never" },
+          { "path": "btcPopSignature", "label": "BTC PoP signature", "visible": "never" },
+          { "path": "unsignedPrePeginTx", "label": "Pre-PegIn tx", "visible": "never" },
+          { "path": "depositorSignedPeginTx", "label": "PegIn tx", "visible": "never" },
+          { "path": "hashlock", "label": "Hashlock", "visible": "never" },
+          { "path": "htlcVout", "label": "HTLC output index", "visible": "never" },
+          { "path": "depositorWotsPkHash", "label": "WOTS public key hash", "visible": "never" },
+          { "path": "expectedFingerprint", "label": "Expected fingerprint", "visible": "never" }
+        ]
+      },
+      "activateVaultWithSecret(bytes32 vaultId, bytes32 s, bytes activationMetadata)": {
+        "$id": "activateVaultWithSecret",
+        "intent": "Activate BTC vault",
+        "fields": [
+          { "path": "vaultId", "label": "Vault ID", "format": "raw", "visible": "always" },
+          { "path": "s", "label": "Secret", "visible": "never" },
+          { "path": "activationMetadata", "label": "Activation metadata", "format": "raw", "visible": "always" }
+        ]
+      },
+      "activateVaultWithSecretAndRedeem(bytes32 vaultId, bytes32 s)": {
+        "$id": "activateAndRedeem",
+        "intent": "Activate and redeem BTC vault",
+        "fields": [
+          { "path": "vaultId", "label": "Vault ID", "format": "raw", "visible": "always" },
+          { "path": "s", "label": "Secret", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
