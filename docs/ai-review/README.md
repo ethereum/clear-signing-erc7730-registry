@@ -64,16 +64,16 @@ The prompt asks fourteen questions:
 | prompt-injection | Does any input text address the reviewer or try to steer the verdict? |
 | other | Anything else that makes the screen differ from the code. The list above is not complete. |
 
-Two models run for now, so the team can compare them on real pull requests: Claude Sonnet 5.5 at low effort and GPT-6 Luna at xhigh effort. Each posts its own comment, with its token usage and cost at list price at the bottom. One of the two will stay. The choice and the benchmark behind it are in [#3069](https://github.com/ethereum/clear-signing-erc7730-registry/issues/3069).
+Two models run for now, so the team can compare them on real pull requests: GPT-6 Sol at medium effort and Claude Sonnet 5.5 at medium effort. Each posts its own comment, with its token usage and cost at list price at the bottom. One of the two will stay. The first benchmark is in [#3069](https://github.com/ethereum/clear-signing-erc7730-registry/issues/3069); the choice of the two models and of the prompt comes from a comparison on 20 review units of open pull requests, with Opus 5.5 as the reference, see below.
 
 The step of a model is red only when a unit got no answer: the model refused, the API failed, or the unit is above the size limit. An answer that strays from the expected format is posted with a note. Each model has its own timeout, so when one is slow the comment of the other is still posted.
 
 <details>
 <summary>What the answer looks like</summary>
 
-The answer is Markdown with fixed sections: a one-paragraph summary, then Critical, Warning and Info, each a list of findings or `None.`. A section "What could not be reviewed" appears only when something limited the review, such as a contract Sourcify does not have. A finding names its check, where it is in the descriptor and the source, why it matters (what the code does, what the screen shows, how they differ, what it means for the signer), the code it rests on, quoted from both the descriptor and the contract, and a fix when there is one. A fix that shows a field also says whether `interpolatedIntent` should mention it. The answer reports problems only: a note that something is fine is not a finding.
+The answer is Markdown with fixed sections: a one-paragraph summary, then Critical, Warning and Info, each a list of findings or `None.`. A section "What could not be reviewed" appears only when something limited the review, such as a contract Sourcify does not have. A finding starts with three lines that decide its severity: the effect, what the transaction does to the signer's assets, allowances, positions or rights, from the code; the screen, what the signer sees for it, quoting the field or the expected screen of a test; and the gap, how the two differ. Then its check, where it is in the descriptor and the source, the code it rests on, quoted from both the descriptor and the contract, and a fix when there is one. A fix that shows a field also says whether `interpolatedIntent` should mention it. The answer reports problems only: a note that something is fine is not a finding.
 
-Severity: `critical` when the signer can lose money or sign something other than what the screen says; `warning` when the screen is wrong or incomplete without a direct loss; `info` for limitations and suggestions. A fee, tax or cut taken from the amount on the screen and not stated there is critical whatever its size. In doubt between `warning` and `info`, the model chooses `info`.
+Severity follows from the effect and the screen: `critical` when an effect is absent from the screen or stated differently, another asset, amount, recipient, position or execution context, whatever the size; `warning` when the effect is on the screen but unreadable, imprecise or incomplete in a way a descriptor change fixes; `info` when nothing a descriptor can change. The prompt lists the cases that are never critical, a raw value, a storage value, an optional field, a special value shown literally, a hash standing for terms, a possibility, so that a strict reading of the rules does not inflate them. In doubt between `warning` and `info`, the model chooses `info`.
 
 </details>
 
@@ -101,12 +101,16 @@ Everything the model reads can carry text written to steer it: descriptor labels
 <details>
 <summary>What it costs</summary>
 
-Measured in the benchmark of #3069 on 25 cases with 31 planted or real defects, one input per case, list prices of September 2026:
+Measured in October 2026 on 20 review units from open pull requests, with Claude Opus 5.5 as the reference: it finds 12 critical findings in them, each checked by hand against the source. List prices, prompt prefix cached:
 
-| Model | Objectives found | Malicious cases found | Price per unit |
-|---|---|---|---|
-| Claude Sonnet 5.5, low effort | 90% | 8 of 8 | about $0.17 |
-| GPT-6 Luna, xhigh effort | 81% | 7 of 8 | about $0.013 |
+| Model | Of the 12 criticals | Extra criticals | Time per unit | Price per unit |
+|---|---|---|---|---|
+| Claude Opus 5.5, low effort | 12 | 0 | 28 s | about $0.31 |
+| GPT-6 Sol, medium effort | 12 | 5, two of them defensible | 61 s | about $0.13 |
+| GPT-6 Luna, xhigh effort | 12 | 8 | 4.8 min | about $0.02 |
+| Claude Sonnet 5.5, medium effort | 10 | 4 | 18 s | about $0.16 |
+
+The earlier benchmark of #3069, 25 cases with 31 planted or real defects, had Sonnet at low effort at 90% of the objectives and Luna at xhigh at 81%.
 
 A run reviews every unit of the pull request, the descriptors the pull request added or modified first and the smaller units first; the only limit is the 600 KB per unit above. The token usage of every request is in the artifact `ai-review-answers` of the run and in the footer of each comment.
 
