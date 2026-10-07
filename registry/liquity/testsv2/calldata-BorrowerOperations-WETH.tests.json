@@ -1,0 +1,48 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-BorrowerOperations-WETH.json",
+  "dataProvider": {
+    "tokens": {
+      "0x6440f144b7e50d6a8439336510312d2f54beb01d": { "symbol": "BOLD", "decimals": 18, "name": "BOLD Stablecoin" },
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" },
+      "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0": { "symbol": "wstETH", "decimals": 18, "name": "Wrapped liquid staked Ether 2.0" },
+      "0xae78736cd615f374d3085123a210448e74fc6393": { "symbol": "rETH", "decimals": 18, "name": "Rocket Pool ETH" }
+    }
+  },
+  "tests": [
+    {
+      "description": "adjustTroveInterestRate on calldata-BorrowerOperations-WETH",
+      "rawTx": "0x02f8cd0149841dcd6500842205b780830480a694372abd1810eaf23cb9d941bbe7596dfb2c46bc6580b8a426f4e252318d091b34d28f31f5738cef7053ad09cf4ac7426cf46622877a22c3335d24170000000000000000000000000000000000000000000000000011c37937e08000318d091b34d28f31f5738cef7053ad09cf4ac7426cf46622877a22c3335d24170000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "txHash": "0x6c611a86bf83a05dfb226d35ac6517dbdaa4576e975e3d9329626aaff257da0a",
+      "expected": {
+        "intent": "Update interest rate",
+        "owner": "Liquity",
+        "fields": [
+          { "label": "Trove ID", "value": "22412517865912344610666591322850826630726594253808037974356128721405243892759" },
+          { "label": "New interest rate", "value": "0.5%" },
+          { "label": "Max upfront fee", "value": "No limit BOLD" }
+        ]
+      }
+    },
+    {
+      "description": "claimCollateral on calldata-BorrowerOperations-WETH",
+      "rawTx": "0x02eb0123830f42408408c94b8f8302ac4e94372abd1810eaf23cb9d941bbe7596dfb2c46bc6580846f0b0c1cc0",
+      "txHash": "0x77c235dbe890ff5f35027e2b18185b1b92c4d1fa0d683d9e649d6f0bc30dbd5a",
+      "expected": { "intent": "Claim collateral", "owner": "Liquity", "fields": [] }
+    },
+    {
+      "description": "setInterestBatchManager on calldata-BorrowerOperations-WETH",
+      "rawTx": "0x02f8cf01821884841dcd650084362b300083098b6194372abd1810eaf23cb9d941bbe7596dfb2c46bc6580b8a49537f00117ec9e72f1561358fc136aa40b77152b16088f1231410075994a416d145f55f300000000000000000000000000000000001991cee928c561e37725816cbf73ba431979911cd7b698ceb716edff6d04084af393133a5273740ed6c541f4ea4c22c4720829cd8c6167b0a8fa37ec8f9f6603e5c2e9583a6e1d080c646ffce4c439ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "txHash": "0xe2bb4f4346718ef25e63f5070e0d766973518127697295a237cab0d1003b3d0a",
+      "expected": {
+        "intent": "Set batch manager",
+        "owner": "Liquity",
+        "fields": [
+          { "label": "Trove ID", "value": "10821264999475210329112828495249507489952620294148018581034650609985314051571" },
+          { "label": "Batch manager", "value": "0x00000000001991cEE928c561E37725816cBF73ba" },
+          { "label": "Max upfront fee", "value": "No limit BOLD" }
+        ]
+      }
+    }
+  ]
+}
