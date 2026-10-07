@@ -1,0 +1,165 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Diggers",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 4663,
+          "address": "0x4190a197e9c7c8D9ce1095c32e6666A13A996580"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Diggers",
+    "contractName": "Diggers",
+    "info": {
+      "url": "https://diggers.fun/",
+      "deploymentDate": "2026-07-15T00:00:00Z"
+    }
+  },
+  "display": {
+    "formats": {
+      "buy(address token,uint256 minOut,address to)": {
+        "$id": "buy",
+        "intent": "Buy Diggers coin",
+        "fields": [
+          {
+            "path": "@.value",
+            "label": "You pay",
+            "format": "amount",
+            "visible": "always"
+          },
+          {
+            "path": "minOut",
+            "label": "Minimum received",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token" },
+            "visible": "always"
+          },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "sell(address token,uint256 amountIn,uint256 minOut,address to)": {
+        "$id": "sell",
+        "intent": "Sell Diggers coin",
+        "fields": [
+          {
+            "path": "amountIn",
+            "label": "You sell",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token" },
+            "visible": "always"
+          },
+          {
+            "path": "minOut",
+            "label": "Minimum ETH received",
+            "format": "amount",
+            "visible": "always"
+          },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "create((string name,string symbol,string metadataURI,uint256 lpFeeWad,uint256 burnShareWad,address owner) params)": {
+        "$id": "create",
+        "intent": "Create Diggers coin",
+        "fields": [
+          { "path": "params.name", "label": "Coin name", "format": "raw", "visible": "always" },
+          { "path": "params.symbol", "label": "Ticker", "format": "raw", "visible": "always" },
+          { "path": "@.value", "label": "Fee + initial buy", "format": "amount", "visible": "always" }
+        ]
+      },
+      "create((string name,string symbol,string metadataURI,uint256 lpFeeWad,uint256 burnShareWad,address owner) params,(address to,uint256 share)[] feeSplits,(address to,uint256 shareWad,uint32 tranches,uint64 duration)[] locks,uint256 initialBuyMinOut)": {
+        "$id": "createWithSplits",
+        "intent": "Create Diggers coin",
+        "fields": [
+          { "path": "params.name", "label": "Coin name", "format": "raw", "visible": "always" },
+          { "path": "params.symbol", "label": "Ticker", "format": "raw", "visible": "always" },
+          { "path": "@.value", "label": "Fee + initial buy", "format": "amount", "visible": "always" }
+        ]
+      },
+      "buyAndLock(address token,uint256 minOut,(address to,uint256 shareWad,uint32 tranches,uint64 duration)[] locks)": {
+        "$id": "buyAndLock",
+        "intent": "Buy and lock Diggers coin",
+        "fields": [
+          { "path": "@.value", "label": "You pay", "format": "amount", "visible": "always" },
+          {
+            "path": "minOut",
+            "label": "Min bought, locked",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token" },
+            "visible": "always"
+          }
+        ]
+      },
+      "transferAndLock(address token,uint256 amount,(address to,uint256 shareWad,uint32 tranches,uint64 duration)[] locks)": {
+        "$id": "transferAndLock",
+        "intent": "Lock coin supply",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount locked",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token" },
+            "visible": "always"
+          }
+        ]
+      },
+      "harvest(address token)": {
+        "$id": "harvest",
+        "intent": "Collect trading fees",
+        "fields": [
+          {
+            "path": "token",
+            "label": "Coin",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "claim()": {
+        "$id": "claim",
+        "intent": "Claim earned ETH",
+        "fields": []
+      },
+      "extendReservation(address token)": {
+        "$id": "extendReservation",
+        "intent": "Extend name reservation",
+        "fields": [
+          { "path": "@.value", "label": "1 ETH = 365 days", "format": "amount", "visible": "always" },
+          {
+            "path": "token",
+            "label": "Coin",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] }
+          }
+        ]
+      },
+      "graduate(address token)": {
+        "$id": "graduate",
+        "intent": "Graduate coin to Blue chip",
+        "fields": [
+          {
+            "path": "token",
+            "label": "Coin",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
