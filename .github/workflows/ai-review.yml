@@ -40,7 +40,6 @@ env:
   AI_REVIEW_ANTHROPIC_EFFORT: low
   AI_REVIEW_OPENAI_MODEL: gpt-6-luna
   AI_REVIEW_OPENAI_EFFORT: xhigh
-  AI_REVIEW_MAX_UNITS: "10"
 
 jobs:
   review:
@@ -198,8 +197,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           node scripts/.github/scripts/ai-review/run.js --inputs ai-review/inputs --out ai-review --repo scripts \
-            --provider anthropic --model "$AI_REVIEW_ANTHROPIC_MODEL" --effort "$AI_REVIEW_ANTHROPIC_EFFORT" \
-            --max-units "$AI_REVIEW_MAX_UNITS"
+            --provider anthropic --model "$AI_REVIEW_ANTHROPIC_MODEL" --effort "$AI_REVIEW_ANTHROPIC_EFFORT"
 
       - name: Review the inputs with GPT
         if: ${{ !cancelled() && steps.collect.outcome == 'success' }}
@@ -208,8 +206,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           node scripts/.github/scripts/ai-review/run.js --inputs ai-review/inputs --out ai-review --repo scripts \
-            --provider openai --model "$AI_REVIEW_OPENAI_MODEL" --effort "$AI_REVIEW_OPENAI_EFFORT" \
-            --max-units "$AI_REVIEW_MAX_UNITS"
+            --provider openai --model "$AI_REVIEW_OPENAI_MODEL" --effort "$AI_REVIEW_OPENAI_EFFORT"
 
       - name: Upload the answers of the review
         if: ${{ !cancelled() && steps.collect.outcome == 'success' }}

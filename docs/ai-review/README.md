@@ -108,6 +108,6 @@ Measured in the benchmark of #3069 on 25 cases with 31 planted or real defects, 
 | Claude Sonnet 5.5, low effort | 90% | 8 of 8 | about $0.17 |
 | GPT-6 Luna, xhigh effort | 81% | 7 of 8 | about $0.013 |
 
-A run reviews at most 10 units per model, the descriptors the pull request added or modified first and the smaller units first; the rest are listed as not reviewed. The token usage of every request is in the artifact `ai-review-answers` of the run and in the footer of each comment.
+A run reviews every unit of the pull request, the descriptors the pull request added or modified first and the smaller units first; the only limit is the 600 KB per unit above. The token usage of every request is in the artifact `ai-review-answers` of the run and in the footer of each comment.
 
 </details>
