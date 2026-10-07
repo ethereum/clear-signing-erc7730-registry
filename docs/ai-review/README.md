@@ -9,7 +9,7 @@ The pipeline has three steps: a gate, the information retrieval, and the review 
 The workflow `ai-review.yml` starts on every pull request that changes a descriptor. It shows up among the checks as "Review (optional, needs a maintainer's approval)" and waits there. When a maintainer approves it, the job checks three things, then goes on:
 
 - The pull request changes only files under `registry/` and `ercs/`.
-- Registry Checks and Descriptor Tests are green for the head commit, and no other check failed.
+- Registry Checks, Descriptor Lint and Descriptor Tests are green for the head commit, and no other check failed.
 - The test report bundle of the head commit is published on the `test-reports` branch.
 
 When one of these does not hold, the job fails and says why in its summary. A maintainer re-runs it later, which asks for approval again. A red AI Review never blocks a merge: it is not a required check.
@@ -108,6 +108,6 @@ Measured in the benchmark of #3069 on 25 cases with 31 planted or real defects, 
 | Claude Sonnet 5.5, low effort | 90% | 8 of 8 | about $0.17 |
 | GPT-6 Luna, xhigh effort | 81% | 7 of 8 | about $0.013 |
 
-A run reviews at most 10 units per model, the descriptors the pull request added or modified first and the smaller units first; the rest are listed as not reviewed. The token usage of every request is in the artifact `ai-review-answers` of the run and in the footer of each comment.
+A run reviews every unit of the pull request, the descriptors the pull request added or modified first and the smaller units first; the only limit is the 600 KB per unit above. The token usage of every request is in the artifact `ai-review-answers` of the run and in the footer of each comment.
 
 </details>

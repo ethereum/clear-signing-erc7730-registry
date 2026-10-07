@@ -40,7 +40,6 @@ env:
   AI_REVIEW_ANTHROPIC_EFFORT: low
   AI_REVIEW_OPENAI_MODEL: gpt-6-luna
   AI_REVIEW_OPENAI_EFFORT: xhigh
-  AI_REVIEW_MAX_UNITS: "10"
 
 jobs:
   review:
@@ -74,17 +73,20 @@ jobs:
           echo "::error::The pull request changes $count file(s) outside registry/ and ercs/. See the job summary."
           exit 1
 
-      # The latest pull_request run of each workflow for the head commit.
-      # Registry Checks and Descriptor Tests must have succeeded; any other
-      # workflow that failed stops the review too, so a check added later
-      # counts without an edit here. Cancelled or skipped runs do not.
-      - name: Check that Registry Checks and Descriptor Tests are green
+      # The latest pull_request or pull_request_target run of each workflow
+      # for the head commit, except the helpers that do not check the PR.
+      # Registry Checks, Descriptor Lint and Descriptor Tests must have
+      # succeeded; any other workflow that failed stops the review too, so a
+      # check added later counts without an edit here. Cancelled or skipped
+      # runs do not.
+      - name: Check that Registry Checks, Descriptor Lint and Descriptor Tests are green
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${HEAD_SHA}&event=pull_request&per_page=100" \
-            --jq '[.workflow_runs[]] | group_by(.name) | map(max_by(.created_at))
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${HEAD_SHA}&per_page=100" \
+            --jq '[.workflow_runs[] | select(.event == "pull_request" or (.event == "pull_request_target" and (.name | IN("AI Review", "PR Labels", "Descriptor Tests Queued") | not)))]
+                  | group_by(.name) | map(max_by(.created_at))
                   | map({name, status, conclusion, url: .html_url})' > runs.json
           jq -r '.[] | "\(.name): \(.status) \(.conclusion // "-")"' runs.json
 
@@ -95,7 +97,7 @@ jobs:
             echo "::error::$1"
             exit 1
           }
-          for name in "Registry Checks" "Descriptor Tests"; do
+          for name in "Registry Checks" "Descriptor Lint" "Descriptor Tests"; do
             run=$(jq -c --arg n "$name" '.[] | select(.name == $n)' runs.json)
             [ -n "$run" ] || verdict "No $name run for this commit. Nothing to review."
             [ "$(jq -r .status <<< "$run")" = "completed" ] \
@@ -195,8 +197,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           node scripts/.github/scripts/ai-review/run.js --inputs ai-review/inputs --out ai-review --repo scripts \
-            --provider anthropic --model "$AI_REVIEW_ANTHROPIC_MODEL" --effort "$AI_REVIEW_ANTHROPIC_EFFORT" \
-            --max-units "$AI_REVIEW_MAX_UNITS"
+            --provider anthropic --model "$AI_REVIEW_ANTHROPIC_MODEL" --effort "$AI_REVIEW_ANTHROPIC_EFFORT"
 
       - name: Review the inputs with GPT
         if: ${{ !cancelled() && steps.collect.outcome == 'success' }}
@@ -205,8 +206,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           node scripts/.github/scripts/ai-review/run.js --inputs ai-review/inputs --out ai-review --repo scripts \
-            --provider openai --model "$AI_REVIEW_OPENAI_MODEL" --effort "$AI_REVIEW_OPENAI_EFFORT" \
-            --max-units "$AI_REVIEW_MAX_UNITS"
+            --provider openai --model "$AI_REVIEW_OPENAI_MODEL" --effort "$AI_REVIEW_OPENAI_EFFORT"
 
       - name: Upload the answers of the review
         if: ${{ !cancelled() && steps.collect.outcome == 'success' }}
