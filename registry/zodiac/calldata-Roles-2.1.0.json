@@ -152,11 +152,17 @@
         ]
       },
       "assignRoles(address module,bytes32[] roleKeys,bool[] memberOf)": {
-        "intent": "Assign roles",
+        "intent": "Assign roles and enable member",
+        "interpolatedIntent": "Assign roles to {module} and enable it as module",
         "fields": [
           { "path": "module", "label": "Member", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] }, "visible": "always" },
-          { "path": "roleKeys.[]", "$ref": "$.display.definitions.role", "visible": "always" },
-          { "path": "memberOf.[]", "label": "Is member", "format": "raw", "visible": "always" }
+          {
+            "iteration": "bundled",
+            "fields": [
+              { "path": "roleKeys.[]", "$ref": "$.display.definitions.role", "visible": "always" },
+              { "path": "memberOf.[]", "label": "Is member", "format": "raw", "visible": "always" }
+            ]
+          }
         ]
       },
       "setDefaultRole(address module,bytes32 roleKey)": {
@@ -174,9 +180,9 @@
           { "path": "key", "label": "Allowance", "format": "raw", "visible": "always" },
           { "path": "balance", "label": "Balance", "format": "raw", "visible": "always" },
           { "path": "refill", "label": "Refill amount", "format": "raw", "visible": "always" },
-          { "path": "maxRefill", "label": "Refill cap", "format": "raw", "visible": "always" },
+          { "path": "maxRefill", "label": "Refill cap", "format": "raw", "visible": { "ifNotIn": [0, "0"] } },
           { "path": "period", "label": "Refill period", "format": "duration", "visible": "always" },
-          { "path": "timestamp", "label": "Last refill", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" }
+          { "path": "timestamp", "label": "Last refill", "format": "date", "params": { "encoding": "timestamp" }, "visible": { "ifNotIn": [0, "0"] } }
         ]
       },
       "setTransactionUnwrapper(address to,bytes4 selector,address adapter)": {
