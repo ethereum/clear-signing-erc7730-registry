@@ -1,0 +1,127 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Stash",
+    "contract": {
+      "deployments": [{ "chainId": 1, "address": "0x00000000000060D035a8002956B5fb02e3968eec" }],
+      "factory": {
+        "deployments": [{ "chainId": 1, "address": "0x000000000000A6fA31F5fC51c1640aAc76866750" }],
+        "deployEvent": "Deployed(address,address)"
+      }
+    }
+  },
+  "metadata": {
+    "owner": "CryptoPunks",
+    "contractName": "Stash",
+    "info": { "url": "https://cryptopunks.app", "deploymentDate": "2024-01-17T22:48:47Z" }
+  },
+  "display": {
+    "formats": {
+      "withdraw(address tokenAddress, uint256 amount)": {
+        "intent": "Withdraw from Stash",
+        "interpolatedIntent": "Withdraw {#.amount}",
+        "fields": [
+          {
+            "path": "#.amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.tokenAddress", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" }
+          }
+        ]
+      },
+      "withdrawPunks(uint256[] tokenIds)": {
+        "intent": "Withdraw Punks from Stash",
+        "interpolatedIntent": "Withdraw the selected Punks from your Stash",
+        "fields": [{ "path": "#.tokenIds.[]", "label": "Punk", "format": "raw" }]
+      },
+      "withdrawERC721(address tokenAddress, uint256[] tokenIds)": {
+        "intent": "Withdraw NFTs from Stash",
+        "interpolatedIntent": "Withdraw NFTs from {#.tokenAddress} out of your Stash",
+        "fields": [
+          {
+            "path": "#.tokenAddress",
+            "label": "Collection",
+            "format": "addressName",
+            "params": { "types": ["collection", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.tokenIds.[]", "label": "Token", "format": "nftName", "params": { "collectionPath": "#.tokenAddress" } }
+        ]
+      },
+      "withdrawERC1155(address tokenAddress, uint256[] tokenIds, uint256[] amounts)": {
+        "intent": "Withdraw ERC-1155 Tokens",
+        "interpolatedIntent": "Withdraw ERC-1155 tokens from {#.tokenAddress} out of your Stash",
+        "fields": [
+          {
+            "path": "#.tokenAddress",
+            "label": "Collection",
+            "format": "addressName",
+            "params": { "types": ["collection", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.tokenIds.[]", "label": "Token ID", "format": "raw" },
+          { "path": "#.amounts.[]", "label": "Amount", "format": "raw" }
+        ]
+      },
+      "cancelPunkBid(uint256 bidNonce)": {
+        "intent": "Cancel Punk Bid",
+        "interpolatedIntent": "Cancel Punk bid {#.bidNonce}",
+        "fields": [{ "path": "#.bidNonce", "label": "Bid ID", "format": "raw" }]
+      },
+      "cancelAllPunkBids()": { "intent": "Cancel All Punk Bids", "interpolatedIntent": "Cancel every open Punk bid from your Stash", "fields": [] },
+      "processPunkBid(((uint16 numberOfUnits, uint80 pricePerUnit, address auction) order, uint256 accountNonce, uint256 bidNonce, uint256 expiration, bytes32 root) bid, uint256 punkIndex, bytes signature, bytes32[] proof)": {
+        "intent": "Accept Punk Bid",
+        "interpolatedIntent": "Sell Punk #{#.punkIndex}",
+        "fields": [
+          { "path": "#.punkIndex", "label": "Punk", "format": "raw" },
+          { "path": "#.bid.order.pricePerUnit", "label": "Sale Price", "format": "amount" },
+          { "path": "#.bid.expiration", "label": "Bid Expiration", "format": "date", "params": { "encoding": "timestamp" } },
+          {
+            "path": "#.bid.order.auction",
+            "label": "Marketplace",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.bid.order.numberOfUnits", "label": "Quantity", "format": "raw" },
+          { "path": "#.bid.accountNonce", "label": "Account Nonce", "format": "raw", "visible": "never" },
+          { "path": "#.bid.bidNonce", "label": "Bid ID", "format": "raw", "visible": "never" },
+          { "path": "#.bid.root", "label": "Punk Set Root", "format": "raw", "visible": "never" },
+          { "path": "#.signature", "label": "Bid Signature", "format": "raw", "visible": "never" },
+          { "path": "#.proof.[]", "label": "Proof", "format": "raw", "visible": "never" }
+        ]
+      },
+      "placeOrder(uint80 pricePerUnit, uint16 numberOfUnits)": {
+        "intent": "Place Order",
+        "interpolatedIntent": "Order {#.numberOfUnits} at {#.pricePerUnit} each, depositing {@.value}",
+        "fields": [
+          { "path": "#.pricePerUnit", "label": "Price Per Unit", "format": "amount" },
+          { "path": "#.numberOfUnits", "label": "Quantity", "format": "raw" },
+          { "path": "@.value", "label": "Deposit", "format": "amount" }
+        ]
+      },
+      "processOrder(uint80 costPerUnit, uint16 numberOfUnits)": {
+        "intent": "Process Order",
+        "interpolatedIntent": "Settle {#.numberOfUnits} at {#.costPerUnit} each",
+        "fields": [
+          { "path": "#.costPerUnit", "label": "Cost Per Unit", "format": "amount" },
+          { "path": "#.numberOfUnits", "label": "Quantity", "format": "raw" }
+        ]
+      },
+      "wrapPunk(uint256 punkIndex)": {
+        "intent": "Wrap Punk from Stash",
+        "interpolatedIntent": "Wrap Punk #{#.punkIndex}",
+        "fields": [{ "path": "#.punkIndex", "label": "Punk", "format": "raw" }]
+      },
+      "initialize(address _owner)": {
+        "intent": "Initialize Stash",
+        "interpolatedIntent": "Initialize this Stash with {#._owner} as owner",
+        "fields": [
+          {
+            "path": "#._owner",
+            "label": "Stash Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      }
+    }
+  }
+}
