@@ -1,0 +1,121 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-celo_election.json",
+  "tests": [
+    {
+      "description": "Vote 448 CELO for a validator group - chain 42220",
+      "rawTx": "0x02f8b082a4ec318405f5e100852ecc889a008305bebb948d6677192144292870907e3fa8a5527fe55a7ff680b884580d747a000000000000000000000000d8457a4b949c1b7bc26538f54743aa61eeca38b6000000000000000000000000000000000000000000000018493fba64ef0000000000000000000000000000000339df3fe4f5ccc864eae8491e5c8aec4611a631000000000000000000000000bf55df76204f00acf296f76cf4aaf86a866a5eb0c0",
+      "txHash": "0x3d20182aba0f864f11dfbddbe95f143fd74e18613ec9af19faf501a93aa74307",
+      "expected": {
+        "intent": "Vote",
+        "fields": [
+          { "label": "Validator Group", "value": "0xd8457a4b949c1b7Bc26538F54743Aa61EEcA38B6" },
+          { "label": "CELO to Vote", "value": "448 CELO" }
+        ],
+        "owner": "Celo"
+      }
+    },
+    {
+      "description": "Vote a fractional CELO amount for a validator group - chain 42220",
+      "rawTx": "0x02f8b082a4ec238405f5e100852e90fd12408305423d948d6677192144292870907e3fa8a5527fe55a7ff680b884580d747a000000000000000000000000d8457a4b949c1b7bc26538f54743aa61eeca38b60000000000000000000000000000000000000000000001db7992e1733acc26800000000000000000000000000339df3fe4f5ccc864eae8491e5c8aec4611a631000000000000000000000000bf55df76204f00acf296f76cf4aaf86a866a5eb0c0",
+      "txHash": "0x1c7d4e6942df98f78c4e197899144e0f991e1cbbfb02dd32cba44273f4ec0b00",
+      "expected": {
+        "intent": "Vote",
+        "fields": [
+          { "label": "Validator Group", "value": "0xd8457a4b949c1b7Bc26538F54743Aa61EEcA38B6" },
+          { "label": "CELO to Vote", "value": "8770.96374712225 CELO" }
+        ],
+        "owner": "Celo"
+      }
+    },
+    {
+      "description": "Activate pending votes - chain 42220",
+      "rawTx": "0x02f84f82a4ec228405f5e100852f25f0c90083037b14948d6677192144292870907e3fa8a5527fe55a7ff680a41c5a9d9c000000000000000000000000d8457a4b949c1b7bc26538f54743aa61eeca38b6c0",
+      "from": "0x7539C61F6Cddde187b81546194537bb732B9760d",
+      "txHash": "0x9ebdde104288834d575b293414aaa220dd2ef47df4d351e4d8c9d0611523f14c",
+      "expected": {
+        "intent": "Activate",
+        "fields": [
+          { "label": "Validator Group", "value": "0xd8457a4b949c1b7Bc26538F54743Aa61EEcA38B6" },
+          { "label": "Vote signer", "value": "0x7539C61F6Cddde187b81546194537bb732B9760d" }
+        ],
+        "owner": "Celo"
+      }
+    },
+    {
+      "description": "Activate pending votes for another account - synthetic - chain 42220",
+      "rawTx": "0x02f87082a4ec808405f5e100852e90edd000830493e0948d6677192144292870907e3fa8a5527fe55a7ff680b844c14470c4000000000000000000000000d8457a4b949c1b7bc26538f54743aa61eeca38b600000000000000000000000085b7ffaca7a9bbfe218eef9836ef6445fe3da41ac0",
+      "expected": {
+        "intent": "Activate Votes",
+        "fields": [
+          { "label": "Validator Group", "value": "0xd8457a4b949c1b7Bc26538F54743Aa61EEcA38B6" },
+          { "label": "Account", "value": "0x85B7ffaCA7A9bbFE218eeF9836EF6445FE3da41A" }
+        ],
+        "owner": "Celo"
+      }
+    },
+    {
+      "description": "Revoke 4375 CELO of pending votes - chain 42220",
+      "rawTx": "0x02f8d082a4ec218405f5e100852e90fd124083029ee4948d6677192144292870907e3fa8a5527fe55a7ff680b8a49dfb6081000000000000000000000000e09632da4deafb3da2cd6939f31c98607fccdbc50000000000000000000000000000000000000000000000ed2b525841adfc000000000000000000000000000001b2b83fdf26afc3ca7062c35bc68c8dde56db04000000000000000000000000d72ed2e3db984bac3bb351fe652200de527effcf0000000000000000000000000000000000000000000000000000000000000003c0",
+      "txHash": "0x19d96f683d5e863c2c255eb152f56bf6d2567275614cd0820b196b0a538029b0",
+      "expected": {
+        "intent": "Revoke Votes",
+        "fields": [
+          { "label": "CELO to Revoke", "value": "4375 CELO" },
+          { "label": "Validator Group", "value": "0xE09632da4dEAFb3DA2Cd6939F31c98607fCCdBC5" }
+        ],
+        "owner": "Celo"
+      }
+    },
+    {
+      "description": "Revoke 1 CELO of pending votes - chain 42220",
+      "rawTx": "0x02f8d282a4ec8201118405f5e100852f25f0c9008303d51e948d6677192144292870907e3fa8a5527fe55a7ff680b8a49dfb608100000000000000000000000070fc0b021dfdbb9a106d1ed8f35f59d3f23ecb7b0000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006f8e6ff69935f000b09d182a4739342faeaf0c770000000000000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0x381a7b1cc2bfd08de56bacf053c54a66280907e51e14fb1645232ea828c620bb",
+      "expected": {
+        "intent": "Revoke Votes",
+        "fields": [
+          { "label": "CELO to Revoke", "value": "1 CELO" },
+          { "label": "Validator Group", "value": "0x70FC0b021dFdBb9A106D1Ed8F35f59D3f23eCb7B" }
+        ],
+        "owner": "Celo"
+      }
+    },
+    {
+      "description": "Revoke 1100 CELO of active votes - chain 42220",
+      "rawTx": "0x02f8d082a4ec088405f5e100852e90fd1240830bb410948d6677192144292870907e3fa8a5527fe55a7ff680b8a46e198475000000000000000000000000e92b7ba8497486e94bb59c51f595b590c4a5f89400000000000000000000000000000000000000000000003ba1910bf341b000000000000000000000000000003753096ad5e8e390c05324b9ca2b1856a3182b480000000000000000000000006cf4bb9ff947610944c6d8e0e5ea26b1dea731960000000000000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0xe20d43df7f2f539ad9c49ece61e38e41a735d876551b519dd30b2e48df278f81",
+      "expected": {
+        "intent": "Revoke Votes",
+        "fields": [
+          { "label": "Validator Group", "value": "0xe92B7BA8497486e94bb59C51F595b590c4a5f894" },
+          { "label": "CELO to Revoke", "value": "1100 CELO" }
+        ],
+        "owner": "Celo"
+      }
+    },
+    {
+      "description": "Revoke a fractional CELO amount of active votes - chain 42220",
+      "rawTx": "0x02f8d082a4ec228405f5e100852e90fd12408302ebd0948d6677192144292870907e3fa8a5527fe55a7ff680b8a46e198475000000000000000000000000b33e9e01e561a1da60f7cb42508500e571afb6eb0000000000000000000000000000000000000000000000ea4d243c0ec517e8c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006f8e6ff69935f000b09d182a4739342faeaf0c770000000000000000000000000000000000000000000000000000000000000003c0",
+      "txHash": "0xe7f91e21726d20c813ba2f9de10287faa06d5d265cca6788faa2888719a76711",
+      "expected": {
+        "intent": "Revoke Votes",
+        "fields": [
+          { "label": "Validator Group", "value": "0xB33e9e01E561a1Da60f7Cb42508500e571afb6Eb" },
+          { "label": "CELO to Revoke", "value": "4322.096747122251 CELO" }
+        ],
+        "owner": "Celo"
+      }
+    },
+    {
+      "description": "Revoke all active votes - synthetic - chain 42220",
+      "rawTx": "0x02f8b082a4ec808405f5e100852e90edd000830493e0948d6677192144292870907e3fa8a5527fe55a7ff680b884e0a2ab52000000000000000000000000d8457a4b949c1b7bc26538f54743aa61eeca38b60000000000000000000000000339df3fe4f5ccc864eae8491e5c8aec4611a631000000000000000000000000bf55df76204f00acf296f76cf4aaf86a866a5eb00000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Revoke Votes",
+        "fields": [
+          { "label": "Validator Group", "value": "0xd8457a4b949c1b7Bc26538F54743Aa61EEcA38B6" }
+        ],
+        "owner": "Celo"
+      }
+    }
+  ]
+}
