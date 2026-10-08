@@ -1,0 +1,771 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Symbiotic Universal Delegator USDC",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0xdC94E7D2eFaF84e620C8d39386F168aAa99da058"
+        },
+        {
+          "chainId": 1,
+          "address": "0x44c213A4FCe41E9DdeCC2222Bc8f705D42e41b22"
+        },
+        {
+          "chainId": 1,
+          "address": "0xc6017834F5838176800C6C4Db8CDEB6463f33d78"
+        },
+        {
+          "chainId": 1,
+          "address": "0x073DB5f29D670E66bde5c520c12D4f4FAeAAc39D"
+        },
+        {
+          "chainId": 1,
+          "address": "0xEAD44b1545BCB2C0B6B8399f7C63F48be2fe3eeA"
+        },
+        {
+          "chainId": 1,
+          "address": "0xE7B97eB234D4A10fa774d0F8e5837bFE4Fe36c71"
+        },
+        {
+          "chainId": 1,
+          "address": "0x7E74aC5e88651ed89880e2D18bcc4E4398A09988"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Symbiotic",
+    "info": {
+      "url": "https://symbiotic.fi"
+    },
+    "contractName": "Universal Delegator (USDC)",
+    "constants": {
+      "underlyingToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+    }
+  },
+  "display": {
+    "formats": {
+      "addAdapter(address adapter)": {
+        "intent": "Add allocation adapter",
+        "interpolatedIntent": "Add adapter {adapter}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.adapter",
+            "label": "Adapter",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "removeAdapter(address adapter)": {
+        "intent": "Remove allocation adapter",
+        "interpolatedIntent": "Remove adapter {adapter}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.adapter",
+            "label": "Adapter",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setLimits(address adapter,uint256 assets,uint256 share)": {
+        "intent": "Set adapter allocation limits",
+        "interpolatedIntent": "Cap for {adapter}: {assets}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.adapter",
+            "label": "Adapter",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.assets",
+            "label": "Absolute asset cap",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken",
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "No absolute cap"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.share",
+            "label": "Share allocation cap",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16,
+              "prefix": false
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.share",
+            "label": "Share cap (WAD)",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "swapAdapters(address adapter1,address adapter2)": {
+        "intent": "Swap adapter priority",
+        "interpolatedIntent": "Swap {adapter1} and {adapter2}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.adapter1",
+            "label": "First adapter",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.adapter2",
+            "label": "Second adapter",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setAutoAllocateAdapters(address[] newAutoAllocateAdapters)": {
+        "intent": "Set automatic allocation order",
+        "interpolatedIntent": "Set allocation order: {@.to}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.newAutoAllocateAdapters.[]",
+            "label": "Adapter in order",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "allocate(address adapter,uint256 assets)": {
+        "intent": "Allocate vault assets",
+        "interpolatedIntent": "Request {assets} to {adapter}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.adapter",
+            "label": "Adapter",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.assets",
+            "label": "Maximum allocation",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken",
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "Maximum request (uint256 max)"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "allocateExact(address adapter,uint256 assets)": {
+        "intent": "Allocate using vault liquidity",
+        "interpolatedIntent": "Request {assets} to {adapter}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.adapter",
+            "label": "Adapter",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.assets",
+            "label": "Requested allocation",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "allocateAll(uint256 assets)": {
+        "intent": "Allocate across adapters",
+        "interpolatedIntent": "Allocate up to {assets}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.assets",
+            "label": "Allocation ceiling",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken",
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "Maximum request (uint256 max)"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "deallocate(address adapter,uint256 assets)": {
+        "intent": "Deallocate adapter assets",
+        "interpolatedIntent": "Deallocate request: {assets}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.adapter",
+            "label": "Adapter",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.assets",
+            "label": "Requested assets",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken",
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "Maximum request (uint256 max)"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "deallocateAll(uint256 assets)": {
+        "intent": "Deallocate across adapters",
+        "interpolatedIntent": "Deallocate request: {assets}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.assets",
+            "label": "Requested assets",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken",
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "Maximum request (uint256 max)"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "deallocateExact(uint256 assets)": {
+        "intent": "Deallocate after queue fill",
+        "interpolatedIntent": "Deallocate request: {assets}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.assets",
+            "label": "Requested assets",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken",
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "Maximum request (uint256 max)"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "forceDeallocate(address adapter,uint256 assets)": {
+        "intent": "Request adapter deallocation",
+        "interpolatedIntent": "Request deallocation: {assets}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.adapter",
+            "label": "Adapter",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.assets",
+            "label": "Maximum deallocation",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken",
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "Maximum request (uint256 max)"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "sweepPending()": {
+        "intent": "Process pending withdrawals",
+        "interpolatedIntent": "Process withdrawals: {@.to}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "grantRole(bytes32 role,address account)": {
+        "intent": "Grant delegator role",
+        "interpolatedIntent": "Grant {role} to {account}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.role",
+            "label": "Role ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.account",
+            "label": "Role recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "revokeRole(bytes32 role,address account)": {
+        "intent": "Revoke delegator role",
+        "interpolatedIntent": "Revoke {role} from {account}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.role",
+            "label": "Role ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.account",
+            "label": "Role holder",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "renounceRole(bytes32 role,address callerConfirmation)": {
+        "intent": "Renounce delegator role",
+        "interpolatedIntent": "Renounce {role}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.role",
+            "label": "Role ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.callerConfirmation",
+            "label": "Role holder",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "transferOwnership(address newOwner)": {
+        "intent": "Transfer delegator ownership",
+        "interpolatedIntent": "New owner: {newOwner}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Delegator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.newOwner",
+            "label": "New owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

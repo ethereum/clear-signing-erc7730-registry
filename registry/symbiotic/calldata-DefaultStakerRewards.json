@@ -1,0 +1,52 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x41f640B4F6a12170364589bCb3835DbE0C21C20B" },
+        { "chainId": 1, "address": "0xE7B6daFe6e5E3D6F7fA3eD7624633E4518B1bc54" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Symbiotic", "info": { "url": "https://symbiotic.fi" }, "contractName": "Default Staker Rewards" },
+  "display": {
+    "formats": {
+      "claimRewards(address recipient,address token,bytes data)": {
+        "intent": "Claim staker rewards",
+        "interpolatedIntent": "Claim {token} to {recipient}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Rewards contract",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.token", "label": "Reward token", "format": "tokenTicker", "visible": "always" },
+          {
+            "path": "#.data.[12:32]",
+            "label": "Network",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.data.[32:64]",
+            "label": "Max rewards",
+            "format": "unit",
+            "params": { "base": "", "decimals": 0, "prefix": false },
+            "visible": "always"
+          },
+          { "path": "#.data", "label": "Claim hints", "format": "raw", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

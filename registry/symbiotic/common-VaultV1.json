@@ -1,0 +1,242 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {}
+  },
+  "metadata": {
+    "owner": "Symbiotic",
+    "info": {
+      "url": "https://symbiotic.fi"
+    }
+  },
+  "display": {
+    "formats": {
+      "deposit(address onBehalfOf,uint256 amount)": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit {amount}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.amount",
+            "label": "Deposit amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.onBehalfOf",
+            "label": "Deposit beneficiary",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdraw(address claimer,uint256 amount)": {
+        "intent": "Request withdrawal",
+        "interpolatedIntent": "Request {amount} withdrawal",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.amount",
+            "label": "Requested assets",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.claimer",
+            "label": "Claim owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "redeem(address claimer,uint256 shares)": {
+        "intent": "Queue share withdrawal",
+        "interpolatedIntent": "Queue {shares} raw shares",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.shares",
+            "label": "Vault shares (raw)",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.claimer",
+            "label": "Claim owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "claim(address recipient,uint256 epoch)": {
+        "intent": "Claim withdrawal",
+        "interpolatedIntent": "Claim epoch {epoch}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.epoch",
+            "label": "Epoch",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "claimBatch(address recipient,uint256[] epochs)": {
+        "intent": "Claim withdrawals",
+        "interpolatedIntent": "Claim to {recipient}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.epochs.[]",
+            "label": "Epoch",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

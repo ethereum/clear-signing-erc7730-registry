@@ -1,0 +1,107 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-WithdrawalQueue-ifUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0x56097f1a378848a51f35e7d9ca2592c444ec4637": {
+        "name": "infiniFi USDC Liquidity Vault",
+        "symbol": "ifUSDC",
+        "decimals": 18
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Queue vault shares for a separate withdrawal NFT recipient",
+      "rawTx": "0x02f869018001843b9aca00830f4240945f3b48cfafeab497badeb692c24c2ccd3710e42880b844107703ab00000000000000000000000000000000000000000000000014d1120d7b1600000000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Request queued withdrawal",
+        "interpolatedIntent": "Queue 1.5 ifUSDC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x56097f1a378848A51F35e7D9Ca2592c444EC4637"
+          },
+          {
+            "label": "Shares to queue",
+            "value": "1.5 ifUSDC"
+          },
+          {
+            "label": "NFT recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim assets for a withdrawal NFT to a separate recipient",
+      "rawTx": "0x02f869018001843b9aca00830f4240945f3b48cfafeab497badeb692c24c2ccd3710e42880b844ddd5e1b2000000000000000000000000000000000000000000000000000000000000002a0000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Claim queued withdrawal",
+        "interpolatedIntent": "Claim withdrawal 42",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x56097f1a378848A51F35e7D9Ca2592c444EC4637"
+          },
+          {
+            "label": "Withdrawal NFT ID",
+            "value": "42"
+          },
+          {
+            "label": "Asset recipient",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet fork 25977595: Queue request sends NFT to beneficiary (0x5F3b48CFafeab497badeb692C24C2CCD3710E428, case 28)",
+      "rawTx": "0x02f86a018001843b9aca008401c9c380945f3b48cfafeab497badeb692c24c2ccd3710e42880b844107703ab000000000000000000000000000000000000000000000000000004c96c53950c0000000000000000000000008594226cc29abd71632663ed62f273d5760841e9c0",
+      "expected": {
+        "intent": "Request queued withdrawal",
+        "interpolatedIntent": "Queue 0.000005263152354572 ifUSDC",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x56097f1a378848A51F35e7D9Ca2592c444EC4637"
+          },
+          {
+            "label": "Shares to queue",
+            "value": "0.000005263152354572 ifUSDC"
+          },
+          {
+            "label": "NFT recipient",
+            "value": "0x8594226Cc29AbD71632663eD62F273d5760841E9"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet fork 25977595: Queue claim sends assets, retains NFT (0x5F3b48CFafeab497badeb692C24C2CCD3710E428, case 29)",
+      "rawTx": "0x02f86a018001843b9aca008401c9c380945f3b48cfafeab497badeb692c24c2ccd3710e42880b844ddd5e1b20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d560c7d217dc5e701e3211bf60795a69d669ab5bc0",
+      "expected": {
+        "intent": "Claim queued withdrawal",
+        "interpolatedIntent": "Claim withdrawal 0",
+        "owner": "Symbiotic",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "0x56097f1a378848A51F35e7D9Ca2592c444EC4637"
+          },
+          {
+            "label": "Withdrawal NFT ID",
+            "value": "0"
+          },
+          {
+            "label": "Asset recipient",
+            "value": "0xd560C7d217Dc5E701e3211Bf60795a69d669Ab5b"
+          }
+        ]
+      }
+    }
+  ]
+}

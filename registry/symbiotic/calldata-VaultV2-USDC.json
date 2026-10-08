@@ -1,0 +1,660 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Symbiotic Vault V2 USDC",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x007e0B8E99c6134E81A1eAAE754460E3202cB671" },
+        { "chainId": 1, "address": "0x4f7EA018239FfBdCf52133B9E98a498B2B4b9F32" },
+        { "chainId": 1, "address": "0x56097f1a378848A51F35e7D9Ca2592c444EC4637" },
+        { "chainId": 1, "address": "0x8BcD746976885b5832bAD07B4921E3f2dD1D3703" },
+        { "chainId": 1, "address": "0x9902420048aEC155f1f1DF077f115595530Df216" },
+        { "chainId": 1, "address": "0x9C8F48faD950D078AF0C6256Cb41e23B7185d142" },
+        { "chainId": 1, "address": "0xCed027AdBF0966447b25E16f943A10780D5D1c08" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Symbiotic",
+    "info": { "url": "https://symbiotic.fi" },
+    "contractName": "Vault V2 (USDC)",
+    "constants": { "underlyingToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "underlyingTicker": "USDC" },
+    "enums": {"enabled":{"true":"Enabled","false":"Disabled"},"membership":{"true":"Included","false":"Excluded"}}
+  },
+  "display": {
+    "formats": {
+      "deposit(uint256 assets,address receiver)": {
+        "intent": "Deposit into vault",
+        "interpolatedIntent": "Deposit {assets}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.assets",
+            "label": "Deposit amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "Share recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "mint(uint256 shares,address receiver)": {
+        "intent": "Mint vault shares",
+        "interpolatedIntent": "Mint {shares} for {receiver}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "value": "$.metadata.constants.underlyingTicker", "label": "Deposit asset", "format": "raw", "visible": "always" },
+          {
+            "path": "#.shares",
+            "label": "Shares to mint",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "Share recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdraw(uint256 assets,address receiver,address owner)": {
+        "intent": "Withdraw from vault",
+        "interpolatedIntent": "Withdraw {assets}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.assets",
+            "label": "Assets to withdraw",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.owner",
+            "label": "Share owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "redeem(uint256 shares,address receiver,address owner)": {
+        "intent": "Redeem vault shares",
+        "interpolatedIntent": "Redeem {shares} to {receiver}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.shares",
+            "label": "Shares to redeem",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.owner",
+            "label": "Share owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "approve(address spender,uint256 value)": {
+        "intent": "Approve vault share spending",
+        "interpolatedIntent": "Approve {value} for {spender}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.value",
+            "label": "Allowance amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to",
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "permit(address owner,address spender,uint256 value,uint256 deadline,uint8 v,bytes32 r,bytes32 s)": {
+        "intent": "Submit share permit",
+        "interpolatedIntent": "Approve {value} for {spender}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.owner",
+            "label": "Share owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.value",
+            "label": "Allowance amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to",
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.deadline",
+            "label": "Signature deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "#.v", "label": "Signature V", "format": "raw", "visible": "never" },
+          { "path": "#.r", "label": "Signature R", "format": "raw", "visible": "never" },
+          { "path": "#.s", "label": "Signature S", "format": "raw", "visible": "never" }
+        ]
+      },
+      "setDepositLimit(uint256 newLimit)": {
+        "intent": "Set vault deposit limit",
+        "interpolatedIntent": "Limit: {newLimit}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.newLimit",
+            "label": "Deposit limit",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setDepositWhitelist(bool newStatus)": {
+        "intent": "Configure deposit whitelist",
+        "interpolatedIntent": "Deposit whitelist: {newStatus}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.newStatus",
+            "label": "Deposit whitelist",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.enabled"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setIsDepositLimit(bool newStatus)": {
+        "intent": "Configure deposit limit",
+        "interpolatedIntent": "Deposit limit: {newStatus}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.newStatus",
+            "label": "Deposit limit active",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.enabled"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setDepositorWhitelistStatus(address account,bool newStatus)": {
+        "intent": "Update deposit whitelist",
+        "interpolatedIntent": "Update whitelist for {account}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.account",
+            "label": "Account",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.newStatus",
+            "label": "Whitelist membership",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.membership"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setManagementFee(uint96 newManagementFee,address newManagementFeeReceiver)": {
+        "intent": "Set vault management fee",
+        "interpolatedIntent": "Fee {newManagementFee}/s",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.newManagementFee",
+            "label": "Management fee/sec",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16,
+              "prefix": false
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.newManagementFeeReceiver",
+            "label": "Fee recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setPerformanceFee(uint96 newPerformanceFee,address newPerformanceFeeReceiver)": {
+        "intent": "Set vault performance fee",
+        "interpolatedIntent": "Fee {newPerformanceFee}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.newPerformanceFee",
+            "label": "Performance fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16,
+              "prefix": false
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.newPerformanceFeeReceiver",
+            "label": "Fee recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "grantRole(bytes32 role,address account)": {
+        "intent": "Grant vault role",
+        "interpolatedIntent": "Grant role to {account}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.role",
+            "label": "Role ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.account",
+            "label": "Account",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "revokeRole(bytes32 role,address account)": {
+        "intent": "Revoke vault role",
+        "interpolatedIntent": "Revoke role: {account}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.role",
+            "label": "Role ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.account",
+            "label": "Account",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "renounceRole(bytes32 role,address callerConfirmation)": {
+        "intent": "Renounce vault role",
+        "interpolatedIntent": "Renounce vault role",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.role",
+            "label": "Role ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.callerConfirmation",
+            "label": "Role holder",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "transferOwnership(address newOwner)": {
+        "intent": "Transfer vault ownership",
+        "interpolatedIntent": "New owner: {newOwner}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.newOwner",
+            "label": "New owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "accrueInterest()": {
+        "intent": "Accrue vault interest and fees",
+        "interpolatedIntent": "Accrue fees for {@.to}",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
