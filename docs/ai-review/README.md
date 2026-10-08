@@ -80,7 +80,7 @@ Severity follows from the effect and the screen: `critical` when an effect is ab
 <details>
 <summary>What the comment looks like</summary>
 
-One comment per model, headed as AI-generated and advisory, updated in place on later runs. It has one section per descriptor; when the deployments of a descriptor run different code, one group per implementation. Each lists the deployments, each with a link to its Sourcify page, the contract whose code was reviewed, and the number of findings per severity. The review itself is collapsed, open when it has a critical finding, and every finding is titled with its severity: 🔴 Critical, 🟠 Warning, 🔵 Info. The model, its effort, the token usage and the cost are in small print at the bottom.
+One comment per model, updated in place on later runs. It opens with the count of findings per descriptor, 🔴 critical, 🟠 warning, 🔵 info, with the contract whose code was reviewed and a link to the Sourcify page of each deployment; when the deployments of a descriptor run different code, one group per implementation. Then, for each descriptor, the model's one-paragraph summary stays in view and the findings are folded under one toggle per severity, worst first, each labelled with its count: one card per finding with the title, the Effect, Screen, Gap and Fix lines, the check and the location in the descriptor and the source, and the evidence. A "What could not be reviewed" section, when there is one, is a last toggle. The model, its effort, the token usage, the cost and a reminder that the review is advisory are in small print at the bottom.
 
 </details>
 
