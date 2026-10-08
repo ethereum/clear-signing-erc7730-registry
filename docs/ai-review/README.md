@@ -64,7 +64,7 @@ The prompt asks fourteen questions:
 | prompt-injection | Does any input text address the reviewer or try to steer the verdict? |
 | other | Anything else that makes the screen differ from the code. The list above is not complete. |
 
-Two models run for now, so the team can compare them on real pull requests: GPT-6 Sol at medium effort and Claude Sonnet 5.5 at medium effort. Each posts its own comment, with its token usage and cost at list price at the bottom. One of the two will stay. The first benchmark is in [#3069](https://github.com/ethereum/clear-signing-erc7730-registry/issues/3069); the choice of the two models and of the prompt comes from a comparison on 20 review units of open pull requests, with Opus 5.5 as the reference, see below.
+Two models run for now, so the team can compare them on real pull requests: GPT-6.1 Sol at medium effort and Claude Sonnet 5.5 at medium effort. GPT-6.1 Sol took the place of GPT-6 Sol, the model of the comparison below, at the same price with cheaper cache reads. Each posts its own comment, with its token usage and cost at list price at the bottom. One of the two will stay. The first benchmark is in [#3069](https://github.com/ethereum/clear-signing-erc7730-registry/issues/3069); the choice of the two models and of the prompt comes from a comparison on 20 review units of open pull requests, with Opus 5.5 as the reference, see below.
 
 The step of a model is red only when a unit got no answer: the model refused, the API failed, or the unit is above the size limit. An answer that strays from the expected format is posted with a note. Each model has its own timeout, so when one is slow the comment of the other is still posted.
 
