@@ -1,0 +1,40 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Uniswap Universal Router",
+    "contract": {
+      "deployments": [
+        { "chainId": 137, "address": "0x1095692A6237d83C6a72F3F5eFEdb9A670C49223" },
+        { "chainId": 137, "address": "0xDc264714F68d84CF29BC605589405E78bDBE7C9f" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Uniswap Labs",
+    "info": { "deploymentDate": "2025-01-21T20:40:47Z", "url": "https://uniswap.org/" },
+    "contractName": "UniversalRouter"
+  },
+  "display": {
+    "formats": {
+      "execute(bytes commands,bytes[] inputs,uint256 deadline)": {
+        "$id": "executeWithDeadline",
+        "intent": "Swap",
+        "fields": [
+          { "path": "@.value", "label": "Native amount", "format": "amount", "visible": "always" },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" },
+          { "path": "commands", "label": "Commands", "visible": "never" },
+          { "path": "inputs", "label": "Inputs", "visible": "never" }
+        ]
+      },
+      "execute(bytes commands,bytes[] inputs)": {
+        "$id": "execute",
+        "intent": "Swap",
+        "fields": [
+          { "path": "@.value", "label": "Native amount", "format": "amount", "visible": "always" },
+          { "path": "commands", "label": "Commands", "visible": "never" },
+          { "path": "inputs", "label": "Inputs", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
