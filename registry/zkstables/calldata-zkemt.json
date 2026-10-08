@@ -1,0 +1,871 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 8453,
+          "address": "0x8ED36a645beF11075283524C01acA742CbAfC832"
+        },
+        {
+          "chainId": 84532,
+          "address": "0x79C12772De2cFc45359ecCb8A9c038c3e5aE8e31"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "ZK Stables",
+    "info": {
+      "url": "https://zkstables.com"
+    },
+    "contractName": "ZKEMT"
+  },
+  "display": {
+    "formats": {
+      "approve(address spender, uint256 value)": {
+        "intent": "Approve",
+        "interpolatedIntent": "Approve {value} for {spender}",
+        "fields": [
+          {
+            "path": "value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            }
+          },
+          {
+            "path": "spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "encryptedToPublicTransfer((bytes proof,(uint256 x,uint256 y) senderEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) newSenderBalanceCt,address recipient,uint256 amount) params, (bool clear,bool enabled) flags)": {
+        "intent": "Transfer (encrypted to public)",
+        "interpolatedIntent": "Send {params.amount} to {params.recipient}",
+        "fields": [
+          {
+            "path": "params.amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "params.recipient",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "encryptedToPublicTransferWithAuth((bytes proof,(uint256 x,uint256 y) senderEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) newSenderBalanceCt,address recipient,uint256 amount) params, (bool clear,bool enabled) flags, (uint256 nonce,uint256 deadline,bytes signature) auth)": {
+        "intent": "Encrypted to public (auth)",
+        "interpolatedIntent": "Send {params.amount} to {params.recipient}",
+        "fields": [
+          {
+            "path": "params.amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "params.recipient",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "encryptedToPublicTransferWithCallerAuth((bytes proof,(uint256 x,uint256 y) senderEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) newSenderBalanceCt,address recipient,uint256 amount) params, (bool clear,bool enabled) flags, (uint256 nonce,uint256 deadline,bytes signature) auth)": {
+        "intent": "Encrypted to public (caller)",
+        "interpolatedIntent": "Send {params.amount} to {params.recipient}",
+        "fields": [
+          {
+            "path": "params.amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "params.recipient",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "encryptedTransfer((bytes proof,(uint256 x,uint256 y) senderEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) newSenderBalanceCt,(uint256 x,uint256 y) recipientEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) recipientAmountCt,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) trcAmountCt) params, (bool clear,bool enabled) flags)": {
+        "intent": "Encrypted transfer",
+        "fields": []
+      },
+      "encryptedTransferWithAuth((bytes proof,(uint256 x,uint256 y) senderEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) newSenderBalanceCt,(uint256 x,uint256 y) recipientEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) recipientAmountCt,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) trcAmountCt) params, (bool clear,bool enabled) flags, (uint256 nonce,uint256 deadline,bytes signature) auth)": {
+        "intent": "Encrypted transfer (auth)",
+        "fields": []
+      },
+      "encryptedTransferWithCallerAuth((bytes proof,(uint256 x,uint256 y) senderEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) newSenderBalanceCt,(uint256 x,uint256 y) recipientEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) recipientAmountCt,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) trcAmountCt) params, (bool clear,bool enabled) flags, (uint256 nonce,uint256 deadline,bytes signature) auth)": {
+        "intent": "Encrypted transfer (caller)",
+        "fields": []
+      },
+      "executeEncryptedBurn(bytes32 epk, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) newBalance, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) tsCiphertext, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) trcCiphertext)": {
+        "intent": "Execute encrypted burn",
+        "fields": [
+          {
+            "label": "ZK address",
+            "format": "raw",
+            "path": "#.epk"
+          }
+        ]
+      },
+      "executeEncryptedMint(bytes32 epk, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) mintCiphertext, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) tsCiphertext, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) trcCiphertext)": {
+        "intent": "Execute encrypted mint",
+        "fields": [
+          {
+            "label": "ZK address",
+            "format": "raw",
+            "path": "#.epk"
+          }
+        ]
+      },
+      "executePublicBurn(address burnFrom, uint256 amount)": {
+        "intent": "Execute public burn",
+        "interpolatedIntent": "Burn {amount} from {burnFrom}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "burnFrom",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "executePublicMint(address to, uint256 amount)": {
+        "intent": "Execute public mint",
+        "interpolatedIntent": "Mint {amount} to {to}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "executeRotateTotalSupplyKey(((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) newTotalSupply, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) expectedOldTotalSupply)": {
+        "intent": "Rotate total supply key",
+        "fields": []
+      },
+      "executeSeizeEncrypted(bytes32 epk, address to, uint256 amount)": {
+        "intent": "Execute seize (encrypted)",
+        "interpolatedIntent": "Seize {amount} to {to}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "epk",
+            "label": "From ZK address",
+            "format": "raw"
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "executeSeizePublic(address from, address to, uint256 amount)": {
+        "intent": "Execute seize",
+        "interpolatedIntent": "Seize {amount} from {from}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "initialize(string name_, string symbol_)": {
+        "intent": "Initialize",
+        "fields": [
+          {
+            "label": "Name",
+            "format": "raw",
+            "path": "#.name_"
+          },
+          {
+            "label": "Symbol",
+            "format": "raw",
+            "path": "#.symbol_"
+          }
+        ]
+      },
+      "managePendingBalance(bytes32 epk, (bool clear,bool enabled) flags)": {
+        "intent": "Manage pending balance",
+        "fields": [
+          {
+            "path": "flags.enabled",
+            "label": "Enable pending",
+            "format": "raw"
+          },
+          {
+            "path": "flags.clear",
+            "label": "Clear pending",
+            "format": "raw"
+          },
+          {
+            "path": "epk",
+            "label": "ZK address",
+            "format": "raw"
+          }
+        ]
+      },
+      "managePendingBalanceWithAuth(bytes32 epk, (bool clear,bool enabled) flags, (uint256 nonce,uint256 deadline,bytes signature) auth)": {
+        "intent": "Manage pending balance",
+        "fields": [
+          {
+            "path": "flags.enabled",
+            "label": "Enable pending",
+            "format": "raw"
+          },
+          {
+            "path": "flags.clear",
+            "label": "Clear pending",
+            "format": "raw"
+          },
+          {
+            "path": "epk",
+            "label": "ZK address",
+            "format": "raw"
+          }
+        ]
+      },
+      "permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s)": {
+        "intent": "Approve (permit)",
+        "interpolatedIntent": "Approve {value} for {spender}",
+        "fields": [
+          {
+            "path": "owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            }
+          },
+          {
+            "path": "deadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          }
+        ]
+      },
+      "publicToEncryptedTransfer(uint256 amount, bytes32 epk)": {
+        "intent": "Transfer (public to encrypted)",
+        "interpolatedIntent": "Send {amount} to encrypted",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "epk",
+            "label": "To ZK address",
+            "format": "raw"
+          }
+        ]
+      },
+      "publicToEncryptedTransferWithAuth(address owner, bytes32 recipient, uint256 amount, (uint256 nonce,uint256 deadline,bytes signature) auth)": {
+        "intent": "Public to encrypted (auth)",
+        "interpolatedIntent": "Send {amount} to encrypted",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "recipient",
+            "label": "To ZK address",
+            "format": "raw"
+          }
+        ]
+      },
+      "publicToEncryptedTransferWithCallerAuth(address owner, bytes32 recipient, uint256 amount, (uint256 nonce,uint256 deadline,bytes signature) auth)": {
+        "intent": "Public to encrypted (caller)",
+        "interpolatedIntent": "Send {amount} to encrypted",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "recipient",
+            "label": "To ZK address",
+            "format": "raw"
+          }
+        ]
+      },
+      "receiveWithAuthorization(address from, address to, uint256 value, uint256 validAfter, uint256 validBefore, bytes32 nonce, bytes signature)": {
+        "intent": "Receive with authorization",
+        "interpolatedIntent": "Receive {value} from {from}",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "validAfter",
+            "label": "Valid after",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "validBefore",
+            "label": "Valid before",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "nonce",
+            "label": "Nonce",
+            "visible": "never"
+          }
+        ]
+      },
+      "receiveWithAuthorization(address from, address to, uint256 value, uint256 validAfter, uint256 validBefore, bytes32 nonce, uint8 v, bytes32 r, bytes32 s)": {
+        "intent": "Receive with authorization",
+        "interpolatedIntent": "Receive {value} from {from}",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "validAfter",
+            "label": "Valid after",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "validBefore",
+            "label": "Valid before",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "nonce",
+            "label": "Nonce",
+            "visible": "never"
+          }
+        ]
+      },
+      "setAutoEncrypt(bool enabled, bytes32 epk)": {
+        "intent": "Set auto-encrypt",
+        "fields": [
+          {
+            "label": "Enabled",
+            "format": "raw",
+            "path": "#.enabled"
+          },
+          {
+            "label": "ZK address",
+            "format": "raw",
+            "path": "#.epk"
+          }
+        ]
+      },
+      "setAutoEncryptWithAuth(address owner, bool enabled, bytes32 epk, (uint256 nonce,uint256 deadline,bytes signature) auth)": {
+        "intent": "Set auto-encrypt (auth)",
+        "fields": [
+          {
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            },
+            "path": "#.owner"
+          },
+          {
+            "label": "Enabled",
+            "format": "raw",
+            "path": "#.enabled"
+          },
+          {
+            "label": "ZK address",
+            "format": "raw",
+            "path": "#.epk"
+          }
+        ]
+      },
+      "toggleAutoEncrypt(bool enabled)": {
+        "intent": "Toggle auto-encrypt",
+        "fields": [
+          {
+            "label": "Enabled",
+            "format": "raw",
+            "path": "#.enabled"
+          }
+        ]
+      },
+      "toggleAutoEncryptWithAuth(address owner, bool enabled, (uint256 nonce,uint256 deadline,bytes signature) auth)": {
+        "intent": "Toggle auto-encrypt (auth)",
+        "fields": [
+          {
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            },
+            "path": "#.owner"
+          },
+          {
+            "label": "Enabled",
+            "format": "raw",
+            "path": "#.enabled"
+          }
+        ]
+      },
+      "transfer(address to, uint256 value)": {
+        "intent": "Transfer",
+        "interpolatedIntent": "Send {value} to {to}",
+        "fields": [
+          {
+            "path": "value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "transferFrom(address from, address to, uint256 value)": {
+        "intent": "Transfer from",
+        "interpolatedIntent": "Send {value} from {from} to {to}",
+        "fields": [
+          {
+            "path": "value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "transferWithAuthorization(address from, address to, uint256 value, uint256 validAfter, uint256 validBefore, bytes32 nonce, bytes signature)": {
+        "intent": "Transfer with authorization",
+        "interpolatedIntent": "Send {value} to {to}",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "validAfter",
+            "label": "Valid after",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "validBefore",
+            "label": "Valid before",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "nonce",
+            "label": "Nonce",
+            "visible": "never"
+          }
+        ]
+      },
+      "transferWithAuthorization(address from, address to, uint256 value, uint256 validAfter, uint256 validBefore, bytes32 nonce, uint8 v, bytes32 r, bytes32 s)": {
+        "intent": "Transfer with authorization",
+        "interpolatedIntent": "Send {value} to {to}",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            }
+          },
+          {
+            "path": "validAfter",
+            "label": "Valid after",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "validBefore",
+            "label": "Valid before",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "nonce",
+            "label": "Nonce",
+            "visible": "never"
+          }
+        ]
+      },
+      "upgradeToAndCall(address newImplementation, bytes data)": {
+        "intent": "Upgrade contract",
+        "fields": [
+          {
+            "label": "New implementation",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract",
+                "token",
+                "collection"
+              ]
+            },
+            "path": "#.newImplementation"
+          },
+          {
+            "label": "Data",
+            "format": "raw",
+            "path": "#.data"
+          }
+        ]
+      }
+    }
+  }
+}
