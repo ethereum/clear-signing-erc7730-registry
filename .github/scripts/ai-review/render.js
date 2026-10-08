@@ -10,7 +10,7 @@
  * The comment opens with the counts of findings per descriptor. Each
  * descriptor then has the model's summary in view and its findings folded
  * under one toggle per severity: a card per finding with its title, the
- * Effect, Screen, Gap and Fix lines, the check and the location, and the
+ * Effect, Shown, Gap and Fix lines, the check and the location, and the
  * evidence. An answer that does not parse into that shape is shown as it
  * came, folded.
  *
@@ -37,7 +37,8 @@ const ICONS = { critical: '🔴', warning: '🟠', info: '🔵' };
 const LABELS = { critical: 'Critical', warning: 'Warning', info: 'Info' };
 // The lines of a finding as bullets, in this order, then Fix; Check and Where
 // make the locator line and Evidence the code block.
-const VISIBLE = ['Effect', 'Screen', 'Gap', 'Why', 'Outcome'];
+// Screen is the earlier name of the Shown line, kept for the answers of older runs.
+const VISIBLE = ['Effect', 'Shown', 'Screen', 'Gap', 'Why', 'Outcome'];
 const FOLDED = ['Check', 'Where', 'Evidence'];
 
 
@@ -181,7 +182,7 @@ function renderItem(item, { heading = false } = {}) {
   return `${head}\n${rest.split('\n').map((l) => (l.trim() ? `  ${l}` : l)).join('\n')}`;
 }
 
-/** One finding: its title with the severity, the Effect, Screen, Gap and Fix lines, the check and the location, then the evidence. */
+/** One finding: its title with the severity, the Effect, Shown, Gap and Fix lines, the check and the location, then the evidence. */
 function renderFinding(severity, finding) {
   const items = finding.items;
   const byKey = (k) => items.filter((i) => i.key.toLowerCase() === k.toLowerCase());
