@@ -52,7 +52,10 @@
         "label": "Minimum Amount to receive",
         "format": "tokenAmount",
         "params": { "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"] }
-      }
+      },
+      "bridgeTool": { "label": "Bridge", "format": "raw" },
+      "destinationChain": { "label": "To chain id", "format": "raw" },
+      "bridgeReceiver": { "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] } }
     },
     "formats": {
       "swapTokensMultipleV3ERC20ToERC20(bytes32 _transactionId, string _integrator, string _referrer, address _receiver, uint256 _minAmountOut, (address callTo, address approveTo, address sendingAssetId, address receivingAssetId, uint256 fromAmount, bytes callData, bool requiresDeposit)[] _swapData)": {
@@ -264,6 +267,255 @@
           { "label": "Swap Data Call To", "path": "_swapData.[].callTo", "visible": "never" },
           { "label": "Swap Data Approve To", "path": "_swapData.[].approveTo", "visible": "never" },
           { "label": "Swap Data Requires Deposit", "path": "_swapData.[].requiresDeposit", "visible": "never" }
+        ]
+      },
+      "startBridgeTokensViaAcrossV4((bytes32 transactionId, string bridge, string integrator, address referrer, address sendingAssetId, address receiver, uint256 minAmount, uint256 destinationChainId, bool hasSourceSwaps, bool hasDestinationCall) _bridgeData, (bytes32 receiverAddress, bytes32 refundAddress, bytes32 sendingAssetId, bytes32 receivingAssetId, uint256 outputAmount, uint128 outputAmountMultiplier, bytes32 exclusiveRelayer, uint32 quoteTimestamp, uint32 fillDeadline, uint32 exclusivityParameter, bytes message) _acrossData)": {
+        "$id": "startBridgeTokensViaAcrossV4",
+        "intent": "Bridge",
+        "interpolatedIntent": "Bridge {_bridgeData.minAmount} to {_bridgeData.destinationChainId}",
+        "fields": [
+          {
+            "path": "_bridgeData.minAmount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "_bridgeData.sendingAssetId",
+              "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"]
+            },
+            "visible": "always"
+          },
+          { "path": "_bridgeData.destinationChainId", "$ref": "$.display.definitions.destinationChain", "visible": "always" },
+          { "path": "_bridgeData.receiver", "$ref": "$.display.definitions.bridgeReceiver", "visible": "always" },
+          { "path": "_bridgeData.bridge", "$ref": "$.display.definitions.bridgeTool", "visible": "always" },
+          { "label": "Transaction Id", "path": "_bridgeData.transactionId", "visible": "never" },
+          { "label": "Integrator", "path": "_bridgeData.integrator", "visible": "never" },
+          { "label": "Referrer", "path": "_bridgeData.referrer", "visible": "never" },
+          { "label": "Source swaps", "path": "_bridgeData.hasSourceSwaps", "visible": "never" },
+          { "label": "Dest. call", "path": "_bridgeData.hasDestinationCall", "visible": "never" },
+          { "label": "Across to", "path": "_acrossData.receiverAddress", "visible": "never" },
+          { "label": "Across refund", "path": "_acrossData.refundAddress", "visible": "never" },
+          { "label": "Across input", "path": "_acrossData.sendingAssetId", "visible": "never" },
+          { "label": "Across output", "path": "_acrossData.receivingAssetId", "visible": "never" },
+          { "label": "Output amount", "path": "_acrossData.outputAmount", "visible": "never" },
+          { "label": "Out multiplier", "path": "_acrossData.outputAmountMultiplier", "visible": "never" },
+          { "label": "Excl. relayer", "path": "_acrossData.exclusiveRelayer", "visible": "never" },
+          { "label": "Quote time", "path": "_acrossData.quoteTimestamp", "visible": "never" },
+          { "label": "Fill deadline", "path": "_acrossData.fillDeadline", "visible": "never" },
+          { "label": "Exclusivity", "path": "_acrossData.exclusivityParameter", "visible": "never" },
+          { "label": "Message", "path": "_acrossData.message", "visible": "never" }
+        ]
+      },
+      "swapAndStartBridgeTokensViaAcrossV4((bytes32 transactionId, string bridge, string integrator, address referrer, address sendingAssetId, address receiver, uint256 minAmount, uint256 destinationChainId, bool hasSourceSwaps, bool hasDestinationCall) _bridgeData, (address callTo, address approveTo, address sendingAssetId, address receivingAssetId, uint256 fromAmount, bytes callData, bool requiresDeposit)[] _swapData, (bytes32 receiverAddress, bytes32 refundAddress, bytes32 sendingAssetId, bytes32 receivingAssetId, uint256 outputAmount, uint128 outputAmountMultiplier, bytes32 exclusiveRelayer, uint32 quoteTimestamp, uint32 fillDeadline, uint32 exclusivityParameter, bytes message) _acrossData)": {
+        "$id": "swapAndStartBridgeTokensViaAcrossV4",
+        "intent": "Bridge",
+        "interpolatedIntent": "Bridge {_swapData.[0].fromAmount} to {_bridgeData.destinationChainId}",
+        "fields": [
+          {
+            "path": "_swapData.[0].fromAmount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "_swapData.[0].sendingAssetId",
+              "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "_bridgeData.minAmount",
+            "label": "Min bridged",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "_bridgeData.sendingAssetId",
+              "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"]
+            },
+            "visible": "always"
+          },
+          { "path": "_bridgeData.destinationChainId", "$ref": "$.display.definitions.destinationChain", "visible": "always" },
+          { "path": "_bridgeData.receiver", "$ref": "$.display.definitions.bridgeReceiver", "visible": "always" },
+          { "path": "_bridgeData.bridge", "$ref": "$.display.definitions.bridgeTool", "visible": "always" },
+          { "label": "Transaction Id", "path": "_bridgeData.transactionId", "visible": "never" },
+          { "label": "Integrator", "path": "_bridgeData.integrator", "visible": "never" },
+          { "label": "Referrer", "path": "_bridgeData.referrer", "visible": "never" },
+          { "label": "Source swaps", "path": "_bridgeData.hasSourceSwaps", "visible": "never" },
+          { "label": "Dest. call", "path": "_bridgeData.hasDestinationCall", "visible": "never" },
+          { "label": "Swap call to", "path": "_swapData.[].callTo", "visible": "never" },
+          { "label": "Swap approve", "path": "_swapData.[].approveTo", "visible": "never" },
+          { "label": "Swap call data", "path": "_swapData.[].callData", "visible": "never" },
+          { "label": "Swap output", "path": "_swapData.[].receivingAssetId", "visible": "never" },
+          { "label": "Swap deposit", "path": "_swapData.[].requiresDeposit", "visible": "never" },
+          { "label": "Across to", "path": "_acrossData.receiverAddress", "visible": "never" },
+          { "label": "Across refund", "path": "_acrossData.refundAddress", "visible": "never" },
+          { "label": "Across input", "path": "_acrossData.sendingAssetId", "visible": "never" },
+          { "label": "Across output", "path": "_acrossData.receivingAssetId", "visible": "never" },
+          { "label": "Output amount", "path": "_acrossData.outputAmount", "visible": "never" },
+          { "label": "Out multiplier", "path": "_acrossData.outputAmountMultiplier", "visible": "never" },
+          { "label": "Excl. relayer", "path": "_acrossData.exclusiveRelayer", "visible": "never" },
+          { "label": "Quote time", "path": "_acrossData.quoteTimestamp", "visible": "never" },
+          { "label": "Fill deadline", "path": "_acrossData.fillDeadline", "visible": "never" },
+          { "label": "Exclusivity", "path": "_acrossData.exclusivityParameter", "visible": "never" },
+          { "label": "Message", "path": "_acrossData.message", "visible": "never" }
+        ]
+      },
+      "startBridgeTokensViaCelerCircleBridge((bytes32 transactionId, string bridge, string integrator, address referrer, address sendingAssetId, address receiver, uint256 minAmount, uint256 destinationChainId, bool hasSourceSwaps, bool hasDestinationCall) _bridgeData, (uint256 maxFee, uint32 minFinalityThreshold) _celerCircleData)": {
+        "$id": "startBridgeTokensViaCelerCircleBridge",
+        "intent": "Bridge",
+        "interpolatedIntent": "Bridge {_bridgeData.minAmount} to {_bridgeData.destinationChainId}",
+        "fields": [
+          {
+            "path": "_bridgeData.minAmount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "_bridgeData.sendingAssetId",
+              "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "_celerCircleData.maxFee",
+            "label": "Max fee",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_bridgeData.sendingAssetId" },
+            "visible": "always"
+          },
+          { "path": "_bridgeData.destinationChainId", "$ref": "$.display.definitions.destinationChain", "visible": "always" },
+          { "path": "_bridgeData.receiver", "$ref": "$.display.definitions.bridgeReceiver", "visible": "always" },
+          { "path": "_bridgeData.bridge", "$ref": "$.display.definitions.bridgeTool", "visible": "always" },
+          { "label": "Transaction Id", "path": "_bridgeData.transactionId", "visible": "never" },
+          { "label": "Integrator", "path": "_bridgeData.integrator", "visible": "never" },
+          { "label": "Referrer", "path": "_bridgeData.referrer", "visible": "never" },
+          { "label": "Source swaps", "path": "_bridgeData.hasSourceSwaps", "visible": "never" },
+          { "label": "Dest. call", "path": "_bridgeData.hasDestinationCall", "visible": "never" },
+          { "label": "Finality", "path": "_celerCircleData.minFinalityThreshold", "visible": "never" }
+        ]
+      },
+      "swapAndStartBridgeTokensViaCelerCircleBridge((bytes32 transactionId, string bridge, string integrator, address referrer, address sendingAssetId, address receiver, uint256 minAmount, uint256 destinationChainId, bool hasSourceSwaps, bool hasDestinationCall) _bridgeData, (address callTo, address approveTo, address sendingAssetId, address receivingAssetId, uint256 fromAmount, bytes callData, bool requiresDeposit)[] _swapData, (uint256 maxFee, uint32 minFinalityThreshold) _celerCircleData)": {
+        "$id": "swapAndStartBridgeTokensViaCelerCircleBridge",
+        "intent": "Bridge",
+        "interpolatedIntent": "Bridge {_swapData.[0].fromAmount} to {_bridgeData.destinationChainId}",
+        "fields": [
+          {
+            "path": "_swapData.[0].fromAmount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "_swapData.[0].sendingAssetId",
+              "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "_bridgeData.minAmount",
+            "label": "Min bridged",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "_bridgeData.sendingAssetId",
+              "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "_celerCircleData.maxFee",
+            "label": "Max fee",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_bridgeData.sendingAssetId" },
+            "visible": "always"
+          },
+          { "path": "_bridgeData.destinationChainId", "$ref": "$.display.definitions.destinationChain", "visible": "always" },
+          { "path": "_bridgeData.receiver", "$ref": "$.display.definitions.bridgeReceiver", "visible": "always" },
+          { "path": "_bridgeData.bridge", "$ref": "$.display.definitions.bridgeTool", "visible": "always" },
+          { "label": "Transaction Id", "path": "_bridgeData.transactionId", "visible": "never" },
+          { "label": "Integrator", "path": "_bridgeData.integrator", "visible": "never" },
+          { "label": "Referrer", "path": "_bridgeData.referrer", "visible": "never" },
+          { "label": "Source swaps", "path": "_bridgeData.hasSourceSwaps", "visible": "never" },
+          { "label": "Dest. call", "path": "_bridgeData.hasDestinationCall", "visible": "never" },
+          { "label": "Swap call to", "path": "_swapData.[].callTo", "visible": "never" },
+          { "label": "Swap approve", "path": "_swapData.[].approveTo", "visible": "never" },
+          { "label": "Swap call data", "path": "_swapData.[].callData", "visible": "never" },
+          { "label": "Swap output", "path": "_swapData.[].receivingAssetId", "visible": "never" },
+          { "label": "Swap deposit", "path": "_swapData.[].requiresDeposit", "visible": "never" },
+          { "label": "Finality", "path": "_celerCircleData.minFinalityThreshold", "visible": "never" }
+        ]
+      },
+      "startBridgeTokensViaRelayDepository((bytes32 transactionId, string bridge, string integrator, address referrer, address sendingAssetId, address receiver, uint256 minAmount, uint256 destinationChainId, bool hasSourceSwaps, bool hasDestinationCall) _bridgeData, (bytes32 orderId, address depositorAddress) _relayDepositoryData)": {
+        "$id": "startBridgeTokensViaRelayDepository",
+        "intent": "Bridge",
+        "interpolatedIntent": "Bridge {_bridgeData.minAmount} to {_bridgeData.destinationChainId}",
+        "fields": [
+          {
+            "path": "_bridgeData.minAmount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "_bridgeData.sendingAssetId",
+              "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"]
+            },
+            "visible": "always"
+          },
+          { "path": "_bridgeData.destinationChainId", "$ref": "$.display.definitions.destinationChain", "visible": "always" },
+          { "path": "_bridgeData.receiver", "$ref": "$.display.definitions.bridgeReceiver", "visible": "always" },
+          {
+            "path": "_relayDepositoryData.depositorAddress",
+            "label": "Depositor",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "_bridgeData.bridge", "$ref": "$.display.definitions.bridgeTool", "visible": "always" },
+          { "label": "Transaction Id", "path": "_bridgeData.transactionId", "visible": "never" },
+          { "label": "Integrator", "path": "_bridgeData.integrator", "visible": "never" },
+          { "label": "Referrer", "path": "_bridgeData.referrer", "visible": "never" },
+          { "label": "Source swaps", "path": "_bridgeData.hasSourceSwaps", "visible": "never" },
+          { "label": "Dest. call", "path": "_bridgeData.hasDestinationCall", "visible": "never" },
+          { "label": "Order Id", "path": "_relayDepositoryData.orderId", "visible": "never" }
+        ]
+      },
+      "swapAndStartBridgeTokensViaRelayDepository((bytes32 transactionId, string bridge, string integrator, address referrer, address sendingAssetId, address receiver, uint256 minAmount, uint256 destinationChainId, bool hasSourceSwaps, bool hasDestinationCall) _bridgeData, (address callTo, address approveTo, address sendingAssetId, address receivingAssetId, uint256 fromAmount, bytes callData, bool requiresDeposit)[] _swapData, (bytes32 orderId, address depositorAddress) _relayDepositoryData)": {
+        "$id": "swapAndStartBridgeTokensViaRelayDepository",
+        "intent": "Bridge",
+        "interpolatedIntent": "Bridge {_swapData.[0].fromAmount} to {_bridgeData.destinationChainId}",
+        "fields": [
+          {
+            "path": "_swapData.[0].fromAmount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "_swapData.[0].sendingAssetId",
+              "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "_bridgeData.minAmount",
+            "label": "Min bridged",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "_bridgeData.sendingAssetId",
+              "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"]
+            },
+            "visible": "always"
+          },
+          { "path": "_bridgeData.destinationChainId", "$ref": "$.display.definitions.destinationChain", "visible": "always" },
+          { "path": "_bridgeData.receiver", "$ref": "$.display.definitions.bridgeReceiver", "visible": "always" },
+          {
+            "path": "_relayDepositoryData.depositorAddress",
+            "label": "Depositor",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "_bridgeData.bridge", "$ref": "$.display.definitions.bridgeTool", "visible": "always" },
+          { "label": "Transaction Id", "path": "_bridgeData.transactionId", "visible": "never" },
+          { "label": "Integrator", "path": "_bridgeData.integrator", "visible": "never" },
+          { "label": "Referrer", "path": "_bridgeData.referrer", "visible": "never" },
+          { "label": "Source swaps", "path": "_bridgeData.hasSourceSwaps", "visible": "never" },
+          { "label": "Dest. call", "path": "_bridgeData.hasDestinationCall", "visible": "never" },
+          { "label": "Swap call to", "path": "_swapData.[].callTo", "visible": "never" },
+          { "label": "Swap approve", "path": "_swapData.[].approveTo", "visible": "never" },
+          { "label": "Swap call data", "path": "_swapData.[].callData", "visible": "never" },
+          { "label": "Swap output", "path": "_swapData.[].receivingAssetId", "visible": "never" },
+          { "label": "Swap deposit", "path": "_swapData.[].requiresDeposit", "visible": "never" },
+          { "label": "Order Id", "path": "_relayDepositoryData.orderId", "visible": "never" }
         ]
       }
     }
