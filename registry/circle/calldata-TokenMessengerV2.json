@@ -1,0 +1,50 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Circle CCTP V2 - TokenMessengerV2",
+    "contract": { "deployments": [{ "chainId": 137, "address": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d" }] }
+  },
+  "metadata": {
+    "owner": "Circle",
+    "contractName": "TokenMessengerV2",
+    "info": { "url": "https://www.circle.com/", "deploymentDate": "2025-06-09T18:45:11Z" }
+  },
+  "display": {
+    "definitions": {
+      "burnAmount": { "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "burnToken" } },
+      "destination": { "label": "Dest. domain", "format": "raw" },
+      "mintRecipient": { "label": "Mint recipient", "format": "raw" },
+      "maxFee": { "label": "Max fee", "format": "tokenAmount", "params": { "tokenPath": "burnToken" } },
+      "destinationCaller": { "label": "Dest. caller", "format": "raw" }
+    },
+    "formats": {
+      "depositForBurn(uint256 amount, uint32 destinationDomain, bytes32 mintRecipient, address burnToken, bytes32 destinationCaller, uint256 maxFee, uint32 minFinalityThreshold)": {
+        "intent": "Bridge via CCTP",
+        "interpolatedIntent": "Bridge {amount} to domain {destinationDomain}",
+        "fields": [
+          { "path": "amount", "$ref": "$.display.definitions.burnAmount", "visible": "always" },
+          { "path": "destinationDomain", "$ref": "$.display.definitions.destination", "visible": "always" },
+          { "path": "mintRecipient", "$ref": "$.display.definitions.mintRecipient", "visible": "always" },
+          { "path": "maxFee", "$ref": "$.display.definitions.maxFee", "visible": "always" },
+          { "path": "destinationCaller", "$ref": "$.display.definitions.destinationCaller", "visible": "always" },
+          { "path": "burnToken", "label": "Burn token", "visible": "never" },
+          { "path": "minFinalityThreshold", "label": "Min finality", "visible": "never" }
+        ]
+      },
+      "depositForBurnWithHook(uint256 amount, uint32 destinationDomain, bytes32 mintRecipient, address burnToken, bytes32 destinationCaller, uint256 maxFee, uint32 minFinalityThreshold, bytes hookData)": {
+        "intent": "Bridge via CCTP",
+        "interpolatedIntent": "Bridge {amount} to domain {destinationDomain}",
+        "fields": [
+          { "path": "amount", "$ref": "$.display.definitions.burnAmount", "visible": "always" },
+          { "path": "destinationDomain", "$ref": "$.display.definitions.destination", "visible": "always" },
+          { "path": "mintRecipient", "$ref": "$.display.definitions.mintRecipient", "visible": "always" },
+          { "path": "maxFee", "$ref": "$.display.definitions.maxFee", "visible": "always" },
+          { "path": "destinationCaller", "$ref": "$.display.definitions.destinationCaller", "visible": "always" },
+          { "path": "hookData", "label": "Hook data", "format": "raw", "visible": "always" },
+          { "path": "burnToken", "label": "Burn token", "visible": "never" },
+          { "path": "minFinalityThreshold", "label": "Min finality", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
