@@ -1,0 +1,289 @@
+name: AI Review
+
+# An advisory review of the descriptors of a pull request by an LLM. It
+# never blocks a merge: it is not a required check, and a red result only
+# means the review could not run. How it works: docs/ai-review/README.md.
+#
+# It runs on pull_request_target, so it runs the workflow file of the base
+# branch with secrets on pull requests from forks too. Two rules hold in
+# every job: nothing from the pull request is executed, and nothing from it
+# reaches a shell line (the steps read the changed files, the run
+# conclusions and the test report bundle through the GitHub API, as data);
+# the API keys and the permission to write comments never share a job.
+#
+# The review job is bound to the Environment ai-review, which holds the keys
+# and requires a maintainer's approval: the check waits until a maintainer
+# clicks. Descriptor Test Results publishes the bundle one to three minutes
+# after the tests complete; a click inside that window fails on the bundle,
+# wait and re-run.
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+    # The same files as Descriptor Tests: without a descriptor change there
+    # is no test run and no bundle, so nothing to review.
+    paths:
+      - "registry/**/*.json"
+      - "ercs/**/*.json"
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  REPORTS_BRANCH: test-reports
+  AI_REVIEW_ANTHROPIC_MODEL: claude-sonnet-5-5
+  AI_REVIEW_ANTHROPIC_EFFORT: low
+  AI_REVIEW_OPENAI_MODEL: gpt-6-luna
+  AI_REVIEW_OPENAI_EFFORT: xhigh
+
+jobs:
+  review:
+    name: Review (optional, needs a maintainer's approval)
+    environment: ai-review
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      # A pull request can edit the workflows that check it, so one that
+      # touches anything outside the registry could have made Registry Checks
+      # and Descriptor Tests green itself. The file names stay inside jq: they
+      # are pull request data and never reach a shell line. A rename counts
+      # by both names.
+      - name: Stop when the pull request changes files outside the registry
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" --paginate \
+            --jq '.[] | .filename, (.previous_filename // empty)' \
+            | jq -R . | jq -s 'map(select(startswith("registry/") or startswith("ercs/") | not))' > outside.json
+          count=$(jq length outside.json)
+          if [ "$count" -eq 0 ]; then exit 0; fi
+          {
+            echo "## AI review: not run"
+            echo
+            echo "This pull request changes files outside \`registry/\` and \`ercs/\`, so it is not reviewed:"
+            echo
+            jq -r '.[] | "- `\(gsub("[^A-Za-z0-9/._-]"; ""))`"' outside.json
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error::The pull request changes $count file(s) outside registry/ and ercs/. See the job summary."
+          exit 1
+
+      # The latest pull_request or pull_request_target run of each workflow
+      # for the head commit, except the helpers that do not check the PR.
+      # Registry Checks, Descriptor Lint and Descriptor Tests must have
+      # succeeded; any other workflow that failed stops the review too, so a
+      # check added later counts without an edit here. Cancelled or skipped
+      # runs do not.
+      - name: Check that Registry Checks, Descriptor Lint and Descriptor Tests are green
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${HEAD_SHA}&per_page=100" \
+            --jq '[.workflow_runs[] | select(.event == "pull_request" or (.event == "pull_request_target" and (.name | IN("AI Review", "PR Labels", "Descriptor Tests Queued") | not)))]
+                  | group_by(.name) | map(max_by(.created_at))
+                  | map({name, status, conclusion, url: .html_url})' > runs.json
+          jq -r '.[] | "\(.name): \(.status) \(.conclusion // "-")"' runs.json
+
+          verdict() {
+            echo "## AI review: not run" >> "$GITHUB_STEP_SUMMARY"
+            echo >> "$GITHUB_STEP_SUMMARY"
+            echo "$1" >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::$1"
+            exit 1
+          }
+          for name in "Registry Checks" "Descriptor Lint" "Descriptor Tests"; do
+            run=$(jq -c --arg n "$name" '.[] | select(.name == $n)' runs.json)
+            [ -n "$run" ] || verdict "No $name run for this commit. Nothing to review."
+            [ "$(jq -r .status <<< "$run")" = "completed" ] \
+              || verdict "$name has not finished for this commit. Re-run this job once it is green."
+            [ "$(jq -r .conclusion <<< "$run")" = "success" ] \
+              || verdict "$name concluded with $(jq -r .conclusion <<< "$run") ($(jq -r .url <<< "$run")). The review only runs on green checks."
+          done
+          red=$(jq -r '.[] | select(.status == "completed")
+                       | select(.conclusion == "failure" or .conclusion == "timed_out" or .conclusion == "action_required" or .conclusion == "startup_failure")
+                       | "\(.name) (\(.url))"' runs.json)
+          [ -z "$red" ] || verdict "A check of this commit failed: $red. The review only runs on green checks."
+
+      # The bundle is the JSON that Descriptor Test Results publishes on the
+      # test-reports branch for every test run (see
+      # .github/test-runner-docs/bundle.md). The index of the pull request
+      # says which run tested which commit.
+      - name: Checkout the test reports of the pull request
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ env.REPORTS_BRANCH }}
+          sparse-checkout: pr/${{ github.event.pull_request.number }}
+          path: reports
+          persist-credentials: false
+
+      - name: Find the test report bundle of the head commit
+        id: bundle
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          index="reports/pr/${PR_NUMBER}/index.json"
+          run_id=$( [ -f "$index" ] && jq -r --arg sha "$HEAD_SHA" \
+            '[.runs[] | select(.headSha == $sha)] | max_by(.runId) | .runId // empty' "$index" || true)
+          bundle="reports/pr/${PR_NUMBER}/${run_id}.json"
+          if [ -z "$run_id" ] || [ ! -f "$bundle" ]; then
+            msg="No test report bundle for commit ${HEAD_SHA:0:7} on ${REPORTS_BRANCH} yet. Descriptor Test Results publishes it one to three minutes after Descriptor Tests completes: wait, then re-run this job."
+            printf '## AI review: not run\n\n%s\n' "$msg" >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::$msg"
+            exit 1
+          fi
+          mkdir -p ai-review
+          cp "$bundle" ai-review/bundle.json
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          {
+            echo "## AI review: checks passed"
+            echo
+            echo "Commit \`${HEAD_SHA:0:7}\`, test report bundle of run ${run_id}, $(jq '.descriptors | length' "$bundle") descriptor(s):"
+            echo
+            jq -r '.descriptors[] | "- `\(.path | gsub("[^A-Za-z0-9/._-]"; ""))`"' "$bundle"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # The scripts, their dependencies, the prompt and the specification come
+      # from the base branch. The install runs no package scripts and restores
+      # no cache.
+      - name: Checkout the scripts, the prompt and the spec
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: scripts
+          persist-credentials: false
+          sparse-checkout: |
+            .github/scripts/ai-review
+            specs/erc-7730.md
+            package.json
+            package-lock.json
+
+      - name: Setup node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "22"
+
+      - name: Install the dependencies of the scripts
+        working-directory: scripts
+        run: npm ci --ignore-scripts
+
+      - name: Collect the inputs of the review from Sourcify
+        id: collect
+        env:
+          SOURCIFY_TOKEN: ${{ secrets.SOURCIFY_TOKEN_CLEAR_SIGNING_CI }}
+        run: node scripts/.github/scripts/ai-review/collect.js --bundle ai-review/bundle.json --out ai-review
+
+      - name: Upload the inputs of the review
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ai-review-inputs
+          path: ai-review/inputs
+          retention-days: 30
+
+      # One request per input and model. A key is the only secret of its
+      # step; the script gets no token for GitHub and writes nothing but the
+      # answers. The second model runs even when the first failed, so one
+      # provider's outage does not hide the other's review, and each step has
+      # its own timeout, so a slow model fails its step and the answers of
+      # the other are still uploaded and posted.
+      - name: Review the inputs with Claude
+        timeout-minutes: 15
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node scripts/.github/scripts/ai-review/run.js --inputs ai-review/inputs --out ai-review --repo scripts \
+            --provider anthropic --model "$AI_REVIEW_ANTHROPIC_MODEL" --effort "$AI_REVIEW_ANTHROPIC_EFFORT"
+
+      - name: Review the inputs with GPT
+        if: ${{ !cancelled() && steps.collect.outcome == 'success' }}
+        timeout-minutes: 15
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          node scripts/.github/scripts/ai-review/run.js --inputs ai-review/inputs --out ai-review --repo scripts \
+            --provider openai --model "$AI_REVIEW_OPENAI_MODEL" --effort "$AI_REVIEW_OPENAI_EFFORT"
+
+      - name: Upload the answers of the review
+        if: ${{ !cancelled() && steps.collect.outcome == 'success' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ai-review-answers
+          path: ai-review/answers
+          retention-days: 90
+          if-no-files-found: ignore
+
+  # The only job that can write on the pull request. It reads the answers
+  # from the artifact of the review job and nothing from the pull request.
+  # It runs when the review job failed too, so the answers of one model are
+  # posted when the other failed.
+  post:
+    name: Post the review
+    needs: review
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Download the answers of the review
+        id: download
+        continue-on-error: true
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: ai-review-answers
+          path: answers
+
+      - name: Checkout the renderer
+        if: steps.download.outcome == 'success'
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: scripts
+          persist-credentials: false
+          sparse-checkout: .github/scripts/ai-review
+
+      - name: Setup node
+        if: steps.download.outcome == 'success'
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "22"
+
+      - name: Render the comments
+        if: steps.download.outcome == 'success'
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          node scripts/.github/scripts/ai-review/render.js --answers answers --out comments \
+            --run-url "$RUN_URL" --head-sha "$HEAD_SHA"
+
+      # One comment per model and pull request: the comment that starts with
+      # the same marker is updated, otherwise a new one is created.
+      - name: Post the comments
+        if: steps.download.outcome == 'success'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        with:
+          script: |
+            const fs = require('fs');
+            const { owner, repo } = context.repo;
+            const issue_number = Number(process.env.PR_NUMBER);
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number, per_page: 100 });
+            for (const file of fs.readdirSync('comments').filter((f) => f.endsWith('.md')).sort()) {
+              const body = fs.readFileSync(`comments/${file}`, 'utf8');
+              const marker = body.slice(0, body.indexOf('\n'));
+              const existing = comments.find((c) => c.user.type === 'Bot' && c.body.startsWith(marker));
+              if (existing) {
+                await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+                core.info(`${file}: updated comment ${existing.id}`);
+              } else {
+                const { data } = await github.rest.issues.createComment({ owner, repo, issue_number, body });
+                core.info(`${file}: created comment ${data.id}`);
+              }
+            }

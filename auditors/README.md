@@ -8,7 +8,7 @@
 
 - Review descriptors regularly, e.g. by adding this repo to your [Watch list](https://github.com/watching) and setting up [Notifications](https://github.com/settings/notifications)
 - Publish a signed attestation (or open an issue) for each descriptor reviewed
-- Maintain your attestation as descriptors evolve — new version = new attestation required
+- Maintain your attestation as descriptors evolve — new version = new attestation required. [dropped-attestations.md](dropped-attestations.md) lists the descriptors whose attestation was removed because the descriptor changed
 
 ---
 

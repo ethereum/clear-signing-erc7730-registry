@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-MintAndRedeem-dev-bsc.json",
+  "dataProvider": {
+    "tokens": {
+      "0xFcfacB1A5B980Bde7a610aFe564CdA5F8107493c": { "symbol": "ftUSD", "decimals": 6, "name": "Flying Tulip USD" },
+      "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d": { "symbol": "USDC", "decimals": 18, "name": "USD Coin" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Buy ftUSD (synthetic)",
+      "rawTx": "0x02f8ad3832843b9aca00843b9aca008307a120945f8d7b2009355a48ace2643d18e782f5c581849580b884a647e8ec0000000000000000000000008ac76a51cc950d9822d68b83fe1ad97b32cd580d0000000000000000000000000000000000000000000000004550b7badfc66000000000000000000000000000000000000000000000000000000000006a25e6e400000000000000000000000000000000000000000000000000000000004bcf88c0",
+      "expected": {
+        "intent": "Buy ftUSD",
+        "owner": "Flying Tulip",
+        "fields": [
+          { "label": "Pay", "value": "4.994694 USDC" },
+          { "label": "Minimum receive", "value": "4.968328 ftUSD" },
+          { "label": "Deadline", "value": "2026-06-07 21:47:16Z" }
+        ],
+        "interpolatedIntent": "Buy 4.968328 ftUSD"
+      }
+    },
+    {
+      "description": "Sell ftUSD (synthetic)",
+      "rawTx": "0x02f8ad3833843b9aca00843b9aca008307a120945f8d7b2009355a48ace2643d18e782f5c581849580b884ea2092f30000000000000000000000008ac76a51cc950d9822d68b83fe1ad97b32cd580d000000000000000000000000000000000000000000000000000000000080c4b9000000000000000000000000000000000000000000000000000000006a4d6ff3000000000000000000000000000000000000000000000000748bccb327b7f000c0",
+      "expected": {
+        "intent": "Sell ftUSD",
+        "owner": "Flying Tulip",
+        "fields": [
+          { "label": "Pay", "value": "8.438969 ftUSD" },
+          { "label": "Minimum receive", "value": "8.398031 USDC" },
+          { "label": "Deadline", "value": "2026-07-07 21:30:27Z" }
+        ],
+        "interpolatedIntent": "Sell 8.438969 ftUSD"
+      }
+    }
+  ]
+}
