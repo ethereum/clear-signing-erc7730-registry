@@ -152,10 +152,6 @@ function render(folder) {
       where += `- **Deployments:** ${deployments.length > 0 ? deployments.slice(0, 8).map(sourcify).join(', ') + (deployments.length > 8 ? `, and ${deployments.length - 8} more` : '') : 'none listed'}\n`;
       where += `- **Contract:** ${codeLine}\n`;
 
-      if (record.skipped) {
-        section += `${where}- **Findings:** not reviewed, ${line(record.skipped)}\n\n`;
-        continue;
-      }
       if (!record.answer) {
         section += `${where}- **Findings:** the review did not run. ${line(record.error, 400)}\n\n`;
         continue;

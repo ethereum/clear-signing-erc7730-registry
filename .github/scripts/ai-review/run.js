@@ -5,7 +5,7 @@
  *
  * Usage: node run.js --inputs <dir> --out <dir> --repo <dir>
  *          --provider openai|anthropic --model <model> --effort <effort>
- *          [--max-units 10] [--parallel 3]
+ *          [--parallel 3]
  *
  * Environment: OPENAI_API_KEY or ANTHROPIC_API_KEY, for the provider used.
  *
@@ -64,16 +64,14 @@ const { values: opts } = parseArgs({
     provider: { type: 'string' },
     model: { type: 'string' },
     effort: { type: 'string' },
-    'max-units': { type: 'string', default: '10' },
     parallel: { type: 'string', default: '3' },
   },
 });
 if (!opts.inputs || !opts.out || !opts.repo || !opts.model || !opts.effort || !PRICES[opts.provider]) {
-  console.error('usage: run.js --inputs <dir> --out <dir> --repo <dir> --provider openai|anthropic --model <model> --effort <effort> [--max-units n] [--parallel n]');
+  console.error('usage: run.js --inputs <dir> --out <dir> --repo <dir> --provider openai|anthropic --model <model> --effort <effort> [--parallel n]');
   process.exit(1);
 }
 const { provider, model, effort } = opts;
-const maxUnits = Number(opts['max-units']);
 const parallel = Math.max(1, Number(opts.parallel));
 const label = `${provider}-${model}`;
 
@@ -218,7 +216,7 @@ function checkAnswer(text) {
 }
 
 // ---------------------------------------------------------------------------
-// The run: every unit of the index, some skipped, the rest sent to the model
+// The run: every unit of the index, each sent to the model
 // ---------------------------------------------------------------------------
 
 const kilobytes = (bytes) => Math.round((bytes ?? 0) / 1000);
@@ -253,9 +251,8 @@ async function askModel(client, input) {
   return result;
 }
 
-/** What happens to a unit: skipped by the cap, failed for its size, or reviewed. */
+/** What happens to a unit: failed for its size, or reviewed. */
 async function outcomeOf(client, unit, input, maxBytes) {
-  if (unit.position >= maxUnits) return { ok: false, error: null, skipped: `cap of ${maxUnits} units per run` };
   if (unit.tooLarge) return { ok: false, error: `the unit is ${kilobytes(unit.bytes)} KB, above the limit of ${kilobytes(maxBytes)} KB; nothing is trimmed to make it fit` };
   return askModel(client, input);
 }
@@ -282,7 +279,6 @@ async function reviewUnit(client, unit, maxBytes, outDir) {
 }
 
 function describe(record) {
-  if (record.skipped) return `skipped (${record.skipped})`;
   if (!record.answer) return `failed: ${record.error}`;
   const what = `${record.counts.critical} critical, ${record.counts.warning} warning, ${record.counts.info} info${record.ok ? '' : ` (${record.error})`}`;
   const how = record.usage ? ` (${record.usage.inputTokens} in, ${record.usage.outputTokens} out, $${record.costUSD?.toFixed(4) ?? '?'}, ${record.seconds}s)` : '';
@@ -308,8 +304,7 @@ function totalsOf(records) {
   const sum = (key) => reviewed.reduce((n, r) => n + (r.usage[key] ?? 0), 0);
   return {
     reviewed: records.filter((r) => r.answer).length,
-    failed: records.filter((r) => !r.answer && !r.skipped).length,
-    skipped: records.filter((r) => r.skipped).length,
+    failed: records.filter((r) => !r.answer).length,
     inputTokens: sum('inputTokens'),
     cacheReadTokens: sum('cacheReadTokens'),
     cacheWriteTokens: sum('cacheWriteTokens'),
@@ -320,12 +315,10 @@ function totalsOf(records) {
   };
 }
 
-/** The order of review, which the cap cuts: the descriptors the pull request added or modified first, then the rest, smaller units first in each group so more of them fit. */
+/** The order of review and of the comment: the descriptors the pull request added or modified first, then the rest, smaller units first in each group. */
 function ordered(units) {
   const changed = (unit) => (unit.change === 'added' || unit.change === 'modified' ? 0 : 1);
-  return [...units]
-    .sort((a, b) => changed(a) - changed(b) || (a.bytes ?? 0) - (b.bytes ?? 0))
-    .map((unit, position) => ({ ...unit, position }));
+  return [...units].sort((a, b) => changed(a) - changed(b) || (a.bytes ?? 0) - (b.bytes ?? 0));
 }
 
 async function main() {
@@ -340,7 +333,7 @@ async function main() {
   const totals = totalsOf(records);
 
   const summary = {
-    provider, model, effort, maxUnits,
+    provider, model, effort,
     pr: index.pr ?? null,
     run: index.run ?? null,
     ranAt: new Date().toISOString(),
@@ -350,7 +343,7 @@ async function main() {
   fs.writeFileSync(path.join(outDir, 'summary.json'), JSON.stringify(summary, null, 2));
 
   const t = totals;
-  const line = `${t.reviewed} reviewed, ${t.failed} failed, ${t.skipped} skipped; ${t.inputTokens} input tokens (${t.cacheReadTokens} cached), ${t.outputTokens} output tokens${t.reasoningTokens != null ? ` (${t.reasoningTokens} reasoning)` : ''}, ${t.seconds}s of model time${t.costUSD != null ? `, about $${t.costUSD.toFixed(3)}` : ''}`;
+  const line = `${t.reviewed} reviewed, ${t.failed} failed; ${t.inputTokens} input tokens (${t.cacheReadTokens} cached), ${t.outputTokens} output tokens${t.reasoningTokens != null ? ` (${t.reasoningTokens} reasoning)` : ''}, ${t.seconds}s of model time${t.costUSD != null ? `, about $${t.costUSD.toFixed(3)}` : ''}`;
   console.log(line);
   if (process.env.GITHUB_STEP_SUMMARY) {
     fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `\n## AI review: ${model}, effort ${effort}\n\n${line}\n`);
