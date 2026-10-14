@@ -182,7 +182,7 @@ A finding is one block, worst first inside its section:
 <the exact code, or the descriptor text, the finding rests on; at most 15 lines>
 ```
 
-- **Fix:** <the change to the descriptor or the tests; as a JSON snippet in a fenced block when it is a descriptor change. An `intent` you propose has at most 50 characters. A fix that adds a field or makes one visible also says whether `interpolatedIntent` should mention it. Leave the line out when there is none.>
+- **Fix:** <the change to the descriptor or the tests; as a JSON snippet in a fenced block when it is a descriptor change, with the keys of the descriptor as they are. A label or an intent you propose holds for every transaction: no number that comes from storage, such as a fee rate the owner can change. An `intent` you propose has at most 50 characters. A fix that adds a field or makes one visible also says whether `interpolatedIntent` should mention it. Leave the line out when there is none.>
 ````
 
 Rules:
