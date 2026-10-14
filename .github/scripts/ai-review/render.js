@@ -7,12 +7,12 @@
  *
  * <answers> holds one folder per model, as run.js writes them.
  *
- * The comment opens with the counts of findings per descriptor. Each
- * descriptor then has the model's summary in view and its findings folded
- * under one toggle per severity: a card per finding with its title, the
- * Effect, Shown, Gap and Fix lines, the check and the location, and the
- * evidence. An answer that does not parse into that shape is shown as it
- * came, folded.
+ * The comment is the model's own Markdown. It opens with a note that the
+ * review is advisory and with the counts of findings per descriptor. Then
+ * every finding of an answer, a "###" block, is folded under its own title
+ * with the severity of its section in front, worst first, and the section
+ * "What could not be reviewed" is folded under its name. The title of the
+ * answer, its section headings and its "None." lines are not shown.
  *
  * Every answer was written by a model from data that came from the pull
  * request, so it is untrusted: the Markdown is kept, but HTML is escaped,
@@ -33,14 +33,9 @@ const { countFindings } = require('./findings');
 // GitHub rejects a comment body above 65536 characters.
 const MAX_BODY = 60_000;
 const MAX_ANSWER = 16_000;
+const SEVERITIES = ['critical', 'warning', 'info'];
 const ICONS = { critical: '🔴', warning: '🟠', info: '🔵' };
 const LABELS = { critical: 'Critical', warning: 'Warning', info: 'Info' };
-// The lines of a finding as bullets, in this order, then Fix; Check and Where
-// make the locator line and Evidence the code block.
-// Screen is the earlier name of the Shown line, kept for the answers of older runs.
-const VISIBLE = ['Effect', 'Shown', 'Screen', 'Gap', 'Why', 'Outcome'];
-const FOLDED = ['Check', 'Where', 'Evidence'];
-
 
 const { values: opts } = parseArgs({
   options: {
@@ -73,8 +68,8 @@ const prose = (line) => line.replace(/(`+)(.*?)\1|[^`]+|`+/g, (m, ticks) => (tic
 // A line of prose that cannot become a heading of the comment: a heading in
 // it is demoted below the comment's own.
 const demoted = (raw) => prose(raw).replace(/^(\s{0,3})(#{1,6})(\s)/, (m, indent, hashes, space) => `${indent}${'#'.repeat(Math.min(6, hashes.length + 3))}${space}`);
-// One line, for a summary or a table cell.
-const line = (value, max = 200) => prose(String(value ?? '').slice(0, max)).replace(/\s+/g, ' ').replace(/\|/g, '\\|');
+// One line, for a title or a table cell.
+const line = (value, max = 200) => prose(String(value ?? '').slice(0, max)).replace(/\s+/g, ' ');
 const ticks = (value, max = 300) => `\`${line(value, max).replace(/`/g, "'")}\``;
 // A repository path from the bundle: only characters a path in this repository can have.
 const repoPath = (value) => String(value ?? '').replace(/[^A-Za-z0-9/._-]/g, '').slice(0, 200);
@@ -116,123 +111,63 @@ function render(tokens) {
 
 const CUT_NOTE = '*The answer was longer than this comment shows. The whole of it is in the artifact `ai-review-answers` of the run.*';
 
-// ---------------------------------------------------------------------------
-// The shape of an answer: a summary, then Critical, Warning and Info, each a
-// list of findings, then an optional "What could not be reviewed". A finding
-// is a "###" title and "- **Key:** text" items, each item owning the lines
-// that follow it, code included.
-// ---------------------------------------------------------------------------
-
-function parseAnswer(markdown) {
-  const { tokens, cut } = tokenize(markdown);
-  const answer = { summary: [], findings: { critical: [], warning: [], info: [] }, loose: { critical: [], warning: [], info: [] }, limits: [], cut };
-  let section = 'summary';
-  let finding = null;
-  let item = null;
-  let first = true;
-  const push = (token) => {
-    if (item) item.lines.push(token);
-    else if (finding) finding.preamble.push(token);
-    else if (section === 'summary') answer.summary.push(token);
-    else if (section === 'limits') answer.limits.push(token);
-    else if (answer.loose[section]) answer.loose[section].push(token);
-  };
-  for (const token of tokens) {
-    if (token.code) { push(token); continue; }
-    const raw = token.text;
-    if (first && /^# /.test(raw)) { first = false; continue; }
-    if (raw.trim()) first = false;
-    const heading = raw.match(/^## (.+)$/);
-    if (heading) {
-      const name = heading[1].trim().toLowerCase();
-      section = ['critical', 'warning', 'info'].includes(name) ? name : /^what could not be reviewed/.test(name) ? 'limits' : 'other';
-      finding = null;
-      item = null;
-      continue;
-    }
-    const title = answer.findings[section] && raw.match(/^### (.+)$/);
-    if (title) {
-      finding = { title: title[1].trim(), preamble: [], items: [] };
-      item = null;
-      answer.findings[section].push(finding);
-      continue;
-    }
-    const key = finding && raw.match(/^- \*\*([A-Za-z][A-Za-z ]{0,30}):\*\*\s?(.*)$/);
-    if (key) {
-      item = { key: key[1].trim(), text: key[2], lines: [] };
-      finding.items.push(item);
-      continue;
-    }
-    if (section === 'other') continue;
-    push(token);
-  }
-  // A "What could not be reviewed" that says nothing limited the review is noise.
-  if (/^\s*(nothing|none)\b/i.test(render(answer.limits))) answer.limits = [];
-  return answer;
-}
-
-/** One "- **Key:** text" item, with the lines it owns: prose indented into the item, code after it. */
-function renderItem(item, { heading = false } = {}) {
-  const head = heading ? `**${line(item.key, 40)}:** ${prose(item.text)}` : `- **${line(item.key, 40)}:** ${prose(item.text)}`;
-  const rest = render(item.lines);
-  if (!rest) return head;
-  // A folded item with no text of its own, "Evidence:" then a code block, is the block alone.
-  if (heading && !item.text.trim()) return rest;
-  if (heading || item.lines.some((t) => t.code)) return `${head}\n\n${rest}`;
-  return `${head}\n${rest.split('\n').map((l) => (l.trim() ? `  ${l}` : l)).join('\n')}`;
-}
-
-/** One finding: its title with the severity, the Effect, Shown, Gap and Fix lines, the check and the location, then the evidence. */
-function renderFinding(severity, finding) {
-  const items = finding.items;
-  const byKey = (k) => items.filter((i) => i.key.toLowerCase() === k.toLowerCase());
-  const known = (k) => [...VISIBLE, ...FOLDED, 'Fix'].some((n) => n.toLowerCase() === k.toLowerCase());
-  const bullets = [...VISIBLE.flatMap(byKey), ...items.filter((i) => !known(i.key)), ...byKey('Fix')];
-  const locator = ['Check', 'Where'].flatMap(byKey).map((i) => `${line(i.key, 40)}: ${prose(i.text)}`).filter(Boolean);
-
-  let out = `#### ${ICONS[severity]} ${LABELS[severity]}: ${line(finding.title, 300)}\n\n`;
-  const preamble = render(finding.preamble);
-  if (preamble) out += `${preamble}\n\n`;
-  if (bullets.length > 0) out += `${bullets.map((i) => renderItem(i)).join('\n')}\n\n`;
-  if (locator.length > 0) out += `<sub>${locator.join(' · ')}</sub>\n\n`;
-  const evidence = byKey('Evidence').map((i) => renderItem(i, { heading: true })).join('\n\n');
-  if (evidence) out += `${evidence}\n\n`;
-  return out;
-}
-
-/**
- * The findings of an answer: one toggle per severity, worst first, labelled
- * with the count, and one for the limits of the review at the end. The
- * summary stays in view above. GitHub renders Markdown inside <details>
- * only with a blank line after <summary> and before </details>, and the
- * blocks are never "open".
- */
+// GitHub renders Markdown inside <details> only with a blank line after
+// <summary> and before </details>, and the blocks are never "open".
 const toggle = (label, inner) => `<details>\n<summary>${label}</summary>\n\n${inner}</details>\n\n`;
 
-function renderAnswer(answer) {
-  let out = '';
-  const summary = render(answer.summary);
-  if (summary) out += `${summary.split('\n').map((l) => `> ${l}`).join('\n')}\n\n`;
-  for (const severity of ['critical', 'warning', 'info']) {
-    const findings = answer.findings[severity];
-    let cards = findings.map((finding) => renderFinding(severity, finding)).join('');
-    const loose = render(answer.loose[severity]);
-    if (loose && !/^none\.?$/i.test(loose.trim())) cards += `${loose}\n\n`;
-    if (!cards) continue;
-    const n = findings.length;
-    const label = n > 0 ? `${ICONS[severity]} ${n} ${severity === 'warning' && n > 1 ? 'warnings' : severity}` : `${ICONS[severity]} ${LABELS[severity]}`;
-    out += toggle(label, cards);
-  }
-  const limits = render(answer.limits);
-  if (limits) out += toggle('What could not be reviewed', `${limits}\n\n`);
-  if (answer.cut) out += `${CUT_NOTE}\n\n`;
-  return out;
-}
+// ---------------------------------------------------------------------------
+// The answer folded: "## Critical", "## Warning" and "## Info" hold "###"
+// findings, "## What could not be reviewed" is one block of text.
+// ---------------------------------------------------------------------------
 
-/** The whole answer as it came, escaped, for one that does not follow the format. */
-function renderRaw(markdown) {
+/**
+ * The answer as Markdown: one toggle per finding, titled with the severity
+ * of its section and the finding's own title; the limits of the review as a
+ * last toggle. The "# Review" title, the section headings and the "None."
+ * lines are dropped, and so is any text before the first section. Text that
+ * does not belong to a finding is shown as it is. An answer with no section
+ * at all is shown whole.
+ */
+function foldAnswer(markdown) {
   const { tokens, cut } = tokenize(markdown);
-  return `${render(tokens)}\n${cut ? `\n${CUT_NOTE}\n` : ''}`;
+  const parts = [];
+  let part = null;
+  const open = (severity, title) => { part = { severity, title, lines: [] }; parts.push(part); };
+  let section = tokens.some((t) => !t.code && /^## /.test(t.text)) ? null : 'other';
+  for (const token of tokens) {
+    const raw = token.text;
+    if (!token.code) {
+      const heading = raw.match(/^## (.+)$/);
+      if (heading) {
+        const name = heading[1].trim().toLowerCase();
+        section = SEVERITIES.includes(name) ? name : /^what could not be reviewed/.test(name) ? 'limits' : 'other';
+        part = null;
+        if (section === 'limits') open(null, 'What could not be reviewed');
+        if (section !== 'other') continue;
+      }
+      if (section === null) continue;
+      const title = SEVERITIES.includes(section) && raw.match(/^### (.+)$/);
+      if (title) { open(section, title[1].trim()); continue; }
+      if (!part && /^\s*(none\.?)?\s*$/i.test(raw)) continue;
+    }
+    if (!part) open(null, null);
+    part.lines.push(token);
+  }
+
+  let out = '';
+  for (const p of parts) {
+    const inner = render(p.lines);
+    if (p.title === null) {
+      if (inner) out += `${inner}\n\n`;
+      continue;
+    }
+    // A "What could not be reviewed" that says nothing limited the review is noise.
+    if (p.severity === null && /^\s*(nothing|none)\b/i.test(inner)) continue;
+    const label = p.severity ? `${ICONS[p.severity]} ${LABELS[p.severity]}: ${line(p.title, 300)}` : p.title;
+    out += toggle(label, inner ? `${inner}\n\n` : '');
+  }
+  if (cut) out += `${CUT_NOTE}\n\n`;
+  return out;
 }
 
 // ---------------------------------------------------------------------------
@@ -242,9 +177,11 @@ function renderRaw(markdown) {
 const sha = /^[0-9a-f]{40}$/.test(opts['head-sha'] ?? '') ? opts['head-sha'] : null;
 const runUrl = /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/actions\/runs\/\d+$/.test(opts['run-url'] ?? '') ? opts['run-url'] : null;
 
+const NOTE = '> [!IMPORTANT]\n> **Do not address these notes yet.** A language model wrote them; it can be wrong and it can miss things. A reviewer reads each note against the source and gives the final verdict.\n\n';
+
 /** "🔴 1 critical · 🟠 2 warnings", or "No findings". */
 function countsLine(c) {
-  const parts = [['critical', c.critical], ['warning', c.warning], ['info', c.info]]
+  const parts = SEVERITIES.map((s) => [s, c[s]])
     .filter(([, n]) => n > 0)
     .map(([s, n]) => `${ICONS[s]} ${n} ${s === 'warning' && n > 1 ? 'warnings' : s}`);
   return parts.length > 0 ? parts.join(' · ') : 'No findings';
@@ -270,14 +207,11 @@ function whereLine(record) {
   return `${code} at ${where}`;
 }
 
-/** The body of one unit: the answer as cards, or the error, or the raw answer with a note. */
+/** The body of one unit: the answer folded, or the error; an answer that strays from the format gets a note first. */
 function unitBody(record) {
   if (!record.answer) return `**The review did not run.** ${line(record.error, 400)}\n\n`;
-  const answer = parseAnswer(record.answer);
-  const parsed = record.ok && ['critical', 'warning', 'info'].some((s) => answer.findings[s].length > 0 || answer.loose[s].length > 0);
-  if (parsed) return renderAnswer(answer);
-  const why = record.ok ? 'The answer does not follow the expected format' : `The answer does not follow the expected format (${line(record.error, 300)})`;
-  return `${why}; it is shown as it came.\n\n<details>\n<summary>The answer</summary>\n\n${renderRaw(record.answer)}\n</details>\n\n`;
+  const note = record.ok ? '' : `*The answer does not follow the expected format (${line(record.error, 300)}); it is shown as it came.*\n\n`;
+  return note + foldAnswer(record.answer);
 }
 
 function renderComment(folder) {
@@ -299,7 +233,7 @@ function renderComment(folder) {
     };
   });
 
-  let body = `<!-- ai-review: ${folder.replace(/[^A-Za-z0-9._-]/g, '')} -->\n## 🤖 AI review by ${modelName}\n\n`;
+  let body = `<!-- ai-review: ${folder.replace(/[^A-Za-z0-9._-]/g, '')} -->\n## 🤖 AI review by ${modelName}\n\n${NOTE}`;
   const sections = [];
   if (units.length === 1) {
     const [u] = units;
@@ -315,11 +249,11 @@ function renderComment(folder) {
     }
   }
 
-  let footer = `<sub>Advisory, never a check: a language model read the descriptor${units.length > 1 ? 's' : ''} of ${sha ? `commit \`${sha.slice(0, 7)}\`` : 'this pull request'}, the tests and the verified source of the deployments, and wrote the notes above. It can be wrong and it can miss things; read each note against the source before acting on it. `;
-  footer += `Model ${modelName}, effort ${ticks(summary.effort, 20)}`;
+  let footer = `<sub>Model ${modelName}, effort ${ticks(summary.effort, 20)}`;
   if (t.inputTokens != null) footer += `, ${t.inputTokens} input tokens (${t.cacheReadTokens ?? 0} cached), ${t.outputTokens} output tokens`;
   if (t.costUSD != null) footer += `, about $${Number(t.costUSD).toFixed(3)}`;
-  footer += `.${runUrl ? ` [Run](${runUrl}),` : ''} answers and token usage in the artifact \`ai-review-answers\`.</sub>\n`;
+  footer += `, on the descriptor${units.length > 1 ? 's' : ''} of ${sha ? `commit \`${sha.slice(0, 7)}\`` : 'this pull request'}, the tests and the verified source of the deployments.`;
+  footer += `${runUrl ? ` [Run](${runUrl}),` : ''} answers and token usage in the artifact \`ai-review-answers\`.</sub>\n`;
 
   // The comment must fit: whole sections are dropped from the end, with a note.
   let kept = 0;
