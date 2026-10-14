@@ -653,11 +653,141 @@
             "value": "false"
           },
           {
-            "label": "Sell balance type",
+            "label": "Wallet via Balancer",
             "value": "external"
           },
           {
-            "label": "Buy balance type",
+            "label": "Buy: Balancer Vault",
+            "value": "internal"
+          }
+        ]
+      }
+    },
+    {
+      "description": "OP: sell from Balancer Vault internal balance and receive wallet tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Order": [
+            {
+              "name": "sellToken",
+              "type": "address"
+            },
+            {
+              "name": "buyToken",
+              "type": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "name": "sellAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "buyAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "validTo",
+              "type": "uint32"
+            },
+            {
+              "name": "appData",
+              "type": "bytes32"
+            },
+            {
+              "name": "feeAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "kind",
+              "type": "string"
+            },
+            {
+              "name": "partiallyFillable",
+              "type": "bool"
+            },
+            {
+              "name": "sellTokenBalance",
+              "type": "string"
+            },
+            {
+              "name": "buyTokenBalance",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "Order",
+        "domain": {
+          "name": "Gnosis Protocol",
+          "version": "v2",
+          "chainId": 10,
+          "verifyingContract": "0x310784c7FCE12d578dA6f53460777bAc9718B859"
+        },
+        "message": {
+          "sellToken": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+          "buyToken": "0x4200000000000000000000000000000000000006",
+          "receiver": "0x0000000000000000000000000000000000000000",
+          "sellAmount": "2500000000",
+          "buyAmount": "780000000000000000",
+          "validTo": 1793491200,
+          "appData": "0xeaebfbe19166b047ddcc2a0e0a685827db7404ece65a02c50aa3bc60645d15d8",
+          "feeAmount": "0",
+          "kind": "sell",
+          "partiallyFillable": false,
+          "sellTokenBalance": "internal",
+          "buyTokenBalance": "erc20"
+        }
+      },
+      "expected": {
+        "intent": "Swap order",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Max to sell",
+            "value": "2500 USDC"
+          },
+          {
+            "label": "Min if fully filled",
+            "value": "0.78 WETH"
+          },
+          {
+            "label": "Recipient",
+            "value": "Sender"
+          },
+          {
+            "label": "Expires",
+            "value": "2026-11-01 00:00:00Z"
+          },
+          {
+            "label": "Order type",
+            "value": "sell"
+          },
+          {
+            "label": "Partial fills",
+            "value": "false"
+          },
+          {
+            "label": "Sell: Balancer Vault",
             "value": "internal"
           }
         ]
