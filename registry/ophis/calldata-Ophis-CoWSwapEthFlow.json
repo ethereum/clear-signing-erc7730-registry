@@ -38,15 +38,15 @@
         ]
       },
       "invalidateOrder((address buyToken,address receiver,uint256 sellAmount,uint256 buyAmount,bytes32 appData,uint256 feeAmount,uint32 validTo,bool partiallyFillable,int64 quoteId) order)": {
-        "intent": "Cancel order and refund",
+        "intent": "Cancel and refund owner",
         "fields": [
-          { "path": "order.sellAmount", "$ref": "$.display.definitions.sellAmount" },
+          { "path": "order.sellAmount", "label": "Order max to sell", "format": "amount" },
           { "path": "order.buyAmount", "$ref": "$.display.definitions.buyAmount" },
-          { "path": "order.feeAmount", "$ref": "$.display.definitions.feeAmount", "visible": { "ifNotIn": [0, "0"] } },
-          { "path": "order.receiver", "label": "Swap recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] } },
+          { "path": "order.feeAmount", "label": "Order max fee", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
+          { "path": "order.receiver", "label": "Order swap recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] } },
           { "path": "order.validTo", "label": "Expires", "visible": "never" },
           { "path": "order.partiallyFillable", "$ref": "$.display.definitions.partiallyFillable" },
-          { "path": "order.appData", "label": "App data", "visible": "never" },
+          { "path": "order.appData", "label": "App data", "format": "raw" },
           { "path": "order.quoteId", "label": "Quote ID", "visible": "never" }
         ]
       }
