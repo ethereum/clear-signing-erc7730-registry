@@ -12,7 +12,10 @@
  * every finding of an answer, a "###" block, is folded under its own title
  * with the severity of its section in front, worst first, and the section
  * "What could not be reviewed" is folded under its name. The title of the
- * answer, its section headings and its "None." lines are not shown.
+ * answer, its section headings and its "None." lines are not shown. The
+ * units that got no answer are one list at the end, under "Not reviewed":
+ * the units above the size limit together, the limit stated once, then the
+ * rest with their error.
  *
  * Every answer was written by a model from data that came from the pull
  * request, so it is untrusted: the Markdown is kept, but HTML is escaped,
@@ -187,31 +190,61 @@ function countsLine(c) {
   return parts.length > 0 ? parts.join(' · ') : 'No findings';
 }
 
+/** "[`0x8076…d8D3` on chain 56](sourcify), [...]", up to eight deployments of the unit. */
+function deploymentsLine(record) {
+  const deployments = Array.isArray(record.unit?.deployments) ? record.unit.deployments : [];
+  const link = (d) => {
+    const a = address(d.address);
+    const chain = Number(d.chainId) || 0;
+    return a ? `[\`${a.slice(0, 6)}…${a.slice(-4)}\` on chain ${chain}](https://repo.sourcify.dev/${chain}/${a})` : `an unknown address on chain ${chain}`;
+  };
+  return deployments.length > 0
+    ? deployments.slice(0, 8).map(link).join(', ') + (deployments.length > 8 ? `, and ${deployments.length - 8} more` : '')
+    : 'no listed deployment';
+}
+
 /** "`SafeMoon` at [`0x8076…d8D3` on chain 56](sourcify)", naming the implementation behind a proxy. */
 function whereLine(record) {
-  const deployments = Array.isArray(record.unit?.deployments) ? record.unit.deployments : [];
   const contracts = Array.isArray(record.contracts) ? record.contracts : [];
   const named = (role) => contracts.filter((c) => c.role === role && c.name).map((c) => ticks(c.name, 80));
   const implementations = named('implementation');
   const code = implementations.length > 0
     ? `${named('deployment')[0] ?? 'a proxy'}, a proxy running ${implementations.join(', ')},`
     : (named('deployment')[0] ?? 'an unnamed contract');
-  const link = (d) => {
-    const a = address(d.address);
-    const chain = Number(d.chainId) || 0;
-    return a ? `[\`${a.slice(0, 6)}…${a.slice(-4)}\` on chain ${chain}](https://repo.sourcify.dev/${chain}/${a})` : `an unknown address on chain ${chain}`;
-  };
-  const where = deployments.length > 0
-    ? deployments.slice(0, 8).map(link).join(', ') + (deployments.length > 8 ? `, and ${deployments.length - 8} more` : '')
-    : 'no listed deployment';
-  return `${code} at ${where}`;
+  return `${code} at ${deploymentsLine(record)}`;
 }
 
-/** The body of one unit: the answer folded, or the error; an answer that strays from the format gets a note first. */
+/** The body of one reviewed unit: the answer folded; an answer that strays from the format gets a note first. */
 function unitBody(record) {
-  if (!record.answer) return `**The review did not run.** ${line(record.error, 400)}\n\n`;
   const note = record.ok ? '' : `*The answer does not follow the expected format (${line(record.error, 300)}); it is shown as it came.*\n\n`;
   return note + foldAnswer(record.answer);
+}
+
+const kilobytes = (bytes) => Math.round((Number(bytes) || 0) / 1000);
+
+/**
+ * The units that got no answer, as one list: the units above the size limit
+ * first, with the limit stated once, then the units the model refused or the
+ * API failed on, each with its error.
+ */
+function notReviewed(units) {
+  if (units.length === 0) return '';
+  const name = (u) => `\`${u.path}\`${u.group ? ` (${u.group})` : ''}`;
+  const index = (u) => Number(u.record.unit?.index) || 0;
+  const sorted = [...units].sort((a, b) => a.path.localeCompare(b.path) || index(a) - index(b));
+  const tooLarge = sorted.filter((u) => u.record.bytes > u.record.maxBytes);
+  const failed = sorted.filter((u) => !tooLarge.includes(u));
+  let out = '### Not reviewed\n\n';
+  if (tooLarge.length > 0) {
+    const limit = kilobytes(tooLarge[0].record.maxBytes);
+    out += `The model did not see ${tooLarge.length === 1 ? 'this one' : 'these'}: ${tooLarge.length === 1 ? 'it is' : 'each is'} above the size limit of ${limit} KB, and nothing is trimmed to fit.\n\n`;
+    out += `${tooLarge.map((u) => `- ${name(u)}, ${kilobytes(u.record.bytes)} KB, at ${deploymentsLine(u.record)}`).join('\n')}\n\n`;
+  }
+  if (failed.length > 0) {
+    out += `The review of ${failed.length === 1 ? 'this one' : 'these'} did not run:\n\n`;
+    out += `${failed.map((u) => `- ${name(u)}, at ${deploymentsLine(u.record)}: ${line(u.record.error, 400)}`).join('\n')}\n\n`;
+  }
+  return out;
 }
 
 function renderComment(folder) {
@@ -223,25 +256,27 @@ function renderComment(folder) {
 
   const units = records.map((record) => {
     const of = Number(record.unit?.of) || 1;
-    const counts = record.answer ? countsLine(countFindings(String(record.answer))) : 'Not reviewed';
     return {
       record,
       path: repoPath(record.descriptor?.path),
       group: of > 1 ? `group ${(Number(record.unit?.index) || 0) + 1} of ${of}` : null,
-      counts,
-      body: unitBody(record),
     };
   });
+  const reviewed = units.filter((u) => u.record.answer).map((u) => ({
+    ...u,
+    counts: countsLine(countFindings(String(u.record.answer))),
+    body: unitBody(u.record),
+  }));
 
   let body = `<!-- ai-review: ${folder.replace(/[^A-Za-z0-9._-]/g, '')} -->\n## 🤖 AI review by ${modelName}\n\n${NOTE}`;
   const sections = [];
-  if (units.length === 1) {
-    const [u] = units;
-    body += `**${u.counts}** in \`${u.path}\` · ${whereLine(u.record)}\n\n`;
+  if (reviewed.length === 1) {
+    const [u] = reviewed;
+    body += `**${u.counts}** in \`${u.path}\`${u.group ? ` (${u.group})` : ''} · ${whereLine(u.record)}\n\n`;
     sections.push(u.body);
-  } else {
-    body += `${units.map((u) => `- **${u.counts}** in \`${u.path}\`${u.group ? ` (${u.group})` : ''}`).join('\n')}\n\n`;
-    for (const u of units) {
+  } else if (reviewed.length > 1) {
+    body += `${reviewed.map((u) => `- **${u.counts}** in \`${u.path}\`${u.group ? ` (${u.group})` : ''}`).join('\n')}\n\n`;
+    for (const u of reviewed) {
       let section = `### \`${u.path}\`${u.group ? ` · ${u.group}` : ''}\n\n`;
       section += `<sub>${u.group ? 'The deployments of this descriptor that run different code are reviewed separately. ' : ''}${whereLine(u.record)}.</sub>\n\n`;
       section += u.body;
@@ -256,8 +291,9 @@ function renderComment(folder) {
   footer += `${runUrl ? ` [Run](${runUrl}),` : ''} answers and token usage in the artifact \`ai-review-answers\`.</sub>\n`;
 
   // The comment must fit: whole sections are dropped from the end, with a note.
+  const tail = notReviewed(units.filter((u) => !u.record.answer)) + footer;
   let kept = 0;
-  let length = body.length + footer.length + 200;
+  let length = body.length + tail.length + 200;
   for (const section of sections) {
     if (length + section.length > MAX_BODY) break;
     length += section.length;
@@ -267,7 +303,7 @@ function renderComment(folder) {
   if (kept < sections.length) {
     body += `${sections.length - kept} more descriptor(s) did not fit in this comment. Their notes are in the artifact \`ai-review-answers\` of the run.\n\n`;
   }
-  body += footer;
+  body += tail;
   return { body, units: records.length, kept, sections: sections.length };
 }
 
