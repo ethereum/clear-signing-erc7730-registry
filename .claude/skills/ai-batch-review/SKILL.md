@@ -82,7 +82,6 @@ gh api "repos/$R/actions/runs?head_sha=$SHA&per_page=100" \
 ```
 
 Registry Checks, Descriptor Lint and Descriptor Tests must be `completed success`. Any other check that is `failure`, `timed_out`, `action_required` or `startup_failure` counts too; a cancelled or skipped run does not. A pull request where one of these holds is `checks red`: drop it, and name it in one line under the table with the failing check and its link, so the user sees what the authors have to fix. A check that is still running keeps the pull request in the list, marked `running`; step 3 waits for it.
-
 The first 10 that remain are the batch.
 
 Show one table: number, title, author, head commit, updated. Then ask with AskUserQuestion:
@@ -161,14 +160,16 @@ When the call is refused, or when the branch is already up to date, no new run i
 
 ### Approve a waiting job
 
-The review job reads the test report bundle of the head commit, and the bundle is published one to three minutes after Descriptor Tests completes. A run that waits for approval exists long before that: it is created at the push. A job approved before the bundle exists fails at "Find the test report bundle of the head commit" and costs a re-run and a second approval. So approve only when `pr/<N>/index.json` on the `test-reports` branch names the head commit; poll it every 10 seconds, for up to 15 minutes:
+The review job reads the test report bundle of the head commit, and the bundle is published one to three minutes after Descriptor Tests completes. A run that waits for approval exists long before that: it is created at the push. A job approved before the bundle exists fails at "Find the test report bundle of the head commit" and costs a re-run and a second approval. So approve only when `pr/<N>/index.json` on the `test-reports` branch names the head commit; poll it every 10 seconds, at most 90 times, which is 15 minutes:
 
 ```bash
-until gh api "repos/$R/contents/pr/$N/index.json?ref=test-reports" --jq .content 2>/dev/null \
-  | base64 -d | grep -q "$SHA"; do sleep 10; done
+for i in $(seq 1 90); do
+  gh api "repos/$R/contents/pr/$N/index.json?ref=test-reports" --jq .content 2>/dev/null | base64 -d | grep -q "$SHA" && break
+  sleep 10
+done
 ```
 
-When the bundle is still missing after 15 minutes, look at the Descriptor Tests run of the head commit: when it failed, the state is `checks red`; when it is still running, wait more.
+A foreground `sleep` is blocked in Claude Code, so run the loop in the background, or poll with the Monitor tool, as the "Wait" section says. When the loop ends and the bundle is still missing, look at the Descriptor Tests run of the head commit: when it failed, the state is `checks red`; when it is still running, wait more.
 
 The run waits on the environment `ai-review`. Approve it through the API:
 
