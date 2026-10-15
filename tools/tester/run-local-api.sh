@@ -1,8 +1,9 @@
 #!/bin/bash
 # Clear Signing Tester - Local ERC7730 API Server
 #
-# Runs the Flask API server locally using the patched erc7730 Python tool
-# from tools/linter/python-erc7730/ instead of the remote service.
+# Runs the Flask API server locally using the erc7730 Python tool from
+# tools/linter/python-erc7730/ (a clone of sourcifyeth/python-erc7730)
+# instead of the remote service.
 #
 # Usage:
 #   ./run-local-api.sh [port]
@@ -82,7 +83,7 @@ if [ ${#MISSING_DEPS[@]} -gt 0 ]; then
 fi
 echo -e "${GREEN}All dependencies ready${NC}"
 
-# Source .env for ETHERSCAN_API_KEY if available
+# Source .env if available
 if [ -f "$ROOT_DIR/.env" ]; then
     echo ""
     echo -e "${BLUE}Loading environment from .env${NC}"

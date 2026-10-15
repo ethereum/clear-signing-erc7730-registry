@@ -1,7 +1,15 @@
 {
   "$schema": "../../../specs/erc7730-tests-v2.schema.json",
   "descriptor": "../calldata-SessionManager.json",
-  "dataProvider": {},
+  "dataProvider": {
+    "tokens": {
+      "0x5DD1A7A369e8273371d2DBf9d83356057088082c": { "symbol": "FT", "decimals": 18, "name": "Flying Tulip" },
+      "0x04E6227d51Fc10AFb6c270017690a2B0a1d4427B": { "symbol": "ftUSD", "decimals": 6, "name": "Flying Tulip USD" },
+      "0x137D66e0a5D4cEEe0A7eDA011bC3aA94931C7234": { "symbol": "sftUSD", "decimals": 6, "name": "Staked Flying Tulip USD" },
+      "0x29219dd400f2Bf60E5a23d13Be72B486D4038894": { "symbol": "USDC", "decimals": 6, "name": "USDC" },
+      "0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38": { "symbol": "wS", "decimals": 18, "name": "Wrapped Sonic" }
+    }
+  },
   "tests": [
     {
       "description": "Create ftUSD session",
@@ -19,6 +27,119 @@
           { "label": "Token limit", "value": "100000000000000000000" }
         ],
         "interpolatedIntent": "Session 0x1111111111111111111111111111111111111111"
+      }
+    },
+    {
+      "description": "Create session by signature",
+      "rawTx": "0x02f902f38192820438850ba43b7401850ba43b7401830364a09452ef449d44cc4205fa44bf644dee15611fc3073480b902c474d36b0100000000000000000000000007f963bba27f12a540374441d853d4ce648faa1500000000000000000000000055e629ba54b9bfd2f83b12a05c71326cb1eb5acf000000000000000000000000000000000000000000000000000000006a2059c6000000000000000000000000000000000000000000000000000000006a21ab46000000000000000000000000000000000000000000000000000000000000006400000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000000000000000000000000000000000000000012047424127eb0c9a76158680befd0d56b0c96d447ca20090f2f5b6fe6857f74eb00000000000000000000000000000000000000000000000000000000000000240000000000000000000000000000000000000000000000000000000000000000400000000000000000000000004e6227d51fc10afb6c270017690a2b0a1d4427bffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000137d66e0a5d4ceee0a7eda011bc3aa94931c7234ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000029219dd400f2bf60e5a23d13be72b486d4038894ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000039e2fb66102314ce7b64ce5ce3e5183bc94ad38ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000415e04f25c50765a31e74d57e5dde04bde138e9065791010d717d3390fd413e8ea66351ed2f013b5661da81c3370ea92a40d1729e8929464b341d22468daefb4bf1b00000000000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0x3768e37aa4b9998567f55afeaf7065e35bc2d8bcf182157eccf5a3b4648c0bd9",
+      "expected": {
+        "intent": "Create session by signature",
+        "owner": "Flying Tulip",
+        "fields": [
+          { "label": "Owner", "value": "0x07F963Bba27f12a540374441D853d4Ce648FaA15" },
+          { "label": "Delegate", "value": "0x55E629BA54b9BFD2f83B12a05C71326cB1eb5AcF" },
+          { "label": "Valid after", "value": "2026-06-03 16:43:50Z" },
+          { "label": "Valid until", "value": "2026-06-04 16:43:50Z" },
+          { "label": "Max calls", "value": "100" },
+          { "label": "Max fee", "value": "500bps" },
+          { "label": "Token limit", "value": "Unlimited ftUSD" },
+          { "label": "Token limit", "value": "Unlimited sftUSD" },
+          { "label": "Token limit", "value": "Unlimited USDC" },
+          { "label": "Token limit", "value": "Unlimited wS" }
+        ],
+        "interpolatedIntent": "Sig session 0x55E629BA54b9BFD2f83B12a05C71326cB1eb5AcF"
+      }
+    },
+    {
+      "description": "Revoke session",
+      "rawTx": "0x02f84e01820b2484e558151484e55815148301394d942daf4b445e7d659100b22a15c3eeb10e64ac5dc980a4a7fed385c7850b5863b65ee4f7fb0fc0907d821ffcc67e3bd7290667d202959b17a7497ac0",
+      "txHash": "0xd6da844a5b465ab9653892897223d4c616eb2eefada7c1323c8ee8e3d2f64610",
+      "expected": {
+        "intent": "Revoke session",
+        "owner": "Flying Tulip",
+        "fields": [{ "label": "Session ID", "value": "0xc7850b5863b65ee4f7fb0fc0907d821ffcc67e3bd7290667d202959b17a7497a" }],
+        "interpolatedIntent": "Revoke 0xc7850b5863b65ee4f7fb0fc0907d821ffcc67e3bd7290667d202959b17a7497a"
+      }
+    },
+    {
+      "description": "Revoke session by signature (synthetic)",
+      "rawTx": "0x02f9010d0121843b9aca00843b9aca008307a120942daf4b445e7d659100b22a15c3eeb10e64ac5dc980b8e41fc1db86c7850b5863b65ee4f7fb0fc0907d821ffcc67e3bd7290667d202959b17a7497a000000000000000000000000000000000000000000000000000000006a18a50000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000041aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Revoke session by signature",
+        "owner": "Flying Tulip",
+        "fields": [{ "label": "Session ID", "value": "0xc7850b5863b65ee4f7fb0fc0907d821ffcc67e3bd7290667d202959b17a7497a" }],
+        "interpolatedIntent": "Revoke sig 0xc7850b5863b65ee4f7fb0fc0907d821ffcc67e3bd7290667d202959b17a7497a"
+      }
+    },
+    {
+      "description": "Invalidate session nonce (synthetic)",
+      "rawTx": "0x02f9014e0120843b9aca00843b9aca008307a120942daf4b445e7d659100b22a15c3eeb10e64ac5dc980b9012490706897c7850b5863b65ee4f7fb0fc0907d821ffcc67e3bd7290667d202959b17a7497a0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000006a18a500000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000041aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Invalidate session nonce",
+        "owner": "Flying Tulip",
+        "fields": [
+          { "label": "Session ID", "value": "0xc7850b5863b65ee4f7fb0fc0907d821ffcc67e3bd7290667d202959b17a7497a" },
+          { "label": "Nonce", "value": "3" },
+          { "label": "Executor", "value": "0x2222222222222222222222222222222222222222" }
+        ],
+        "interpolatedIntent": "Invalidate nonce 3"
+      }
+    },
+    {
+      "description": "Transfer ownership",
+      "rawTx": "0x02f84e01820139840315843d840315843d8301126a942daf4b445e7d659100b22a15c3eeb10e64ac5dc980a4f2fde38b0000000000000000000000001118e1c057211306a40a4d7006c040dbfe1370cbc0",
+      "txHash": "0xafff5e6552c5be79b56afdf0aede0fc6ca809dc6719f15954032688ac6a61e06",
+      "expected": {
+        "intent": "Manage session manager",
+        "owner": "Flying Tulip",
+        "fields": [{ "label": "New owner", "value": "0x1118e1c057211306a40A4d7006C040dbfE1370Cb" }],
+        "interpolatedIntent": "Transfer to 0x1118e1c057211306a40A4d7006C040dbfE1370Cb"
+      }
+    },
+    {
+      "description": "Accept ownership (synthetic)",
+      "rawTx": "0x02ec011e843b9aca00843b9aca008307a120942daf4b445e7d659100b22a15c3eeb10e64ac5dc9808479ba5097c0",
+      "expected": { "intent": "Manage session manager", "owner": "Flying Tulip", "fields": [], "interpolatedIntent": "Accept ownership" }
+    },
+    {
+      "description": "Renounce ownership (synthetic)",
+      "rawTx": "0x02ec011f843b9aca00843b9aca008307a120942daf4b445e7d659100b22a15c3eeb10e64ac5dc98084715018a6c0",
+      "expected": { "intent": "Manage session manager", "owner": "Flying Tulip", "fields": [], "interpolatedIntent": "Renounce ownership" }
+    },
+    {
+      "description": "Allow one target (synthetic)",
+      "rawTx": "0x02f86d0122843b9aca00843b9aca008307a120942daf4b445e7d659100b22a15c3eeb10e64ac5dc980b844ca1dd22e000000000000000000000000aa48ecbc843cf7e9a29155d112b8cb27902bd23c0000000000000000000000000000000000000000000000000000000000000001c0",
+      "expected": {
+        "intent": "Manage session manager",
+        "owner": "Flying Tulip",
+        "fields": [{ "label": "Target", "value": "0xAa48EcBC843cF7E9A29155D112b8Cb27902bD23C" }, { "label": "Allowed", "value": "true" }],
+        "interpolatedIntent": "Allow 0xAa48EcBC843cF7E9A29155D112b8Cb27902bD23C: true"
+      }
+    },
+    {
+      "description": "Allow several targets",
+      "rawTx": "0x02f8cf0182011b8402c48d6e8402c48d6e83018689942daf4b445e7d659100b22a15c3eeb10e64ac5dc980b8a401e2ae55000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000aa48ecbc843cf7e9a29155d112b8cb27902bd23c000000000000000000000000eb48218a4c35c814c7678cbcae88c6ee037f7625c0",
+      "txHash": "0x4f037e4f7c6cb800564278b57b0cbe72a4f38ccfb7ca62b287ba27f4e59736c4",
+      "expected": {
+        "intent": "Manage session manager",
+        "owner": "Flying Tulip",
+        "fields": [
+          { "label": "Targets", "value": "0xAa48EcBC843cF7E9A29155D112b8Cb27902bD23C" },
+          { "label": "Targets", "value": "0xeb48218a4c35C814C7678cBcae88C6Ee037F7625" },
+          { "label": "Allowed", "value": "true" }
+        ],
+        "interpolatedIntent": "Allow targets: true"
+      }
+    },
+    {
+      "description": "Validate session call (synthetic)",
+      "rawTx": "0x02f901ee0123843b9aca00843b9aca008307a120942daf4b445e7d659100b22a15c3eeb10e64ac5dc980b901c4ce5cb6c00000000000000000000000005dd1a7a369e8273371d2dbf9d83356057088082c0000000000000000000000000000000000000000000000015af1d78b58c40000c7850b5863b65ee4f7fb0fc0907d821ffcc67e3bd7290667d202959b17a7497a44444444444444444444444444444444444444444444444444444444444444440000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000006a18a5000000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000002386f26fc10000000000000000000000000000000000000000000000000000000000000000014000000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000000000041aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Validate session call",
+        "owner": "Flying Tulip",
+        "fields": [{ "label": "Spend amount", "value": "25 FT" }],
+        "interpolatedIntent": "Validate 25 FT"
       }
     }
   ]
