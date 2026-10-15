@@ -1,18 +1,15 @@
 name: Upload clear-signing test results
-description: Validate the basic structure of a results.json against the spec in .github/test-runner-docs/README.md, then upload it as an artifact with a consistent name. Shared by all runners that emit the unified results format.
+description: Validate the basic structure of the results.json of each tested descriptor against the spec in .github/test-runner-docs/README.md, upload them together as one artifact per implementation, then fail on a case that did not pass. Shared by all runners that emit the unified results format.
 
 inputs:
-  results-path:
-    description: Absolute path to the results.json file.
+  results-dir:
+    description: Absolute path of the directory that holds one <entity>__<descriptor>.json per tested descriptor.
     required: true
   implementation-slug:
     description: Short slug identifying the implementation (e.g. sourcify-ts-clear-signing). Used in the artifact name; the full package@version identifier lives inside the JSON.
     required: true
-  entity:
-    description: Entity name (e.g. aave).
-    required: true
-  descriptor-name:
-    description: Descriptor name (e.g. calldata-lpv2).
+  test-matrix:
+    description: JSON array of the tested descriptors, as detect-testsv2 outputs it. Each entry has entity, descriptor_name and test_file.
     required: true
   retention-days:
     description: Artifact retention in days.
@@ -22,51 +19,53 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Validate results.json structure
+    # A missing or invalid file is an error on the test file, not a failure of
+    # this step: the valid files must still reach the artifact. The verdict
+    # step fails the job.
+    - name: Validate the results and stage them with unique filenames
+      id: stage
       shell: bash
       env:
-        RESULTS_PATH: ${{ inputs.results-path }}
-      run: |
-        if [ ! -f "$RESULTS_PATH" ]; then
-          echo "::error::results.json not found at $RESULTS_PATH"
-          exit 1
-        fi
-
-        if ! jq -e '
-          has("runner") and
-          has("implementation") and
-          has("cases") and
-          (.cases | type == "array") and
-          (.cases | all(
-            has("description") and
-            has("status") and
-            (.status | IN("pass","fail","error","skipped"))
-          ))
-        ' "$RESULTS_PATH" > /dev/null; then
-          echo "::error file=$RESULTS_PATH::results.json failed structural validation against the spec in .github/test-runner-docs/README.md"
-          exit 1
-        fi
-
-    - name: Stage with unique filename
-      shell: bash
-      env:
-        RESULTS_PATH: ${{ inputs.results-path }}
+        RESULTS_DIR: ${{ inputs.results-dir }}
         SLUG: ${{ inputs.implementation-slug }}
-        ENTITY: ${{ inputs.entity }}
-        DESCRIPTOR: ${{ inputs.descriptor-name }}
-        WORKSPACE: ${{ github.workspace }}
+        TEST_MATRIX: ${{ inputs.test-matrix }}
+        STAGING: ${{ github.workspace }}/results-staging
       run: |
-        # Rename so multi-artifact downloads (with merge-multiple: true) don't
-        # collide on a shared `results.json` filename. The slug+entity+descriptor
-        # combination is guaranteed unique per matrix entry.
-        mkdir -p "$WORKSPACE/results-staging"
-        cp "$RESULTS_PATH" "$WORKSPACE/results-staging/${SLUG}__${ENTITY}__${DESCRIPTOR}.json"
+        # The <slug>__<entity>__<descriptor>.json name keeps the files of all
+        # runners apart when the results workflow downloads them merged.
+        mkdir -p "$STAGING"
+        INVALID=0
+        while IFS=$'\t' read -r entity descriptor test_file; do
+          FILE="$RESULTS_DIR/${entity}__${descriptor}.json"
+          if [ ! -f "$FILE" ]; then
+            echo "::error file=${test_file},title=${SLUG}: error::No results file for ${entity}/${descriptor}. The runner did not finish."
+            INVALID=$((INVALID + 1))
+            continue
+          fi
+          if ! jq -e '
+            has("runner") and
+            has("implementation") and
+            has("cases") and
+            (.cases | type == "array") and
+            (.cases | all(
+              has("description") and
+              has("status") and
+              (.status | IN("pass","fail","error","skipped"))
+            ))
+          ' "$FILE" > /dev/null; then
+            echo "::error file=${test_file},title=${SLUG}: error::The results of ${entity}/${descriptor} failed structural validation against the spec in .github/test-runner-docs/README.md"
+            INVALID=$((INVALID + 1))
+            continue
+          fi
+          cp "$FILE" "$STAGING/${SLUG}__${entity}__${descriptor}.json"
+        done < <(echo "$TEST_MATRIX" | jq -r '.[] | "\(.entity)\t\(.descriptor_name)\t\(.test_file)"')
+        echo "invalid=$INVALID" >> "$GITHUB_OUTPUT"
 
     - name: Upload results
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
-        name: results__${{ inputs.implementation-slug }}__${{ inputs.entity }}__${{ inputs.descriptor-name }}
-        path: ${{ github.workspace }}/results-staging/${{ inputs.implementation-slug }}__${{ inputs.entity }}__${{ inputs.descriptor-name }}.json
+        name: results__${{ inputs.implementation-slug }}
+        path: ${{ github.workspace }}/results-staging/
         retention-days: ${{ inputs.retention-days }}
 
     # The verdict must come from here, because the workflow that writes the
@@ -74,23 +73,39 @@ runs:
     - name: Fail on a case that did not pass
       shell: bash
       env:
-        RESULTS_PATH: ${{ inputs.results-path }}
         SLUG: ${{ inputs.implementation-slug }}
-        ENTITY: ${{ inputs.entity }}
-        DESCRIPTOR: ${{ inputs.descriptor-name }}
+        TEST_MATRIX: ${{ inputs.test-matrix }}
+        INVALID: ${{ steps.stage.outputs.invalid }}
+        STAGING: ${{ github.workspace }}/results-staging
       run: |
         # A case with the status "error" or "skipped" also counts, because the
         # runner did not show that the descriptor is correct.
-        COUNT=$(jq '[.cases[] | select(.status != "pass")] | length' "$RESULTS_PATH")
-        [ "$COUNT" -eq 0 ] && exit 0
+        FAILED=0
+        echo "### ${SLUG}" >> "$GITHUB_STEP_SUMMARY"
+        while IFS=$'\t' read -r entity descriptor test_file; do
+          FILE="$STAGING/${SLUG}__${entity}__${descriptor}.json"
+          if [ ! -f "$FILE" ]; then
+            echo "- ⚠️ ${entity}/${descriptor}: no valid results" >> "$GITHUB_STEP_SUMMARY"
+            continue
+          fi
+          TOTAL=$(jq '.cases | length' "$FILE")
+          COUNT=$(jq '[.cases[] | select(.status != "pass")] | length' "$FILE")
+          if [ "$COUNT" -eq 0 ]; then
+            echo "- ✅ ${entity}/${descriptor}: ${TOTAL} case(s) passed" >> "$GITHUB_STEP_SUMMARY"
+            continue
+          fi
+          FAILED=$((FAILED + COUNT))
+          echo "- ❌ ${entity}/${descriptor}: ${COUNT} of ${TOTAL} case(s) did not pass" >> "$GITHUB_STEP_SUMMARY"
 
-        # Write one annotation for each of these cases on the test file.
-        TEST_FILE="registry/${ENTITY}/testsv2/${DESCRIPTOR}.tests.json"
-        jq -r '.cases[] | select(.status != "pass")
-               | "\(.status)\t\(.description)\t\(.message // "")"' "$RESULTS_PATH" |
-          while IFS=$'\t' read -r status description message; do
-            echo "::error file=${TEST_FILE},title=${SLUG}: ${status}::${description}${message:+ — $message}"
-          done
+          # One annotation for each of these cases on the test file.
+          jq -r '.cases[] | select(.status != "pass")
+                 | "\(.status)\t\(.description)\t\(.message // "")"' "$FILE" |
+            while IFS=$'\t' read -r status description message; do
+              echo "::error file=${test_file},title=${SLUG}: ${status}::${description}${message:+ — $message}"
+            done
+        done < <(echo "$TEST_MATRIX" | jq -r '.[] | "\(.entity)\t\(.descriptor_name)\t\(.test_file)"')
 
-        echo "${COUNT} case(s) did not pass for ${ENTITY}/${DESCRIPTOR} on ${SLUG}." >> "$GITHUB_STEP_SUMMARY"
-        exit 1
+        if [ "$INVALID" -gt 0 ] || [ "$FAILED" -gt 0 ]; then
+          echo "${FAILED} case(s) did not pass and ${INVALID} descriptor(s) have no valid results on ${SLUG}."
+          exit 1
+        fi
