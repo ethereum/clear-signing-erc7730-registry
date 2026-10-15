@@ -81,7 +81,7 @@ gh api "repos/$R/actions/runs?head_sha=$SHA&per_page=100" \
         | map("\(.name): \(.status) \(.conclusion // "-") \(.html_url)") | .[]'
 ```
 
-Registry Checks, Descriptor Lint and Descriptor Tests must be `completed success`. Any other check that is `failure`, `timed_out`, `action_required` or `startup_failure` counts too; a cancelled or skipped run does not. A pull request where one of these holds is `checks red`: drop it, and name it in one line under the table with the failing check and its link, so the user sees what the authors have to fix. A check that is still running keeps the pull request in the list, marked `running`; step 3 waits for it.
+Registry Checks, Descriptor Lint and Descriptor Tests must be `completed success`. Any other check that is `failure`, `timed_out`, `action_required` or `startup_failure` counts too; a cancelled or skipped run does not. A pull request where one of these holds is `checks red`: drop it, and name it in one line under the table with the failing check and its link, so the user sees what the authors have to fix. A check that is still running keeps the pull request in the list, marked `running`; step 3 waits for it. An empty result means the head commit has no runs at all, for example an old pull request from before the workflows existed: the review job would stop at its first gate, so drop it as well and name it under the table as `no checks`. A push from the last minute may not have its runs yet; query once more before you drop it.
 The first 10 that remain are the batch.
 
 Show one table: number, title, author, head commit, updated. Then ask with AskUserQuestion:
