@@ -280,7 +280,6 @@
       },
       "seizeEncrypted(address zkemt, (uint256 x,uint256 y) epk, address to, uint256 amount)": {
         "intent": "Seize (encrypted)",
-        "interpolatedIntent": "Seize {amount} to {to}",
         "fields": [
           {
             "path": "amount",
@@ -316,7 +315,7 @@
       },
       "seizePublic(address zkemt, address from, address to, uint256 amount)": {
         "intent": "Seize",
-        "interpolatedIntent": "Seize {amount} from {from}",
+        "interpolatedIntent": "Seize {amount} from {from} to {to}",
         "fields": [
           {
             "path": "amount",
@@ -608,23 +607,22 @@
         "intent": "Upgrade contract",
         "fields": [
           {
+            "path": "newImplementation",
             "label": "New implementation",
             "format": "addressName",
             "params": {
               "types": [
-                "wallet",
-                "eoa",
-                "contract",
-                "token",
-                "collection"
+                "contract"
               ]
-            },
-            "path": "#.newImplementation"
+            }
           },
           {
-            "label": "Data",
-            "format": "raw",
-            "path": "#.data"
+            "path": "data",
+            "label": "Then call",
+            "format": "calldata",
+            "params": {
+              "calleePath": "@.to"
+            }
           }
         ]
       },
@@ -632,37 +630,33 @@
         "intent": "Upgrade token",
         "fields": [
           {
+            "path": "zkemt",
             "label": "Token",
             "format": "addressName",
             "params": {
               "types": [
-                "wallet",
-                "eoa",
                 "contract",
-                "token",
-                "collection"
+                "token"
               ]
-            },
-            "path": "#.zkemt"
+            }
           },
           {
+            "path": "newImpl",
             "label": "New implementation",
             "format": "addressName",
             "params": {
               "types": [
-                "wallet",
-                "eoa",
-                "contract",
-                "token",
-                "collection"
+                "contract"
               ]
-            },
-            "path": "#.newImpl"
+            }
           },
           {
-            "label": "Data",
-            "format": "raw",
-            "path": "#.data"
+            "path": "data",
+            "label": "Then call",
+            "format": "calldata",
+            "params": {
+              "calleePath": "zkemt"
+            }
           }
         ]
       }

@@ -25,7 +25,7 @@
     "formats": {
       "atomicPublicSwap((address publicToken,address encryptedToken,address publicPayer,address publicRecipient,(uint256 x,uint256 y) encryptedPayerEpk,(uint256 x,uint256 y) encryptedRecipientEpk,uint256 publicAmount,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) encryptedAmountCiphertext,uint256 expiry,uint256 intentSalt) intent, (uint256 validAfter,uint256 validBefore,bytes32 nonce,bytes signature) publicTransferAuth, (uint256 nonce,uint256 deadline,bytes signature) publicIntentAuth, (bytes proof,(uint256 x,uint256 y) senderEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) newSenderBalanceCt,(uint256 x,uint256 y) recipientEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) recipientAmountCt,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) trcAmountCt) encryptedParams, (bool clear,bool enabled) encryptedFlags, (uint256 nonce,uint256 deadline,bytes signature) encryptedIntentAuth, (uint256 nonce,uint256 deadline,bytes signature) encryptedTransferAuth)": {
         "intent": "Swap (public)",
-        "interpolatedIntent": "Swap {intent.publicAmount} for {intent.encryptedToken}",
+        "interpolatedIntent": "Swap {intent.publicAmount} from {intent.publicPayer} to {intent.publicRecipient}",
         "fields": [
           {
             "path": "intent.publicAmount",
@@ -36,11 +36,13 @@
             }
           },
           {
-            "path": "intent.encryptedToken",
-            "label": "For token",
+            "path": "intent.publicPayer",
+            "label": "Public payer",
             "format": "addressName",
             "params": {
               "types": [
+                "eoa",
+                "wallet",
                 "contract"
               ]
             }
@@ -53,6 +55,16 @@
               "types": [
                 "eoa",
                 "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "intent.encryptedToken",
+            "label": "For token",
+            "format": "addressName",
+            "params": {
+              "types": [
                 "contract"
               ]
             }
