@@ -238,8 +238,8 @@ function deploymentsOf(head) {
 // ---------------------------------------------------------------------------
 
 /**
- * Every test case holds the expected screen and, per runner, the rendered
- * one. When the runner passed they are the same screen, so the rendered copy
+ * Every test case holds the expected rendering and, per runner, the runner's
+ * own. When the runner passed they are the same, so the runner's copy
  * is dropped. It stays when the runner failed or the two differ.
  */
 function pruneCases(cases) {
