@@ -50,13 +50,15 @@ else
 fi
 echo ""
 
+ERC7730_REPO="https://github.com/sourcifyeth/python-erc7730.git"
+
 # Clone python-erc7730 if not exists
 if [ ! -d "python-erc7730" ]; then
     echo -e "${BLUE}📦 Cloning python-erc7730...${NC}"
-    git clone --depth 1 https://github.com/LedgerHQ/python-erc7730.git python-erc7730
+    git clone --depth 1 "$ERC7730_REPO" python-erc7730
 else
     echo -e "${BLUE}📦 python-erc7730 already cloned, pulling latest...${NC}"
-    cd python-erc7730 && git pull && cd ..
+    cd python-erc7730 && git remote set-url origin "$ERC7730_REPO" && git pull && cd ..
 fi
 echo ""
 
@@ -85,14 +87,14 @@ echo "============================================"
 echo ""
 echo "Usage:"
 echo ""
-echo "1. Source the .env file (for Etherscan API key) and activate the environment:"
-echo -e "   ${YELLOW}source .env && source tools/linter/.venv/bin/activate${NC}"
+echo "1. Activate the environment:"
+echo -e "   ${YELLOW}source tools/linter/.venv/bin/activate${NC}"
 echo ""
 echo "2. Run the linter on a descriptor:"
 echo -e "   ${YELLOW}erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json${NC}"
 echo ""
 echo "Or as a one-liner from the repository root:"
-echo -e "   ${YELLOW}source .env && source tools/linter/.venv/bin/activate && erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json${NC}"
+echo -e "   ${YELLOW}source tools/linter/.venv/bin/activate && erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json${NC}"
 echo ""
 echo "Lint all descriptors (excluding the test fixtures):"
 echo -e "   ${YELLOW}erc7730 lint \$(find registry -type f \( -name 'calldata-*.json' -o -name 'eip712-*.json' \) -not -path '*/tests/*' -not -path '*/testsv2/*' -not -path '*/sigs/*' -not -name '*.tests.json')${NC}"
