@@ -4,14 +4,14 @@
     "$id": "PollingFoundation-Flare",
     "contract": { "deployments": [{ "chainId": 14, "address": "0xc8294a2335C6c45de827121090ce4Ba9977907D2" }] }
   },
-  "metadata": { "owner": "Flare Labs", "info": { "url": "https://flare.network/" }, "contractName": "PollingFoundation-Flare" },
+  "metadata": { "owner": "Flare Labs", "info": { "url": "https://flare.network/" }, "contractName": "PollingFoundation-Flare", "enums": { "voteType": { "0": "Against", "1": "For" } } },
   "display": {
     "formats": {
       "castVote(uint256 _proposalId, uint8 _support)": {
         "intent": "cast vote",
         "fields": [
           { "label": "Proposal Id", "format": "raw", "path": "#._proposalId", "visible": "always" },
-          { "label": "Support", "format": "raw", "path": "#._support", "visible": "always" }
+          { "label": "Support", "format": "enum", "params": { "$ref": "$.metadata.enums.voteType" }, "path": "#._support", "visible": "always" }
         ]
       },
       "propose(address[] _targets, uint256[] _values, bytes[] _calldatas, string _description, (bool accept, uint256 votingStartTs, uint256 votingPeriodSeconds, uint256 vpBlockPeriodSeconds, uint256 thresholdConditionBIPS, uint256 majorityConditionBIPS, uint256 executionDelaySeconds, uint256 executionPeriodSeconds) _settings)": {

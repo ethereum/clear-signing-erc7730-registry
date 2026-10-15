@@ -1,17 +1,20 @@
 name: Run Sourcify clear-signing tests
-description: Clone and build @ethereum-sourcify/clear-signing-test-runner, then run it against a .tests.json fixture and produce a results.json conforming to the format in .github/test-runner-docs/.
+description: Clone and build @ethereum-sourcify/clear-signing-test-runner, then run it against the .tests.json fixture of each descriptor in the test matrix and write one results.json per descriptor, in the format in .github/test-runner-docs/.
 
 inputs:
-  test-file:
-    description: Absolute path to the .tests.json fixture.
+  test-matrix:
+    description: JSON array of the descriptors to test, as detect-testsv2 outputs it. Each entry has entity, descriptor_name and test_file.
     required: true
-  output:
-    description: Absolute path where results.json should be written.
+  registry-root:
+    description: Absolute path of the registry checkout. The test_file paths of the matrix are relative to it.
+    required: true
+  output-dir:
+    description: Absolute path of the directory that receives one <entity>__<descriptor>.json per descriptor.
     required: true
 outputs:
-  results-path:
-    description: Path to the produced results.json.
-    value: ${{ inputs.output }}
+  results-dir:
+    description: The directory that holds the results files.
+    value: ${{ inputs.output-dir }}
 
 runs:
   using: composite
@@ -42,6 +45,19 @@ runs:
       shell: bash
       working-directory: sourcify-test-runner
       env:
-        TEST_FILE: ${{ inputs.test-file }}
-        OUTPUT: ${{ inputs.output }}
-      run: node dist/cli.js "$TEST_FILE" --output "$OUTPUT" --verbose
+        TEST_MATRIX: ${{ inputs.test-matrix }}
+        REGISTRY_ROOT: ${{ inputs.registry-root }}
+        OUTPUT_DIR: ${{ inputs.output-dir }}
+      run: |
+        mkdir -p "$OUTPUT_DIR"
+        # The runner exits 0 for a failed case and non-zero only for a crash.
+        # A crash must not stop the other descriptors; upload-test-results
+        # reports the missing results file.
+        echo "$TEST_MATRIX" | jq -r '.[] | "\(.entity)\t\(.descriptor_name)\t\(.test_file)"' |
+          while IFS=$'\t' read -r entity descriptor test_file; do
+            echo "::group::${entity}/${descriptor}"
+            node dist/cli.js "$REGISTRY_ROOT/$test_file" \
+              --output "$OUTPUT_DIR/${entity}__${descriptor}.json" --verbose ||
+              echo "::error file=${test_file}::The Sourcify runner exited with status $? for ${entity}/${descriptor}"
+            echo "::endgroup::"
+          done
