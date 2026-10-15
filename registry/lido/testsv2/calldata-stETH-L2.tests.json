@@ -1,0 +1,119 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-stETH-L2.json",
+  "dataProvider": {
+    "tokens": {
+      "0x76a50b8c7349ccddb7578c6627e79b5d99d24138": { "symbol": "stETH", "decimals": 18, "name": "Liquid staked Ether 2.0" },
+      "0x81f2508aac59757ef7425ddc9717ab5c2aa0a84f": { "symbol": "stETH", "decimals": 18, "name": "Liquid staked Ether 2.0" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Approve stETH - chain 10",
+      "rawTx": "0x02f86d0a01843b9aca0084773594008301d4c09476a50b8c7349ccddb7578c6627e79b5d99d2413880b844095ea7b30000000000000000000000008e01013243a96601a86eb3153f0d9fa4fbfb69570000000000000000000000000000000000000000000000056bc75e2d63100000c0",
+      "expected": {
+        "intent": "Approve stETH",
+        "owner": "Lido DAO",
+        "fields": [{ "label": "Spender", "value": "0x8E01013243a96601a86eb3153F0d9Fa4fbFb6957" }, { "label": "Amount", "value": "100 stETH" }],
+        "interpolatedIntent": "Allow to spend 100 stETH"
+      }
+    },
+    {
+      "description": "Approve unlimited stETH - chain 130",
+      "rawTx": "0x02f86e818201843b9aca0084773594008301d4c09481f2508aac59757ef7425ddc9717ab5c2aa0a84f80b844095ea7b30000000000000000000000001a513e9b6434a12c7bb5b9af3b21963308dee372ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Approve stETH",
+        "owner": "Lido DAO",
+        "fields": [
+          { "label": "Spender", "value": "0x1A513e9B6434a12C7bB5B9AF3B21963308DEE372" },
+          { "label": "Amount", "value": "Unlimited stETH" }
+        ],
+        "interpolatedIntent": "Allow to spend Unlimited stETH"
+      }
+    },
+    {
+      "description": "Wrap stETH - chain 10",
+      "rawTx": "0x02f84c0a01843b9aca0084773594008301d4c09476a50b8c7349ccddb7578c6627e79b5d99d2413880a4de0e9a3e0000000000000000000000000000000000000000000000000de0b6b3a7640000c0",
+      "expected": {
+        "intent": "Wrap stETH",
+        "owner": "Lido DAO",
+        "fields": [{ "label": "stETH amount", "value": "1 stETH" }],
+        "interpolatedIntent": "Wrap 1 stETH"
+      }
+    },
+    {
+      "description": "Unwrap wstETH to stETH - chain 130",
+      "rawTx": "0x02f84d818201843b9aca0084773594008301d4c09481f2508aac59757ef7425ddc9717ab5c2aa0a84f80a4ea598cb000000000000000000000000000000000000000000000000022b1c8c1227a0000c0",
+      "expected": {
+        "intent": "Unwrap wstETH to stETH",
+        "owner": "Lido DAO",
+        "fields": [{ "label": "wstETH amount", "value": "2.5 wstETH" }],
+        "interpolatedIntent": "Unwrap 2.5 wstETH"
+      }
+    },
+    {
+      "description": "Wrap stETH by shares - chain 10",
+      "rawTx": "0x02f84c0a01843b9aca0084773594008301d4c09476a50b8c7349ccddb7578c6627e79b5d99d2413880a46b37193c0000000000000000000000000000000000000000000000000a688906bd8b0000c0",
+      "expected": {
+        "intent": "Wrap stETH",
+        "owner": "Lido DAO",
+        "fields": [{ "label": "wstETH to receive", "value": "0.75 wstETH" }],
+        "interpolatedIntent": "Wrap stETH for 0.75 wstETH"
+      }
+    },
+    {
+      "description": "Transfer stETH - chain 10",
+      "rawTx": "0x02f86d0a01843b9aca0084773594008301d4c09476a50b8c7349ccddb7578c6627e79b5d99d2413880b844a9059cbb0000000000000000000000002aed99855fed0259e5774b50a9f589d2bc1e15970000000000000000000000000000000000000000000000002c8c35fe21010000c0",
+      "expected": {
+        "intent": "Transfer stETH",
+        "owner": "Lido DAO",
+        "fields": [
+          { "label": "Recipient", "value": "0x2aeD99855FED0259e5774B50a9f589D2BC1E1597" },
+          { "label": "Amount", "value": "3.21 stETH" }
+        ],
+        "interpolatedIntent": "Send 3.21 stETH to 0x2aeD99855FED0259e5774B50a9f589D2BC1E1597"
+      }
+    },
+    {
+      "description": "Transfer stETH from sender - chain 130",
+      "rawTx": "0x02f88e818201843b9aca0084773594008301d4c09481f2508aac59757ef7425ddc9717ab5c2aa0a84f80b86423b872dd00000000000000000000000008b00ceee2fb66029b53d76110b19eeaabfd1e650000000000000000000000002aed99855fed0259e5774b50a9f589d2bc1e159700000000000000000000000000000000000000000000000006f05b59d3b20000c0",
+      "expected": {
+        "intent": "Transfer stETH",
+        "owner": "Lido DAO",
+        "fields": [
+          { "label": "Sender", "value": "0x08b00cEEE2Fb66029B53D76110B19eeAabfd1e65" },
+          { "label": "Recipient", "value": "0x2aeD99855FED0259e5774B50a9f589D2BC1E1597" },
+          { "label": "Amount", "value": "0.5 stETH" }
+        ],
+        "interpolatedIntent": "Send 0.5 stETH to 0x2aeD99855FED0259e5774B50a9f589D2BC1E1597"
+      }
+    },
+    {
+      "description": "Transfer stETH shares - chain 10",
+      "rawTx": "0x02f86d0a01843b9aca0084773594008301d4c09476a50b8c7349ccddb7578c6627e79b5d99d2413880b8448fcb4e5b0000000000000000000000002aed99855fed0259e5774b50a9f589d2bc1e159700000000000000000000000000000000000000000000000014d1120d7b160000c0",
+      "expected": {
+        "intent": "Transfer stETH shares",
+        "owner": "Lido DAO",
+        "fields": [
+          { "label": "Recipient", "value": "0x2aeD99855FED0259e5774B50a9f589D2BC1E1597" },
+          { "label": "Shares amount", "value": "1.5 shares" }
+        ],
+        "interpolatedIntent": "Send 1.5 shares to 0x2aeD99855FED0259e5774B50a9f589D2BC1E1597"
+      }
+    },
+    {
+      "description": "Transfer stETH shares from sender - chain 130",
+      "rawTx": "0x02f88e818201843b9aca0084773594008301d4c09481f2508aac59757ef7425ddc9717ab5c2aa0a84f80b8646d78045900000000000000000000000008b00ceee2fb66029b53d76110b19eeaabfd1e650000000000000000000000002aed99855fed0259e5774b50a9f589d2bc1e15970000000000000000000000000000000000000000000000000b1a2bc2ec500000c0",
+      "expected": {
+        "intent": "Transfer stETH shares",
+        "owner": "Lido DAO",
+        "fields": [
+          { "label": "Sender", "value": "0x08b00cEEE2Fb66029B53D76110B19eeAabfd1e65" },
+          { "label": "Recipient", "value": "0x2aeD99855FED0259e5774B50a9f589D2BC1E1597" },
+          { "label": "Shares amount", "value": "0.8 shares" }
+        ],
+        "interpolatedIntent": "Send 0.8 shares to 0x2aeD99855FED0259e5774B50a9f589D2BC1E1597"
+      }
+    }
+  ]
+}
