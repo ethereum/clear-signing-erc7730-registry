@@ -3,7 +3,8 @@ name: Registry Checks
 # The rules that the registry data of a pull request must follow. One job per
 # rule, so a failed check names the broken rule. A job that needs network or
 # tooling looks only at the files that the pull request changes, and at the
-# descriptors that include them. A cheap job scans the whole registry.
+# descriptors that include them. A cheap job scans the whole registry. The
+# linter needs a secret, so it runs in descriptor-lint.yml.
 on:
   pull_request:
 
@@ -15,73 +16,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # The erc7730 linter fails when a display field points to a parameter
-  # that is not in the ABI of the deployed contract, or when an EIP-712
-  # key is malformed. Such a descriptor shows wrong or missing data on the
-  # wallet screen. Text length and missing display fields are only warnings.
-  validate_descriptors:
-    name: Descriptors pass the ERC-7730 linter
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - name: Checkout
-        timeout-minutes: 10
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Get all changed descriptor and shared files
-        timeout-minutes: 5
-        id: changed-descriptor-files
-        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
-        with:
-          files: |
-            registry/**/*.json
-            ercs/**/*.json
-          files_ignore: |
-            registry/**/tests/**
-            registry/**/testsv2/**
-            registry/**/sigs/**
-            registry/**/*.tests.json
-
-      - name: Resolve affected descriptors
-        timeout-minutes: 5
-        id: affected-descriptors
-        if: steps.changed-descriptor-files.outputs.any_changed == 'true'
-        env:
-          CHANGED_FILES: ${{ steps.changed-descriptor-files.outputs.all_changed_files }}
-          DELETED_FILES: ${{ steps.changed-descriptor-files.outputs.deleted_files }}
-        run: |
-          # A changed shared file (ercs/*.json or an entity-local common file)
-          # affects every descriptor whose "includes" chain contains it, so
-          # those descriptors must be linted too. Shared files are not linted
-          # standalone — they are partial descriptors, validated through their
-          # includers.
-          RESULT=$(CHANGED_FILES="$CHANGED_FILES $DELETED_FILES" \
-            node .github/scripts/list-affected-descriptors.js)
-          echo "$RESULT" | jq .
-          echo "descriptors=$(echo "$RESULT" | jq -r '.affected_descriptors | join(" ")')" >> $GITHUB_OUTPUT
-          echo "any_affected=$(echo "$RESULT" | jq -r '.has_affected')" >> $GITHUB_OUTPUT
-
-      - name: Setup python
-        timeout-minutes: 10
-        if: steps.affected-descriptors.outputs.any_affected == 'true'
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
-        with:
-          python-version: "3.12"
-          cache: "pip"
-
-      - name: Install ERC-7730 library
-        timeout-minutes: 10
-        if: steps.affected-descriptors.outputs.any_affected == 'true'
-        run: pip install -r .github/requirements.txt
-
-      - name: Validate ERC-7730 descriptors affected by pull request
-        timeout-minutes: 120
-        if: steps.affected-descriptors.outputs.any_affected == 'true'
-        env:
-          AFFECTED_FILES: ${{ steps.affected-descriptors.outputs.descriptors }}
-          SOURCIFY_TOKEN: ${{ secrets.SOURCIFY_TOKEN_CLEAR_SIGNING_CI }}
-        run: erc7730 lint --require-verified $AFFECTED_FILES --gha
-
   # A file that does not match its JSON schema is unreadable for a wallet and
   # for the tools. The linter covers only the descriptors, so this job also
   # checks the test files, against the test schema of their folder.
@@ -121,62 +55,55 @@ jobs:
         if: steps.changed-json-files.outputs.any_changed == 'true'
         env:
           CHANGED_FILES: ${{ steps.changed-json-files.outputs.all_changed_files }}
+        # The script groups the files by the schema each one names and runs
+        # check-jsonschema once per schema. A "$schema" key that is a URL or
+        # that points outside specs/ fails the check instead of silently
+        # falling back to the default schema.
+        run: .github/scripts/validate-json-schemas.sh $CHANGED_FILES
+
+  validate_schema_change:
+    name: Every file matches a changed schema
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        timeout-minutes: 10
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Get all changed schema files
+        timeout-minutes: 5
+        id: changed-schema-files
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
+        with:
+          files: |
+            specs/*.schema.json
+
+      - name: Setup python
+        timeout-minutes: 10
+        if: steps.changed-schema-files.outputs.any_changed == 'true' || steps.changed-schema-files.outputs.any_deleted == 'true'
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install check-jsonschema
+        timeout-minutes: 10
+        if: steps.changed-schema-files.outputs.any_changed == 'true' || steps.changed-schema-files.outputs.any_deleted == 'true'
+        run: pip install -r .github/requirements-schema.txt
+
+      - name: Validate every registry file against the schemas
+        timeout-minutes: 20
+        if: steps.changed-schema-files.outputs.any_changed == 'true' || steps.changed-schema-files.outputs.any_deleted == 'true'
+        # A schema change is checked against the whole registry, not only
+        # against the files a pull request touches. Under the ERC-7730
+        # versioning rules a schema change that keeps every existing
+        # descriptor valid is a PATCH or MINOR, and one that invalidates a
+        # descriptor is a MAJOR. This job is the machine check for that
+        # rule: if it fails, the schema change is breaking for this
+        # registry, and it must not land on the active major line.
         run: |
-          DEFAULT_SCHEMA="specs/erc7730-v2.schema.json"
-          TESTS_V1_SCHEMA="specs/erc7730-tests.schema.json"
-          TESTS_V2_SCHEMA="specs/erc7730-tests-v2.schema.json"
-          FAILED=0
-
-          for file in $CHANGED_FILES; do
-            if echo "$file" | grep -qE '/sigs/'; then
-              echo "Skipping $file (auditor attestation, no schema yet)"
-              continue
-            fi
-
-            # Resolve schema — folder-based dispatch for test files takes precedence,
-            # since legacy test files do not carry a $schema field.
-            if echo "$file" | grep -qE '/testsv2/.*\.tests\.json$'; then
-              SCHEMA_PATH="$TESTS_V2_SCHEMA"
-            elif echo "$file" | grep -qE '/tests/.*\.tests\.json$'; then
-              SCHEMA_PATH="$TESTS_V1_SCHEMA"
-            else
-              # Descriptor / shared / ercs file — read its $schema field if present.
-              SCHEMA_REF=$(python3 -c '
-          import json, sys
-          try:
-              with open(sys.argv[1]) as f:
-                  data = json.load(f)
-              print(data.get("$schema", ""))
-          except Exception:
-              print("")
-          ' "$file")
-
-              if [ -z "$SCHEMA_REF" ]; then
-                SCHEMA_PATH="$DEFAULT_SCHEMA"
-              elif echo "$SCHEMA_REF" | grep -qE '^https?://'; then
-                SCHEMA_PATH="$DEFAULT_SCHEMA"
-              else
-                FILE_DIR=$(dirname "$file")
-                RESOLVED=$(cd "$FILE_DIR" && realpath -m "$SCHEMA_REF" 2>/dev/null || echo "")
-                if [ -n "$RESOLVED" ] && [ -f "$RESOLVED" ]; then
-                  SCHEMA_PATH="$RESOLVED"
-                else
-                  SCHEMA_PATH="$DEFAULT_SCHEMA"
-                fi
-              fi
-            fi
-
-            echo "::group::Validating $file against $SCHEMA_PATH"
-            if ! check-jsonschema --schemafile "$SCHEMA_PATH" "$file"; then
-              FAILED=1
-            fi
-            echo "::endgroup::"
-          done
-
-          if [ "$FAILED" -ne 0 ]; then
-            echo "::error::One or more files failed JSON schema validation"
-            exit 1
-          fi
+          mapfile -t FILES < <(find registry ercs -name '*.json' | sort)
+          .github/scripts/validate-json-schemas.sh "${FILES[@]}"
 
   # Each (chainId, address) maps to one calldata descriptor, and two
   # descriptors cannot register the same EIP-712 type at one address. A
@@ -302,7 +229,7 @@ jobs:
             name=$(basename "$descriptor" .json)
             for sig in "$(dirname "$descriptor")"/sigs/"$name".eip155-*.json; do
               [ -e "$sig" ] || continue
-              echo "::error file=${descriptor},line=1::An auditor attested this descriptor in ${sig}, and this pull request changes it. Add a new descriptor file instead — the file name carries the version. The attestation then stays valid for the old descriptor, and an auditor can attest the new one later."
+              echo "::error file=${descriptor},line=1::An auditor attested this descriptor in ${sig}, and this pull request changes it. The index allows only one descriptor per deployment, so you cannot add the new version as a second file. To change the descriptor, delete the attestation file(s) from sigs/ in this pull request. An auditor can attest the new version later."
               FOUND=$((FOUND + 1))
             done
           done <<< "$AFFECTED"
@@ -324,7 +251,7 @@ jobs:
             name=$(basename "$sig" | sed -E 's/\.eip155-[0-9]+-0x[0-9a-fA-F]+\.json$//')
             descriptor="$(dirname "$(dirname "$sig")")/${name}.json"
             [ -e "$descriptor" ] && continue
-            echo "::error file=${sig},line=1::An auditor attested ${name}, but that descriptor is no longer here. Do not delete or rename an attested descriptor. Add a new descriptor file instead, and keep the attested one."
+            echo "::error file=${sig},line=1::An auditor attested ${name}, but that descriptor is no longer here. To delete or rename an attested descriptor, also delete its attestation file(s) from sigs/ in this pull request."
             FOUND=$((FOUND + 1))
           done < <(find registry -path '*/sigs/*.json')
 
