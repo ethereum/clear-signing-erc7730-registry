@@ -52,13 +52,26 @@ First ask with AskUserQuestion whether the default source is fine:
 - **Other repository or numbers:** the user gives a repository, a pull request URL or numbers.
 - **Stop.**
 
-Then list the candidates. Do not look up the AI review state yet: that costs several API calls per pull request and the user may change the set.
+Then list the candidates. Do not look up the AI review state yet: that costs several API calls per pull request and the user may change the set. Take more than the count, because the next filter drops some.
 
 ```bash
-gh pr list -R "$R" --label descriptors --state open --limit 10 \
+gh pr list -R "$R" --label descriptors --state open --limit 30 \
   --json number,title,author,headRefOid,updatedAt,isDraft \
   --jq '.[] | select(.isDraft | not)'
 ```
+
+Drop every pull request that the batch reviewer already reviewed and that the author has not addressed since. The reviewer is the account `gh` is logged in as. Its latest review on the pull request names the commit it was for; when that commit is the head commit, nothing happened since. When the head moved, compare the two commits: when no file under `registry/` or `ercs/` changed between them, the only change is a merge from master, such as the branch update of step 3, and the pull request is still not addressed.
+
+```bash
+ME=$(gh api user --jq .login)
+REV=$(gh api "repos/$R/pulls/$N/reviews?per_page=100" --jq "[.[] | select(.user.login == \"$ME\")] | last | .commit_id // empty")
+if [ -z "$REV" ]; then echo "no review, keep"
+elif [ "$REV" = "$SHA" ]; then echo "reviewed at head, drop"
+else gh api "repos/$R/compare/$REV...$SHA" --jq '[.files[].filename | select(startswith("registry/") or startswith("ercs/"))] | length'
+fi
+```
+
+A pull request with no review by the reviewer stays. One reviewed at its head, or with a count of zero, is dropped; name the dropped ones in one line under the table, with the review's commit. The first 10 that remain are the batch.
 
 Show one table: number, title, author, head commit, updated. Then ask with AskUserQuestion:
 
