@@ -10,10 +10,13 @@ This repository maintains records of past and current metadata files in the `reg
 README.md                                    # top-level README file with submission process
 index.calldata.json                          # index of calldata descriptors (see "Index files")
 index.eip712.json                            # index of EIP-712 descriptors (see "Index files")
-specs/
+specs/                                       # see specs/README.md
   erc-7730.md                                # most advanced version of the spec but reference should be the ERC
-  erc7730-v2.schema.json                     # the json schema of the latest version of the extension
-  erc7730-v1.schema.json                     # legacy json schema, kept for reference
+  erc7730-v*.schema.json                     # every descriptor schema published upstream (synced weekly):
+                                             #   erc7730-v2.schema.json is the latest released version,
+                                             #   erc7730-v1.schema.json the legacy one; exact versions
+                                             #   (erc7730-v2.0.0), release candidates (-rc.N) and the
+                                             #   in-development draft (-next) can also appear here
   erc7730-tests.schema.json                  # legacy json schema for test files (tests/)
   erc7730-tests-v2.schema.json               # json schema for test files (testsv2/)
 registry/
@@ -48,18 +51,20 @@ ercs/
 - Each entity folder includes **at least one file that is compatible with ERC-7730**, located at the root of the entity's folder.
 - All ERC-7730 compatible files are prefixed with either `calldata` for smart contracts or `eip712` for EIP-712 messages.
 - All ERC-7730 compatible files are correctly validated against the schema file located at `specs/erc7730-v2.schema.json`.
+- The `$schema` key of each ERC-7730 file points at that schema file by a relative path: `"$schema": "../../specs/erc7730-v2.schema.json"`. Do not use a URL, even the one in the examples of the ERC. CI rejects a URL, and a path that does not resolve to a file under `specs/`.
 - Do not use the `calldata` or `eip712` prefixes for common files which are included by the ERC-7730 files and placed at the top level of the entity folder. Name them `common-*.json` instead.
-- Each descriptor added or changed is accompanied by a test file so descriptors can be verified against the formatter implementations. See [Reference test cases](#reference-test-cases).
+- Each descriptor added or changed is accompanied by a test file so descriptors can be verified against the formatter implementations. For a calldata descriptor, the test file has at least one test case for every function in `display.formats`: CI derives the selector of each format and looks for it in the calldata of the test cases. See [Reference test cases](#reference-test-cases).
+- To change a descriptor that has an attestation, delete its attestation file(s) from `sigs/` in the same PR. For now this is the only way, because the [index](#index-files) allows only one descriptor per deployment.
 
 Reviewers check each PR against the [review guidelines](docs/REVIEWING.md).
 
 ## How to validate
 
-The `erc7730` Python package is available for validating and formatting ERC-7730 descriptors:
+The `erc7730` Python package is available for validating and formatting ERC-7730 descriptors. This repository uses the [sourcifyeth/python-erc7730](https://github.com/sourcifyeth/python-erc7730) fork, pinned in `.github/requirements.txt`:
 
 ```bash
 # Install the erc7730 package (requires Python 3.12+)
-pip install erc7730
+pip install -r .github/requirements.txt
 
 # Validate a specific file
 erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
@@ -67,10 +72,14 @@ erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
 # Validate all descriptors (exclude the tests/ and testsv2/ fixtures and the sigs/ attestations, which are not descriptors)
 erc7730 lint $(find registry -type f \( -name 'calldata-*.json' -o -name 'eip712-*.json' \) -not -path '*/tests/*' -not -path '*/testsv2/*' -not -path '*/sigs/*' -not -name '*.tests.json')
 
+# Check the "$schema" key of each file and validate each file against the schema it names, like CI does
+# (needs jq and check-jsonschema: pip install -r .github/requirements-schema.txt)
+.github/scripts/validate-json-schemas.sh registry/<entity>/*.json registry/<entity>/testsv2/*.json
+
 # Format all descriptors
 erc7730 format
 
-# Generate a new descriptor from Etherscan
+# Generate a new descriptor from Sourcify
 erc7730 generate --address 0xContractAddress --chain-id 1 --owner "Entity Name" --url "https://entity.url"
 ```
 
@@ -80,18 +89,18 @@ If you have [uv](https://docs.astral.sh/uv/) installed, you can skip the install
 
 ```bash
 # Run any erc7730 command without installing it first
-uvx erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
-uvx erc7730 format
+uvx --from "$(cat .github/requirements.txt)" erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
+uvx --from "$(cat .github/requirements.txt)" erc7730 format
 ```
 
 Or install it as a persistent uv-managed tool:
 
 ```bash
-uv tool install erc7730
+uv tool install "$(cat .github/requirements.txt)"
 erc7730 lint registry/uniswap/calldata-UniswapV3Router02.json
 ```
 
-For more information about the ERC-7730 tools, visit the [erc7730 package on PyPI](https://pypi.org/project/erc7730/).
+For more information about the ERC-7730 tools, visit the [sourcifyeth/python-erc7730](https://github.com/sourcifyeth/python-erc7730) repository.
 
 ## Reference test cases
 
@@ -208,3 +217,13 @@ Test files should be placed in a `testsv2/` folder within your entity directory 
 - `index.eip712.json` maps each identifier to its EIP-712 primary types, and each primary type to the descriptors defining it. Every entry also carries the keccak256 hashes of the `encodeType` strings it covers, so consumers can pick the right descriptor when several define the same primary type for the same contract.
 
 Both files are **generated** from the descriptors under `registry/` — do not edit them by hand. A CI job regenerates them on every change to `master` and opens a pull request when they change, so contributors do not need to update them. To regenerate locally, run `npm ci && npm run generate-index`.
+
+## Disclaimer
+
+This repository is an open registry of community-contributed ERC-7730 descriptors and auditor attestations. Inclusion means only that a descriptor passed the registry's automated checks and basic review. It does not mean that the repository maintainers, or the Ethereum Foundation, have audited, approved or endorsed the descriptor, or verified that it accurately describes the effects of a transaction.
+
+An auditor attestation is separate from repository review. A valid signature identifies the auditor and the exact descriptor version reviewed, but does not itself prove accuracy. Auditors are responsible for their reviews and attestations.
+
+Wallets are responsible for the clear-signing information they show users. A wallet should use a descriptor only after verifying that it is covered by a valid, unrevoked attestation from an auditor the wallet has independently vetted, and that it applies to the relevant transaction. If those checks fail, the wallet should use a safe fallback rather than present the descriptor as verified.
+
+Repository materials are provided as-is without warranties.
