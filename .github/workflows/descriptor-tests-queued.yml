@@ -1,0 +1,79 @@
+name: Descriptor Tests Queued
+
+# Posts the "tests are queued" note on the pull request as soon as a commit
+# is pushed. The note tells the author that the tests run, and it replaces
+# the results of the previous commit, which a reader could take for the new
+# commit.
+#
+# The note needs a write token, and a fork pull_request run has a read-only
+# token. So this runs on pull_request_target: the token can write, and the
+# run uses the workflow file of the base branch. It checks out nothing and
+# runs no code from the pull request. descriptor-test-results.yml then
+# replaces the note with the results.
+#
+# Keep the paths filter equal to the one in descriptor-tests.yml.
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+    paths:
+      - "registry/**/*.json"
+      - "ercs/**/*.json"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  pull-requests: write
+
+jobs:
+  announce-run:
+    name: Post the queued note
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Mark the comment as in progress
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const sha = process.env.HEAD_SHA;
+
+            // A note written after the results would hide them, and nothing
+            // would replace it.
+            const { data: runs } = await github.rest.actions.listWorkflowRunsForRepo({
+              owner, repo, head_sha: sha, event: 'pull_request', per_page: 100,
+            });
+            if (runs.workflow_runs.some((r) => r.name === 'Descriptor Tests' && r.status === 'completed')) {
+              core.info(`The tests for ${sha.slice(0, 7)} already finished. No note.`);
+              return;
+            }
+
+            // Replace the results of the previous commit, because a reader can
+            // take them for a statement about the new commit.
+            // "Queued", not "in progress": a first pull request from a new
+            // contributor waits for a maintainer to approve the run.
+            const body =
+              '## Clear Signing Tests\n\n' +
+              `⏳ Tests are queued for [\`${sha.slice(0, 7)}\`]` +
+              `(${context.serverUrl}/${owner}/${repo}/commit/${sha}).\n\n` +
+              'This comment is replaced with the results when the run finishes. ' +
+              'A first pull request from a new contributor needs a maintainer to ' +
+              'approve the run before it starts.\n';
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number, per_page: 100,
+            });
+            const existing = comments.find(
+              (c) => c.user.type === 'Bot' && c.body.startsWith('## Clear Signing Tests'),
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }

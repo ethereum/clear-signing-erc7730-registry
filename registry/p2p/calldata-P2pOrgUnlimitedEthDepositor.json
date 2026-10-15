@@ -16,7 +16,14 @@
       "addEth(bytes32 _eth2WithdrawalCredentials, uint96 _ethAmountPerValidatorInWei, address _referenceFeeDistributor, (uint96 basisPoints, address recipient) _clientConfig, (uint96 basisPoints, address recipient) _referrerConfig, bytes _extraData)": {
         "intent": "Stake ETH",
         "fields": [
-          { "label": "Withdraw credentials", "format": "raw", "path": "#._eth2WithdrawalCredentials", "visible": "always" },
+          {
+            "label": "Withdrawal address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] },
+            "path": "#._eth2WithdrawalCredentials.[-20:]",
+            "visible": "always"
+          },
+          { "label": "Credential type", "format": "raw", "path": "#._eth2WithdrawalCredentials.[:1]", "visible": "always" },
           { "label": "ETH per validator", "format": "amount", "path": "#._ethAmountPerValidatorInWei", "visible": "always" },
           { "label": "Amount to deposit", "format": "amount", "path": "@.value", "visible": "always" },
           {
@@ -26,9 +33,22 @@
             "path": "#._referenceFeeDistributor",
             "visible": "always"
           },
+          {
+            "label": "Client share (bps)",
+            "format": "unit",
+            "params": { "base": "bps", "decimals": 0 },
+            "path": "#._clientConfig.basisPoints",
+            "visible": "always"
+          },
+          {
+            "label": "Client recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] },
+            "path": "#._clientConfig.recipient",
+            "visible": "always"
+          },
+          { "label": "Withdraw credentials", "path": "#._eth2WithdrawalCredentials", "visible": "never" },
           { "label": "Client Config", "path": "#._clientConfig", "visible": "never" },
-          { "label": "Client Config Basis Points", "path": "#._clientConfig.basisPoints", "visible": "never" },
-          { "label": "Client Config Recipient", "path": "#._clientConfig.recipient", "visible": "never" },
           { "label": "Referrer Config", "path": "#._referrerConfig", "visible": "never" },
           { "label": "Referrer Config Basis Points", "path": "#._referrerConfig.basisPoints", "visible": "never" },
           { "label": "Referrer Config Recipient", "path": "#._referrerConfig.recipient", "visible": "never" },
