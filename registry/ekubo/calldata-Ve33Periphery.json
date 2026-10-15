@@ -1,0 +1,48 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        { "chainId": 4663, "address": "0x1D834b70c33FAceBdB05af3C9C78da396f5d0E26" },
+        { "chainId": 46630, "address": "0x1D834b70c33FAceBdB05af3C9C78da396f5d0E26" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Ekubo Protocol",
+    "contractName": "Ekubo Ve33 Emissions Periphery",
+    "info": { "url": "https://ekubo.org" },
+    "constants": { "rewardToken": "0x570C5aa79c798E7A418412cC8399ae5bcCe570C5" }
+  },
+  "display": {
+    "formats": {
+      "scheduleEmissions(uint64 startTime, uint64 endTime, uint160 rewardRate)": {
+        "intent": "Schedule Ve33 emissions",
+        "interpolatedIntent": "Schedule STONX emissions",
+        "fields": [
+          { "path": "startTime", "label": "Start time", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" },
+          { "path": "endTime", "label": "End time", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" },
+          { "path": "rewardRate", "label": "Reward rate (Q32)", "format": "raw", "visible": "always" }
+        ]
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Batch Ve33 emission actions",
+        "interpolatedIntent": "Ve33 emission batch",
+        "fields": [{ "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to" }, "visible": "always" }]
+      },
+      "refundNativeToken()": {
+        "intent": "Refund unused native token",
+        "interpolatedIntent": "Refund native token",
+        "fields": [
+          {
+            "path": "@.from",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa"] },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
