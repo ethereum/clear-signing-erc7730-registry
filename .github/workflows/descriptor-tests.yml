@@ -74,6 +74,12 @@ jobs:
         id: detect
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          # The four lists say what the pull request did to each file. The
+          # script turns them into the "changes" map of the report: added,
+          # modified or deleted, per descriptor, test file and included file.
+          ADDED_FILES: ${{ steps.changed-files.outputs.added_files }}
+          MODIFIED_FILES: ${{ steps.changed-files.outputs.modified_files }}
+          RENAMED_FILES: ${{ steps.changed-files.outputs.renamed_files }}
           DELETED_FILES: ${{ steps.changed-files.outputs.deleted_files }}
         run: |
           # A change to a shared file must run the tests of every descriptor
@@ -86,6 +92,9 @@ jobs:
           echo "has_affected=$(echo "$RESULT" | jq -r '.has_affected')" >> $GITHUB_OUTPUT
           echo "affected_descriptors=$(echo "$RESULT" | jq -c '.affected_descriptors')" >> $GITHUB_OUTPUT
           echo "missing_tests=$(echo "$RESULT" | jq -c '.missing_tests // []')" >> $GITHUB_OUTPUT
+          # An older base script has no "changes" key; the fallback keeps the
+          # output valid JSON, and the report then says "unknown".
+          echo "changes=$(echo "$RESULT" | jq -c '.changes // {}')" >> $GITHUB_OUTPUT
 
       # descriptor-test-results.yml runs after this workflow and posts the
       # comment that a fork run cannot write. It learns the pull request and the
@@ -109,33 +118,16 @@ jobs:
           HAS_AFFECTED: ${{ steps.detect.outputs.has_affected }}
           TEST_MATRIX: ${{ steps.detect.outputs.test_matrix }}
           MISSING_TESTS: ${{ steps.detect.outputs.missing_tests }}
-          ADDED_FILES: ${{ steps.changed-files.outputs.added_files }}
-          MODIFIED_FILES: ${{ steps.changed-files.outputs.modified_files }}
-          RENAMED_FILES: ${{ steps.changed-files.outputs.renamed_files }}
-          DELETED_FILES: ${{ steps.changed-files.outputs.deleted_files }}
+          # Whether the pull request added, modified or left alone the
+          # descriptor, its test file and its included files. The detect
+          # script decides this from the changed files of the pull request.
+          CHANGES: ${{ steps.detect.outputs.changes }}
         run: |
           # This step also runs after a failure, so the detect outputs can be
-          # empty. jq needs valid JSON for --argjson.
+          # empty. jq needs valid JSON for --argjson. An empty changes map
+          # makes the report say "unknown".
           TEST_MATRIX="${TEST_MATRIX:-[]}"
           MISSING_TESTS="${MISSING_TESTS:-[]}"
-
-          # Whether the pull request added, modified or left alone the
-          # descriptor and the test file of each matrix entry. The lists come
-          # from the changed-files step, separated by spaces; a registry path
-          # has none. A failure gives an empty map, and the report says
-          # "unknown".
-          kind() {
-            case " $DELETED_FILES " in *" $1 "*) echo deleted; return ;; esac
-            case " $ADDED_FILES " in *" $1 "*) echo added; return ;; esac
-            case " $MODIFIED_FILES $RENAMED_FILES " in *" $1 "*) echo modified; return ;; esac
-            echo unchanged
-          }
-          CHANGES=$(echo "$TEST_MATRIX" | jq -r '.[] | "\(.descriptor)\t\(.test_file)"' |
-            while IFS=$'\t' read -r descriptor test_file; do
-              printf '%s\t%s\t%s\n' "$descriptor" "$(kind "$descriptor")" "$(kind "$test_file")"
-            done |
-            jq -R -s 'split("\n") | map(select(length > 0) | split("\t"))
-              | map({key: .[0], value: {descriptor: .[1], tests: .[2]}}) | from_entries') || CHANGES='{}'
           if [ -z "$CHANGES" ]; then CHANGES='{}'; fi
 
           mkdir -p pr-context/tests
@@ -182,15 +174,20 @@ jobs:
           find pr-context -type f | sort
 
       - name: Collect the recommendations
-        # The hashFiles test lets the pull request that adds the script pass.
-        # The base ref does not hold the script yet, and the step starts to
-        # work by itself after the merge.
+        # The script comes from the base. The hashFiles test skips the step
+        # when the base does not hold the script. An older base script writes
+        # Markdown, not JSON; the results workflow ignores a file that is not
+        # valid JSON, so the step starts to work by itself after the merge.
         if: always() && hashFiles('base-scripts/.github/scripts/check-recommended-fields.js') != ''
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-        # An advisory comment, so the results workflow posts it. This run has a
-        # read-only token when the pull request comes from a fork.
-        run: node base-scripts/.github/scripts/check-recommended-fields.js > pr-context/recommendations.md
+          # For the "includes" chain of each descriptor, which the test report
+          # needs to give a descriptor the suggestions of a shared file.
+          AFFECTED_DESCRIPTORS: ${{ steps.detect.outputs.affected_descriptors }}
+        # Suggestions, not errors. The results workflow puts them in the test
+        # report and counts them in its comment. This run has a read-only token
+        # when the pull request comes from a fork, so it only writes a file.
+        run: node base-scripts/.github/scripts/check-recommended-fields.js > pr-context/recommendations.json
 
       - name: Upload the pull request context
         if: always()
