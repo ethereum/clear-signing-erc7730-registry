@@ -4,7 +4,9 @@ A bundle is one JSON file that describes one run of the [Descriptor Tests](../wo
 
 The bundle is the contract between this repository and the viewer, which lives in its own repository. `schemaVersion` names the version of this document. The number goes up only for a change that breaks an old reader: a renamed or removed key, or a changed shape. A new optional key does not bump it. A bundle keeps its version forever, so the viewer reads every version it has known.
 
-Every string under `descriptors` comes from the pull request, that is from a fork. The bundle copies it as data. A reader must escape it and must never build a link from it unless the value matches a strict pattern.
+Every string under `descriptors` and `recommendations` comes from the pull request, that is from a fork. The bundle copies it as data. A reader must escape it and must never build a link from it unless the value matches a strict pattern.
+
+A coding agent that must fix a pull request reads the bundle as [agent-instructions.md](./agent-instructions.md) tells it.
 
 ## Top level
 
@@ -25,7 +27,23 @@ Every string under `descriptors` comes from the pull request, that is from a for
 | `implementations[].runner` | string or null | The `runner` field of the runner's `results.json` |
 | `implementations[].implementation` | string or null | The `implementation` field, `package@version` |
 | `missingTests` | array of string | Affected descriptors with no `testsv2` file |
+| `recommendations` | array | Optional. Every suggestion for the files of the pull request, see below |
 | `descriptors` | array | One entry per matrix entry, in matrix order |
+
+### `recommendations[]`
+
+An optional addition to schema version 1. An older bundle does not have the key; read it as an empty list.
+
+The list comes from [`check-recommended-fields.js`](../scripts/check-recommended-fields.js), which the test run writes to `recommendations.json` in its `pr-context` artifact. The script reads each changed descriptor and shared file as it is, without its `includes`, so an item names the file that the author must edit. A suggestion never blocks the pull request.
+
+| Key | Type | Notes |
+| --- | --- | --- |
+| `type` | string | `no-interpolated-intent` or `deprecated-key`. A reader ignores a type it does not know |
+| `file` | string | Repository path of the file to edit, e.g. `registry/safe/common-Safe.json` |
+| `pointer` | string | [RFC 6901](https://www.rfc-editor.org/rfc/rfc6901) JSON Pointer into `file`: the format for `no-interpolated-intent`, the key for `deprecated-key`. In a segment, `~1` is `/` and `~0` is `~` |
+| `message` | string | One sentence that explains the suggestion |
+| `format` | string | `no-interpolated-intent` only: the format key |
+| `key` | string | `deprecated-key` only: `context.contract.abi` or `context.eip712.schemas` |
 
 ## `descriptors[]`
 
@@ -34,14 +52,16 @@ Every string under `descriptors` comes from the pull request, that is from a for
 | `path` | string | Repository path, e.g. `registry/flare/calldata-AssetManager-FXRP-Flare.json` |
 | `entity`, `name` | string | The two parts of the path |
 | `kind` | `calldata` or `eip712` | From the file name prefix |
-| `change.descriptor` | string | `added`, `modified`, `deleted`, `unchanged` or `unknown` |
-| `change.tests` | string | Same values, for the test file |
+| `change.descriptor` | string | `added`, `modified`, `deleted`, `unchanged` or `unknown`. `modified` also when the pull request changed only a file of the descriptor's `includes` chain |
+| `change.viaInclude` | `true`, optional | Present when the pull request changed a file of the descriptor's `includes` chain while the descriptor file itself is unchanged. The detect job decides this from the changed files of the pull request, so the state of the base branch has no effect |
+| `change.includes` | array of string, optional | The changed files of the descriptor's `includes` chain, sorted; can be empty. A bundle from an older run does not have the key |
+| `change.tests` | string | Same values as `change.descriptor`, for the test file |
 | `testFile` | string or null | Repository path of the test file |
 | `head` | object or null | The descriptor at `pr.headSha`, with `includes` resolved |
 | `base` | object or null | The descriptor at `pr.baseSha`, resolved, when it existed there |
 | `dataProvider` | object or null | The `dataProvider` block of the test file |
 | `formats` | object | One entry per key of `head.display.formats`, see below |
-| `recommendations` | array | Non-blocking advice, see below |
+| `recommendations` | array | The suggestions that apply to this descriptor, see below |
 | `cases` | array | One entry per test of the test file, in file order |
 
 ### `formats`
@@ -55,12 +75,16 @@ Keyed by the format key exactly as the descriptor writes it.
 | `error` | string or null | Why no selector could be derived |
 | `cases` | array of string | The `description` of every case that hits this format. Empty means the function has no test |
 
-### `recommendations[]`
+### `descriptors[].recommendations[]`
+
+The items of the top-level `recommendations` that apply to this descriptor. An item applies when its `file` is the descriptor or a file in its `includes` chain. A `no-interpolated-intent` item applies only when `head.display.formats` has the format and the resolved format still has no `interpolatedIntent`, because a descriptor can override a format of the file that it includes.
 
 | `type` | Other keys | Meaning |
 | --- | --- | --- |
 | `no-interpolated-intent` | `format` | The format has no `interpolatedIntent` |
 | `deprecated-key` | `key` | The descriptor uses `context.contract.abi` or `context.eip712.schemas` |
+
+Every item also has the optional keys `file` and `pointer`, with the meaning of the top-level list. They are an optional addition to schema version 1: an older bundle does not have them.
 
 ### `cases[]`
 
