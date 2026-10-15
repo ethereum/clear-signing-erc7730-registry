@@ -253,7 +253,7 @@ async function askModel(client, input) {
 
 /** What happens to a unit: failed for its size, or reviewed. */
 async function outcomeOf(client, unit, input, maxBytes) {
-  if (unit.tooLarge) return { ok: false, error: `the unit is ${kilobytes(unit.bytes)} KB, above the limit of ${kilobytes(maxBytes)} KB; nothing is trimmed to make it fit` };
+  if (unit.tooLarge) return { ok: false, error: `the unit is ${kilobytes(unit.bytes)} KB, above the limit of ${kilobytes(maxBytes)} KB; nothing is trimmed to make it fit`, bytes: unit.bytes, maxBytes };
   return askModel(client, input);
 }
 

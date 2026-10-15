@@ -37,7 +37,7 @@ Deployments are grouped by a key: the SHA-256 hash of the ABI and of every verif
 
 A verified contract comes with every file of its compilation, often with interfaces and unrelated contracts of the same project. The unit keeps the files the deployed code was compiled from, as the compiler's source maps list them: the contract, its base contracts, the libraries inlined into it. Contracts that the code creates with `new` are not in those maps, so the files that declare them are added by name. The ABI and the NatSpec are limited to the reviewed functions. A proxy keeps its main file only.
 
-A unit above 600 KB, about 200K tokens, is not reviewed: the review fails for that unit and the comment says so. Nothing is trimmed to make a unit fit.
+A unit above 600 KB, about 200K tokens, is not reviewed: the review fails for that unit and the comment lists it at the end, under "Not reviewed". Nothing is trimmed to make a unit fit.
 
 </details>
 
@@ -80,7 +80,7 @@ Severity follows from the effect and what is shown: `critical` when an effect is
 <details>
 <summary>What the comment looks like</summary>
 
-One comment per model, updated in place on later runs. It opens with a note that the notes are not to be addressed yet, because a reviewer gives the final verdict, then the count of findings per descriptor, 🔴 critical, 🟠 warning, 🔵 info, with the contract whose code was reviewed and a link to the Sourcify page of each deployment; when the deployments of a descriptor run different code, one group per implementation. Then, for each descriptor, the findings as the model wrote them, each folded under its own title with the severity in front, worst first. A "What could not be reviewed" section, when there is one, is a last toggle. The comment is the model's Markdown with HTML, links and mentions escaped; nothing is rearranged. The model, its effort, the token usage and the cost are in small print at the bottom.
+One comment per model, updated in place on later runs. It opens with a note that the notes are not to be addressed yet, because a reviewer gives the final verdict, then the count of findings per descriptor, 🔴 critical, 🟠 warning, 🔵 info, with the contract whose code was reviewed and a link to the Sourcify page of each deployment; when the deployments of a descriptor run different code, one group per implementation. Then, for each descriptor, the findings as the model wrote them, each folded under its own title with the severity in front, worst first. A "What could not be reviewed" section, when there is one, is a last toggle. The comment is the model's Markdown with HTML, links and mentions escaped; nothing is rearranged. The units that got no answer are one list at the end, under "Not reviewed": the units above the size limit together, with the limit stated once, then the units the model refused or the API failed on, each with its error. The model, its effort, the token usage and the cost are in small print at the bottom.
 
 </details>
 
