@@ -1,0 +1,250 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0xdccbd7a365aee086aa3b4ede8afe895b20770ae3" }] } },
+  "metadata": {
+    "owner": "Liquity",
+    "info": { "url": "https://www.liquity.org" },
+    "constants": { "boldToken": "0x6440f144b7e50d6a8439336510312d2f54beb01d" }
+  },
+  "display": {
+    "formats": {
+      "addCollWithRawETH(uint256 _troveId)": {
+        "intent": "Add collateral",
+        "fields": [
+          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
+          { "path": "@.value", "label": "Add (ETH)", "format": "amount" }
+        ]
+      },
+      "withdrawCollToRawETH(uint256 _troveId, uint256 _amount)": {
+        "intent": "Withdraw collateral",
+        "fields": [
+          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
+          {
+            "path": "#._amount",
+            "label": "Withdraw (ETH)",
+            "format": "tokenAmount",
+            "params": { "token": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" }
+          }
+        ]
+      },
+      "withdrawBold(uint256 _troveId, uint256 _boldAmount, uint256 _maxUpfrontFee)": {
+        "intent": "Borrow BOLD",
+        "interpolatedIntent": "Borrow {_boldAmount}",
+        "fields": [
+          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
+          {
+            "path": "#._boldAmount",
+            "label": "Borrow BOLD",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.boldToken" }
+          },
+          {
+            "path": "#._maxUpfrontFee",
+            "label": "Max upfront fee",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.boldToken",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "No limit"
+            }
+          }
+        ]
+      },
+      "repayBold(uint256 _troveId, uint256 _boldAmount)": {
+        "intent": "Repay BOLD",
+        "interpolatedIntent": "Repay {_boldAmount}",
+        "fields": [
+          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
+          {
+            "path": "#._boldAmount",
+            "label": "Repay BOLD",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.boldToken" }
+          }
+        ]
+      },
+      "adjustTroveWithRawETH(uint256 _troveId, uint256 _collChange, bool _isCollIncrease, uint256 _boldChange, bool _isDebtIncrease, uint256 _maxUpfrontFee)": {
+        "intent": "Adjust Trove",
+        "fields": [
+          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
+          { "path": "#._isCollIncrease", "label": "Collateral change", "format": "raw" },
+          {
+            "path": "#._collChange",
+            "label": "Collateral (ETH)",
+            "format": "tokenAmount",
+            "params": { "token": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" }
+          },
+          { "path": "#._isDebtIncrease", "label": "Debt change", "format": "raw" },
+          {
+            "path": "#._boldChange",
+            "label": "BOLD amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.boldToken" }
+          },
+          {
+            "path": "#._maxUpfrontFee",
+            "label": "Max upfront fee",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.boldToken",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "No limit"
+            }
+          }
+        ]
+      },
+      "closeTroveToRawETH(uint256 _troveId)": { "intent": "Close Trove", "fields": [{ "path": "#._troveId", "label": "Trove ID", "format": "raw" }] },
+      "closeTroveFromCollateral(uint256 _troveId, uint256 _flashLoanAmount, uint256 _minExpectedCollateral)": {
+        "intent": "Close Trove",
+        "fields": [
+          { "path": "#._troveId", "label": "Trove ID", "format": "raw" },
+          {
+            "path": "#._minExpectedCollateral",
+            "label": "Min collateral out",
+            "format": "tokenAmount",
+            "params": { "token": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" }
+          },
+          { "path": "#._flashLoanAmount", "label": "", "format": "raw", "visible": "never" }
+        ]
+      },
+      "openTroveWithRawETH((address owner, uint256 ownerIndex, uint256 collAmount, uint256 boldAmount, uint256 upperHint, uint256 lowerHint, uint256 annualInterestRate, address batchManager, uint256 maxUpfrontFee, address addManager, address removeManager, address receiver) _params)": {
+        "intent": "Open Trove",
+        "fields": [
+          { "path": "#._params.owner", "label": "Owner", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] } },
+          { "path": "@.value", "label": "Collateral (ETH)", "format": "amount" },
+          {
+            "path": "#._params.boldAmount",
+            "label": "Borrow BOLD",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.boldToken" }
+          },
+          {
+            "path": "#._params.annualInterestRate",
+            "label": "Interest rate",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 16 }
+          },
+          {
+            "path": "#._params.batchManager",
+            "label": "Batch manager",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] },
+            "visible": "optional"
+          },
+          {
+            "path": "#._params.maxUpfrontFee",
+            "label": "Max upfront fee",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.boldToken",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "No limit"
+            }
+          },
+          {
+            "path": "#._params.receiver",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] },
+            "visible": "optional"
+          },
+          { "path": "#._params.collAmount", "label": "", "format": "raw", "visible": "never" },
+          { "path": "#._params.ownerIndex", "label": "", "format": "raw", "visible": "never" },
+          { "path": "#._params.upperHint", "label": "", "format": "raw", "visible": "never" },
+          { "path": "#._params.lowerHint", "label": "", "format": "raw", "visible": "never" },
+          { "path": "#._params.addManager", "label": "", "format": "raw", "visible": "never" },
+          { "path": "#._params.removeManager", "label": "", "format": "raw", "visible": "never" }
+        ]
+      },
+      "openLeveragedTroveWithRawETH((address owner, uint256 ownerIndex, uint256 collAmount, uint256 flashLoanAmount, uint256 boldAmount, uint256 upperHint, uint256 lowerHint, uint256 annualInterestRate, address batchManager, uint256 maxUpfrontFee, address addManager, address removeManager, address receiver) _params)": {
+        "intent": "Open leveraged Trove",
+        "fields": [
+          { "path": "#._params.owner", "label": "Owner", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] } },
+          { "path": "@.value", "label": "Deposit (ETH)", "format": "amount" },
+          {
+            "path": "#._params.flashLoanAmount",
+            "label": "Leverage (ETH)",
+            "format": "tokenAmount",
+            "params": { "token": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" }
+          },
+          {
+            "path": "#._params.boldAmount",
+            "label": "Borrow BOLD",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.boldToken" }
+          },
+          {
+            "path": "#._params.annualInterestRate",
+            "label": "Interest rate",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 16 }
+          },
+          {
+            "path": "#._params.maxUpfrontFee",
+            "label": "Max upfront fee",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.boldToken",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "No limit"
+            }
+          },
+          { "path": "#._params.collAmount", "label": "", "format": "raw", "visible": "never" },
+          { "path": "#._params.ownerIndex", "label": "", "format": "raw", "visible": "never" },
+          { "path": "#._params.upperHint", "label": "", "format": "raw", "visible": "never" },
+          { "path": "#._params.lowerHint", "label": "", "format": "raw", "visible": "never" },
+          { "path": "#._params.batchManager", "label": "", "format": "raw", "visible": "never" },
+          { "path": "#._params.addManager", "label": "", "format": "raw", "visible": "never" },
+          { "path": "#._params.removeManager", "label": "", "format": "raw", "visible": "never" },
+          { "path": "#._params.receiver", "label": "", "format": "raw", "visible": "never" }
+        ]
+      },
+      "leverUpTrove((uint256 troveId, uint256 flashLoanAmount, uint256 boldAmount, uint256 maxUpfrontFee) _params)": {
+        "intent": "Increase leverage",
+        "fields": [
+          { "path": "#._params.troveId", "label": "Trove ID", "format": "raw" },
+          {
+            "path": "#._params.flashLoanAmount",
+            "label": "Leverage (ETH)",
+            "format": "tokenAmount",
+            "params": { "token": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" }
+          },
+          {
+            "path": "#._params.boldAmount",
+            "label": "Borrow BOLD",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.boldToken" }
+          },
+          {
+            "path": "#._params.maxUpfrontFee",
+            "label": "Max upfront fee",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.boldToken",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "No limit"
+            }
+          }
+        ]
+      },
+      "leverDownTrove((uint256 troveId, uint256 flashLoanAmount, uint256 minBoldAmount) _params)": {
+        "intent": "Decrease leverage",
+        "fields": [
+          { "path": "#._params.troveId", "label": "Trove ID", "format": "raw" },
+          {
+            "path": "#._params.flashLoanAmount",
+            "label": "Deleverage (ETH)",
+            "format": "tokenAmount",
+            "params": { "token": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" }
+          },
+          {
+            "path": "#._params.minBoldAmount",
+            "label": "Min BOLD repaid",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.boldToken" }
+          }
+        ]
+      }
+    }
+  }
+}
