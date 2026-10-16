@@ -21,9 +21,13 @@
       "claimType": {
         "0": "Direct",
         "1": "Provider fee",
-        "2": "Wrapped SGB",
+        "2": "WSGB delegation",
         "3": "Mirrored stake",
         "4": "C-chain stake"
+      },
+      "wrap": {
+        "true": "WSGB",
+        "false": "SGB"
       }
     }
   },
@@ -51,23 +55,27 @@
             "params": {
               "types": [
                 "eoa",
-                "wallet"
+                "wallet",
+                "contract"
               ]
             },
             "path": "#._recipient",
             "visible": "always"
           },
           {
-            "label": "Up To Epoch",
+            "label": "Stake rewards up to epoch",
             "format": "raw",
             "path": "#._rewardEpochId",
             "visible": "always"
           },
           {
-            "label": "Wrap Rewards",
-            "format": "raw",
+            "label": "Receive as",
+            "format": "enum",
             "path": "#._wrap",
-            "visible": "always"
+            "visible": "always",
+            "params": {
+              "$ref": "$.metadata.enums.wrap"
+            }
           },
           {
             "label": "Proof beneficiary",
@@ -117,7 +125,7 @@
         "interpolatedIntent": "Claim rewards to {_recipient}",
         "fields": [
           {
-            "label": "Executor",
+            "label": "Caller",
             "format": "addressName",
             "params": {
               "types": [
@@ -147,23 +155,27 @@
             "params": {
               "types": [
                 "eoa",
-                "wallet"
+                "wallet",
+                "contract"
               ]
             },
             "path": "#._recipient",
             "visible": "always"
           },
           {
-            "label": "Up To Epoch",
+            "label": "Stake rewards up to epoch",
             "format": "raw",
             "path": "#._rewardEpochId",
             "visible": "always"
           },
           {
-            "label": "Wrap Rewards",
-            "format": "raw",
+            "label": "Receive as",
+            "format": "enum",
             "path": "#._wrap",
-            "visible": "always"
+            "visible": "always",
+            "params": {
+              "$ref": "$.metadata.enums.wrap"
+            }
           },
           {
             "label": "Proof beneficiary",
@@ -271,7 +283,7 @@
             "visible": "always"
           },
           {
-            "label": "Up To Epoch",
+            "label": "Stake rewards up to epoch",
             "format": "raw",
             "path": "#._rewardEpochId",
             "visible": "always"
