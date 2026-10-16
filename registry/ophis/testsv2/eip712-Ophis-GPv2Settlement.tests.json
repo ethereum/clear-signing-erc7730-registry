@@ -1,0 +1,855 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-Ophis-GPv2Settlement.json",
+  "dataProvider": {
+    "tokens": {
+      "0x0b2c639c533813f4aa9d7837caf62653d097ff85": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0x4200000000000000000000000000000000000006": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "Wrapped Ether"
+      },
+      "0x078d782b760474a361dda0af3839290b0ef57ad6": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "OP: sell 2500 USDC for at least 0.78 WETH, fill-or-kill, proceeds to signer",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Order": [
+            {
+              "name": "sellToken",
+              "type": "address"
+            },
+            {
+              "name": "buyToken",
+              "type": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "name": "sellAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "buyAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "validTo",
+              "type": "uint32"
+            },
+            {
+              "name": "appData",
+              "type": "bytes32"
+            },
+            {
+              "name": "feeAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "kind",
+              "type": "string"
+            },
+            {
+              "name": "partiallyFillable",
+              "type": "bool"
+            },
+            {
+              "name": "sellTokenBalance",
+              "type": "string"
+            },
+            {
+              "name": "buyTokenBalance",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "Order",
+        "domain": {
+          "name": "Gnosis Protocol",
+          "version": "v2",
+          "chainId": 10,
+          "verifyingContract": "0x310784c7FCE12d578dA6f53460777bAc9718B859"
+        },
+        "message": {
+          "sellToken": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+          "buyToken": "0x4200000000000000000000000000000000000006",
+          "receiver": "0x0000000000000000000000000000000000000000",
+          "sellAmount": "2500000000",
+          "buyAmount": "780000000000000000",
+          "validTo": 1793491200,
+          "appData": "0xeaebfbe19166b047ddcc2a0e0a685827db7404ece65a02c50aa3bc60645d15d8",
+          "feeAmount": "0",
+          "kind": "sell",
+          "partiallyFillable": false,
+          "sellTokenBalance": "erc20",
+          "buyTokenBalance": "erc20"
+        }
+      },
+      "expected": {
+        "intent": "Swap order",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Max to sell",
+            "value": "2500 USDC"
+          },
+          {
+            "label": "Min if fully filled",
+            "value": "0.78 WETH"
+          },
+          {
+            "label": "Recipient",
+            "value": "Sender"
+          },
+          {
+            "label": "Expires",
+            "value": "2026-11-01 00:00:00Z"
+          },
+          {
+            "label": "Order type",
+            "value": "sell"
+          },
+          {
+            "label": "Partial fills",
+            "value": "false"
+          }
+        ]
+      }
+    },
+    {
+      "description": "OP: buy 3000 USDC for at most 1 WETH, partially fillable, explicit recipient",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Order": [
+            {
+              "name": "sellToken",
+              "type": "address"
+            },
+            {
+              "name": "buyToken",
+              "type": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "name": "sellAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "buyAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "validTo",
+              "type": "uint32"
+            },
+            {
+              "name": "appData",
+              "type": "bytes32"
+            },
+            {
+              "name": "feeAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "kind",
+              "type": "string"
+            },
+            {
+              "name": "partiallyFillable",
+              "type": "bool"
+            },
+            {
+              "name": "sellTokenBalance",
+              "type": "string"
+            },
+            {
+              "name": "buyTokenBalance",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "Order",
+        "domain": {
+          "name": "Gnosis Protocol",
+          "version": "v2",
+          "chainId": 10,
+          "verifyingContract": "0x310784c7FCE12d578dA6f53460777bAc9718B859"
+        },
+        "message": {
+          "sellToken": "0x4200000000000000000000000000000000000006",
+          "buyToken": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+          "receiver": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "sellAmount": "1000000000000000000",
+          "buyAmount": "3000000000",
+          "validTo": 1798761600,
+          "appData": "0xeaebfbe19166b047ddcc2a0e0a685827db7404ece65a02c50aa3bc60645d15d8",
+          "feeAmount": "0",
+          "kind": "buy",
+          "partiallyFillable": true,
+          "sellTokenBalance": "erc20",
+          "buyTokenBalance": "erc20"
+        }
+      },
+      "expected": {
+        "intent": "Swap order",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Max to sell",
+            "value": "1 WETH"
+          },
+          {
+            "label": "Min if fully filled",
+            "value": "3000 USDC"
+          },
+          {
+            "label": "Recipient",
+            "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+          },
+          {
+            "label": "Expires",
+            "value": "2027-01-01 00:00:00Z"
+          },
+          {
+            "label": "Order type",
+            "value": "buy"
+          },
+          {
+            "label": "Partial fills",
+            "value": "true"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Unichain: sell 0.5 WETH for at least 1200 USDC with a 0.001 WETH fee",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Order": [
+            {
+              "name": "sellToken",
+              "type": "address"
+            },
+            {
+              "name": "buyToken",
+              "type": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "name": "sellAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "buyAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "validTo",
+              "type": "uint32"
+            },
+            {
+              "name": "appData",
+              "type": "bytes32"
+            },
+            {
+              "name": "feeAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "kind",
+              "type": "string"
+            },
+            {
+              "name": "partiallyFillable",
+              "type": "bool"
+            },
+            {
+              "name": "sellTokenBalance",
+              "type": "string"
+            },
+            {
+              "name": "buyTokenBalance",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "Order",
+        "domain": {
+          "name": "Gnosis Protocol",
+          "version": "v2",
+          "chainId": 130,
+          "verifyingContract": "0x108A678716e5E1776036eF044CAB7064226F714E"
+        },
+        "message": {
+          "sellToken": "0x4200000000000000000000000000000000000006",
+          "buyToken": "0x078D782b760474a361dDA0AF3839290b0EF57AD6",
+          "receiver": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "sellAmount": "500000000000000000",
+          "buyAmount": "1200000000",
+          "validTo": 1796083200,
+          "appData": "0xeaebfbe19166b047ddcc2a0e0a685827db7404ece65a02c50aa3bc60645d15d8",
+          "feeAmount": "1000000000000000",
+          "kind": "sell",
+          "partiallyFillable": false,
+          "sellTokenBalance": "erc20",
+          "buyTokenBalance": "erc20"
+        }
+      },
+      "expected": {
+        "intent": "Swap order",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Max to sell",
+            "value": "0.5 WETH"
+          },
+          {
+            "label": "Min if fully filled",
+            "value": "1200 USDC"
+          },
+          {
+            "label": "Max fee on top",
+            "value": "0.001 WETH"
+          },
+          {
+            "label": "Recipient",
+            "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+          },
+          {
+            "label": "Expires",
+            "value": "2026-12-01 00:00:00Z"
+          },
+          {
+            "label": "Order type",
+            "value": "sell"
+          },
+          {
+            "label": "Partial fills",
+            "value": "false"
+          }
+        ]
+      }
+    },
+    {
+      "description": "OP: sell 2500 USDC for at least 0.75 native ETH, proceeds to signer",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Order": [
+            {
+              "name": "sellToken",
+              "type": "address"
+            },
+            {
+              "name": "buyToken",
+              "type": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "name": "sellAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "buyAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "validTo",
+              "type": "uint32"
+            },
+            {
+              "name": "appData",
+              "type": "bytes32"
+            },
+            {
+              "name": "feeAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "kind",
+              "type": "string"
+            },
+            {
+              "name": "partiallyFillable",
+              "type": "bool"
+            },
+            {
+              "name": "sellTokenBalance",
+              "type": "string"
+            },
+            {
+              "name": "buyTokenBalance",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "Order",
+        "domain": {
+          "name": "Gnosis Protocol",
+          "version": "v2",
+          "chainId": 10,
+          "verifyingContract": "0x310784c7FCE12d578dA6f53460777bAc9718B859"
+        },
+        "message": {
+          "sellToken": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+          "buyToken": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+          "receiver": "0x0000000000000000000000000000000000000000",
+          "sellAmount": "2500000000",
+          "buyAmount": "750000000000000000",
+          "validTo": 1793491200,
+          "appData": "0xeaebfbe19166b047ddcc2a0e0a685827db7404ece65a02c50aa3bc60645d15d8",
+          "feeAmount": "0",
+          "kind": "sell",
+          "partiallyFillable": false,
+          "sellTokenBalance": "erc20",
+          "buyTokenBalance": "erc20"
+        }
+      },
+      "expected": {
+        "intent": "Swap order",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Max to sell",
+            "value": "2500 USDC"
+          },
+          {
+            "label": "Min if fully filled",
+            "value": "0.75 ETH"
+          },
+          {
+            "label": "Recipient",
+            "value": "Sender"
+          },
+          {
+            "label": "Expires",
+            "value": "2026-11-01 00:00:00Z"
+          },
+          {
+            "label": "Order type",
+            "value": "sell"
+          },
+          {
+            "label": "Partial fills",
+            "value": "false"
+          }
+        ]
+      }
+    },
+    {
+      "description": "OP: sell from Balancer external balance, proceeds credited to internal balance",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Order": [
+            {
+              "name": "sellToken",
+              "type": "address"
+            },
+            {
+              "name": "buyToken",
+              "type": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "name": "sellAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "buyAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "validTo",
+              "type": "uint32"
+            },
+            {
+              "name": "appData",
+              "type": "bytes32"
+            },
+            {
+              "name": "feeAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "kind",
+              "type": "string"
+            },
+            {
+              "name": "partiallyFillable",
+              "type": "bool"
+            },
+            {
+              "name": "sellTokenBalance",
+              "type": "string"
+            },
+            {
+              "name": "buyTokenBalance",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "Order",
+        "domain": {
+          "name": "Gnosis Protocol",
+          "version": "v2",
+          "chainId": 10,
+          "verifyingContract": "0x310784c7FCE12d578dA6f53460777bAc9718B859"
+        },
+        "message": {
+          "sellToken": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+          "buyToken": "0x4200000000000000000000000000000000000006",
+          "receiver": "0x0000000000000000000000000000000000000000",
+          "sellAmount": "2500000000",
+          "buyAmount": "780000000000000000",
+          "validTo": 1793491200,
+          "appData": "0xeaebfbe19166b047ddcc2a0e0a685827db7404ece65a02c50aa3bc60645d15d8",
+          "feeAmount": "0",
+          "kind": "sell",
+          "partiallyFillable": false,
+          "sellTokenBalance": "external",
+          "buyTokenBalance": "internal"
+        }
+      },
+      "expected": {
+        "intent": "Swap order",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Max to sell",
+            "value": "2500 USDC"
+          },
+          {
+            "label": "Min if fully filled",
+            "value": "0.78 WETH"
+          },
+          {
+            "label": "Recipient",
+            "value": "Sender"
+          },
+          {
+            "label": "Expires",
+            "value": "2026-11-01 00:00:00Z"
+          },
+          {
+            "label": "Order type",
+            "value": "sell"
+          },
+          {
+            "label": "Partial fills",
+            "value": "false"
+          },
+          {
+            "label": "Wallet via Balancer",
+            "value": "external"
+          },
+          {
+            "label": "Buy: Balancer Vault",
+            "value": "internal"
+          }
+        ]
+      }
+    },
+    {
+      "description": "OP: sell from Balancer Vault internal balance and receive wallet tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Order": [
+            {
+              "name": "sellToken",
+              "type": "address"
+            },
+            {
+              "name": "buyToken",
+              "type": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "name": "sellAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "buyAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "validTo",
+              "type": "uint32"
+            },
+            {
+              "name": "appData",
+              "type": "bytes32"
+            },
+            {
+              "name": "feeAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "kind",
+              "type": "string"
+            },
+            {
+              "name": "partiallyFillable",
+              "type": "bool"
+            },
+            {
+              "name": "sellTokenBalance",
+              "type": "string"
+            },
+            {
+              "name": "buyTokenBalance",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "Order",
+        "domain": {
+          "name": "Gnosis Protocol",
+          "version": "v2",
+          "chainId": 10,
+          "verifyingContract": "0x310784c7FCE12d578dA6f53460777bAc9718B859"
+        },
+        "message": {
+          "sellToken": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+          "buyToken": "0x4200000000000000000000000000000000000006",
+          "receiver": "0x0000000000000000000000000000000000000000",
+          "sellAmount": "2500000000",
+          "buyAmount": "780000000000000000",
+          "validTo": 1793491200,
+          "appData": "0xeaebfbe19166b047ddcc2a0e0a685827db7404ece65a02c50aa3bc60645d15d8",
+          "feeAmount": "0",
+          "kind": "sell",
+          "partiallyFillable": false,
+          "sellTokenBalance": "internal",
+          "buyTokenBalance": "erc20"
+        }
+      },
+      "expected": {
+        "intent": "Swap order",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Max to sell",
+            "value": "2500 USDC"
+          },
+          {
+            "label": "Min if fully filled",
+            "value": "0.78 WETH"
+          },
+          {
+            "label": "Recipient",
+            "value": "Sender"
+          },
+          {
+            "label": "Expires",
+            "value": "2026-11-01 00:00:00Z"
+          },
+          {
+            "label": "Order type",
+            "value": "sell"
+          },
+          {
+            "label": "Partial fills",
+            "value": "false"
+          },
+          {
+            "label": "Sell: Balancer Vault",
+            "value": "internal"
+          }
+        ]
+      }
+    },
+    {
+      "description": "OP: cancel two orders off-chain",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "OrderCancellations": [
+            {
+              "name": "orderUids",
+              "type": "bytes[]"
+            }
+          ]
+        },
+        "primaryType": "OrderCancellations",
+        "domain": {
+          "name": "Gnosis Protocol",
+          "version": "v2",
+          "chainId": 10,
+          "verifyingContract": "0x310784c7FCE12d578dA6f53460777bAc9718B859"
+        },
+        "message": {
+          "orderUids": [
+            "0x3fae3ee0f1be9bc367e7b3760b2b903a9c00ff1dd0f7a0e80fa63cf3fec5e6b6d8da6bf26964af9d7eed9e03e53415d37aa960456b36ec80",
+            "0xcb79d6bcff4b286cbd94b6f3909fd18fd841419d8378e14a6797ca8a9d5356add8da6bf26964af9d7eed9e03e53415d37aa960456ae68100"
+          ]
+        }
+      },
+      "expected": {
+        "intent": "Request offchain cancel",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Order ID",
+            "value": "0x3fae3ee0f1be9bc367e7b3760b2b903a9c00ff1dd0f7a0e80fa63cf3fec5e6b6d8da6bf26964af9d7eed9e03e53415d37aa960456b36ec80"
+          },
+          {
+            "label": "Order ID",
+            "value": "0xcb79d6bcff4b286cbd94b6f3909fd18fd841419d8378e14a6797ca8a9d5356add8da6bf26964af9d7eed9e03e53415d37aa960456ae68100"
+          }
+        ]
+      }
+    }
+  ]
+}
