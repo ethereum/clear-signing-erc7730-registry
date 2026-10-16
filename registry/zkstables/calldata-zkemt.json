@@ -131,15 +131,48 @@
       },
       "encryptedTransfer((bytes proof,(uint256 x,uint256 y) senderEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) newSenderBalanceCt,(uint256 x,uint256 y) recipientEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) recipientAmountCt,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) trcAmountCt) params, (bool clear,bool enabled) flags)": {
         "intent": "Encrypted transfer",
-        "fields": []
+        "fields": [
+          {
+            "path": "params.recipientEpk.x.[0:32]",
+            "label": "To key x",
+            "format": "raw"
+          },
+          {
+            "path": "params.recipientEpk.y.[0:32]",
+            "label": "To key y",
+            "format": "raw"
+          }
+        ]
       },
       "encryptedTransferWithAuth((bytes proof,(uint256 x,uint256 y) senderEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) newSenderBalanceCt,(uint256 x,uint256 y) recipientEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) recipientAmountCt,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) trcAmountCt) params, (bool clear,bool enabled) flags, (uint256 nonce,uint256 deadline,bytes signature) auth)": {
         "intent": "Encrypted transfer (auth)",
-        "fields": []
+        "fields": [
+          {
+            "path": "params.recipientEpk.x.[0:32]",
+            "label": "To key x",
+            "format": "raw"
+          },
+          {
+            "path": "params.recipientEpk.y.[0:32]",
+            "label": "To key y",
+            "format": "raw"
+          }
+        ]
       },
       "encryptedTransferWithCallerAuth((bytes proof,(uint256 x,uint256 y) senderEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) newSenderBalanceCt,(uint256 x,uint256 y) recipientEpk,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) recipientAmountCt,((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) trcAmountCt) params, (bool clear,bool enabled) flags, (uint256 nonce,uint256 deadline,bytes signature) auth)": {
         "intent": "Encrypted transfer (caller)",
-        "fields": []
+        "fields": [
+          {
+            "path": "params.recipientEpk.x.[0:32]",
+            "label": "To key x",
+            "format": "raw"
+          },
+          {
+            "path": "params.recipientEpk.y.[0:32]",
+            "label": "To key y",
+            "format": "raw"
+          }
+        ]
       },
       "executeEncryptedBurn(bytes32 epk, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) newBalance, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) tsCiphertext, ((uint256 x,uint256 y) R,(uint256 x,uint256 y) C) trcCiphertext)": {
         "intent": "Execute encrypted burn",
@@ -842,26 +875,30 @@
         ]
       },
       "upgradeToAndCall(address newImplementation, bytes data)": {
-        "intent": "Upgrade contract",
+        "intent": "Upgrade token",
         "fields": [
           {
+            "path": "newImplementation",
             "label": "New implementation",
             "format": "addressName",
             "params": {
               "types": [
-                "wallet",
-                "eoa",
-                "contract",
-                "token",
-                "collection"
+                "contract"
               ]
-            },
-            "path": "#.newImplementation"
+            }
           },
           {
-            "label": "Data",
-            "format": "raw",
-            "path": "#.data"
+            "path": "@.value",
+            "label": "Value",
+            "format": "amount"
+          },
+          {
+            "path": "data",
+            "label": "Then call",
+            "format": "calldata",
+            "params": {
+              "calleePath": "@.to"
+            }
           }
         ]
       }

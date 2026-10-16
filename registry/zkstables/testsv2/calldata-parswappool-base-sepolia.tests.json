@@ -147,7 +147,7 @@
         "owner": "ZK Stables",
         "fields": [
           {
-            "label": "Amount",
+            "label": "Pay",
             "value": "21.37 zkUSD"
           },
           {
@@ -166,7 +166,7 @@
         "owner": "ZK Stables",
         "fields": [
           {
-            "label": "Amount",
+            "label": "Pay",
             "value": "21.37 zkUSD"
           },
           {
@@ -178,14 +178,14 @@
     },
     {
       "description": "swapWithAuthorization(address,uint256,address,uint256,uint256,bytes32,bytes)",
-      "rawTx": "0x02f9013183014a3480843b9aca00843b9aca00830493e0949d02f341c2aefccf0a562f4db4111391dac2bd7680b90104bbc6d53d00000000000000000000000079c12772de2cfc45359eccb8a9c038c3e5ae8e310000000000000000000000000000000000000000000000000000000001461490000000000000000000000000e6455dec538f906d28f6910c531e02f560e2f1f9000000000000000000000000000000000000000000000000000000006955b900000000000000000000000000000000000000000000000000000000006955b900111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000000c0",
+      "rawTx": "0x02f9013183014a3480843b9aca00843b9aca00830493e0949d02f341c2aefccf0a562f4db4111391dac2bd7680b90104bbc6d53d00000000000000000000000079c12772de2cfc45359eccb8a9c038c3e5ae8e310000000000000000000000000000000000000000000000000000000001461490000000000000000000000000e6455dec538f906d28f6910c531e02f560e2f1f9000000000000000000000000000000000000000000000000000000006955b900000000000000000000000000000000000000000000000000000000006955b900efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef00000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000000c0",
       "expected": {
         "intent": "Swap with authorization",
         "interpolatedIntent": "Swap 21.37 zkUSD from Alice",
         "owner": "ZK Stables",
         "fields": [
           {
-            "label": "Amount",
+            "label": "Pay",
             "value": "21.37 zkUSD"
           },
           {
@@ -255,6 +255,52 @@
           },
           {
             "label": "Spender",
+            "value": "Bob"
+          }
+        ]
+      }
+    },
+    {
+      "description": "swap — paying in the other pool token",
+      "rawTx": "0x02f89083014a3480843b9aca00843b9aca00830493e0949d02f341c2aefccf0a562f4db4111391dac2bd7680b8646d069a67000000000000000000000000036cbd53842c5426634e7929541ec2318f3dcf7e00000000000000000000000000000000000000000000000000000000014614900000000000000000000000001111111111111111111111111111111111111111c0",
+      "expected": {
+        "intent": "Swap",
+        "interpolatedIntent": "Swap 21.37 USDC, send to Bob",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "Pay",
+            "value": "21.37 USDC"
+          },
+          {
+            "label": "To",
+            "value": "Bob"
+          }
+        ]
+      }
+    },
+    {
+      "description": "removeLiquidityExact — no share cap",
+      "rawTx": "0x02f8b083014a3480843b9aca00843b9aca00830493e0949d02f341c2aefccf0a562f4db4111391dac2bd7680b884b05b10c400000000000000000000000000000000000000000000000000000000014614900000000000000000000000000000000000000000000000000000000001461490ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000001111111111111111111111111111111111111111c0",
+      "expected": {
+        "intent": "Remove liquidity (exact)",
+        "interpolatedIntent": "Withdraw 21.37 zkUSD and 21.37 USDC to Bob",
+        "owner": "ZK Stables",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "21.37 zkUSD"
+          },
+          {
+            "label": "Amount",
+            "value": "21.37 USDC"
+          },
+          {
+            "label": "Maximum shares",
+            "value": "No limit PAR-LP"
+          },
+          {
+            "label": "To",
             "value": "Bob"
           }
         ]
