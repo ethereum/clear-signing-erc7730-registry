@@ -2,7 +2,13 @@
   "$schema": "../../../specs/erc7730-tests-v2.schema.json",
   "descriptor": "../calldata-RNat-Flare.json",
   "dataProvider": {
-    "tokens": { "0x26d460c3Cf931Fb2014FA436a49e3Af08619810e": { "symbol": "rFLR", "decimals": 18, "name": "Reward Flare" } },
+    "tokens": {
+      "0x26d460c3Cf931Fb2014FA436a49e3Af08619810e": {
+        "symbol": "rFLR",
+        "decimals": 18,
+        "name": "Reward Flare"
+      }
+    },
     "addressNames": {
       "0x1111111111111111111111111111111111111111": "Executor",
       "0x5555555555555555555555555555555555555555": "Beneficiary B"
@@ -16,9 +22,18 @@
         "intent": "Claim RNat rewards",
         "owner": "Flare Foundation",
         "fields": [
-          { "label": "Project Ids", "value": "1" },
-          { "label": "Project Ids", "value": "2" },
-          { "label": "Month", "value": "5" }
+          {
+            "label": "Project Ids",
+            "value": "1"
+          },
+          {
+            "label": "Project Ids",
+            "value": "2"
+          },
+          {
+            "label": "Month",
+            "value": "5"
+          }
         ]
       }
     },
@@ -28,25 +43,48 @@
       "expected": {
         "intent": "Withdraw RNat",
         "owner": "Flare Foundation",
-        "fields": [{ "label": "Amount", "value": "1 rFLR" }, { "label": "Wrap to WFLR", "value": "true" }]
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "1 rFLR"
+          },
+          {
+            "label": "Wrap to WFLR",
+            "value": "true"
+          }
+        ]
       }
     },
     {
       "description": "Withdraw all RNat as native FLR - chain 14",
       "rawTx": "0x02f84c0e03840f2f16ee8411807b358307a1209426d460c3cf931fb2014fa436a49e3af08619810e80a41c1c6fe50000000000000000000000000000000000000000000000000000000000000000c0",
       "expected": {
-        "intent": "Withdraw all RNat",
+        "intent": "Withdraw all RNat, half of locked is burned",
         "owner": "Flare Foundation",
-        "fields": [{ "label": "Wrap to WFLR", "value": "false" }]
+        "fields": [
+          {
+            "label": "Wrap to WFLR",
+            "value": "false"
+          }
+        ]
       }
     },
     {
       "description": "Set reward claim executor - chain 14",
-      "rawTx": "0x02f88d0e04840f2f16ee8411807b358307a1209426d460c3cf931fb2014fa436a49e3af08619810e80b8649119c494000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000001111111111111111111111111111111111111111c0",
+      "rawTx": "0x02f8950e04840f2f16ee8411807b358307a1209426d460c3cf931fb2014fa436a49e3af08619810e880de0b6b3a7640000b8649119c494000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000001111111111111111111111111111111111111111c0",
       "expected": {
         "intent": "Set reward claim executors",
         "owner": "Flare Foundation",
-        "fields": [{ "label": "Executors", "value": "Executor" }]
+        "fields": [
+          {
+            "label": "Executors",
+            "value": "Executor"
+          },
+          {
+            "label": "Executor fee",
+            "value": "1 FLR"
+          }
+        ]
       }
     },
     {
@@ -56,12 +94,30 @@
         "intent": "Distribute project rewards",
         "owner": "Flare Foundation",
         "fields": [
-          { "label": "Project Id", "value": "1" },
-          { "label": "Month", "value": "5" },
-          { "label": "Recipients", "value": "Executor" },
-          { "label": "Recipients", "value": "Beneficiary B" },
-          { "label": "Amount", "value": "0.6 rFLR" },
-          { "label": "Amount", "value": "0.4 rFLR" }
+          {
+            "label": "Project Id",
+            "value": "1"
+          },
+          {
+            "label": "Month",
+            "value": "5"
+          },
+          {
+            "label": "Recipients",
+            "value": "Executor"
+          },
+          {
+            "label": "Recipients",
+            "value": "Beneficiary B"
+          },
+          {
+            "label": "Amount",
+            "value": "0.6 rFLR"
+          },
+          {
+            "label": "Amount",
+            "value": "0.4 rFLR"
+          }
         ]
       }
     }
