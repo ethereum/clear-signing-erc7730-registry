@@ -19,7 +19,25 @@
     "info": { "url": "https://symbiotic.fi" },
     "contractName": "Vault V2 (USDC)",
     "constants": { "underlyingToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "underlyingTicker": "USDC" },
-    "enums": {"enabled":{"true":"Enabled","false":"Disabled"},"membership":{"true":"Included","false":"Excluded"}}
+    "enums": {
+      "enabled": {
+        "true": "Enabled",
+        "false": "Disabled"
+      },
+      "membership": {
+        "true": "Included",
+        "false": "Excluded"
+      },
+      "roles": {
+        "0": "Default admin",
+        "53272272816779528707459608208793296754316034522596392027706107405367192656833": "Set management fee",
+        "56709867117079014213459633094449057342148744007468143801194853692611130034289": "Set performance fee",
+        "33646591496978789516124201366904265491527978862966175140283226066679055749683": "Set deposit limit",
+        "70714254001513485140625174262889091090605462421923160261050180333758750825990": "Update depositor whitelist",
+        "89859507824809856342377754349439363598024123081033812852694097080026424381356": "Enable deposit limit",
+        "84534675251748009717328032765453215838473892888982269672368955310872597872675": "Enable deposit whitelist"
+      }
+    }
   },
   "display": {
     "formats": {
@@ -61,7 +79,7 @@
             "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
             "visible": "always"
           },
-          { "value": "$.metadata.constants.underlyingTicker", "label": "Deposit asset", "format": "raw", "visible": "always" },
+          { "value": "$.metadata.constants.underlyingTicker", "label": "Pays in (amount set by share price)", "format": "raw", "visible": "always" },
           {
             "path": "#.shares",
             "label": "Shares to mint",
@@ -465,7 +483,7 @@
       },
       "grantRole(bytes32 role,address account)": {
         "intent": "Grant vault role",
-        "interpolatedIntent": "Grant role to {account}",
+        "interpolatedIntent": "Grant {role.[0:32]} to {account}",
         "fields": [
           {
             "path": "@.to",
@@ -480,6 +498,15 @@
                 "local",
                 "ens"
               ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.role.[0:32]",
+            "label": "Role",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.roles"
             },
             "visible": "always"
           },
@@ -509,7 +536,7 @@
       },
       "revokeRole(bytes32 role,address account)": {
         "intent": "Revoke vault role",
-        "interpolatedIntent": "Revoke role: {account}",
+        "interpolatedIntent": "Revoke {role.[0:32]} from {account}",
         "fields": [
           {
             "path": "@.to",
@@ -524,6 +551,15 @@
                 "local",
                 "ens"
               ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.role.[0:32]",
+            "label": "Role",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.roles"
             },
             "visible": "always"
           },
@@ -553,7 +589,7 @@
       },
       "renounceRole(bytes32 role,address callerConfirmation)": {
         "intent": "Renounce vault role",
-        "interpolatedIntent": "Renounce vault role",
+        "interpolatedIntent": "Renounce {role.[0:32]} for {callerConfirmation}",
         "fields": [
           {
             "path": "@.to",
@@ -568,6 +604,15 @@
                 "local",
                 "ens"
               ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.role.[0:32]",
+            "label": "Role",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.roles"
             },
             "visible": "always"
           },

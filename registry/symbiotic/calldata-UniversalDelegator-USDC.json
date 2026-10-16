@@ -43,6 +43,19 @@
     "contractName": "Universal Delegator (USDC)",
     "constants": {
       "underlyingToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+    },
+    "enums": {
+      "roles": {
+        "0": "Default admin",
+        "28243793089499064125200153067652308998873306605553429215694165115908920544912": "Allocate",
+        "50560985435110027382313390568851860548267030219879002177657449806772213243098": "Deallocate",
+        "88028664841565611520124839424531247632261927938012923435453451797300661270411": "Add adapter",
+        "13264166804651107049971627042331359793689282905202948908894025771814477460686": "Swap adapter priority",
+        "105913733732141619592880755283964529773244964259727493881968401745811500302826": "Remove adapter",
+        "6873058840399056807680468190230370004676513393731428383794203968452095283877": "Force deallocate",
+        "63526308245397922697810000530681480955750031233709255612285696458110986554933": "Set adapter limits",
+        "58123140167707441986822184994193659285996543482856171670093325408374456504393": "Set allocation order"
+      }
     }
   },
   "display": {
@@ -125,7 +138,7 @@
       },
       "setLimits(address adapter,uint256 assets,uint256 share)": {
         "intent": "Set adapter allocation limits",
-        "interpolatedIntent": "Cap for {adapter}: {assets}",
+        "interpolatedIntent": "Cap {adapter} at the smaller of {assets} and {share} of vault assets",
         "fields": [
           {
             "path": "@.to",
@@ -179,12 +192,6 @@
               "decimals": 16,
               "prefix": false
             },
-            "visible": "always"
-          },
-          {
-            "path": "#.share",
-            "label": "Share cap (WAD)",
-            "format": "raw",
             "visible": "always"
           }
         ]
@@ -598,7 +605,7 @@
       },
       "grantRole(bytes32 role,address account)": {
         "intent": "Grant delegator role",
-        "interpolatedIntent": "Grant {role} to {account}",
+        "interpolatedIntent": "Grant {role.[0:32]} to {account}",
         "fields": [
           {
             "path": "@.to",
@@ -613,6 +620,15 @@
                 "local",
                 "ens"
               ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.role.[0:32]",
+            "label": "Role",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.roles"
             },
             "visible": "always"
           },
@@ -642,7 +658,7 @@
       },
       "revokeRole(bytes32 role,address account)": {
         "intent": "Revoke delegator role",
-        "interpolatedIntent": "Revoke {role} from {account}",
+        "interpolatedIntent": "Revoke {role.[0:32]} from {account}",
         "fields": [
           {
             "path": "@.to",
@@ -657,6 +673,15 @@
                 "local",
                 "ens"
               ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.role.[0:32]",
+            "label": "Role",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.roles"
             },
             "visible": "always"
           },
@@ -686,7 +711,7 @@
       },
       "renounceRole(bytes32 role,address callerConfirmation)": {
         "intent": "Renounce delegator role",
-        "interpolatedIntent": "Renounce {role}",
+        "interpolatedIntent": "Renounce {role.[0:32]} for {callerConfirmation}",
         "fields": [
           {
             "path": "@.to",
@@ -701,6 +726,15 @@
                 "local",
                 "ens"
               ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.role.[0:32]",
+            "label": "Role",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.roles"
             },
             "visible": "always"
           },
