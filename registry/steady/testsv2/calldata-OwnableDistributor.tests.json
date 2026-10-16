@@ -1,0 +1,321 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-OwnableDistributor.json",
+  "dataProvider": {
+    "tokens": {
+      "0xe5f26fdbc375f75a5f4bde3049dc2e0dd93a95b9": {
+        "symbol": "STDY",
+        "decimals": 18,
+        "name": "Steady"
+      }
+    },
+    "addressNames": {
+      "0xf131f35702b6ad5c40ff1363224a3828938192db": "wSTDY Token"
+    }
+  },
+  "tests": [
+    {
+      "description": "Send STDY - chain 1",
+      "rawTx": "0x02f86d010a843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980b844a9059cbb000000000000000000000000db34fbb4e7989c3f8957e9e9b346bf46ee0f0408000000000000000000000000000000000000000000000042ecf6330552400000c0",
+      "expected": {
+        "intent": "Send STDY",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "To",
+            "value": "0xdB34FBB4E7989c3f8957e9E9b346bf46Ee0F0408"
+          },
+          {
+            "label": "Amount",
+            "value": "1234.56 STDY"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Send STDY on behalf - chain 1",
+      "rawTx": "0x02f88d010b843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980b86423b872dd0000000000000000000000002c26f8eb29f385ae47303cf46ebb412cb86b3145000000000000000000000000db34fbb4e7989c3f8957e9e9b346bf46ee0f040800000000000000000000000000000000000000000000000d8d726b7177a80000c0",
+      "expected": {
+        "intent": "Send STDY on behalf",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "From",
+            "value": "0x2C26F8EB29f385Ae47303cf46ebB412CB86B3145"
+          },
+          {
+            "label": "To",
+            "value": "0xdB34FBB4E7989c3f8957e9E9b346bf46Ee0F0408"
+          },
+          {
+            "label": "Amount",
+            "value": "250 STDY"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Approve STDY spending - chain 1",
+      "rawTx": "0x02f86d010c843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980b844095ea7b3000000000000000000000000bf67f59d2988a46fbff7ed79a621778a3cd3985b00000000000000000000000000000000000000000000001b1ae4d6e2ef500000c0",
+      "expected": {
+        "intent": "Approve STDY Spending",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0xBf67F59D2988A46FBFF7ed79A621778a3Cd3985B"
+          },
+          {
+            "label": "Allowance",
+            "value": "500 STDY"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Increase STDY allowance - chain 1",
+      "rawTx": "0x02f86d010d843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980b84439509351000000000000000000000000bf67f59d2988a46fbff7ed79a621778a3cd3985b00000000000000000000000000000000000000000000000417c5e1fbddfe0000c0",
+      "expected": {
+        "intent": "Increase STDY Allowance",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0xBf67F59D2988A46FBFF7ed79A621778a3Cd3985B"
+          },
+          {
+            "label": "Added Allowance",
+            "value": "75.5 STDY"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Decrease STDY allowance - chain 1",
+      "rawTx": "0x02f86d010e843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980b844a457c2d7000000000000000000000000bf67f59d2988a46fbff7ed79a621778a3cd3985b0000000000000000000000000000000000000000000000015af1d78b58c40000c0",
+      "expected": {
+        "intent": "Decrease STDY Allowance",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0xBf67F59D2988A46FBFF7ed79A621778a3Cd3985B"
+          },
+          {
+            "label": "Removed Allowance",
+            "value": "25 STDY"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Wrap STDY - chain 1",
+      "rawTx": "0x02f84c010f843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980a4b895696400000000000000000000000000000000000000000000003635c9adc5dea00000c0",
+      "expected": {
+        "intent": "Wrap STDY to wSTDY",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "Amount to Wrap",
+            "value": "1000 STDY"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Unwrap wSTDY - chain 1",
+      "rawTx": "0x02f84c0110843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980a45874ac1f000000000000000000000000000000000000000000000016ce3f1e16bf150000c0",
+      "expected": {
+        "intent": "Unwrap wSTDY to STDY",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "Amount to Unwrap",
+            "value": "420.69 STDY"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Issue STDY tokens - chain 1",
+      "rawTx": "0x02f86d0111843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980b8447ad5be8800000000000000000000000000000000000000000000d3c21bcecceda10000000000000000000000000000002c26f8eb29f385ae47303cf46ebb412cb86b3145c0",
+      "expected": {
+        "intent": "Issue STDY Tokens",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "Amount to Issue",
+            "value": "1000000 STDY"
+          },
+          {
+            "label": "Recipient",
+            "value": "0x2C26F8EB29f385Ae47303cf46ebB412CB86B3145"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Burn STDY tokens - chain 1",
+      "rawTx": "0x02f84c0112843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980a46d1b229d000000000000000000000000000000000000000000000a968163f0a57b400000c0",
+      "expected": {
+        "intent": "Burn STDY Tokens",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "Amount to Burn",
+            "value": "50000 STDY"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Pay interest - chain 1",
+      "rawTx": "0x02f86d0113843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980b844ff4ba23d0000000000000000000000000000000000000000000002a5a058fc295ed000000000000000000000000000000000000000000000000000000000000000278d00c0",
+      "expected": {
+        "intent": "Pay Interest to STDY Holders",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "Interest Amount",
+            "value": "12500 STDY"
+          },
+          {
+            "label": "Duration (seconds)",
+            "value": "2592000"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Pause contract - chain 1",
+      "rawTx": "0x02ec0114843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980848456cb59c0",
+      "expected": {
+        "intent": "Pause STDY Contract",
+        "owner": "Steady Protocol",
+        "fields": []
+      }
+    },
+    {
+      "description": "Unpause contract - chain 1",
+      "rawTx": "0x02ec0115843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980843f4ba83ac0",
+      "expected": {
+        "intent": "Unpause STDY Contract",
+        "owner": "Steady Protocol",
+        "fields": []
+      }
+    },
+    {
+      "description": "Settle pending rewards - chain 1",
+      "rawTx": "0x02ec0116843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b98084e22223d5c0",
+      "expected": {
+        "intent": "Settle Pending STDY Rewards",
+        "owner": "Steady Protocol",
+        "fields": []
+      }
+    },
+    {
+      "description": "Blacklist address - chain 1",
+      "rawTx": "0x02f84c0117843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980a40ecb93c0000000000000000000000000db34fbb4e7989c3f8957e9e9b346bf46ee0f0408c0",
+      "expected": {
+        "intent": "Blacklist Address",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "Address",
+            "value": "0xdB34FBB4E7989c3f8957e9E9b346bf46Ee0F0408"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Remove address from blacklist - chain 1",
+      "rawTx": "0x02f84c0118843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980a4e4997dc5000000000000000000000000db34fbb4e7989c3f8957e9e9b346bf46ee0f0408c0",
+      "expected": {
+        "intent": "Remove from Blacklist",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "Address",
+            "value": "0xdB34FBB4E7989c3f8957e9E9b346bf46Ee0F0408"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set wrapped STDY address (real tx) - chain 1",
+      "rawTx": "0xf8480485031f843ece82d0bb94e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980a4789993d5000000000000000000000000f131f35702b6ad5c40ff1363224a3828938192db018080",
+      "txHash": "0x982e7f491be8320b8d8f1a299019add3d4b8f024082d76f2aeca205c94745cde",
+      "expected": {
+        "intent": "Set Wrapped STDY Address",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "New wSTDY Contract",
+            "value": "wSTDY Token"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set pause authority - chain 1",
+      "rawTx": "0x02f84c0119843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980a44b90364f0000000000000000000000002c26f8eb29f385ae47303cf46ebb412cb86b3145c0",
+      "expected": {
+        "intent": "Set Pause Authority",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "New Authority",
+            "value": "0x2C26F8EB29f385Ae47303cf46ebB412CB86B3145"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Upgrade implementation - chain 1",
+      "rawTx": "0x02f84c011a843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980a43659cfe6000000000000000000000000a378d30df3abcdb8193375c16b01802f35e09e91c0",
+      "expected": {
+        "intent": "Upgrade STDY Implementation",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "New Implementation",
+            "value": "0xa378D30DF3aBcdb8193375C16b01802f35e09E91"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Upgrade implementation and call - chain 1",
+      "rawTx": "0x02f8ad011b843b9aca008506fc23ac0082ea6094e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980b8844f1ef286000000000000000000000000a378d30df3abcdb8193375c16b01802f35e09e91000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000048129fc1c00000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Upgrade STDY Implementation",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "New Implementation",
+            "value": "0xa378D30DF3aBcdb8193375C16b01802f35e09E91"
+          },
+          {
+            "label": "Initialization Call",
+            "value": "0x8129fc1c"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Transfer ownership (real tx) - chain 1",
+      "rawTx": "0xf84807850334be36e982860d94e5f26fdbc375f75a5f4bde3049dc2e0dd93a95b980a4f2fde38b0000000000000000000000008c2aa185880906b8bedd9ab849b53db753134618018080",
+      "txHash": "0x46be04fafcd77e4b2edbc56ec18da1ab798ffaae6ba3a4812a28f2151ff5876b",
+      "expected": {
+        "intent": "Transfer STDY Ownership",
+        "owner": "Steady Protocol",
+        "fields": [
+          {
+            "label": "New Owner",
+            "value": "0x8C2aA185880906B8Bedd9ab849B53dB753134618"
+          }
+        ]
+      }
+    }
+  ]
+}
