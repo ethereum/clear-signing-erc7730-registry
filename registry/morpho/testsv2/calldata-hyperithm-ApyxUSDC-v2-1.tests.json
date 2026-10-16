@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-hyperithm-ApyxUSDC-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0x069662d2588fcac24b5c209456db965d151556f0": {
+        "decimals": 18,
+        "name": "Apyx USDC",
+        "symbol": "ApyxUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d0120843b9aca008457c40db68302e7df94069662d2588fcac24b5c209456db965d151556f080b8446e553f650000000000000000000000000000000000000000000000000000000000e4e1c00000000000000000000000005555f6ba36e6ae916fae1a7f4e96e5631e405555c0",
+      "txHash": "0x7205fec9024593aac56eba5a02184b94ccde2eb4c0d5c45e4ca6de5a7adcea59",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "15 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "ApyxUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x5555F6bA36E6Ae916FAE1A7F4e96E5631E405555"
+          }
+        ],
+        "interpolatedIntent": "Deposit 15 USDC for 0x5555F6bA36E6Ae916FAE1A7F4e96E5631E405555",
+        "owner": "Hyperithm"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f86f018202b58405f5e10084130cb580830398b594069662d2588fcac24b5c209456db965d151556f080b84494bf804d0000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0xf7293adcd5891b242488de81a4a917344bb937e67f2a8cf481a52713342a3374",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "1 ApyxUSDC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Mint 1 ApyxUSDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Hyperithm"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f897018227068405f5e10084115ce2a083036dda94069662d2588fcac24b5c209456db965d151556f080b86cb460af940000000000000000000000000000000000000000000000000000000ab5d04c0000000000000000000000000047163ad3c13a280c1da8f5a90bbea9eeac75e25200000000000000000000000047163ad3c13a280c1da8f5a90bbea9eeac75e2526a1f8bb22222da44c0",
+      "txHash": "0x769bb211174e26a788f5975fe19bb47003bc73257b2d79c8b8713842d14c671c",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "46000 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x47163AD3c13a280c1Da8F5A90BbEA9eEAc75E252"
+          },
+          {
+            "label": "Owner",
+            "value": "0x47163AD3c13a280c1Da8F5A90BbEA9eEAc75E252"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 46000 USDC to 0x47163AD3c13a280c1Da8F5A90BbEA9eEAc75E252",
+        "owner": "Hyperithm"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f895011e8401087409841727b2d28304546094069662d2588fcac24b5c209456db965d151556f080b86cba087652000000000000000000000000000000000000000000000005146ff466fcb88307000000000000000000000000763f13d4e788c9a61fa87ec160868c35fa26603f000000000000000000000000763f13d4e788c9a61fa87ec160868c35fa26603f6a20cdc22222da44c0",
+      "txHash": "0xa6568c3bda1a72e57ab67873a29e21e689a066dffcc426792c02395b07168e03",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "93.706384694884991751 ApyxUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x763f13d4E788c9a61fa87Ec160868c35fA26603F"
+          },
+          {
+            "label": "Owner",
+            "value": "0x763f13d4E788c9a61fa87Ec160868c35fA26603F"
+          }
+        ],
+        "interpolatedIntent": "Redeem 93.706384694884991751 ApyxUSDC to 0x763f13d4E788c9a61fa87Ec160868c35fA26603F",
+        "owner": "Hyperithm"
+      }
+    }
+  ]
+}

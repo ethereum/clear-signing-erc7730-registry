@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-clearstar-REECOUSDC-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0xd1e9242e075db4bdd3f3c721d7d5fd4180a94a7e": {
+        "decimals": 18,
+        "name": "Re Ecosystem Vault",
+        "symbol": "REECOUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d013a8477359400847ae79f80830cbd7e94d1e9242e075db4bdd3f3c721d7d5fd4180a94a7e80b8446e553f6500000000000000000000000000000000000000000000000000000000000f4240000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x5860899b1e915be85ad6c0373bc19a14e677042a5f874393b7305c682a661ac2",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "1 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "REECOUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Deposit 1 USDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Clearstar"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f894013d830111708401fb5ad083129d3d94d1e9242e075db4bdd3f3c721d7d5fd4180a94a7e80b86cb460af9400000000000000000000000000000000000000000000000000000000419fed40000000000000000000000000be70c64c06f54ee690ac067dc5ca79cc8720d5a3000000000000000000000000be70c64c06f54ee690ac067dc5ca79cc8720d5a36945d8202222da44c0",
+      "txHash": "0x14d9f3f25c43a85e599e75fe985747622c25f9291ae3a2da55761460a2fa4279",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "1101 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0xBe70C64c06f54ee690Ac067DC5ca79Cc8720d5a3"
+          },
+          {
+            "label": "Owner",
+            "value": "0xBe70C64c06f54ee690Ac067DC5ca79Cc8720d5a3"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 1101 USDC to 0xBe70C64c06f54ee690Ac067DC5ca79Cc8720d5a3",
+        "owner": "Clearstar"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8940121830186a084018c5a43830eef2c94d1e9242e075db4bdd3f3c721d7d5fd4180a94a7e80b86cba087652000000000000000000000000000000000000000000000005679234e6b7cf0f510000000000000000000000008ef4617775cfe098132f04b751a934c51fb45e700000000000000000000000008ef4617775cfe098132f04b751a934c51fb45e706945f0622222da44c0",
+      "txHash": "0x9e58c2a90990d92661dfdfc566da2360cb24dadb1c104571f2e62757a94fc504",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "99.696806066585014097 REECOUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x8EF4617775cfE098132f04B751A934C51fB45E70"
+          },
+          {
+            "label": "Owner",
+            "value": "0x8EF4617775cfE098132f04B751A934C51fB45E70"
+          }
+        ],
+        "interpolatedIntent": "Redeem 99.696806066585014097 REECOUSDC to 0x8EF4617775cfE098132f04B751A934C51fB45E70",
+        "owner": "Clearstar"
+      }
+    }
+  ]
+}

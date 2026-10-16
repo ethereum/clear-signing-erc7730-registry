@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-bitwise-PAPY-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0x00000000efe302beaa2b3e6e1b18d08d69a9012a": {
+        "decimals": 6,
+        "name": "AUSD",
+        "symbol": "AUSD"
+      },
+      "0xb344e331a3cda61d329fb3cca2be5942da87c418": {
+        "decimals": 18,
+        "name": "Bitwise Premium RWA AUSD",
+        "symbol": "PAPY"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d01058403ad8c7284d7e286b48308fbf694b344e331a3cda61d329fb3cca2be5942da87c41880b8446e553f6500000000000000000000000000000000000000000000000000000000009896800000000000000000000000005c60bba8f711d5d0805e4ac6dda6921460e30b93c0",
+      "txHash": "0x2ad3e46d9e87747d6d28997805886cf1bb7216b42a847084485251a055a803f1",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "10 AUSD"
+          },
+          {
+            "label": "Share ticker",
+            "value": "PAPY"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x5c60BBA8F711D5D0805e4AC6dDA6921460e30b93"
+          }
+        ],
+        "interpolatedIntent": "Deposit 10 AUSD for 0x5c60BBA8F711D5D0805e4AC6dDA6921460e30b93",
+        "owner": "Bitwise"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f897018202d98408f0d180841011c5008307317e94b344e331a3cda61d329fb3cca2be5942da87c41880b86cb460af940000000000000000000000000000000000000000000000000000003593ec3ec000000000000000000000000086ab7f4b12bd1df7d4ec5bd784ed0bfc5f0513a000000000000000000000000086ab7f4b12bd1df7d4ec5bd784ed0bfc5f0513a06a995cdc2222da44c0",
+      "txHash": "0x4ab1e69584373c2aae01e0465a60332f0dc2d017dd9eea098cff20937193f874",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "230115 AUSD"
+          },
+          {
+            "label": "To",
+            "value": "0x86Ab7F4B12Bd1df7d4eC5bd784Ed0BFc5F0513A0"
+          },
+          {
+            "label": "Owner",
+            "value": "0x86Ab7F4B12Bd1df7d4eC5bd784Ed0BFc5F0513A0"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 230115 AUSD to 0x86Ab7F4B12Bd1df7d4eC5bd784Ed0BFc5F0513A0",
+        "owner": "Bitwise"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f896018208b4830186a08405ee909d8307944494b344e331a3cda61d329fb3cca2be5942da87c41880b86cba0876520000000000000000000000000000000000000000000008588905d070116dfa3e0000000000000000000000008d55eff552fe561bf88c15bfbdadfe059b8657980000000000000000000000008d55eff552fe561bf88c15bfbdadfe059b8657986a9922782222da44c0",
+      "txHash": "0x2b604bea924ce8d135f8ef31a0b9a0984dda326cff7ba4d7aa55389e13d03dd0",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "39412.118868381429267006 PAPY"
+          },
+          {
+            "label": "To",
+            "value": "0x8d55eFF552FE561BF88C15bFbdaDfE059b865798"
+          },
+          {
+            "label": "Owner",
+            "value": "0x8d55eFF552FE561BF88C15bFbdaDfE059b865798"
+          }
+        ],
+        "interpolatedIntent": "Redeem 39412.118868381429267006 PAPY to 0x8d55eFF552FE561BF88C15bFbdaDfE059b865798",
+        "owner": "Bitwise"
+      }
+    }
+  ]
+}

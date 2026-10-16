@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-yearn-yOG-USDC-V2-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0xb885f6d448da7e2c642ec31190b629e40e87b069": {
+        "decimals": 18,
+        "name": "Yearn OG USDC",
+        "symbol": "yOG-USDC-V2"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86c0182012c818c84064046cc8313bb5794b885f6d448da7e2c642ec31190b629e40e87b06980b8446e553f6500000000000000000000000000000000000000000000000000000000000186a0000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x14f32ce98aa204a65a60ca87734bcfb2476982480568e6e268364a0e465e0e46",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.1 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "yOG-USDC-V2"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Deposit 0.1 USDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Yearn"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b8203d384380a3994831e848094b885f6d448da7e2c642ec31190b629e40e87b06980b84494bf804d0000000000000000000000000000000000000000000000000c7d713b49da0000000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x3e646f8cb6dabfd4e31bf04f0b8833b221e61bd71176fb6a33a2d03a342e37d3",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.9 yOG-USDC-V2"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Mint 0.9 yOG-USDC-V2 for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Yearn"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f897018203338402faf0808406cd07208316b4ac94b885f6d448da7e2c642ec31190b629e40e87b06980b86cb460af94000000000000000000000000000000000000000000000000000000bdfd63e0000000000000000000000000006ba9c7d86ebd6a20817d482c42c9de2806eefb7e0000000000000000000000006ba9c7d86ebd6a20817d482c42c9de2806eefb7e697711422222da44c0",
+      "txHash": "0x03908b68c3d1a48eb008b83cf12a8f213ce2a8e0601ab289e05c0ea36d653e8b",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "816000 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x6bA9c7d86eBD6A20817d482C42C9dE2806EeFB7e"
+          },
+          {
+            "label": "Owner",
+            "value": "0x6bA9c7d86eBD6A20817d482C42C9dE2806EeFB7e"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 816000 USDC to 0x6bA9c7d86eBD6A20817d482C42C9dE2806EeFB7e",
+        "owner": "Yearn"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f897018203458401fce170840d67b3a08314e74b94b885f6d448da7e2c642ec31190b629e40e87b06980b86cba087652000000000000000000000000000000000000000000015eae2d5ea801e40c65740000000000000000000000006ba9c7d86ebd6a20817d482c42c9de2806eefb7e0000000000000000000000006ba9c7d86ebd6a20817d482c42c9de2806eefb7e697c54932222da44c0",
+      "txHash": "0xe5aac80c84e37aec153b15a6adec71faeeae8801c68f9346f5d3505a11e836ce",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "1656041.271708306878784884 yOG-USDC-V2"
+          },
+          {
+            "label": "To",
+            "value": "0x6bA9c7d86eBD6A20817d482C42C9dE2806EeFB7e"
+          },
+          {
+            "label": "Owner",
+            "value": "0x6bA9c7d86eBD6A20817d482C42C9dE2806EeFB7e"
+          }
+        ],
+        "interpolatedIntent": "Redeem 1656041.271708306878784884 yOG-USDC-V2 to 0x6bA9c7d86eBD6A20817d482C42C9dE2806EeFB7e",
+        "owner": "Yearn"
+      }
+    }
+  ]
+}

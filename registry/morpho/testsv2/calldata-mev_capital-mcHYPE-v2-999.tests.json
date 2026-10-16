@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-mev_capital-mcHYPE-v2-999.json",
+  "dataProvider": {
+    "tokens": {
+      "0x5555555555555555555555555555555555555555": {
+        "decimals": 18,
+        "name": "WHYPE",
+        "symbol": "WHYPE"
+      },
+      "0x62bbfaa81f70dfc66fc5e03d5de64ceaad8473ad": {
+        "decimals": 18,
+        "name": "MEV Capital HYPE",
+        "symbol": "mcHYPE"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f8203e75a8405f5e1008411e1a3008307ec789462bbfaa81f70dfc66fc5e03d5de64ceaad8473ad80b8446e553f65000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0xc5da95e8e7cc1abb97e3068a82376bd4e3e701072972ed75de0d05a0f574ff82",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.000000001 WHYPE"
+          },
+          {
+            "label": "Share ticker",
+            "value": "mcHYPE"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Deposit 0.000000001 WHYPE for 0x000000000000000000000000000000000000dEaD",
+        "owner": "MEV Capital"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0xf89582357f8405f5e1008306d4e49462bbfaa81f70dfc66fc5e03d5de64ceaad8473ad80b86cb460af9400000000000000000000000000000000000000000000001043561a8829300000000000000000000000000000095c938780605911df64dc66342c3260989e68a9000000000000000000000000095c938780605911df64dc66342c3260989e68a96a72055d2222da448203e78080",
+      "txHash": "0xe2a1cdabe5cd3fd772fdc6785bc24ff1be053c4e06dc23a11c557beb644afe81",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "300 WHYPE"
+          },
+          {
+            "label": "To",
+            "value": "0x095c938780605911Df64dc66342C3260989E68A9"
+          },
+          {
+            "label": "Owner",
+            "value": "0x095c938780605911Df64dc66342C3260989E68A9"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 300 WHYPE to 0x095c938780605911Df64dc66342C3260989E68A9",
+        "owner": "MEV Capital"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8958203e78201a5018417d78401830447d09462bbfaa81f70dfc66fc5e03d5de64ceaad8473ad80b86cba0876520000000000000000000000000000000000000000000000001bbebbba585d0181000000000000000000000000cdff2b5ef07e6b5466155a06946fd9c3783d6362000000000000000000000000cdff2b5ef07e6b5466155a06946fd9c3783d63626a67ac3e2222da44c0",
+      "txHash": "0x8ff6513b16d81e1128a6e60f7fda7faea8ddc0cdbcd1168b0c23f60a078dd8a0",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "1.999241693619880321 mcHYPE"
+          },
+          {
+            "label": "To",
+            "value": "0xcdFf2b5Ef07e6b5466155a06946Fd9C3783D6362"
+          },
+          {
+            "label": "Owner",
+            "value": "0xcdFf2b5Ef07e6b5466155a06946Fd9C3783D6362"
+          }
+        ],
+        "interpolatedIntent": "Redeem 1.999241693619880321 mcHYPE to 0xcdFf2b5Ef07e6b5466155a06946Fd9C3783D6362",
+        "owner": "MEV Capital"
+      }
+    }
+  ]
+}

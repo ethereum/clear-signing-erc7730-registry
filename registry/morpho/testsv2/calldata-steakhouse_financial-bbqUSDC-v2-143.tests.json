@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-bbqUSDC-v2-143.json",
+  "dataProvider": {
+    "tokens": {
+      "0x754704bc059f8c67012fed69bc8a327a5aafb603": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0xbeeff443c3cba3e369da795002243beac311ab83": {
+        "decimals": 18,
+        "name": "Steakhouse High Yield USDC",
+        "symbol": "bbqUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0xf86b63851edf936e00833c29d394beeff443c3cba3e369da795002243beac311ab8380b8446e553f650000000000000000000000000000000000000000000000000000000000002710000000000000000000000000feed46c11f57b7126a773eec6ae9ca7ae1c03c9a818f8080",
+      "txHash": "0x6cf7ae40b0cc790a594111ede0474188ac9a06540674a237c72d8a01f88a1e2c",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.01 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "bbqUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a"
+          }
+        ],
+        "interpolatedIntent": "Deposit 0.01 USDC for 0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f897818f208477359400851af637c60083186a0094beeff443c3cba3e369da795002243beac311ab8380b86cb460af9400000000000000000000000000000000000000000000000000000000002dc6c00000000000000000000000000373830701ec399a19e7ec423d988053b08951d80000000000000000000000000373830701ec399a19e7ec423d988053b08951d8692473c422223333c0",
+      "txHash": "0x6b2909e0330b7a6c68df2ebdfa37ecd910dc75402ccef6e63d7474cf607d6b18",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "3 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x0373830701ec399a19e7EC423D988053b08951d8"
+          },
+          {
+            "label": "Owner",
+            "value": "0x0373830701ec399a19e7EC423D988053b08951d8"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 3 USDC to 0x0373830701ec399a19e7EC423D988053b08951d8",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f898818f02850448b9b8008521f25b7200831d336194beeff443c3cba3e369da795002243beac311ab8380b86cba087652000000000000000000000000000000000000000000000000016345785d8a000000000000000000000000000034b494aed18d709d1f84d58682aa89fb5336184200000000000000000000000034b494aed18d709d1f84d58682aa89fb533618426924781b22223333c0",
+      "txHash": "0x17c158fa61033be1066599dc0e507ab088bdfd585875e6a5a30a07ec54bf579b",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "0.1 bbqUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x34B494Aed18d709D1f84D58682aA89FB53361842"
+          },
+          {
+            "label": "Owner",
+            "value": "0x34B494Aed18d709D1f84D58682aA89FB53361842"
+          }
+        ],
+        "interpolatedIntent": "Redeem 0.1 bbqUSDC to 0x34B494Aed18d709D1f84D58682aA89FB53361842",
+        "owner": "Steakhouse Financial"
+      }
+    }
+  ]
+}

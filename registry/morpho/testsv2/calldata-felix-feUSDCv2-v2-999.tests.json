@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-felix-feUSDCv2-v2-999.json",
+  "dataProvider": {
+    "tokens": {
+      "0xb88339cb7199b77e23db6e890353e22632ba630f": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0x51254785367d73a10a2ea7d44b8e97b749bfbe8b": {
+        "decimals": 18,
+        "name": "Felix USDC V2",
+        "symbol": "feUSDCv2"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86b8203e70180840bebc2008306c65a9451254785367d73a10a2ea7d44b8e97b749bfbe8b80b8446e553f650000000000000000000000000000000000000000000000000000000002625a000000000000000000000000004e99e2459776edcb65694fda02edaf1531bac095c0",
+      "txHash": "0xc63dc800b02b9f83bd6303a9abc5c8ea6d90d9deefa1bccdf90276b5c18363db",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "40 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "feUSDCv2"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x4e99e2459776edCB65694FDa02EDAF1531baC095"
+          }
+        ],
+        "interpolatedIntent": "Deposit 40 USDC for 0x4e99e2459776edCB65694FDa02EDAF1531baC095",
+        "owner": "Felix"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f8728203e78302544a840b91b6c384177d78c38307d9149451254785367d73a10a2ea7d44b8e97b749bfbe8b80b84494bf804d0000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x60530cc7d80215b34487566116d7b64bca9b12654164f21392c620d568fc2687",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "1 feUSDCv2"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Mint 1 feUSDCv2 for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Felix"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88b8203e70580840bebc2008306e2c49451254785367d73a10a2ea7d44b8e97b749bfbe8b80b864b460af9400000000000000000000000000000000000000000000000000000000000f42400000000000000000000000004e99e2459776edcb65694fda02edaf1531bac0950000000000000000000000004e99e2459776edcb65694fda02edaf1531bac095c0",
+      "txHash": "0x856e389d54d55054ac82ee6f97a9b718d9a0843b12ee28304cc3dd0ce51422d9",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "1 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x4e99e2459776edCB65694FDa02EDAF1531baC095"
+          },
+          {
+            "label": "Owner",
+            "value": "0x4e99e2459776edCB65694FDa02EDAF1531baC095"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 1 USDC to 0x4e99e2459776edCB65694FDa02EDAF1531baC095",
+        "owner": "Felix"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88b8203e70280840bebc2008306e14e9451254785367d73a10a2ea7d44b8e97b749bfbe8b80b864ba0876520000000000000000000000000000000000000000000000022b1c8c1227a000000000000000000000000000004e99e2459776edcb65694fda02edaf1531bac0950000000000000000000000004e99e2459776edcb65694fda02edaf1531bac095c0",
+      "txHash": "0xd08cc69b94699ebafae51ef07d796c393ebbc3cc25636536f2dd97bff4c663dd",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "40 feUSDCv2"
+          },
+          {
+            "label": "To",
+            "value": "0x4e99e2459776edCB65694FDa02EDAF1531baC095"
+          },
+          {
+            "label": "Owner",
+            "value": "0x4e99e2459776edCB65694FDa02EDAF1531baC095"
+          }
+        ],
+        "interpolatedIntent": "Redeem 40 feUSDCv2 to 0x4e99e2459776edCB65694FDa02EDAF1531baC095",
+        "owner": "Felix"
+      }
+    }
+  ]
+}

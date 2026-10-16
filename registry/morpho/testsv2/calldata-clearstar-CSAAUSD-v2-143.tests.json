@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-clearstar-CSAAUSD-v2-143.json",
+  "dataProvider": {
+    "tokens": {
+      "0x00000000efe302beaa2b3e6e1b18d08d69a9012a": {
+        "decimals": 6,
+        "name": "AUSD",
+        "symbol": "AUSD"
+      },
+      "0xbe3e6d3f857812b4731677c88288d4f3aff8e9a1": {
+        "decimals": 18,
+        "name": "Clearstar Accountable AUSD",
+        "symbol": "CSAAUSD"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f870818f36850407290d008520b07dfc00830ff6a794be3e6d3f857812b4731677c88288d4f3aff8e9a180b8446e553f6500000000000000000000000000000000000000000000000000000000000f4240000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0xb1a0762450bfad803e6c2e5416b2fc363a965d57cd639d90af5ea013a8685c57",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "1 AUSD"
+          },
+          {
+            "label": "Share ticker",
+            "value": "CSAAUSD"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Deposit 1 AUSD for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Clearstar"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f899818f819485023e96ba00851e2f256a0083071e6094be3e6d3f857812b4731677c88288d4f3aff8e9a180b86cb460af9400000000000000000000000000000000000000000000000000000004a817c800000000000000000000000000732fe63200dd4a5eba02ffa11f150a4c81b01e84000000000000000000000000732fe63200dd4a5eba02ffa11f150a4c81b01e846a2a5d062222da44c0",
+      "txHash": "0x4a4ee9025b463a66d39c5822c70ef9812697bde0411329732cb9878831f11f46",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "20000 AUSD"
+          },
+          {
+            "label": "To",
+            "value": "0x732FE63200dd4a5eBA02FfA11f150A4c81b01e84"
+          },
+          {
+            "label": "Owner",
+            "value": "0x732FE63200dd4a5eBA02FfA11f150A4c81b01e84"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 20000 AUSD to 0x732FE63200dd4a5eBA02FfA11f150A4c81b01e84",
+        "owner": "Clearstar"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f897818f1a84793c6080851d4a43aa0083071e7994be3e6d3f857812b4731677c88288d4f3aff8e9a180b86cba0876520000000000000000000000000000000000000000000000185b79294ceb060f8900000000000000000000000002e219e518d36df870aff122c8ef08101619608300000000000000000000000002e219e518d36df870aff122c8ef0810161960836a37bcb72222da44c0",
+      "txHash": "0x4a72cc71036acbbb6d4582304068edd08deadb7c49efd0ecea22f940d2c00286",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "449.313202708999966601 CSAAUSD"
+          },
+          {
+            "label": "To",
+            "value": "0x02e219E518D36df870AfF122C8EF081016196083"
+          },
+          {
+            "label": "Owner",
+            "value": "0x02e219E518D36df870AfF122C8EF081016196083"
+          }
+        ],
+        "interpolatedIntent": "Redeem 449.313202708999966601 CSAAUSD to 0x02e219E518D36df870AfF122C8EF081016196083",
+        "owner": "Clearstar"
+      }
+    }
+  ]
+}

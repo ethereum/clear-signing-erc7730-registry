@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-keyrock-kUSDC-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0x04422053addbc9bb2759b248b574e3fca76bc145": {
+        "decimals": 18,
+        "name": "Keyrock USDC",
+        "symbol": "kUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f018203348402faf080840b29f1bd8309a5929404422053addbc9bb2759b248b574e3fca76bc14580b8446e553f65000000000000000000000000000000000000000000000000000000000000c3500000000000000000000000006d0c8d799c4e041ea45e02e456a36a360f3bc142c0",
+      "txHash": "0x1d3f3188b4e5082abec4395211bf0e3bfb47bca3d2dd5dad865c290ad7dd2a25",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.05 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "kUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x6d0C8D799c4e041eA45e02E456a36a360F3bC142"
+          }
+        ],
+        "interpolatedIntent": "Deposit 0.05 USDC for 0x6d0C8D799c4e041eA45e02E456a36a360F3bC142",
+        "owner": "Keyrock"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f86e018201b683016612840ca41eb78306ee3c9404422053addbc9bb2759b248b574e3fca76bc14580b84494bf804d0000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x732cec6ef90f1674879fe011106222ba3a29ea2dfec66be4f8b9c43d85c416de",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "1 kUSDC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Mint 1 kUSDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Keyrock"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8960181d68404585da08476d9a0ee8328a2549404422053addbc9bb2759b248b574e3fca76bc14580b86cb460af94000000000000000000000000000000000000000000000000000000517da02c00000000000000000000000000f1a9676b03dd3b2066214d2ad8b4b59ed6642c53000000000000000000000000f1a9676b03dd3b2066214d2ad8b4b59ed6642c5368e3d6932222da44c0",
+      "txHash": "0xd00a9b7da5a0b7249d6114b29ce3c11af671eaf0300bebb76acf4b79feb9ee99",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "350000 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0xf1a9676B03Dd3B2066214D2aD8B4B59ED6642C53"
+          },
+          {
+            "label": "Owner",
+            "value": "0xf1a9676B03Dd3B2066214D2aD8B4B59ED6642C53"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 350000 USDC to 0xf1a9676B03Dd3B2066214D2aD8B4B59ED6642C53",
+        "owner": "Keyrock"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f895011d8459682f008475712a4183222c469404422053addbc9bb2759b248b574e3fca76bc14580b86cba0876520000000000000000000000000000000000000000000000f128c0d42afc9710a000000000000000000000000065e76fcb3168ee03579bc68449a98258bf8f5e1b00000000000000000000000065e76fcb3168ee03579bc68449a98258bf8f5e1b68ecbe712222da44c0",
+      "txHash": "0x818917384ccfeeb0f1ceb85018e6ce6eb82d8af37330acf93b87a28e24e556f6",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "4448.601902002138976416 kUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x65e76fcb3168eE03579BC68449A98258Bf8F5e1b"
+          },
+          {
+            "label": "Owner",
+            "value": "0x65e76fcb3168eE03579BC68449A98258Bf8F5e1b"
+          }
+        ],
+        "interpolatedIntent": "Redeem 4448.601902002138976416 kUSDC to 0x65e76fcb3168eE03579BC68449A98258Bf8F5e1b",
+        "owner": "Keyrock"
+      }
+    }
+  ]
+}

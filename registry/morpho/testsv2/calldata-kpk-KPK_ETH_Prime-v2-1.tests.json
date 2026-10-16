@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-kpk-KPK_ETH_Prime-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": {
+        "decimals": 18,
+        "name": "WETH",
+        "symbol": "WETH"
+      },
+      "0xbb50a5341368751024ddf33385ba8cf61fe65ff9": {
+        "decimals": 18,
+        "name": "KPK ETH Prime",
+        "symbol": "KPK_ETH_Prime"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e0181f0846553f10084bba2ab0083109a9094bb50a5341368751024ddf33385ba8cf61fe65ff980b8446e553f6500000000000000000000000000000000000000000000000000038d7ea4c68000000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x9a7ad254ecaabe80ce2098793b81283ba6e40b175f8b808a34dcec5b7af20c00",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.001 WETH"
+          },
+          {
+            "label": "Share ticker",
+            "value": "KPK_ETH_Prime"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Deposit 0.001 WETH for 0x000000000000000000000000000000000000dEaD",
+        "owner": "KPK"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8920181f20284069aac8083156db694bb50a5341368751024ddf33385ba8cf61fe65ff980b86cb460af940000000000000000000000000000000000000000000000003818cb29b202e98400000000000000000000000054526dd3b396a3233910baf1b8d195bea3b2502100000000000000000000000054526dd3b396a3233910baf1b8d195bea3b250216922bf9e2222da44c0",
+      "txHash": "0x79b721db54c0c0527d12d0a63218f5d823ea732c1f29d1881084bd03a864a6db",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "4.042204045505653124 WETH"
+          },
+          {
+            "label": "To",
+            "value": "0x54526dd3B396A3233910Baf1b8D195bEA3b25021"
+          },
+          {
+            "label": "Owner",
+            "value": "0x54526dd3B396A3233910Baf1b8D195bEA3b25021"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 4.042204045505653124 WETH to 0x54526dd3B396A3233910Baf1b8D195bEA3b25021",
+        "owner": "KPK"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f891011a03841b4affe083187a7094bb50a5341368751024ddf33385ba8cf61fe65ff980b86cba0876520000000000000000000000000000000000000000000000002c0ff68e80cb43cf000000000000000000000000c02cf5e416279a951436988b8d10be874d3c7149000000000000000000000000c02cf5e416279a951436988b8d10be874d3c71496925a4a02222da44c0",
+      "txHash": "0x20408eb5e0eccc2ce118f46b66e948e37302dbf328bcb0c2e64887def083a8c1",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "3.175027354226082767 KPK_ETH_Prime"
+          },
+          {
+            "label": "To",
+            "value": "0xC02Cf5e416279A951436988B8d10bE874D3C7149"
+          },
+          {
+            "label": "Owner",
+            "value": "0xC02Cf5e416279A951436988B8d10bE874D3C7149"
+          }
+        ],
+        "interpolatedIntent": "Redeem 3.175027354226082767 KPK_ETH_Prime to 0xC02Cf5e416279A951436988B8d10bE874D3C7149",
+        "owner": "KPK"
+      }
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-steakPYUSD-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0x6c3ea9036406852006290770bedfcaba0e23a0e8": {
+        "decimals": 6,
+        "name": "PYUSD",
+        "symbol": "PYUSD"
+      },
+      "0xbeef00b5d83c1188f07a5184230a805639c39f04": {
+        "decimals": 18,
+        "name": "Steakhouse Prime Instant",
+        "symbol": "steakPYUSD"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e01822f9e830aa4c984051e7027830d55d994beef00b5d83c1188f07a5184230a805639c39f0480b8446e553f650000000000000000000000000000000000000000000000000000000000002710000000000000000000000000feed46c11f57b7126a773eec6ae9ca7ae1c03c9ac0",
+      "txHash": "0x40d3d461d15978fe17d803903122cfe095c0deed75ef8e415f00a454cb4bde2f",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.01 PYUSD"
+          },
+          {
+            "label": "Share ticker",
+            "value": "steakPYUSD"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a"
+          }
+        ],
+        "interpolatedIntent": "Deposit 0.01 PYUSD for 0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b8203fd842757f6ee831e848094beef00b5d83c1188f07a5184230a805639c39f0480b84494bf804d0000000000000000000000000000000000000000000000000de0b6b36bc93600000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x1ecb1ede3a37c200fb4f4457b6623430b50ebf58fd2e0835f2402cd6365adccd",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "PYUSD"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.999999999 steakPYUSD"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Mint 0.999999999 steakPYUSD for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f897018202228405f5e1008411d260c0830e0dab94beef00b5d83c1188f07a5184230a805639c39f0480b86cb460af940000000000000000000000000000000000000000000000000000000ba4798ab300000000000000000000000083288c634b07d471ec32cae1997b15d8d5f9a7a000000000000000000000000083288c634b07d471ec32cae1997b15d8d5f9a7a069b302332222da44c0",
+      "txHash": "0x169a8992c3e2ab8131f3ddf258aa461ea801f7a48d05fccd362b3bb65fd78923",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "50004.069043 PYUSD"
+          },
+          {
+            "label": "To",
+            "value": "0x83288c634b07d471Ec32caE1997b15D8d5f9A7A0"
+          },
+          {
+            "label": "Owner",
+            "value": "0x83288c634b07d471Ec32caE1997b15D8d5f9A7A0"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 50004.069043 PYUSD to 0x83288c634b07d471Ec32caE1997b15D8d5f9A7A0",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8940181f08227108408caabe08310704694beef00b5d83c1188f07a5184230a805639c39f0480b86cba08765200000000000000000000000000000000000000000000004ad91b6d299725cb2e0000000000000000000000008e6371957aab7e89f974fb785e221f1b76a52aae0000000000000000000000008e6371957aab7e89f974fb785e221f1b76a52aae693529872222da44c0",
+      "txHash": "0x76171be4986e1aec4dcbed3bedeae0de288a18a649cfd5b9e0a1c1c645a3991e",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "1380.70327921050529259 steakPYUSD"
+          },
+          {
+            "label": "To",
+            "value": "0x8e6371957Aab7e89f974fB785E221F1b76a52aAE"
+          },
+          {
+            "label": "Owner",
+            "value": "0x8e6371957Aab7e89f974fB785E221F1b76a52aAE"
+          }
+        ],
+        "interpolatedIntent": "Redeem 1380.70327921050529259 steakPYUSD to 0x8e6371957Aab7e89f974fB785E221F1b76a52aAE",
+        "owner": "Steakhouse Financial"
+      }
+    }
+  ]
+}

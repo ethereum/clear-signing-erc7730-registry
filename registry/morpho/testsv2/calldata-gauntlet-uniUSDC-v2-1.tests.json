@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-uniUSDC-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0x5b453493d2328e7f747eb2e66446efe707728be7": {
+        "decimals": 18,
+        "name": "Uniswap USDC",
+        "symbol": "uniUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86c01248308ad0e841c14adfc830a4ad6945b453493d2328e7f747eb2e66446efe707728be780b8446e553f6500000000000000000000000000000000000000000000000000000000000186a00000000000000000000000008f0f384187ce75672436aeca7cd962c4b5db6160c0",
+      "txHash": "0x6eeb66e7c1f1d6167a65f5be0e7f831fecf13809e1f6988b19148fe0795ca2e2",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.1 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "uniUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x8F0f384187CE75672436AEca7cD962C4b5DB6160"
+          }
+        ],
+        "interpolatedIntent": "Deposit 0.1 USDC for 0x8F0f384187CE75672436AEca7cD962C4b5DB6160",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88f018201118477359400847c063f098304384e945b453493d2328e7f747eb2e66446efe707728be780b864b460af9400000000000000000000000000000000000000000000000000000000001e848000000000000000000000000023f989ae5121c3ccd72416ca66386bb06ba2f50a00000000000000000000000023f989ae5121c3ccd72416ca66386bb06ba2f50ac0",
+      "txHash": "0x23f6fc293f602bad792d9e6cfea24eed9ca097c5826f98f0574d20d29ce8c68d",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "2 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x23f989AE5121c3cCD72416Ca66386Bb06Ba2f50A"
+          },
+          {
+            "label": "Owner",
+            "value": "0x23f989AE5121c3cCD72416Ca66386Bb06Ba2f50A"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 2 USDC to 0x23f989AE5121c3cCD72416Ca66386Bb06Ba2f50A",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f894012383058ddf84142b838d8304a2f6945b453493d2328e7f747eb2e66446efe707728be780b86cba087652000000000000000000000000000000000000000000000001598445c83158e1260000000000000000000000001484ab812a3b4da24967eb0281586ef5b63710740000000000000000000000001484ab812a3b4da24967eb0281586ef5b63710746a5e3a142222da44c0",
+      "txHash": "0x46f810ef5803b771f7a4ac616ba4c760596759f2aa128a96c3320ea8bd17f4ec",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "24.897101366134628646 uniUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x1484Ab812a3b4DA24967eb0281586Ef5b6371074"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1484Ab812a3b4DA24967eb0281586Ef5b6371074"
+          }
+        ],
+        "interpolatedIntent": "Redeem 24.897101366134628646 uniUSDC to 0x1484Ab812a3b4DA24967eb0281586Ef5b6371074",
+        "owner": "Gauntlet"
+      }
+    }
+  ]
+}

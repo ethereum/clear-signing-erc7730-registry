@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-uniETH-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": {
+        "decimals": 18,
+        "name": "WETH",
+        "symbol": "WETH"
+      },
+      "0x98d2b241da14c5dd848812708eb8a1f3c5512f9d": {
+        "decimals": 18,
+        "name": "Uniswap ETH",
+        "symbol": "uniETH"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86c013083044519841dbf0592830686419498d2b241da14c5dd848812708eb8a1f3c5512f9d80b8446e553f65000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x2ccbc2d375280da340f21e6778567f7fa41e348da797c1ced4b313a8ee7b530d",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.000000001 WETH"
+          },
+          {
+            "label": "Share ticker",
+            "value": "uniETH"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Deposit 0.000000001 WETH for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8960182387b83b83ff8840a30092c8303cc9a9498d2b241da14c5dd848812708eb8a1f3c5512f9d80b86cb460af940000000000000000000000000000000000000000000000006f0780dc41623a0d000000000000000000000000fdbbfb0fe2986672af97eca0e797d76a0bbf35c9000000000000000000000000fdbbfb0fe2986672af97eca0e797d76a0bbf35c96a59cbc42222da44c0",
+      "txHash": "0xb3d7f48c25c6aaf52068706e4197b4c204a75db50c4f511bf5fcec40009367d2",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "8.000504946525092365 WETH"
+          },
+          {
+            "label": "To",
+            "value": "0xFdbBfB0Fe2986672af97Eca0e797D76A0bbF35c9"
+          },
+          {
+            "label": "Owner",
+            "value": "0xFdbBfB0Fe2986672af97Eca0e797D76A0bbF35c9"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 8.000504946525092365 WETH to 0xFdbBfB0Fe2986672af97Eca0e797D76A0bbF35c9",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8960182389883dabd90840b20ec56830417a29498d2b241da14c5dd848812708eb8a1f3c5512f9d80b86cba0876520000000000000000000000000000000000000000000000000000000a37874791000000000000000000000000fdbbfb0fe2986672af97eca0e797d76a0bbf35c9000000000000000000000000fdbbfb0fe2986672af97eca0e797d76a0bbf35c96a5f50592222da44c0",
+      "txHash": "0xca6e37f32fe6b5df6086f4307b2288cc24859c31a89a3517773849468cf1a46a",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "0.000000043881285521 uniETH"
+          },
+          {
+            "label": "To",
+            "value": "0xFdbBfB0Fe2986672af97Eca0e797D76A0bbF35c9"
+          },
+          {
+            "label": "Owner",
+            "value": "0xFdbBfB0Fe2986672af97Eca0e797D76A0bbF35c9"
+          }
+        ],
+        "interpolatedIntent": "Redeem 0.000000043881285521 uniETH to 0xFdbBfB0Fe2986672af97Eca0e797D76A0bbF35c9",
+        "owner": "Gauntlet"
+      }
+    }
+  ]
+}

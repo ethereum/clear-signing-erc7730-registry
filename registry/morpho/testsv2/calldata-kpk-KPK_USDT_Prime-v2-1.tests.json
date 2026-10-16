@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-kpk-KPK_USDT_Prime-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xdac17f958d2ee523a2206206994597c13d831ec7": {
+        "decimals": 6,
+        "name": "USDT",
+        "symbol": "USDT"
+      },
+      "0x870f0bf29a25a40e7cc087cd5c53e70c11f2c8a8": {
+        "decimals": 18,
+        "name": "KPK USDT Prime",
+        "symbol": "KPK_USDT_Prime"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f018202b88405f5e100840f4b67c08303a46f94870f0bf29a25a40e7cc087cd5c53e70c11f2c8a880b8446e553f6500000000000000000000000000000000000000000000000000000000000186a0000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x35ac47c1986489fe6e8d83827f26d64aa5ed170d642ab7c897b3e3a85eff0c75",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.1 USDT"
+          },
+          {
+            "label": "Share ticker",
+            "value": "KPK_USDT_Prime"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Deposit 0.1 USDT for 0x000000000000000000000000000000000000dEaD",
+        "owner": "KPK"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b8203e78426525a24831e848094870f0bf29a25a40e7cc087cd5c53e70c11f2c8a880b84494bf804d0000000000000000000000000000000000000000000000000c7d713b49da0000000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0xdc9e7d3538a88c194d8951caea57a474d24aea11193fb3b442f865586149ff87",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDT"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.9 KPK_USDT_Prime"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Mint 0.9 KPK_USDT_Prime for 0x000000000000000000000000000000000000dEaD",
+        "owner": "KPK"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8970182019b8405f5e100840de03f008308e85d94870f0bf29a25a40e7cc087cd5c53e70c11f2c8a880b86cb460af9400000000000000000000000000000000000000000000000000000004a817c800000000000000000000000000abf0f7bd0dc8ce44b084b4b66b8db97f1b9ce419000000000000000000000000abf0f7bd0dc8ce44b084b4b66b8db97f1b9ce4196a310c8d2222da44c0",
+      "txHash": "0xdf835fec9e11bb6cdd835ef24253e465328a8d60987470a3c32c39f01a7f2a1f",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "20000 USDT"
+          },
+          {
+            "label": "To",
+            "value": "0xaBf0f7bD0Dc8Ce44b084B4B66b8Db97F1b9Ce419"
+          },
+          {
+            "label": "Owner",
+            "value": "0xaBf0f7bD0Dc8Ce44b084B4B66b8Db97F1b9Ce419"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 20000 USDT to 0xaBf0f7bD0Dc8Ce44b084B4B66b8Db97F1b9Ce419",
+        "owner": "KPK"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f896016584aab52c00850154e103c08317053e94870f0bf29a25a40e7cc087cd5c53e70c11f2c8a880b86cba08765200000000000000000000000000000000000000000000007a85e892408431c00000000000000000000000000014e5abca8d5bc5ab59c17010d4c782a4eaf8f9d500000000000000000000000014e5abca8d5bc5ab59c17010d4c782a4eaf8f9d569ef6b7c2222da44c0",
+      "txHash": "0x9ef2fbe3660d9ced305dd7cba3150af403e849098f37545c105802c80f712d6b",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "2260.1519 KPK_USDT_Prime"
+          },
+          {
+            "label": "To",
+            "value": "0x14E5abca8d5bc5aB59C17010D4c782a4EAf8F9D5"
+          },
+          {
+            "label": "Owner",
+            "value": "0x14E5abca8d5bc5aB59C17010D4c782a4EAf8F9D5"
+          }
+        ],
+        "interpolatedIntent": "Redeem 2260.1519 KPK_USDT_Prime to 0x14E5abca8d5bc5aB59C17010D4c782a4EAf8F9D5",
+        "owner": "KPK"
+      }
+    }
+  ]
+}

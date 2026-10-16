@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-singularv-svETH-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": {
+        "decimals": 18,
+        "name": "WETH",
+        "symbol": "WETH"
+      },
+      "0xf39ac02dec8fae8292d5f42202e4cd885356256b": {
+        "decimals": 18,
+        "name": "SingularV ETH",
+        "symbol": "svETH"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f018201088405b975ef8424147a3d8310668494f39ac02dec8fae8292d5f42202e4cd885356256b80b8446e553f6500000000000000000000000000000000000000000000000000005af31084393a00000000000000000000000096b539339b3149dcc2337fe434e0460ff43de327c0",
+      "txHash": "0x925797efa7dfa3d8eb81fc5a2860315fed5cdd55d74b6a41d827d12e446f4197",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.000100000000653626 WETH"
+          },
+          {
+            "label": "Share ticker",
+            "value": "svETH"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x96b539339b3149Dcc2337Fe434E0460fF43dE327"
+          }
+        ],
+        "interpolatedIntent": "Deposit 0.000100000000653626 WETH for 0x96b539339b3149Dcc2337Fe434E0460fF43dE327",
+        "owner": "SingularV"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f86e0182027f83030d40840522e8aa83039e1f94f39ac02dec8fae8292d5f42202e4cd885356256b80b84494bf804d0000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x31dff462e4ea0a66dc07b97ef7e9dc7c12d7443d35ae83de5d4771d086bbb32e",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "WETH"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.00000000000001 svETH"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Mint 0.00000000000001 svETH for 0x000000000000000000000000000000000000dEaD",
+        "owner": "SingularV"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f895011f84048bca3284166e7425830a47eb94f39ac02dec8fae8292d5f42202e4cd885356256b80b86cb460af9400000000000000000000000000000000000000000000000001ea6380fc40e92300000000000000000000000002618641e8bd8f5130537325c7c23fd0249bf2d900000000000000000000000002618641e8bd8f5130537325c7c23fd0249bf2d969ee98d52222da44c0",
+      "txHash": "0xb7d0ccce475dd4b0d21f8d365da8fdb7c9c24181ebc4f5ae1004b3db7faa14e1",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "0.138032144227297571 WETH"
+          },
+          {
+            "label": "To",
+            "value": "0x02618641e8bD8f5130537325c7C23fD0249bf2d9"
+          },
+          {
+            "label": "Owner",
+            "value": "0x02618641e8bD8f5130537325c7C23fD0249bf2d9"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 0.138032144227297571 WETH to 0x02618641e8bD8f5130537325c7C23fD0249bf2d9",
+        "owner": "SingularV"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8950181ca830186a084054659598317b56d94f39ac02dec8fae8292d5f42202e4cd885356256b80b86cba08765200000000000000000000000000000000000000000000000043f281a5780bc24a000000000000000000000000a7781d08644648cd8603ab584ae38ee6d897e255000000000000000000000000a7781d08644648cd8603ab584ae38ee6d897e25569bb73db2222da44c0",
+      "txHash": "0x3ac1e976172ad54fa0ee99c86c04a3f53781a646ed7d9950f2e7b55fd63fe435",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "4.896118292588773962 svETH"
+          },
+          {
+            "label": "To",
+            "value": "0xA7781D08644648cd8603AB584aE38eE6D897E255"
+          },
+          {
+            "label": "Owner",
+            "value": "0xA7781D08644648cd8603AB584aE38eE6D897E255"
+          }
+        ],
+        "interpolatedIntent": "Redeem 4.896118292588773962 svETH to 0xA7781D08644648cd8603AB584aE38eE6D897E255",
+        "owner": "SingularV"
+      }
+    }
+  ]
+}

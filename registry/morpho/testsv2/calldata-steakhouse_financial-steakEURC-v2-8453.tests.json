@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-steakEURC-v2-8453.json",
+  "dataProvider": {
+    "tokens": {
+      "0x60a3e35cc302bfa44cb288bc5a4f316fdb1adb42": {
+        "decimals": 6,
+        "name": "EURC",
+        "symbol": "EURC"
+      },
+      "0xbeef009f28ccf367444a9f79096862920e025dc1": {
+        "decimals": 18,
+        "name": "Steakhouse Prime EURC",
+        "symbol": "steakEURC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f822105820502830f424083a7d8c08306e22b94beef009f28ccf367444a9f79096862920e025dc180b8446e553f6500000000000000000000000000000000000000000000000000000000000186a00000000000000000000000006d0c8d799c4e041ea45e02e456a36a360f3bc142c0",
+      "txHash": "0x409ad1b7e17f2fc419e0ab451e4bfe2da7813f2f31fe12701fe55a7111de94e7",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.1 EURC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "steakEURC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x6d0C8D799c4e041eA45e02E456a36a360F3bC142"
+          }
+        ],
+        "interpolatedIntent": "Deposit 0.1 EURC for 0x6d0C8D799c4e041eA45e02E456a36a360F3bC142",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86d8203a1840784fa1a8316e36094beef009f28ccf367444a9f79096862920e025dc180b84494bf804d0000000000000000000000000000000000000000000000000de0b6b36bc93600000000000000000000000000000000000000000000000000000000000000dead8221058080",
+      "txHash": "0x80461f5a218d76ba14042b9d40d598a81d1001cfdbf2cd238b40899a0a829353",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "EURC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.999999999 steakEURC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Mint 0.999999999 steakEURC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f89482210582042d80835b8d808305f1e094beef009f28ccf367444a9f79096862920e025dc180b86cb460af94000000000000000000000000000000000000000000000000000000001dcd65000000000000000000000000009be948033e0430a0747bb38316f8d9173ba936760000000000000000000000009be948033e0430a0747bb38316f8d9173ba936766ab0722d2222da44c0",
+      "txHash": "0xcc9416b51a2a033357a6709efe3dde29084b97bd6859d93ac2ab866fea53dc1c",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "500 EURC"
+          },
+          {
+            "label": "To",
+            "value": "0x9BE948033E0430A0747BB38316f8d9173Ba93676"
+          },
+          {
+            "label": "Owner",
+            "value": "0x9BE948033E0430A0747BB38316f8d9173Ba93676"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 500 EURC to 0x9BE948033E0430A0747BB38316f8d9173Ba93676",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88d8221053083118c30837ef40083082e4794beef009f28ccf367444a9f79096862920e025dc180b864ba08765200000000000000000000000000000000000000000000010b34fd549b322aea84000000000000000000000000abf0f7bd0dc8ce44b084b4b66b8db97f1b9ce419000000000000000000000000abf0f7bd0dc8ce44b084b4b66b8db97f1b9ce419c0",
+      "txHash": "0x1ba35bab325f4792e9c95b1a1a9e62d5e70e3a1e48dfb1f5b430df8810d45f3b",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "4929.098968765068667524 steakEURC"
+          },
+          {
+            "label": "To",
+            "value": "0xaBf0f7bD0Dc8Ce44b084B4B66b8Db97F1b9Ce419"
+          },
+          {
+            "label": "Owner",
+            "value": "0xaBf0f7bD0Dc8Ce44b084B4B66b8Db97F1b9Ce419"
+          }
+        ],
+        "interpolatedIntent": "Redeem 4929.098968765068667524 steakEURC to 0xaBf0f7bD0Dc8Ce44b084B4B66b8Db97F1b9Ce419",
+        "owner": "Steakhouse Financial"
+      }
+    }
+  ]
+}

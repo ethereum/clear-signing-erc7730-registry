@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-stake_dao-sdFRXUSDv2-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xcacd6fd266af91b8aed52accc382b4e165586e29": {
+        "decimals": 18,
+        "name": "frxUSD",
+        "symbol": "frxUSD"
+      },
+      "0xce13e39534082fcf8f13f6d84e6d95414d14271e": {
+        "decimals": 18,
+        "name": "Stake DAO frxUSD v2",
+        "symbol": "sdFRXUSDv2"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e01821471830f4240840b7de5008303c51f94ce13e39534082fcf8f13f6d84e6d95414d14271e80b8446e553f650000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x23b3201a999d739ba6725ead41ea0e5856c67f3eb182ed414de4dfd469a010d9",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "1 frxUSD"
+          },
+          {
+            "label": "Share ticker",
+            "value": "sdFRXUSDv2"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Deposit 1 frxUSD for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Stake DAO"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f897018210888406760d808410e8eb20830d3b5494ce13e39534082fcf8f13f6d84e6d95414d14271e80b86cb460af9400000000000000000000000000000000000000000000006c6b935b8bbd4000000000000000000000000000006e74053a3798e0fc9a9775f7995316b27f21c4d20000000000000000000000006e74053a3798e0fc9a9775f7995316b27f21c4d269a21f562222da44c0",
+      "txHash": "0x4517d81d76fa791a005ce599eab993b32606a3c37a3814488c03744ee660bbf3",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "2000 frxUSD"
+          },
+          {
+            "label": "To",
+            "value": "0x6e74053a3798e0fC9a9775F7995316b27f21c4D2"
+          },
+          {
+            "label": "Owner",
+            "value": "0x6e74053a3798e0fC9a9775F7995316b27f21c4D2"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 2000 frxUSD to 0x6e74053a3798e0fC9a9775F7995316b27f21c4D2",
+        "owner": "Stake DAO"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88f018210e68405f5e100840910dca0830a04e594ce13e39534082fcf8f13f6d84e6d95414d14271e80b864ba0876520000000000000000000000000000000000000000000001b1add10bc385ed78ba0000000000000000000000006e74053a3798e0fc9a9775f7995316b27f21c4d20000000000000000000000006e74053a3798e0fc9a9775f7995316b27f21c4d2c0",
+      "txHash": "0x916406702a02cbb5571d915b37b4faf224c61d48f42ad91e9ad7f0c8e35f94fc",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "7999.964988889323370682 sdFRXUSDv2"
+          },
+          {
+            "label": "To",
+            "value": "0x6e74053a3798e0fC9a9775F7995316b27f21c4D2"
+          },
+          {
+            "label": "Owner",
+            "value": "0x6e74053a3798e0fC9a9775F7995316b27f21c4D2"
+          }
+        ],
+        "interpolatedIntent": "Redeem 7999.964988889323370682 sdFRXUSDv2 to 0x6e74053a3798e0fC9a9775F7995316b27f21c4D2",
+        "owner": "Stake DAO"
+      }
+    }
+  ]
+}

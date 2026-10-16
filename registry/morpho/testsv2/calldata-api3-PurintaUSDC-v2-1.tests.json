@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-api3-PurintaUSDC-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0xc92a37fd0250f4eecf092960a2f70a1334217528": {
+        "decimals": 18,
+        "name": "Purinta USDC",
+        "symbol": "PurintaUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f018201d9841dcd6500842d6084208309542494c92a37fd0250f4eecf092960a2f70a133421752880b8446e553f650000000000000000000000000000000000000000000000000000000001312d000000000000000000000000009f0566f2e8ff51901dd0c0e7aad937a94931f75cc0",
+      "txHash": "0x4b93ddd4aaa6f7cea109292ce83c5fc403bfe00534d7172fdf9b6f55fec89e7a",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "20 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "PurintaUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x9f0566F2E8Ff51901DD0C0E7aad937A94931f75C"
+          }
+        ],
+        "interpolatedIntent": "Deposit 20 USDC for 0x9f0566F2E8Ff51901DD0C0E7aad937A94931f75C",
+        "owner": "Api3"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f86f018201ba841dcd65008425ae9b40830362ba94c92a37fd0250f4eecf092960a2f70a133421752880b84494bf804d0000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0xab9a51405fec6a30193cd53f8c0dd40a359821359eae31fd39f8fc2bd6f69a7c",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "1 PurintaUSDC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Mint 1 PurintaUSDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Api3"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88f0182029d8423c34600842da3a7a0830f424094c92a37fd0250f4eecf092960a2f70a133421752880b864b460af9400000000000000000000000000000000000000000000000000000000049cb2a6000000000000000000000000425edc661ccfea6b2d1953068e6ad0c4e55093df000000000000000000000000425edc661ccfea6b2d1953068e6ad0c4e55093dfc0",
+      "txHash": "0x8b2b8437739ea2a2f21be062325a79b59a1ba3411df02d1b09b220dced8640ca",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "77.378214 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x425Edc661cCFeA6b2D1953068e6ad0C4E55093DF"
+          },
+          {
+            "label": "Owner",
+            "value": "0x425Edc661cCFeA6b2D1953068e6ad0C4E55093DF"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 77.378214 USDC to 0x425Edc661cCFeA6b2D1953068e6ad0C4E55093DF",
+        "owner": "Api3"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88f018201fa8423c34600842869758083076f2694c92a37fd0250f4eecf092960a2f70a133421752880b864ba087652000000000000000000000000000000000000000000000001158e460913d000000000000000000000000000009f0566f2e8ff51901dd0c0e7aad937a94931f75c0000000000000000000000009f0566f2e8ff51901dd0c0e7aad937a94931f75cc0",
+      "txHash": "0x5d9ad8248953d4b448fed0c46b23666aa7c4b74d885428996173c9b23d275f3f",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "20 PurintaUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x9f0566F2E8Ff51901DD0C0E7aad937A94931f75C"
+          },
+          {
+            "label": "Owner",
+            "value": "0x9f0566F2E8Ff51901DD0C0E7aad937A94931f75C"
+          }
+        ],
+        "interpolatedIntent": "Redeem 20 PurintaUSDC to 0x9f0566F2E8Ff51901DD0C0E7aad937A94931f75C",
+        "owner": "Api3"
+      }
+    }
+  ]
+}

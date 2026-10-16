@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-api3-Api3-dCOMP-USDC-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0x36cfe1568461e499391ef0a555300f1ae2da2439": {
+        "decimals": 18,
+        "name": "Api3 dCOMP USDC",
+        "symbol": "Api3-dCOMP-USDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f0182017d840fa261608414be0f00830a807d9436cfe1568461e499391ef0a555300f1ae2da243980b8446e553f65000000000000000000000000000000000000000000000000000000000007a1200000000000000000000000009f0566f2e8ff51901dd0c0e7aad937a94931f75cc0",
+      "txHash": "0xc9de5b1d4e53959a4f79db4d84b649e53322772d0bd6fcfca57b0094d04265f7",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.5 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "Api3-dCOMP-USDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x9f0566F2E8Ff51901DD0C0E7aad937A94931f75C"
+          }
+        ],
+        "interpolatedIntent": "Deposit 0.5 USDC for 0x9f0566F2E8Ff51901DD0C0E7aad937A94931f75C",
+        "owner": "Api3"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f86f01820170840254c5708405260de0830362e19436cfe1568461e499391ef0a555300f1ae2da243980b84494bf804d000000000000000000000000000000000000000000000000000000e8d4a51000000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0xa94f0a005cbc41e2852f9cc02220a9ff504356ca5f6a6cbdae3fd5f75004d655",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000001 Api3-dCOMP-USDC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Mint 0.000001 Api3-dCOMP-USDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Api3"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88c0106830f42408407e5ca20830bf36a9436cfe1568461e499391ef0a555300f1ae2da243980b864b460af9400000000000000000000000000000000000000000000000000000002540be400000000000000000000000000f61990fd110002c0ca1be101999caedc6fe81ed8000000000000000000000000f61990fd110002c0ca1be101999caedc6fe81ed8c0",
+      "txHash": "0xebbfa7de5f86dca9654bcc923a9c2426d36eb2ff1ff050997b83de27850a008b",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "10000 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0xF61990Fd110002C0Ca1BE101999cAedC6fe81Ed8"
+          },
+          {
+            "label": "Owner",
+            "value": "0xF61990Fd110002C0Ca1BE101999cAedC6fe81Ed8"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 10000 USDC to 0xF61990Fd110002C0Ca1BE101999cAedC6fe81Ed8",
+        "owner": "Api3"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8960181fd843b9aca00844ead9a00830763719436cfe1568461e499391ef0a555300f1ae2da243980b86cba0876520000000000000000000000000000000000000000000092130e49da0c97d901d2000000000000000000000000399214e0238e66467fa08c33a8432d7e7ec266b3000000000000000000000000399214e0238e66467fa08c33a8432d7e7ec266b36a04c7212222da44c0",
+      "txHash": "0xf6637a996e9e38980c64b8a8f10856d303c4654b8ddefc724aa3ccfbe46e368f",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "689817.024230106135593426 Api3-dCOMP-USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x399214e0238e66467Fa08c33A8432D7e7ec266B3"
+          },
+          {
+            "label": "Owner",
+            "value": "0x399214e0238e66467Fa08c33A8432D7e7ec266B3"
+          }
+        ],
+        "interpolatedIntent": "Redeem 689817.024230106135593426 Api3-dCOMP-USDC to 0x399214e0238e66467Fa08c33A8432D7e7ec266B3",
+        "owner": "Api3"
+      }
+    }
+  ]
+}

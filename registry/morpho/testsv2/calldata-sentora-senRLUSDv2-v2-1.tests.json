@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-sentora-senRLUSDv2-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0x8292bb45bf1ee4d140127049757c2e0ff06317ed": {
+        "decimals": 18,
+        "name": "RLUSD",
+        "symbol": "RLUSD"
+      },
+      "0x6dc58a0fdfc8d694e571dc59b9a52eeea780e6bf": {
+        "decimals": 18,
+        "name": "Sentora RLUSD Main",
+        "symbol": "senRLUSDv2"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e018201a48348d1f7840bded67a831096ec946dc58a0fdfc8d694e571dc59b9a52eeea780e6bf80b8446e553f650000000000000000000000000000000000000000000000001bc16d674ec8000000000000000000000000000013de0cee0b83562cbfd46682e10ffa4e3c5090e1c0",
+      "txHash": "0xe312fcee01833af11baeb128cc28d32fc36994243223f19a314c49ee0dfa1e51",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "2 RLUSD"
+          },
+          {
+            "label": "Share ticker",
+            "value": "senRLUSDv2"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x13DE0cEE0B83562CBfD46682e10FfA4E3c5090e1"
+          }
+        ],
+        "interpolatedIntent": "Deposit 2 RLUSD for 0x13DE0cEE0B83562CBfD46682e10FfA4E3c5090e1",
+        "owner": "Sentora"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f86e018201a28348d1f7840bded67a830f7944946dc58a0fdfc8d694e571dc59b9a52eeea780e6bf80b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0xc44798f1586051d133a4e1a1db893efdf7b8868676e5bd5a9c51695ad81478f7",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "RLUSD"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 senRLUSDv2"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Mint 0.000000001 senRLUSDv2 for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Sentora"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f89601820280830520518402998b968310e3f3946dc58a0fdfc8d694e571dc59b9a52eeea780e6bf80b86cb460af9400000000000000000000000000000000000000000001409a1abdb4369e4000000000000000000000000000008fee409f8f772667add2a2ccfb8c5182a7349ce90000000000000000000000008fee409f8f772667add2a2ccfb8c5182a7349ce969af6e8d2222da44c0",
+      "txHash": "0x3bba850f32b6a151a3bc9098b4bd62d62bb55ad66df605bb9126323c10bd80e8",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "1514000 RLUSD"
+          },
+          {
+            "label": "To",
+            "value": "0x8fee409f8F772667ADD2a2ccfB8C5182a7349cE9"
+          },
+          {
+            "label": "Owner",
+            "value": "0x8fee409f8F772667ADD2a2ccfB8C5182a7349cE9"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 1514000 RLUSD to 0x8fee409f8F772667ADD2a2ccfB8C5182a7349cE9",
+        "owner": "Sentora"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f896018202a1831549388402f6aac0830ffde3946dc58a0fdfc8d694e571dc59b9a52eeea780e6bf80b86cba0876520000000000000000000000000000000000000000000024a71afaa49250bd350600000000000000000000000057c294fbf23033b7a9794841e932a3a8363aef7100000000000000000000000057c294fbf23033b7a9794841e932a3a8363aef7169a9f7ea2222da44c0",
+      "txHash": "0x337f802f0b23a5c24b4746c456ff17d987e9e533db16231d520e7f3fd29bd23e",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "173087.743690754213360902 senRLUSDv2"
+          },
+          {
+            "label": "To",
+            "value": "0x57c294FBF23033b7A9794841E932A3a8363aef71"
+          },
+          {
+            "label": "Owner",
+            "value": "0x57c294FBF23033b7A9794841E932A3a8363aef71"
+          }
+        ],
+        "interpolatedIntent": "Redeem 173087.743690754213360902 senRLUSDv2 to 0x57c294FBF23033b7A9794841E932A3a8363aef71",
+        "owner": "Sentora"
+      }
+    }
+  ]
+}

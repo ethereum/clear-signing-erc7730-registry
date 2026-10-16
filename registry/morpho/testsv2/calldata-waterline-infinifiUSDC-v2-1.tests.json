@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-waterline-infinifiUSDC-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0xbeeff75262b2ec16a3c62a807f02ee7627654931": {
+        "decimals": 18,
+        "name": "Waterline InfiniFi USDC",
+        "symbol": "infinifiUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e01826bbd830f6e3284266075ca8303225594beeff75262b2ec16a3c62a807f02ee762765493180b8446e553f650000000000000000000000000000000000000000000000000000000000002710000000000000000000000000feed46c11f57b7126a773eec6ae9ca7ae1c03c9ac0",
+      "txHash": "0x09f27a11b982a0a139cfe832dd29474df03edee621218bd81ee7225196dc8490",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.01 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "infinifiUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a"
+          }
+        ],
+        "interpolatedIntent": "Deposit 0.01 USDC for 0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a",
+        "owner": "Waterline"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b8203c3844054dbda8316e36094beeff75262b2ec16a3c62a807f02ee762765493180b84494bf804d0000000000000000000000000000000000000000000000000de0b6b36bc93600000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x2a8384806b237295c592e306060444e72629f68e1c39747f92e5c0ae57a9a98a",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.999999999 infinifiUSDC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Mint 0.999999999 infinifiUSDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Waterline"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f897018204098405f5e10084128f96408303f17394beeff75262b2ec16a3c62a807f02ee762765493180b86cb460af9400000000000000000000000000000000000000000000000000000005ca6d57c0000000000000000000000000ecad6a588e8b9fbfddc0db79b9886ee2f8e8048f000000000000000000000000ecad6a588e8b9fbfddc0db79b9886ee2f8e8048f6a05829e2222da44c0",
+      "txHash": "0xb35640c1c9a8a67313be34766089c792ba15dbcb328639f690b28c44c3ce90ee",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "24871 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0xecAD6A588E8b9FBfdDC0DB79b9886Ee2F8e8048f"
+          },
+          {
+            "label": "Owner",
+            "value": "0xecAD6A588E8b9FBfdDC0DB79b9886Ee2F8e8048f"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 24871 USDC to 0xecAD6A588E8b9FBfdDC0DB79b9886Ee2F8e8048f",
+        "owner": "Waterline"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f89501738405f5e100840eb8ebc08307099894beeff75262b2ec16a3c62a807f02ee762765493180b86cba087652000000000000000000000000000000000000000000000009387109ca94c39cf20000000000000000000000009182aa6dbf2ea3c8ec0fbf2ac6c1b9699fb8d1f80000000000000000000000009182aa6dbf2ea3c8ec0fbf2ac6c1b9699fb8d1f869ffa6d02222da44c0",
+      "txHash": "0x684cb817565ed772995ec9f9fae0555ec20a9bbc0c14a8946706cfddf3d90cb0",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "170.08773936756212453 infinifiUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x9182Aa6dBF2EA3c8eC0fbf2ac6C1B9699fb8d1F8"
+          },
+          {
+            "label": "Owner",
+            "value": "0x9182Aa6dBF2EA3c8eC0fbf2ac6C1B9699fb8d1F8"
+          }
+        ],
+        "interpolatedIntent": "Redeem 170.08773936756212453 infinifiUSDC to 0x9182Aa6dBF2EA3c8eC0fbf2ac6C1B9699fb8d1F8",
+        "owner": "Waterline"
+      }
+    }
+  ]
+}

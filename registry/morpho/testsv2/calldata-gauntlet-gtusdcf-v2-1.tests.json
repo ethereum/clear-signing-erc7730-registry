@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-gtusdcf-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0x9a1d6bd5b8642c41f25e0958129b85f8e1176f3e": {
+        "decimals": 18,
+        "name": "Gauntlet USDC Frontier",
+        "symbol": "gtusdcf"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f01820190843b9aca008454b4e174832a71c4949a1d6bd5b8642c41f25e0958129b85f8e1176f3e80b8446e553f6500000000000000000000000000000000000000000000000000000000001e8480000000000000000000000000b47f11484e19f1914d32fd393b17671221c10f1fc0",
+      "txHash": "0x30d69415591391c6ccda0743f34d21d7326674eb8793ba4409173cb49a3ecbda",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "2 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "gtusdcf"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xB47f11484e19f1914D32fd393b17671221C10F1F"
+          }
+        ],
+        "interpolatedIntent": "Deposit 2 USDC for 0xB47f11484e19f1914D32fd393b17671221C10F1F",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f86d012d84773594008484aee6d8832aa9c6949a1d6bd5b8642c41f25e0958129b85f8e1176f3e80b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0xdf46dbd2ec0e56b78406c613a9930c9886eb970a9e1d0ebb10ed4aecbb8c47d1",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 gtusdcf"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "interpolatedIntent": "Mint 0.000000001 gtusdcf for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8940122830186a08402a137c0832216e5949a1d6bd5b8642c41f25e0958129b85f8e1176f3e80b86cb460af94000000000000000000000000000000000000000000000000000000037e11d6000000000000000000000000002d80332a23e1b7f1d9b2fb45f27f7b380d40334a0000000000000000000000002d80332a23e1b7f1d9b2fb45f27f7b380d40334a694a4efe2222da44c0",
+      "txHash": "0x5a526175b6a46246506b197256a4fb41216c89ea5d4354b2846a9bae6b0d4d9c",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "15000 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x2D80332A23E1b7F1D9B2fB45F27F7b380d40334A"
+          },
+          {
+            "label": "Owner",
+            "value": "0x2D80332A23E1b7F1D9B2fB45F27F7b380d40334A"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 15000 USDC to 0x2D80332A23E1b7F1D9B2fB45F27F7b380d40334A",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f89501548405f5e100840c03b0e583242b0c949a1d6bd5b8642c41f25e0958129b85f8e1176f3e80b86cba087652000000000000000000000000000000000000000000000331e33b96914d1bd938000000000000000000000000d0cb805c84f722fadcabe24cbce79c7eb361c4c6000000000000000000000000d0cb805c84f722fadcabe24cbce79c7eb361c4c6692174962222da44c0",
+      "txHash": "0xf6d0a50c56e9dd7eeeba7a9e8678c61a5e02d7e4bda7ee5022df3569947b3486",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "15087.36375464174733548 gtusdcf"
+          },
+          {
+            "label": "To",
+            "value": "0xD0cb805c84F722Fadcabe24CBCE79C7eb361c4C6"
+          },
+          {
+            "label": "Owner",
+            "value": "0xD0cb805c84F722Fadcabe24CBCE79C7eb361c4C6"
+          }
+        ],
+        "interpolatedIntent": "Redeem 15087.36375464174733548 gtusdcf to 0xD0cb805c84F722Fadcabe24CBCE79C7eb361c4C6",
+        "owner": "Gauntlet"
+      }
+    }
+  ]
+}
