@@ -53,7 +53,8 @@
             "params": {
               "types": [
                 "eoa",
-                "wallet"
+                "wallet",
+                "contract"
               ]
             },
             "path": "#._recipients.[]",
@@ -139,7 +140,7 @@
         ]
       },
       "delegate(address _to, uint256 _bips)": {
-        "intent": "Delegate FTSO vote power",
+        "intent": "Set FTSO delegation share",
         "fields": [
           {
             "label": "Provider",
@@ -169,26 +170,31 @@
         "intent": "Replace all FTSO delegations",
         "fields": [
           {
-            "label": "Provider",
-            "format": "addressName",
-            "params": {
-              "types": [
-                "eoa",
-                "contract"
-              ]
-            },
-            "path": "#._delegatees.[]",
-            "visible": "always"
-          },
-          {
-            "label": "Share",
-            "format": "unit",
-            "params": {
-              "decimals": 2,
-              "base": "%"
-            },
-            "path": "#._bips.[]",
-            "visible": "always"
+            "iteration": "bundled",
+            "fields": [
+              {
+                "label": "Provider",
+                "format": "addressName",
+                "params": {
+                  "types": [
+                    "eoa",
+                    "contract"
+                  ]
+                },
+                "path": "#._delegatees.[]",
+                "visible": "always"
+              },
+              {
+                "label": "Share",
+                "format": "unit",
+                "params": {
+                  "decimals": 2,
+                  "base": "%"
+                },
+                "path": "#._bips.[]",
+                "visible": "always"
+              }
+            ]
           }
         ]
       },
@@ -228,7 +234,8 @@
             "params": {
               "types": [
                 "eoa",
-                "wallet"
+                "wallet",
+                "contract"
               ]
             },
             "path": "#._to",
@@ -250,7 +257,7 @@
             "visible": "always"
           },
           {
-            "label": "Registration Fee",
+            "label": "Registration fee (burned)",
             "format": "amount",
             "path": "@.value",
             "visible": "always"
@@ -258,7 +265,7 @@
         ]
       },
       "updateExecutorFeeValue(uint256 _feeValue)": {
-        "intent": "Update executor fee",
+        "intent": "Schedule executor fee update",
         "fields": [
           {
             "label": "Fee Value",
