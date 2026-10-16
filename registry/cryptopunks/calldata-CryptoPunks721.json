@@ -1,0 +1,130 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "CryptoPunks721",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x000000000000003607fce1aC9e043a86675C5C2F" }] }
+  },
+  "metadata": {
+    "owner": "CryptoPunks",
+    "contractName": "CryptoPunks 721",
+    "info": { "url": "https://cryptopunks.app", "deploymentDate": "2024-01-17T22:48:35Z" }
+  },
+  "display": {
+    "formats": {
+      "wrapPunk(uint256 punkIndex)": {
+        "intent": "Wrap Punk",
+        "interpolatedIntent": "Wrap Punk #{#.punkIndex}",
+        "fields": [{ "path": "#.punkIndex", "label": "Punk", "format": "raw" }]
+      },
+      "wrapPunkBatch(uint256[] punkIndexes)": {
+        "intent": "Wrap Punks",
+        "interpolatedIntent": "Wrap the selected Punks as ERC-721s",
+        "fields": [{ "path": "#.punkIndexes.[]", "label": "Punk", "format": "raw" }]
+      },
+      "unwrapPunk(uint256 punkIndex)": {
+        "intent": "Unwrap Punk",
+        "interpolatedIntent": "Unwrap Punk #{#.punkIndex}",
+        "fields": [{ "path": "#.punkIndex", "label": "Punk", "format": "raw" }]
+      },
+      "unwrapPunkBatch(uint256[] punkIndexes)": {
+        "intent": "Unwrap Punks",
+        "interpolatedIntent": "Unwrap the selected Punks back to the original contract",
+        "fields": [{ "path": "#.punkIndexes.[]", "label": "Punk", "format": "raw" }]
+      },
+      "migrateLegacyWrappedPunks(uint256[] punkIndexes)": {
+        "intent": "Migrate Legacy Wrapped Punks",
+        "interpolatedIntent": "Migrate the selected legacy wrapped Punks to CryptoPunks 721",
+        "fields": [{ "path": "#.punkIndexes.[]", "label": "Punk", "format": "raw" }]
+      },
+      "rescuePunk(uint256 punkIndex)": {
+        "intent": "Rescue Punk",
+        "interpolatedIntent": "Rescue Punk #{#.punkIndex}",
+        "fields": [{ "path": "#.punkIndex", "label": "Punk", "format": "raw" }]
+      },
+      "approve(address account, uint256 id)": {
+        "intent": "Approve Punk Transfer",
+        "interpolatedIntent": "Approve Punk #{#.id}",
+        "fields": [
+          { "path": "#.id", "label": "Punk", "format": "raw" },
+          {
+            "path": "#.account",
+            "label": "Approved Address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "setApprovalForAll(address operator, bool isApproved)": {
+        "intent": "Set Operator Approval",
+        "interpolatedIntent": "Set {#.operator} as operator for all your wrapped Punks: {#.isApproved}",
+        "fields": [
+          {
+            "path": "#.operator",
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.isApproved", "label": "Approved", "format": "raw" }
+        ]
+      },
+      "transferFrom(address from, address to, uint256 id)": {
+        "intent": "Transfer Wrapped Punk",
+        "interpolatedIntent": "Transfer Punk #{#.id}",
+        "fields": [
+          { "path": "#.id", "label": "Punk", "format": "raw" },
+          {
+            "path": "#.from",
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#.to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "safeTransferFrom(address from, address to, uint256 id)": {
+        "intent": "Transfer Wrapped Punk",
+        "interpolatedIntent": "Transfer Punk #{#.id}",
+        "fields": [
+          { "path": "#.id", "label": "Punk", "format": "raw" },
+          {
+            "path": "#.from",
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#.to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "safeTransferFrom(address from, address to, uint256 id, bytes data)": {
+        "intent": "Transfer Wrapped Punk",
+        "interpolatedIntent": "Transfer Punk #{#.id}",
+        "fields": [
+          { "path": "#.id", "label": "Punk", "format": "raw" },
+          {
+            "path": "#.from",
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#.to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.data", "label": "Data", "format": "raw", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
