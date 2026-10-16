@@ -13,11 +13,16 @@
     "formats": {
       "vouchWithPermit(string target, uint256 amount, string metadata, uint256 deadline, uint8 v, bytes32 r, bytes32 s)": {
         "$id": "vouch",
-        "intent": "Vouch",
-        "interpolatedIntent": "Vouch {amount} for {target}",
+        "intent": "Vouch, entry fee added",
+        "interpolatedIntent": "Vouch {amount} for {target}, plus entry fee",
         "fields": [
           { "path": "target", "label": "Vouch for", "format": "raw" },
-          { "path": "amount", "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.whuf" } },
+          {
+            "path": "amount",
+            "label": "Amount, fee added",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.whuf" }
+          },
           { "path": "deadline", "label": "Permit expires", "format": "date", "params": { "encoding": "timestamp" } },
           { "path": "metadata", "label": "metadata", "visible": "never" },
           { "path": "v", "label": "v", "visible": "never" },
@@ -27,11 +32,16 @@
       },
       "increaseVouchWithPermit(uint256 vouchId, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s)": {
         "$id": "increase_vouch",
-        "intent": "Increase vouch",
-        "interpolatedIntent": "Increase vouch {vouchId} by {amount}",
+        "intent": "Increase vouch, fee added",
+        "interpolatedIntent": "Increase vouch {vouchId} by {amount}, plus entry fee",
         "fields": [
           { "path": "vouchId", "label": "Vouch ID", "format": "raw" },
-          { "path": "amount", "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.whuf" } },
+          {
+            "path": "amount",
+            "label": "Amount, fee added",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.whuf" }
+          },
           { "path": "deadline", "label": "Permit expires", "format": "date", "params": { "encoding": "timestamp" } },
           { "path": "v", "label": "v", "visible": "never" },
           { "path": "r", "label": "r", "visible": "never" },
@@ -40,17 +50,22 @@
       },
       "decreaseVouch(uint256 vouchId, uint256 amount)": {
         "$id": "decrease_vouch",
-        "intent": "Withdraw from vouch",
-        "interpolatedIntent": "Withdraw {amount} from vouch {vouchId}",
+        "intent": "Withdraw, exit fee deducted",
+        "interpolatedIntent": "Withdraw {amount} from vouch {vouchId}, minus exit fee",
         "fields": [
           { "path": "vouchId", "label": "Vouch ID", "format": "raw" },
-          { "path": "amount", "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.whuf" } }
+          {
+            "path": "amount",
+            "label": "Amount, fee deducted",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.whuf" }
+          }
         ]
       },
       "unvouch(uint256 vouchId)": {
         "$id": "unvouch",
-        "intent": "Unvouch",
-        "interpolatedIntent": "Unvouch {vouchId}",
+        "intent": "Unvouch, exit fee deducted",
+        "interpolatedIntent": "Unvouch {vouchId}, exit fee deducted from payout",
         "fields": [{ "path": "vouchId", "label": "Vouch ID", "format": "raw" }]
       }
     }
