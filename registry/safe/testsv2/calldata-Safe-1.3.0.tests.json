@@ -1,6 +1,10 @@
 {
   "$schema": "../../../specs/erc7730-tests-v2.schema.json",
   "descriptor": "../calldata-Safe-1.3.0.json",
+  "dataProvider": {
+    "tokens": { "0x0000000000000000000000000000000000000000": { "symbol": "ETH", "decimals": 18, "name": "Ether" } },
+    "addressNames": { "0xd9db270c1b5e3bd161e8c8503c55ceabee709552": "Safe 1.3.0" }
+  },
   "tests": [
     {
       "description": "Add signer - chain 1",
@@ -33,6 +37,37 @@
           { "label": "Old signer", "value": "0x5be9a4959308A0D0c7bC0870E319314d8D957dBB" },
           { "label": "New signer", "value": "0x2e0Ece61D3f2353A851b268f34DCa0bC3904DF2A" }
         ]
+      }
+    },
+    {
+      "description": "Setup Safe - chain 137",
+      "rawTx": "0x02f901918189058506fc23ac00854ccec8dbe8830493e094d9db270c1b5e3bd161e8c8503c55ceabee70955280b90164b63e800d0000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000f48f2b2d2a534e402487b3ee7c18c33aec0fe5e400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000007a8420f0543744aabc12f40ab3c426a3fe53beab0000000000000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0x9e0f516d6596d9f5258b650b0d71ceda627e53f19d3b6a3a0d24a211a0244989",
+      "expected": {
+        "intent": "Setup Safe",
+        "owner": "Safe{Wallet}",
+        "fields": [
+          { "label": "Signer", "value": "0x7a8420F0543744aAbc12f40aB3C426a3FE53beAb" },
+          { "label": "Threshold", "value": "1" },
+          { "label": "Fallback handler", "value": "0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4" },
+          { "label": "Module", "value": "0x" }
+        ]
+      }
+    },
+    {
+      "description": "Modify threshold - chain 11155111",
+      "rawTx": "0x02f85083aa36a7618459682f00845b93194c8401b2e02094d9db270c1b5e3bd161e8c8503c55ceabee70955280a4694e80c30000000000000000000000000000000000000000000000000000000000000002c0",
+      "txHash": "0xd58ea8384629b39a564a55e5bac1174fd7f2399d3389f7e4dea2855eaad97180",
+      "expected": { "intent": "Modify threshold", "owner": "Safe{Wallet}", "fields": [{ "label": "New threshold", "value": "2" }] }
+    },
+    {
+      "description": "Approve Safe hash - chain 10",
+      "rawTx": "0x02f84b0a08839405888394753f8401b2e02094d9db270c1b5e3bd161e8c8503c55ceabee70955280a4d4d9bdcd22ab8a06c8b4bd549b5b2cc7686b58075f34730befbad8cce0ce945c6aa2c058c0",
+      "txHash": "0xa11d0e71b717ed2d94436adf637f2d70eb42aeedcabfc37480e543959b98b058",
+      "expected": {
+        "intent": "Approve Safe hash",
+        "owner": "Safe{Wallet}",
+        "fields": [{ "label": "Hash to approve", "value": "0x22ab8a06c8b4bd549b5b2cc7686b58075f34730befbad8cce0ce945c6aa2c058" }]
       }
     }
   ]
