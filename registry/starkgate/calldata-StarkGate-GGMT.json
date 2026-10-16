@@ -1,0 +1,86 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "L1StarkGateGGMTBridge",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x448Acb9F2e57a409a60Cf8901EA4123b6E2EC253"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "StarkWare",
+    "info": {
+      "url": "https://starkgate.starknet.io/",
+      "deploymentDate": "2025-12-24T00:00:00Z"
+    },
+    "contractName": "L1StarkGateGGMTBridge"
+  },
+  "display": {
+    "formats": {
+      "deposit(address token, uint256 amount, uint256 l2Recipient)": {
+        "$id": "deposit",
+        "intent": "Bridge",
+        "interpolatedIntent": "Bridge {amount} to {l2Recipient}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to deposit",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "token"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "l2Recipient",
+            "label": "Recipient",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Deposit fee",
+            "format": "amount"
+          }
+        ]
+      },
+      "depositWithMessage(address token, uint256 amount, uint256 l2Recipient, uint256[] message)": {
+        "$id": "depositWithMessage",
+        "intent": "Bridge",
+        "interpolatedIntent": "Bridge {amount} to {l2Recipient}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to deposit",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "token"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "l2Recipient",
+            "label": "Recipient",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "message.[]",
+            "label": "Message",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Deposit fee",
+            "format": "amount"
+          }
+        ]
+      }
+    }
+  }
+}
