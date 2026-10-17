@@ -70,8 +70,7 @@
       "deploymentDate": "2026-09-13T00:00:00Z"
     },
     "constants": {
-      "native": "0x0000000000000000000000000000000000000000",
-      "glueHook": "0x03D482cB3Ff339C2d29736818D0F72c66dD6A040"
+      "native": "0x0000000000000000000000000000000000000000"
     },
     "contractName": "GlueHook"
   },
@@ -164,24 +163,24 @@
           },
           {
             "path": "tickLower",
-            "label": "Lower tick",
+            "label": "Lower tick (0,0=full)",
             "format": "raw",
             "visible": "optional"
           },
           {
             "path": "tickUpper",
-            "label": "Upper tick",
+            "label": "Upper tick (0,0=full)",
             "format": "raw",
             "visible": "optional"
           },
           {
             "path": "liquidity",
-            "label": "L units",
+            "label": "Liquidity units",
             "format": "raw"
           },
           {
             "path": "owner",
-            "label": "Owner (0=locked)",
+            "label": "Owner (0=lock+public)",
             "format": "addressName",
             "params": {
               "types": [
@@ -247,7 +246,7 @@
           },
           {
             "path": "config.secondaryRecipient",
-            "label": "Fee → secondary",
+            "label": "Fee → 2nd (0=none)",
             "format": "addressName",
             "params": {
               "types": [
@@ -263,7 +262,7 @@
           },
           {
             "path": "config.mainRecipient",
-            "label": "Fee → main",
+            "label": "Fee → main (0=none)",
             "format": "addressName",
             "params": {
               "types": [
@@ -297,7 +296,7 @@
           },
           {
             "path": "@.value",
-            "label": "Native sent",
+            "label": "Max native sent",
             "format": "amount"
           }
         ]
@@ -437,24 +436,24 @@
           },
           {
             "path": "tickLower",
-            "label": "Lower tick",
+            "label": "Lower tick (0,0=full)",
             "format": "raw",
             "visible": "optional"
           },
           {
             "path": "tickUpper",
-            "label": "Upper tick",
+            "label": "Upper tick (0,0=full)",
             "format": "raw",
             "visible": "optional"
           },
           {
             "path": "liquidity",
-            "label": "L units",
+            "label": "Liquidity units",
             "format": "raw"
           },
           {
             "path": "owner",
-            "label": "Owner (0=locked)",
+            "label": "Owner",
             "format": "addressName",
             "params": {
               "types": [
@@ -470,7 +469,7 @@
           },
           {
             "path": "@.value",
-            "label": "Native sent",
+            "label": "Max native sent",
             "format": "amount"
           }
         ]
@@ -529,24 +528,24 @@
           },
           {
             "path": "tickLower",
-            "label": "Lower tick",
+            "label": "Lower tick (0,0=full)",
             "format": "raw",
             "visible": "optional"
           },
           {
             "path": "tickUpper",
-            "label": "Upper tick",
+            "label": "Upper tick (0,0=full)",
             "format": "raw",
             "visible": "optional"
           },
           {
             "path": "liquidity",
-            "label": "L units",
+            "label": "Liquidity units",
             "format": "raw"
           },
           {
             "path": "owner",
-            "label": "Owner (0=locked)",
+            "label": "Owner (0=lock+public)",
             "format": "addressName",
             "params": {
               "types": [
@@ -612,7 +611,7 @@
           },
           {
             "path": "config.secondaryRecipient",
-            "label": "Fee → secondary",
+            "label": "Fee → 2nd (0=none)",
             "format": "addressName",
             "params": {
               "types": [
@@ -628,7 +627,7 @@
           },
           {
             "path": "config.mainRecipient",
-            "label": "Fee → main",
+            "label": "Fee → main (0=none)",
             "format": "addressName",
             "params": {
               "types": [
@@ -654,15 +653,15 @@
           },
           {
             "path": "@.value",
-            "label": "Native sent",
+            "label": "Max native sent",
             "format": "amount"
           }
         ]
       },
       "addProgramLiquidity((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks) key,uint128 liquidity)": {
         "$id": "addProgramLiquidity",
-        "intent": "Add program LP",
-        "interpolatedIntent": "Add LP to {key.currency0}/{key.currency1}",
+        "intent": "Add program LP (harvests)",
+        "interpolatedIntent": "Add LP to {key.currency0}/{key.currency1} (harvests)",
         "fields": [
           {
             "path": "key.currency0",
@@ -713,20 +712,20 @@
           },
           {
             "path": "liquidity",
-            "label": "L units",
+            "label": "Liquidity units",
             "format": "raw"
           },
           {
             "path": "@.value",
-            "label": "Native sent",
+            "label": "Max native sent",
             "format": "amount"
           }
         ]
       },
       "removeProgramLiquidity((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks) key,uint128 liquidity,address to)": {
         "$id": "removeProgramLiquidity",
-        "intent": "Remove program LP",
-        "interpolatedIntent": "Remove LP from {key.currency0}/{key.currency1}",
+        "intent": "Remove program LP (harvests)",
+        "interpolatedIntent": "Remove LP from {key.currency0}/{key.currency1} (harvests)",
         "fields": [
           {
             "path": "key.currency0",
@@ -777,7 +776,7 @@
           },
           {
             "path": "liquidity",
-            "label": "L units",
+            "label": "Liquidity units",
             "format": "raw"
           },
           {
@@ -855,7 +854,7 @@
       "donate((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks) key,uint256 amount)": {
         "$id": "donate",
         "intent": "Donate to pot",
-        "interpolatedIntent": "Donate {amount} to {key.currency0}/{key.currency1}",
+        "interpolatedIntent": "Donate to {key.currency0}/{key.currency1} pot",
         "fields": [
           {
             "path": "key.currency0",
@@ -906,14 +905,8 @@
           },
           {
             "path": "amount",
-            "label": "Donation",
-            "format": "tokenAmount",
-            "params": {
-              "tokenPath": "key.currency0",
-              "nativeCurrencyAddress": [
-                "$.metadata.constants.native"
-              ]
-            }
+            "label": "Donation (pot 2nd token, raw)",
+            "format": "raw"
           },
           {
             "path": "@.value",
@@ -1014,7 +1007,7 @@
           },
           {
             "path": "config.secondaryRecipient",
-            "label": "Fee → secondary",
+            "label": "Fee → 2nd (0=none)",
             "format": "addressName",
             "params": {
               "types": [
@@ -1030,7 +1023,7 @@
           },
           {
             "path": "config.mainRecipient",
-            "label": "Fee → main",
+            "label": "Fee → main (0=none)",
             "format": "addressName",
             "params": {
               "types": [
@@ -1124,7 +1117,7 @@
           },
           {
             "path": "newOwner",
-            "label": "Owner (0=locked)",
+            "label": "Owner (0=lock+public)",
             "format": "addressName",
             "params": {
               "types": [
