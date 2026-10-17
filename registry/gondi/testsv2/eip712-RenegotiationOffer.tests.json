@@ -1,0 +1,177 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-RenegotiationOffer.json",
+  "tests": [
+    {
+      "description": "Renegotiation offer on HyperEVM",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "RenegotiationOffer": [
+            { "name": "renegotiationId", "type": "uint256" },
+            { "name": "loanId", "type": "uint256" },
+            { "name": "lender", "type": "address" },
+            { "name": "fee", "type": "uint256" },
+            { "name": "trancheIndex", "type": "uint256[]" },
+            { "name": "principalAmount", "type": "uint256" },
+            { "name": "aprBps", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "duration", "type": "uint256" }
+          ]
+        },
+        "primaryType": "RenegotiationOffer",
+        "domain": {
+          "name": "GONDI_MULTI_SOURCE_LOAN",
+          "version": "3.1",
+          "chainId": 999,
+          "verifyingContract": "0x6Ad675624EC8320E5806858Cd5dB101a0b927FD9"
+        },
+        "message": {
+          "renegotiationId": "9",
+          "loanId": "14",
+          "lender": "0x5CAdce51dB28AB261E50743fEB881a3F7AcA0A69",
+          "fee": "0",
+          "trancheIndex": ["0"],
+          "principalAmount": "25000000000",
+          "aprBps": "500",
+          "expirationTime": "1761867171",
+          "duration": "604800"
+        }
+      },
+      "expected": {
+        "intent": "Make renegotiation offer",
+        "fields": [
+          { "label": "Loan ID", "value": "14" },
+          { "label": "Principal (units)", "value": "25000000000" },
+          { "label": "APR", "value": "5%" },
+          { "label": "Duration", "value": "168:00:00" },
+          { "label": "Fee (units)", "value": "0" },
+          { "label": "Lender", "value": "0x5CAdce51dB28AB261E50743fEB881a3F7AcA0A69" },
+          { "label": "Offer expires", "value": "2025-10-30 23:32:51Z" },
+          { "label": "Tranche index", "value": "0" }
+        ],
+        "interpolatedIntent": "Offer new terms on loan 14",
+        "owner": "GONDI"
+      }
+    },
+    {
+      "description": "Top-up offer for a new tranche on Ethereum (v3.1)",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "RenegotiationOffer": [
+            { "name": "renegotiationId", "type": "uint256" },
+            { "name": "loanId", "type": "uint256" },
+            { "name": "lender", "type": "address" },
+            { "name": "fee", "type": "uint256" },
+            { "name": "trancheIndex", "type": "uint256[]" },
+            { "name": "principalAmount", "type": "uint256" },
+            { "name": "aprBps", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "duration", "type": "uint256" }
+          ]
+        },
+        "primaryType": "RenegotiationOffer",
+        "domain": {
+          "name": "GONDI_MULTI_SOURCE_LOAN",
+          "version": "3.1",
+          "chainId": 1,
+          "verifyingContract": "0xf41B389E0C1950dc0B16C9498eaE77131CC08A56"
+        },
+        "message": {
+          "renegotiationId": "57",
+          "loanId": "50359",
+          "lender": "0x48202A51c0d5d81b3ebeD55016408a0E0a0afaaE",
+          "fee": "0",
+          "trancheIndex": ["1"],
+          "principalAmount": "7000000000000000000",
+          "aprBps": "1500",
+          "expirationTime": "1792351120",
+          "duration": "2592000"
+        }
+      },
+      "expected": {
+        "intent": "Make renegotiation offer",
+        "fields": [
+          { "label": "Loan ID", "value": "50359" },
+          { "label": "Principal (units)", "value": "7000000000000000000" },
+          { "label": "APR", "value": "15%" },
+          { "label": "Duration", "value": "720:00:00" },
+          { "label": "Fee (units)", "value": "0" },
+          { "label": "Lender", "value": "0x48202A51c0d5d81b3ebeD55016408a0E0a0afaaE" },
+          { "label": "Offer expires", "value": "2026-10-18 19:18:40Z" },
+          { "label": "Tranche index", "value": "1" }
+        ],
+        "interpolatedIntent": "Offer new terms on loan 50359",
+        "owner": "GONDI"
+      }
+    },
+    {
+      "description": "Renegotiation offer on MultiSourceLoan v3.0",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "RenegotiationOffer": [
+            { "name": "renegotiationId", "type": "uint256" },
+            { "name": "loanId", "type": "uint256" },
+            { "name": "lender", "type": "address" },
+            { "name": "fee", "type": "uint256" },
+            { "name": "trancheIndex", "type": "uint256[]" },
+            { "name": "principalAmount", "type": "uint256" },
+            { "name": "aprBps", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "duration", "type": "uint256" }
+          ]
+        },
+        "primaryType": "RenegotiationOffer",
+        "domain": {
+          "name": "GONDI_MULTI_SOURCE_LOAN",
+          "version": "3",
+          "chainId": 1,
+          "verifyingContract": "0xf65B99CE6DC5F6c556172BCC0Ff27D3665a7d9A8"
+        },
+        "message": {
+          "renegotiationId": "4",
+          "loanId": "15551",
+          "lender": "0x890BdCA7D1241e8faB35206eC3892fE745ef5F94",
+          "fee": "0",
+          "trancheIndex": ["0"],
+          "principalAmount": "577300000000",
+          "aprBps": "1500",
+          "expirationTime": "1780279381",
+          "duration": "15552000"
+        }
+      },
+      "expected": {
+        "intent": "Make renegotiation offer",
+        "fields": [
+          { "label": "Loan ID", "value": "15551" },
+          { "label": "Principal (units)", "value": "577300000000" },
+          { "label": "APR", "value": "15%" },
+          { "label": "Duration", "value": "4320:00:00" },
+          { "label": "Fee (units)", "value": "0" },
+          { "label": "Lender", "value": "0x890BdCA7D1241e8faB35206eC3892fE745ef5F94" },
+          { "label": "Offer expires", "value": "2026-06-01 02:03:01Z" },
+          { "label": "Tranche index", "value": "0" }
+        ],
+        "interpolatedIntent": "Offer new terms on loan 15551",
+        "owner": "GONDI"
+      }
+    }
+  ]
+}

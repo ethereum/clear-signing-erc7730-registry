@@ -1,0 +1,174 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-LoanOffer-v3_2.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" },
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" }
+    },
+    "addressNames": {
+      "0x000000000000003607fce1ac9e043a86675c5c2f": "CryptoPunks 721",
+      "0x6339e5e072086621540d0362c4e3cea0d643e114": "Opepen Edition",
+      "0xb7f7f6c52f2e2fdb1963eab30438024864c313f6": "Wrapped Cryptopunks"
+    },
+    "nftCollectionNames": {
+      "0x000000000000003607fce1ac9e043a86675c5c2f": "CryptoPunks 721",
+      "0x6339e5e072086621540d0362c4e3cea0d643e114": "Opepen Edition",
+      "0xb7f7f6c52f2e2fdb1963eab30438024864c313f6": "Wrapped Cryptopunks"
+    }
+  },
+  "tests": [
+    {
+      "description": "Single-NFT WETH offer with lender refinance disabled",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "LoanOffer": [
+            { "name": "offerId", "type": "uint256" },
+            { "name": "lender", "type": "address" },
+            { "name": "fee", "type": "uint256" },
+            { "name": "capacity", "type": "uint256" },
+            { "name": "nftCollateralAddress", "type": "address" },
+            { "name": "nftCollateralTokenId", "type": "uint256" },
+            { "name": "principalAddress", "type": "address" },
+            { "name": "principalAmount", "type": "uint256" },
+            { "name": "aprBps", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "duration", "type": "uint256" },
+            { "name": "maxSeniorRepayment", "type": "uint256" },
+            { "name": "validators", "type": "OfferValidator[]" },
+            { "name": "lenderRefinanceDisabled", "type": "bool" },
+            { "name": "borrower", "type": "address" }
+          ],
+          "OfferValidator": [{ "name": "validator", "type": "address" }, { "name": "arguments", "type": "bytes" }]
+        },
+        "primaryType": "LoanOffer",
+        "domain": {
+          "name": "GONDI_MULTI_SOURCE_LOAN",
+          "version": "3.2",
+          "chainId": 1,
+          "verifyingContract": "0xE365fF3cad44d19cb7aBa81df8ffd6818A66Ac0a"
+        },
+        "message": {
+          "offerId": "1",
+          "lender": "0x0d1332638D258c5459C01964e62b08cAB6815CC3",
+          "fee": "0",
+          "capacity": "0",
+          "nftCollateralAddress": "0x6339e5E072086621540D0362C4e3Cea0d643E114",
+          "nftCollateralTokenId": "10952",
+          "principalAddress": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "principalAmount": "20000000000000000",
+          "aprBps": "3000",
+          "expirationTime": "1788785848",
+          "duration": "2592000",
+          "maxSeniorRepayment": "0",
+          "validators": [],
+          "lenderRefinanceDisabled": true,
+          "borrower": "0x0000000000000000000000000000000000000000"
+        }
+      },
+      "expected": {
+        "intent": "Make loan offer",
+        "fields": [
+          { "label": "Collection", "value": "Opepen Edition" },
+          { "label": "Token", "value": "Opepen Edition #10952" },
+          { "label": "Loan amount", "value": "0.02 WETH" },
+          { "label": "APR", "value": "30%" },
+          { "label": "Duration", "value": "720:00:00" },
+          { "label": "Origination fee", "value": "0 WETH" },
+          { "label": "Max senior debt", "value": "0 WETH" },
+          { "label": "Lender", "value": "0x0d1332638D258c5459C01964e62b08cAB6815CC3" },
+          { "label": "Offer expires", "value": "2026-09-07 12:57:28Z" },
+          { "label": "No lender refinance", "value": "true" },
+          { "label": "Borrower", "value": "0x0000000000000000000000000000000000000000" }
+        ],
+        "interpolatedIntent": "Lend 0.02 WETH",
+        "owner": "GONDI"
+      }
+    },
+    {
+      "description": "Multi-collection USDC offer gated by a validator",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "LoanOffer": [
+            { "name": "offerId", "type": "uint256" },
+            { "name": "lender", "type": "address" },
+            { "name": "fee", "type": "uint256" },
+            { "name": "capacity", "type": "uint256" },
+            { "name": "nftCollateralAddress", "type": "address" },
+            { "name": "nftCollateralTokenId", "type": "uint256" },
+            { "name": "principalAddress", "type": "address" },
+            { "name": "principalAmount", "type": "uint256" },
+            { "name": "aprBps", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "duration", "type": "uint256" },
+            { "name": "maxSeniorRepayment", "type": "uint256" },
+            { "name": "validators", "type": "OfferValidator[]" },
+            { "name": "lenderRefinanceDisabled", "type": "bool" },
+            { "name": "borrower", "type": "address" }
+          ],
+          "OfferValidator": [{ "name": "validator", "type": "address" }, { "name": "arguments", "type": "bytes" }]
+        },
+        "primaryType": "LoanOffer",
+        "domain": {
+          "name": "GONDI_MULTI_SOURCE_LOAN",
+          "version": "3.2",
+          "chainId": 1,
+          "verifyingContract": "0xE365fF3cad44d19cb7aBa81df8ffd6818A66Ac0a"
+        },
+        "message": {
+          "offerId": "5",
+          "lender": "0xa9cdfC16685A90074c7cE329FEa4Fd36B47bb87d",
+          "fee": "1894736843",
+          "capacity": "0",
+          "nftCollateralAddress": "0x0000000000000000000000000000000000000000",
+          "nftCollateralTokenId": "5016",
+          "principalAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "principalAmount": "60000000000",
+          "aprBps": "500",
+          "expirationTime": "1791916321",
+          "duration": "5184000",
+          "maxSeniorRepayment": "0",
+          "validators": [
+            {
+              "validator": "0xff4313861B89E8de771CfF06466864d8CfC26d65",
+              "arguments": "0x000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000003607fce1ac9e043a86675c5c2f000000000000000000000000b7f7f6c52f2e2fdb1963eab30438024864c313f6"
+            }
+          ],
+          "lenderRefinanceDisabled": true,
+          "borrower": "0x0000000000000000000000000000000000000000"
+        }
+      },
+      "expected": {
+        "intent": "Make loan offer",
+        "fields": [
+          { "label": "Collection", "value": "0x0000000000000000000000000000000000000000" },
+          { "label": "Token", "value": "5016" },
+          { "label": "Loan amount", "value": "60000 USDC" },
+          { "label": "APR", "value": "5%" },
+          { "label": "Duration", "value": "1440:00:00" },
+          { "label": "Origination fee", "value": "1894.736843 USDC" },
+          { "label": "Max senior debt", "value": "0 USDC" },
+          { "label": "Lender", "value": "0xa9cdfC16685A90074c7cE329FEa4Fd36B47bb87d" },
+          { "label": "Offer expires", "value": "2026-10-13 18:32:01Z" },
+          { "label": "No lender refinance", "value": "true" },
+          { "label": "Borrower", "value": "0x0000000000000000000000000000000000000000" },
+          { "label": "Validator", "value": "0xff4313861B89E8de771CfF06466864d8CfC26d65" }
+        ],
+        "interpolatedIntent": "Lend 60000 USDC",
+        "owner": "GONDI"
+      }
+    }
+  ]
+}
