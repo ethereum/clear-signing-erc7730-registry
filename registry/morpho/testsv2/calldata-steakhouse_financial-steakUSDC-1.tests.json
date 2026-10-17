@@ -1,0 +1,89 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-steakUSDC-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0xbeef01735c132ada46aa9aa4c54623caa92a64cb": {
+        "decimals": 18,
+        "name": "Steakhouse USDC",
+        "symbol": "steakUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e0181c583c1bd4e85067380858b83079a3494beef01735c132ada46aa9aa4c54623caa92a64cb80b8446e553f6500000000000000000000000000000000000000000000000000000000000f4240000000000000000000000000d7854fc91f16a58d67ec3644981160b6ca9c41b8c0",
+      "txHash": "0xf852967d74e11728f60af05e1aa97ae08a26b9fcf3e880095d50e972b801b2a0",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "1 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "steakUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xd7854FC91f16a58D67EC3644981160B6ca9C41B8"
+          }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88f0181c88405f5e1008502e8676c35830793cb94beef01735c132ada46aa9aa4c54623caa92a64cb80b864b460af940000000000000000000000000000000000000000000000000000000000a842be000000000000000000000000d7854fc91f16a58d67ec3644981160b6ca9c41b8000000000000000000000000d7854fc91f16a58d67ec3644981160b6ca9c41b8c0",
+      "txHash": "0x8a991626e1f9dd6de8dc928759f48f4392bf8160d1ce4f09f895fa366f8425d7",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "11.027134 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0xd7854FC91f16a58D67EC3644981160B6ca9C41B8"
+          },
+          {
+            "label": "Owner",
+            "value": "0xd7854FC91f16a58D67EC3644981160B6ca9C41B8"
+          }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88f0181cf8405f5e100850651523dc28307954194beef01735c132ada46aa9aa4c54623caa92a64cb80b864ba087652000000000000000000000000000000000000000000000000a20b35f97b9e3c0e000000000000000000000000d7854fc91f16a58d67ec3644981160b6ca9c41b8000000000000000000000000d7854fc91f16a58d67ec3644981160b6ca9c41b8c0",
+      "txHash": "0x70389bf6bb029a78396261a64dbcf8000cc6828f291d5aa6470e67969471898b",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "11.67648580452523931 steakUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0xd7854FC91f16a58D67EC3644981160B6ca9C41B8"
+          },
+          {
+            "label": "Owner",
+            "value": "0xd7854FC91f16a58D67EC3644981160B6ca9C41B8"
+          }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    }
+  ]
+}

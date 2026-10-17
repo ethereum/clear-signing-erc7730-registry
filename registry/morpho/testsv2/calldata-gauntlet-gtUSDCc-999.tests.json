@@ -1,0 +1,112 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-gtUSDCc-999.json",
+  "dataProvider": {
+    "tokens": {
+      "0xb88339cb7199b77e23db6e890353e22632ba630f": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0x08c00f8279dff5b0cb5a04d349e7d79708ceadf3": {
+        "decimals": 18,
+        "name": "Gauntlet USDC",
+        "symbol": "gtUSDCc"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f8728203e782017784087757ac85087893bf6c8305cfd29408c00f8279dff5b0cb5a04d349e7d79708ceadf380b8446e553f6500000000000000000000000000000000000000000000000000000000001e8480000000000000000000000000b47f11484e19f1914d32fd393b17671221c10f1fc0",
+      "txHash": "0xdd51e6a6bbe20911adcd043d483c2ce3549599effd918c0c0c18a0536d0b4c02",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "2 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "gtUSDCc"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xB47f11484e19f1914D32fd393b17671221C10F1F"
+          }
+        ],
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86c81a08405f5e10083124f809408c00f8279dff5b0cb5a04d349e7d79708ceadf380b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000dead8203e78080",
+      "txHash": "0xe3dd56e2db0468e13fb7c7897e4ef748b9592bac447933ca8e5b8bb57bec9035",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 gtUSDCc"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8918203e782072c8411e1a300841bd761608306a97f9408c00f8279dff5b0cb5a04d349e7d79708ceadf380b864b460af940000000000000000000000000000000000000000000000000000000000004e200000000000000000000000008cfad203def8cda787d83d8ab8f193bbf2efcc310000000000000000000000008cfad203def8cda787d83d8ab8f193bbf2efcc31c0",
+      "txHash": "0xb10f702a78de751cbe207e769d022635530b885067326e37de10453355b35dd9",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "0.02 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x8cfAD203DEf8cDa787D83D8ab8f193bbF2efCc31"
+          },
+          {
+            "label": "Owner",
+            "value": "0x8cfAD203DEf8cDa787D83D8ab8f193bbF2efCc31"
+          }
+        ],
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8918203e73e841dcd6500847405d782830857bb9408c00f8279dff5b0cb5a04d349e7d79708ceadf380b866ba08765200000000000000000000000000000000000000000000b157998def1dfc325fc30000000000000000000000006c76e681cbc01b283677cb5255587c22a29780f00000000000000000000000006c76e681cbc01b283677cb5255587c22a29780f0117ec0",
+      "txHash": "0x92079bba6875c7db4220380cd032235b140ae4c12a96edc32dee1af466939203",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "837474.798965111517241283 gtUSDCc"
+          },
+          {
+            "label": "To",
+            "value": "0x6c76E681CBc01B283677Cb5255587c22a29780f0"
+          },
+          {
+            "label": "Owner",
+            "value": "0x6c76E681CBc01B283677Cb5255587c22a29780f0"
+          }
+        ],
+        "owner": "Gauntlet"
+      }
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-yearn-ymvOG-USDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0xef417a2512c5a41f69ae4e021648b69a7cde5d03": {
+        "decimals": 18,
+        "name": "Yearn OG USDC",
+        "symbol": "ymvOG-USDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f822105823c50830f424083c96a80830ba3d494ef417a2512c5a41f69ae4e021648b69a7cde5d0380b8446e553f65000000000000000000000000000000000000000000000000000000000025c4b2000000000000000000000000c30673f758e02069e28181edfd9d424c57f562afc0",
+      "txHash": "0x274761967e6dc2fe4cc4c3ebb9fe584429d368b6ddda91e7b4a9c91bb14ddfd0",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "2.475186 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "ymvOG-USDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xC30673F758E02069e28181edFD9D424c57f562af"
+          }
+        ],
+        "owner": "Yearn"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86c8202e18383cf668307a12094ef417a2512c5a41f69ae4e021648b69a7cde5d0380b84494bf804d000000000000000000000000000000000000000000000000000000e8990a4600000000000000000000000000000000000000000000000000000000000000dead8221058080",
+      "txHash": "0x79956298c88bf41404aae89ec8f97b2fcac795f2c72c7cb8e9ec41e3084ff3a4",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000999 ymvOG-USDC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "owner": "Yearn"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88d82210503830f424083a7d8c0830a7d7494ef417a2512c5a41f69ae4e021648b69a7cde5d0380b864b460af9400000000000000000000000000000000000000000000000000000000000f42400000000000000000000000002d8685eb917f12d598a9e6ff28a0f0442c51198c0000000000000000000000002d8685eb917f12d598a9e6ff28a0f0442c51198cc0",
+      "txHash": "0xdbb32b28195b2c1fefc3bc0af03a91c409987d093a3728c804b10902bac9f075",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "1 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x2D8685Eb917F12D598A9E6fF28a0f0442c51198C"
+          },
+          {
+            "label": "Owner",
+            "value": "0x2D8685Eb917F12D598A9E6fF28a0f0442c51198C"
+          }
+        ],
+        "owner": "Yearn"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88f822105823c42830f424083c96a80830be77894ef417a2512c5a41f69ae4e021648b69a7cde5d0380b864ba08765200000000000000000000000000000000000000000000001bcbf79c865cb96000000000000000000000000000c30673f758e02069e28181edfd9d424c57f562af000000000000000000000000c30673f758e02069e28181edfd9d424c57f562afc0",
+      "txHash": "0x74f9951abbac6b8718eb46b41899a1ab9c98ee00be00eb914d489ad1ed4be46f",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "512.759478 ymvOG-USDC"
+          },
+          {
+            "label": "To",
+            "value": "0xC30673F758E02069e28181edFD9D424c57f562af"
+          },
+          {
+            "label": "Owner",
+            "value": "0xC30673F758E02069e28181edFD9D424c57f562af"
+          }
+        ],
+        "owner": "Yearn"
+      }
+    }
+  ]
+}

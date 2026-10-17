@@ -1,0 +1,112 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-ultrayield-edgeUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0x5435bc53f2c61298167cdb11cdf0db2bfa259ca0": {
+        "decimals": 18,
+        "name": "UltraYield USDC",
+        "symbol": "edgeUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d8221050783131892836adbd88306c72d945435bc53f2c61298167cdb11cdf0db2bfa259ca080b8446e553f6500000000000000000000000000000000000000000000000000000000eec5e39c000000000000000000000000b10b2d545ce53ddad0c4b2fcaa77241300118698c0",
+      "txHash": "0xdecc8c4255ebdedcfb5cb48c294abdb02b51a7ee4f5d3c99664fb27f04a5cf1d",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "4005.946268 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "edgeUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xb10b2d545ce53ddaD0c4b2FcAA77241300118698"
+          }
+        ],
+        "owner": "UltraYield"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f86d82210503830f292b83b1d0ab8306d969945435bc53f2c61298167cdb11cdf0db2bfa259ca080b84494bf804d00000000000000000000000000000000000000000000000000000000000f4240000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x84482d56fd0d40cf08f5f3acba00365264640ed11be4b8b46f5e8ef1b247efce",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000000001 edgeUSDC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "owner": "UltraYield"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88d82210552830f424083a7d8c0830797b1945435bc53f2c61298167cdb11cdf0db2bfa259ca080b864b460af94000000000000000000000000000000000000000000000000000000003bac1465000000000000000000000000a14d22355a91ff06da17acea328055b118dce100000000000000000000000000a14d22355a91ff06da17acea328055b118dce100c0",
+      "txHash": "0x5f09e39738547dae59b7a50308937c5c1bbd42c3e712384ec449c6d183492011",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "1001.133157 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0xA14D22355a91FF06Da17aCEa328055b118DcE100"
+          },
+          {
+            "label": "Owner",
+            "value": "0xA14D22355a91FF06Da17aCEa328055b118DcE100"
+          }
+        ],
+        "owner": "UltraYield"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88d82210509830f4240836516e883074dca945435bc53f2c61298167cdb11cdf0db2bfa259ca080b864ba0876520000000000000000000000000000000000000000000000081a462ced39ce69f1000000000000000000000000eb4c5f79feaa68d3ad4dc87afccce59dcc0fe8f3000000000000000000000000eb4c5f79feaa68d3ad4dc87afccce59dcc0fe8f3c0",
+      "txHash": "0x8ecf6281d494fb461ecac8b8636dade043eb291b0217403aaa2fea523b78d118",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "149.467202680420985329 edgeUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0xEB4c5f79Feaa68D3aD4dC87aFccCe59dCc0FE8F3"
+          },
+          {
+            "label": "Owner",
+            "value": "0xEB4c5f79Feaa68D3aD4dC87aFccCe59dCc0FE8F3"
+          }
+        ],
+        "owner": "UltraYield"
+      }
+    }
+  ]
+}

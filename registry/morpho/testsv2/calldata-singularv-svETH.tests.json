@@ -1,0 +1,112 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-singularv-svETH.json",
+  "dataProvider": {
+    "tokens": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": {
+        "decimals": 18,
+        "name": "WETH",
+        "symbol": "WETH"
+      },
+      "0x739d8a60ed4b14e4cb6dcaeaf79d2ec0ca092237": {
+        "decimals": 18,
+        "name": "SingularV ETH",
+        "symbol": "svETH"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d01158402faf08084476aac23831e848094739d8a60ed4b14e4cb6dcaeaf79d2ec0ca09223780b8446e553f65000000000000000000000000000000000000000000000000000182691f1a0c5600000000000000000000000099c1827595cf1d3879be58f55241358875add87ac0",
+      "txHash": "0xf4f2e7119b2e2cef4d99be2f7fb09cf89c94cb865757bedb1d058cd40a617595",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.000424862981688406 WETH"
+          },
+          {
+            "label": "Share ticker",
+            "value": "svETH"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x99C1827595Cf1d3879bE58F55241358875ADD87a"
+          }
+        ],
+        "owner": "SingularV"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b82021e84061f8b4f8316e36094739d8a60ed4b14e4cb6dcaeaf79d2ec0ca09223780b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x4c5122a06b55b570ccc4107bd2ee0e969bf61eca7f2ada1fc189fe642881c1ca",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "WETH"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 svETH"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "owner": "SingularV"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8970182013a8405f5e100840a977ca0830ee77594739d8a60ed4b14e4cb6dcaeaf79d2ec0ca09223780b86cb460af94000000000000000000000000000000000000000000000002c986c61776b5800000000000000000000000000089e229d7d718e9a471fe995acfaa9dca44e2b8bf00000000000000000000000089e229d7d718e9a471fe995acfaa9dca44e2b8bf6a3b6cc32222da44c0",
+      "txHash": "0xaaa9635c4a6e1f7a071e620c5bad0d44c08dce69d5cf9dfb1cf36cd6cf755220",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "51.415 WETH"
+          },
+          {
+            "label": "To",
+            "value": "0x89E229D7D718e9A471FE995acFAA9DcA44E2b8bf"
+          },
+          {
+            "label": "Owner",
+            "value": "0x89E229D7D718e9A471FE995acFAA9DcA44E2b8bf"
+          }
+        ],
+        "owner": "SingularV"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88c0116830323e88420059b1e8308bdde94739d8a60ed4b14e4cb6dcaeaf79d2ec0ca09223780b864ba0876520000000000000000000000000000000000000000000000000001778b6d8f073700000000000000000000000099c1827595cf1d3879be58f55241358875add87a00000000000000000000000099c1827595cf1d3879be58f55241358875add87ac0",
+      "txHash": "0x75cbf46049bfec005809cb5a17061160e736d9fe3608d7147ed1fe81d7b3e1db",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "0.000412915698960183 svETH"
+          },
+          {
+            "label": "To",
+            "value": "0x99C1827595Cf1d3879bE58F55241358875ADD87a"
+          },
+          {
+            "label": "Owner",
+            "value": "0x99C1827595Cf1d3879bE58F55241358875ADD87a"
+          }
+        ],
+        "owner": "SingularV"
+      }
+    }
+  ]
+}

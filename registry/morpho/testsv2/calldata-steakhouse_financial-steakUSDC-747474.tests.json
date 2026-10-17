@@ -1,0 +1,112 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-steakUSDC-747474.json",
+  "dataProvider": {
+    "tokens": {
+      "0x203a662b0bd271a6ed5a60edfbd04bfce608fd36": {
+        "decimals": 6,
+        "name": "vbUSDC",
+        "symbol": "vbUSDC"
+      },
+      "0x61d4f9d3797ba4da152238c53a6f93fb665c3c1d": {
+        "decimals": 18,
+        "name": "Steakhouse Prime USDC",
+        "symbol": "steakUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e830b67d20c830186a083162010830f46269461d4f9d3797ba4da152238c53a6f93fb665c3c1d80b8446e553f650000000000000000000000000000000000000000000000000000000000b843c2000000000000000000000000d74f946600fea801ce24a4d67edfb39c11fdd69bc0",
+      "txHash": "0x2334c96a685376ba913b31d91633a8bb6b1d1928fd142f5681ebe70904a528e3",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "12.07597 vbUSDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "steakUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xD74f946600FEa801cE24A4D67eDfb39C11FdD69B"
+          }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b77830f43468316e3609461d4f9d3797ba4da152238c53a6f93fb665c3c1d80b84494bf804d000000000000000000000000000000000000000000000000000000e8990a4600000000000000000000000000000000000000000000000000000000000000dead830b67d28080",
+      "txHash": "0x1274a647664bfc335119a3d75fddad5ed0dd90d99e6b0695871c529a2b7a4843",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "vbUSDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000999 steakUSDC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88e830b67d20b830f4240832191c08307a1089461d4f9d3797ba4da152238c53a6f93fb665c3c1d80b864b460af940000000000000000000000000000000000000000000000000000000059682f000000000000000000000000002aed99855fed0259e5774b50a9f589d2bc1e15970000000000000000000000002aed99855fed0259e5774b50a9f589d2bc1e1597c0",
+      "txHash": "0x1be76a48715900a492898b784f7ee5e8fbec6044c407a2bd2eff4c2f64304fe8",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "1500 vbUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x2aeD99855FED0259e5774B50a9f589D2BC1E1597"
+          },
+          {
+            "label": "Owner",
+            "value": "0x2aeD99855FED0259e5774B50a9f589D2BC1E1597"
+          }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f890830b67d28201fe83155cc0832d2a808309e79b9461d4f9d3797ba4da152238c53a6f93fb665c3c1d80b864ba08765200000000000000000000000000000000000000000000000097594f8904002c1d000000000000000000000000eb0e6ecd0e78b0a84ecd9663a041f453c454a99d000000000000000000000000eb0e6ecd0e78b0a84ecd9663a041f453c454a99dc0",
+      "txHash": "0x76f6b00109d7e12db1319f7ebe1afa0f735fabbce79a8d675d6bd614cbf1faf2",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "10.905835422550600733 steakUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0xeB0e6eCD0E78B0a84eCD9663a041F453C454a99D"
+          },
+          {
+            "label": "Owner",
+            "value": "0xeB0e6eCD0E78B0a84eCD9663a041F453C454a99D"
+          }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    }
+  ]
+}

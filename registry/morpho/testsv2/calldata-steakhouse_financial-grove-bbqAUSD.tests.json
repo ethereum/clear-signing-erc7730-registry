@@ -1,0 +1,89 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-grove-bbqAUSD.json",
+  "dataProvider": {
+    "tokens": {
+      "0x00000000efe302beaa2b3e6e1b18d08d69a9012a": {
+        "decimals": 6,
+        "name": "AUSD",
+        "symbol": "AUSD"
+      },
+      "0x32841a8511d5c2c5b253f45668780b99139e476d": {
+        "decimals": 18,
+        "name": "Grove x Steakhouse High Yield AUSD",
+        "symbol": "grove-bbqAUSD"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f818f138495217d80852003c2038083165ef89432841a8511d5c2c5b253f45668780b99139e476d80b8446e553f65000000000000000000000000000000000000000000000000000000000098968000000000000000000000000094b398acb2fce988871218221ea6a4a2b26cccbcc0",
+      "txHash": "0x37a2fe90cc7733c80a59ef2cb53807d8b599369a1a1f3fd4122268fd54dcf4ca",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "10 AUSD"
+          },
+          {
+            "label": "Share ticker",
+            "value": "grove-bbqAUSD"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x94B398ACb2fcE988871218221EA6a4a2b26CcCbC"
+          }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88f818f14847744d640851fe5e55c40831687e89432841a8511d5c2c5b253f45668780b99139e476d80b864b460af9400000000000000000000000000000000000000000000000000000000004c4b4000000000000000000000000094b398acb2fce988871218221ea6a4a2b26cccbc00000000000000000000000094b398acb2fce988871218221ea6a4a2b26cccbcc0",
+      "txHash": "0xc34b83ccdaba48c4a14160c72bd0b46e22bc55a61505cdd7baf1aa39e3c142f2",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "5 AUSD"
+          },
+          {
+            "label": "To",
+            "value": "0x94B398ACb2fcE988871218221EA6a4a2b26CcCbC"
+          },
+          {
+            "label": "Owner",
+            "value": "0x94B398ACb2fcE988871218221EA6a4a2b26CcCbC"
+          }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88f818f028477359400852a77e32000830d7b699432841a8511d5c2c5b253f45668780b99139e476d80b864ba087652000000000000000000000000000000000000000000000055fc3a90a4dff6404900000000000000000000000012fd1869046709cb8b64fa216b1432d514201bb200000000000000000000000012fd1869046709cb8b64fa216b1432d514201bb2c0",
+      "txHash": "0x91f9c25987041f5511e0512829a3606ece696d8f599ab88a2dc1bcad584c5bd1",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "1586.148244549325439049 grove-bbqAUSD"
+          },
+          {
+            "label": "To",
+            "value": "0x12fD1869046709cB8B64fa216b1432D514201BB2"
+          },
+          {
+            "label": "Owner",
+            "value": "0x12fD1869046709cB8B64fa216b1432D514201BB2"
+          }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    }
+  ]
+}

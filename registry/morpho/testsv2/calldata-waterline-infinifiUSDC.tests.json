@@ -1,0 +1,112 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-waterline-infinifiUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0xbeef1f5bd88285e5b239b6aacb991d38cca23ac9": {
+        "decimals": 18,
+        "name": "Waterline infiniFi USDC",
+        "symbol": "infinifiUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f0182018e84054e08408433428f008308a6ab94beef1f5bd88285e5b239b6aacb991d38cca23ac980b8446e553f650000000000000000000000000000000000000000000000000000000000030d400000000000000000000000006877bb79f680216bbdf01704939037f22193e771c0",
+      "txHash": "0x5f7e3d83c8245ed8fc516809112f4d90eb2ff9fc5da6afffae0cf6f8559ad5c5",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.2 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "infinifiUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x6877BB79f680216BbdF01704939037F22193e771"
+          }
+        ],
+        "owner": "Waterline"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b8201b38407b0a6f583124f8094beef1f5bd88285e5b239b6aacb991d38cca23ac980b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x44e9ccb3660196132210a44030e26e7edbab4327bf100885708ac019a5827d6f",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 infinifiUSDC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "owner": "Waterline"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88f01820fe38405f767a084135c0e00830bdb5594beef1f5bd88285e5b239b6aacb991d38cca23ac980b864b460af940000000000000000000000000000000000000000000000000000000077359400000000000000000000000000627b63da1391deac116397a09a6efc644375709e000000000000000000000000627b63da1391deac116397a09a6efc644375709ec0",
+      "txHash": "0xa1e717781d178e8be9ce02fe53e73e295b099188b982239f6eb3e0aea56db1d3",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "2000 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x627B63DA1391DEaC116397A09A6EfC644375709E"
+          },
+          {
+            "label": "Owner",
+            "value": "0x627B63DA1391DEaC116397A09A6EfC644375709E"
+          }
+        ],
+        "owner": "Waterline"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88c01819c821bee8408784620830b3bca94beef1f5bd88285e5b239b6aacb991d38cca23ac980b864ba0876520000000000000000000000000000000000000000000000d5279e8cd764690997000000000000000000000000455c362c2976a6cb1e11e950af950801fe37d9e1000000000000000000000000455c362c2976a6cb1e11e950af950801fe37d9e1c0",
+      "txHash": "0xfd43971697c02fb8084f0394881b2b664b2b185d7afc37b71c7794615508e8c8",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "3932.011361770664429975 infinifiUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x455C362C2976a6cB1e11E950af950801FE37D9E1"
+          },
+          {
+            "label": "Owner",
+            "value": "0x455C362C2976a6cB1e11E950af950801FE37D9E1"
+          }
+        ],
+        "owner": "Waterline"
+      }
+    }
+  ]
+}

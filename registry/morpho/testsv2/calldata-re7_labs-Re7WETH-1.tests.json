@@ -1,0 +1,89 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-re7_labs-Re7WETH-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": {
+        "decimals": 18,
+        "name": "WETH",
+        "symbol": "WETH"
+      },
+      "0x78fc2c2ed1a4cdb5402365934ae5648adad094d0": {
+        "decimals": 18,
+        "name": "Re7 WETH",
+        "symbol": "Re7WETH"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86c01819a821b1a84065a964083170bc89478fc2c2ed1a4cdb5402365934ae5648adad094d080b8446e553f6500000000000000000000000000000000000000000000000000005af3107a4000000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x731aeed6f5c72d7c29037de5833e15a66b526e26673d1f54edcf63522819807c",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.0001 WETH"
+          },
+          {
+            "label": "Share ticker",
+            "value": "Re7WETH"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "owner": "RE7 Labs"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88e0181c483e749b48506d9bfd9ed830663b39478fc2c2ed1a4cdb5402365934ae5648adad094d080b864b460af940000000000000000000000000000000000000000000000000000000000000001000000000000000000000000cc771952fde840e30c6802734e5ad20479c2959f000000000000000000000000cc771952fde840e30c6802734e5ad20479c2959fc0",
+      "txHash": "0x632f658a9897bc9684ec7e7bf949ecd4a1193af6ff40cbd761eb9a401a89c192",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "0.000000000000000001 WETH"
+          },
+          {
+            "label": "To",
+            "value": "0xcC771952fdE840E30C6802734e5ad20479c2959f"
+          },
+          {
+            "label": "Owner",
+            "value": "0xcC771952fdE840E30C6802734e5ad20479c2959f"
+          }
+        ],
+        "owner": "RE7 Labs"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8900182267e8439d1068085010cc27369831883c79478fc2c2ed1a4cdb5402365934ae5648adad094d080b864ba0876520000000000000000000000000000000000000000000000001b745778d56a27b300000000000000000000000034bbf3b83f82342f16ac3c5d7d3256f9be9441bc00000000000000000000000034bbf3b83f82342f16ac3c5d7d3256f9be9441bcc0",
+      "txHash": "0x63c6ddf93b2b3796a144e88bf732df3978e4a67d252577e3d3e757890544fc73",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "1.978302312810686387 Re7WETH"
+          },
+          {
+            "label": "To",
+            "value": "0x34bbf3b83F82342F16AC3C5d7D3256F9BE9441bc"
+          },
+          {
+            "label": "Owner",
+            "value": "0x34bbf3b83F82342F16AC3C5d7D3256F9BE9441bc"
+          }
+        ],
+        "owner": "RE7 Labs"
+      }
+    }
+  ]
+}

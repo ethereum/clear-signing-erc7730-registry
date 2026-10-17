@@ -1,0 +1,112 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-vbshUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0xbeefb9f61cc44895d8aec381373555a64191a9c4": {
+        "decimals": 18,
+        "name": "Vault Bridge USDC",
+        "symbol": "vbshUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e0182015b830222e0847a0b67c88307724094beefb9f61cc44895d8aec381373555a64191a9c480b8446e553f6500000000000000000000000000000000000000000000000000000000001e8480000000000000000000000000e3137ad66f739c0e6df4753e4a6a9665bc50ae9fc0",
+      "txHash": "0x429abd33a7c045043ecce170f5dab4bf8efdff25ac69e6b3ccdea46dda8d1fdb",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "2 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "vbshUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xE3137aD66F739c0e6dF4753E4a6a9665bC50Ae9f"
+          }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b8201a3840781ace683124f8094beefb9f61cc44895d8aec381373555a64191a9c480b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x772c1269f9c215ac5b00acd956f0ebb734b21e6a2f7cd19b01056927da127673",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 vbshUSDC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88c014f83078b24847dfd40b08305212594beefb9f61cc44895d8aec381373555a64191a9c480b864b460af9400000000000000000000000000000000000000000000000000000000001e848000000000000000000000000016661628904ea6bb4bc929da981204b8fd824e2700000000000000000000000016661628904ea6bb4bc929da981204b8fd824e27c0",
+      "txHash": "0xe38d564182fe3d4fe60fcd94471f98d5a807749c8d4055d789a1ba75f31f4c82",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "2 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x16661628904Ea6bb4Bc929dA981204b8Fd824E27"
+          },
+          {
+            "label": "Owner",
+            "value": "0x16661628904Ea6bb4Bc929dA981204b8Fd824E27"
+          }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8900182015d8477359400850144c0e71a8308126894beefb9f61cc44895d8aec381373555a64191a9c480b864ba0876520000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000e3137ad66f739c0e6df4753e4a6a9665bc50ae9f000000000000000000000000e3137ad66f739c0e6df4753e4a6a9665bc50ae9fc0",
+      "txHash": "0x22f18007a779d888c751b21ac45339d16a8866d2d33af5eb39f2d439586be847",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "1 vbshUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0xE3137aD66F739c0e6dF4753E4a6a9665bC50Ae9f"
+          },
+          {
+            "label": "Owner",
+            "value": "0xE3137aD66F739c0e6dF4753E4a6a9665bC50Ae9f"
+          }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    }
+  ]
+}

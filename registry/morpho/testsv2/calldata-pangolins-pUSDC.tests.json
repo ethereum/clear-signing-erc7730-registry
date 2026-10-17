@@ -1,0 +1,89 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-pangolins-pUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0x1401d1271c47648ac70cbcdfa3776d4a87ce006b": {
+        "decimals": 18,
+        "name": "Pangolins USDC",
+        "symbol": "pUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f822105824662830f424083c96a808305b73b941401d1271c47648ac70cbcdfa3776d4a87ce006b80b8446e553f650000000000000000000000000000000000000000000000000000000001c37ce90000000000000000000000004d12537e9851071c1855363e42e18bf9b24aff1ec0",
+      "txHash": "0x6c034a56c7fa0fdc030ff638706af94f903e7a8de5b562b311a1349d04ae1667",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "29.588713 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "pUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x4D12537e9851071c1855363E42e18Bf9b24aff1E"
+          }
+        ],
+        "owner": "Pangolins"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88d8221053e8311ee238367c2cb83053f0a941401d1271c47648ac70cbcdfa3776d4a87ce006b80b864b460af94000000000000000000000000000000000000000000000000000000d18c2e2800000000000000000000000000d336a0b81bef76ed808e19090cdc8b74ca3d40f7000000000000000000000000d336a0b81bef76ed808e19090cdc8b74ca3d40f7c0",
+      "txHash": "0x2438717614ea4ea3d4902556d01c72536402dbcd238eba4518e95503da1c69f8",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "900000 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0xd336A0B81BEf76eD808E19090CDc8B74ca3d40f7"
+          },
+          {
+            "label": "Owner",
+            "value": "0xd336A0B81BEf76eD808E19090CDc8B74ca3d40f7"
+          }
+        ],
+        "owner": "Pangolins"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88f82210582149a830f424083c96a80830606b9941401d1271c47648ac70cbcdfa3776d4a87ce006b80b864ba08765200000000000000000000000000000000000000000000000100fdb5ad97e9d00000000000000000000000000050ee45e641c493dbac9822a03755f5d3131d044200000000000000000000000050ee45e641c493dbac9822a03755f5d3131d0442c0",
+      "txHash": "0x6a26752c4f7339e7b4f8d6b1b199949922115c2cfdeb04d052192e1d3e619433",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "18.518157 pUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x50eE45e641C493dBAc9822A03755F5D3131D0442"
+          },
+          {
+            "label": "Owner",
+            "value": "0x50eE45e641C493dBAc9822A03755F5D3131D0442"
+          }
+        ],
+        "owner": "Pangolins"
+      }
+    }
+  ]
+}

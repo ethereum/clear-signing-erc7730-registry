@@ -1,0 +1,112 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-gtmsETHc-8453.json",
+  "dataProvider": {
+    "tokens": {
+      "0x7ba6f01772924a82d9626c126347a28299e98c98": {
+        "decimals": 18,
+        "name": "msETH",
+        "symbol": "msETH"
+      },
+      "0x43cd00de63485618a5ceebe0de364cd6cbeb26e7": {
+        "decimals": 18,
+        "name": "Metronome msETH Vault",
+        "symbol": "gtmsETHc"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f88c82210581da830b71b0836a8970830715dc9443cd00de63485618a5ceebe0de364cd6cbeb26e780b8626e553f65000000000000000000000000000000000000000000000000004d880912ec6bce000000000000000000000000de0ef43228d95f4bdacb567c6fa5af90bf5884b475554c6872635455394544460c0080218021802180218021802180218021c0",
+      "txHash": "0x0d7089490e1839bd392dd0c4494141a3e8055e4ad8c9080274a7c443b771cbbe",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "0.021823145760287694 msETH"
+          },
+          {
+            "label": "Share ticker",
+            "value": "gtmsETHc"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xDe0EF43228D95f4BDAcb567C6fA5aF90BF5884B4"
+          }
+        ],
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86c8201fb83140f5a83124f809443cd00de63485618a5ceebe0de364cd6cbeb26e780b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000dead8221058080",
+      "txHash": "0xf175445f2515ea6e5e230fc48140957d8e3f1a16ec9951a8c00c465401cfd73f",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "msETH"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 gtmsETHc"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8988221058201c883ca2dd08401312d00830cbf4c9443cd00de63485618a5ceebe0de364cd6cbeb26e780b86cb460af9400000000000000000000000000000000000000000000000000753d533d968000000000000000000000000000c14554b2470ad64e99e06dd459aad5fc41ed5394000000000000000000000000c14554b2470ad64e99e06dd459aad5fc41ed53946aacfffa2222da44c0",
+      "txHash": "0x3226192b9e4a8b67d2f00d192da2411b80f504051d0c97f0ef4e49211d8f71be",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "0.033 msETH"
+          },
+          {
+            "label": "To",
+            "value": "0xC14554B2470Ad64E99e06DD459Aad5fC41ed5394"
+          },
+          {
+            "label": "Owner",
+            "value": "0xC14554B2470Ad64E99e06DD459Aad5fC41ed5394"
+          }
+        ],
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88f822105820132830f6950837c8300830608b19443cd00de63485618a5ceebe0de364cd6cbeb26e780b864ba08765200000000000000000000000000000000000000000000000000005902bf15f922000000000000000000000000a83305e565e4d0afb339500c9010c5d16c66c54f000000000000000000000000a83305e565e4d0afb339500c9010c5d16c66c54fc0",
+      "txHash": "0xead9654d91e4ff8d0aa1441b3d96e95a654dcc3ae5213d21425e6dd82b19705b",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "0.000097868330694946 gtmsETHc"
+          },
+          {
+            "label": "To",
+            "value": "0xa83305E565E4D0AfB339500c9010C5d16c66C54f"
+          },
+          {
+            "label": "Owner",
+            "value": "0xa83305E565E4D0AfB339500c9010C5d16c66C54f"
+          }
+        ],
+        "owner": "Gauntlet"
+      }
+    }
+  ]
+}

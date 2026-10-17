@@ -1,0 +1,89 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-felix-feUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0xb88339cb7199b77e23db6e890353e22632ba630f": {
+        "decimals": 6,
+        "name": "USDC",
+        "symbol": "USDC"
+      },
+      "0x8a862fd6c12f9ad34c9c2ff45ab2b6712e8cea27": {
+        "decimals": 18,
+        "name": "Felix USDC",
+        "symbol": "feUSDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f8738203e7825c78850306dc420085037e11d6008305855d948a862fd6c12f9ad34c9c2ff45ab2b6712e8cea2780b8446e553f650000000000000000000000000000000000000000000000000000000000989680000000000000000000000000dd00059904ddf45e30b4131345957f76f26b8f6cc0",
+      "txHash": "0xc053472853a20e3fca0154fafae67dda30b9fa1cb6feb43c0683cb17f46a1baa",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "10 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "feUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xDd00059904ddF45e30b4131345957f76F26b8f6c"
+          }
+        ],
+        "owner": "Felix"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0xf88d820191845d944c808305ca86948a862fd6c12f9ad34c9c2ff45ab2b6712e8cea2780b864b460af94000000000000000000000000000000000000000000000000000000000007a1200000000000000000000000001c37c8805afaabea0ae347595a40bf40b54351230000000000000000000000001c37c8805afaabea0ae347595a40bf40b54351238203e78080",
+      "txHash": "0x00031ebe49da37caaef91c94ab17c9412927169f3925aab20e2de4d3e36fdb2d",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "0.5 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x1C37C8805afAAbea0aE347595A40BF40b5435123"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1C37C8805afAAbea0aE347595A40BF40b5435123"
+          }
+        ],
+        "owner": "Felix"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0xf88d8201928468e778008305bbb9948a862fd6c12f9ad34c9c2ff45ab2b6712e8cea2780b864ba08765200000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000001c37c8805afaabea0ae347595a40bf40b54351230000000000000000000000001c37c8805afaabea0ae347595a40bf40b54351238203e78080",
+      "txHash": "0x6f194186bb04e068a593cc42bc3bb7f621f8f598d797b2798b28f82e8a3d648d",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "0.5 feUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x1C37C8805afAAbea0aE347595A40BF40b5435123"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1C37C8805afAAbea0aE347595A40BF40b5435123"
+          }
+        ],
+        "owner": "Felix"
+      }
+    }
+  ]
+}

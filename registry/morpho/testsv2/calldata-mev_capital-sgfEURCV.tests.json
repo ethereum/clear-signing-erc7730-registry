@@ -1,0 +1,112 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-mev_capital-sgfEURCV.json",
+  "dataProvider": {
+    "tokens": {
+      "0x5f7827fdeb7c20b443265fc2f40845b715385ff2": {
+        "decimals": 18,
+        "name": "EURCV",
+        "symbol": "EURCV"
+      },
+      "0x34ece536d2ae03192b06c0a67030d1faf4c0ba43": {
+        "decimals": 18,
+        "name": "EURCV Prime",
+        "symbol": "sgfEURCV"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f0182019f841dcd6500844229418083088e039434ece536d2ae03192b06c0a67030d1faf4c0ba4380b8446e553f650000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000ac5e9c57b195f2e198668f211bcc5b4fac832d2c0",
+      "txHash": "0xc0d8d435a3143a62dddd93194bce6ce9f549b4b206b901e305607c6a8a340295",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "1 EURCV"
+          },
+          {
+            "label": "Share ticker",
+            "value": "sgfEURCV"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x0AC5e9c57B195F2E198668f211bcC5b4fAc832d2"
+          }
+        ],
+        "owner": "MEV Capital"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b820260840a069eff8316e3609434ece536d2ae03192b06c0a67030d1faf4c0ba4380b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x51522abe37c73275cb8ae5012f7470c0afd69155cb2860a1b229cce777e56b0c",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "EURCV"
+          },
+          {
+            "label": "Minted shares",
+            "value": "0.000000001 sgfEURCV"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x000000000000000000000000000000000000dEaD"
+          }
+        ],
+        "owner": "MEV Capital"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88c0182019981f08402bb0bf38309b4f09434ece536d2ae03192b06c0a67030d1faf4c0ba4380b864b460af940000000000000000000000000000000000000000000000000000000001c890760000000000000000000000008801055268d8b038856005b5fb504a9c8c63d9ca0000000000000000000000008801055268d8b038856005b5fb504a9c8c63d9cac0",
+      "txHash": "0x96438fc9ce449679ce967aab2cdfc9fb5d0ebd7c89578ad3a16a3fb7364049b2",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "0.000000000029921398 EURCV"
+          },
+          {
+            "label": "To",
+            "value": "0x8801055268D8B038856005B5Fb504a9c8c63D9ca"
+          },
+          {
+            "label": "Owner",
+            "value": "0x8801055268D8B038856005B5Fb504a9c8c63D9ca"
+          }
+        ],
+        "owner": "MEV Capital"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88c0109830186a0845c7517d683098b9b9434ece536d2ae03192b06c0a67030d1faf4c0ba4380b864ba0876520000000000000000000000000000000000000000000003beaae791dc0cfc77050000000000000000000000004317c298eea1e8a8401f9d0b08c24223802732d90000000000000000000000004317c298eea1e8a8401f9d0b08c24223802732d9c0",
+      "txHash": "0x1305fa789cfafeb3462c840884768f8137bfa3da32a9b30b31b295464edd8262",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "17684.295794694115063557 sgfEURCV"
+          },
+          {
+            "label": "To",
+            "value": "0x4317C298Eea1E8a8401f9D0B08C24223802732D9"
+          },
+          {
+            "label": "Owner",
+            "value": "0x4317C298Eea1E8a8401f9D0B08C24223802732D9"
+          }
+        ],
+        "owner": "MEV Capital"
+      }
+    }
+  ]
+}
