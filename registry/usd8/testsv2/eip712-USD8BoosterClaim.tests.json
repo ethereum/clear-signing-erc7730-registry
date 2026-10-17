@@ -1,0 +1,85 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-USD8BoosterClaim.json",
+  "tests": [
+    {
+      "description": "Claim 1 booster authorization",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Claim": [
+            {
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "tokenId",
+              "type": "uint256"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Claim",
+        "domain": {
+          "name": "USD8Booster",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0x6f74Ce39Bb1D75C56E2fe5f349a6A5f51ce6f12d"
+        },
+        "message": {
+          "receiver": "0x724e8951d39E14CEBcB5fB02638f49A637C97838",
+          "nonce": "42",
+          "tokenId": "1",
+          "amount": "1"
+        }
+      },
+      "expected": {
+        "intent": "Authorize Booster Claim",
+        "interpolatedIntent": "Authorize 0x724e8951d39E14CEBcB5fB02638f49A637C97838 to claim 1 1% Cover Booster",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Receiver",
+            "value": "0x724e8951d39E14CEBcB5fB02638f49A637C97838"
+          },
+          {
+            "label": "Booster Type",
+            "value": "1% Cover Booster"
+          },
+          {
+            "label": "Amount",
+            "value": "1"
+          },
+          {
+            "label": "Nonce",
+            "value": "42"
+          }
+        ]
+      }
+    }
+  ]
+}

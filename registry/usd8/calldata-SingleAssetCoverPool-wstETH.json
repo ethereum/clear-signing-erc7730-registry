@@ -1,0 +1,442 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "USD8 wstETH Cover Pool",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x4bF47E25e8B42579C5CBaF84EdaeFB1A0F30c1b8"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "USD8",
+    "info": {
+      "url": "https://usd8.fi"
+    },
+    "contractName": "SingleAssetCoverPool"
+  },
+  "display": {
+    "formats": {
+      "deposit(uint256 assets, address receiver)": {
+        "intent": "Deposit Into Cover Pool",
+        "interpolatedIntent": "Deposit {assets} into the wstETH cover pool for {receiver}",
+        "fields": [
+          {
+            "path": "#.assets",
+            "label": "Deposit Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "Share Receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "mint(uint256 shares, address receiver)": {
+        "intent": "Mint Cover Pool Shares",
+        "interpolatedIntent": "Mint {shares} of the wstETH cover pool for {receiver}",
+        "fields": [
+          {
+            "path": "#.shares",
+            "label": "Shares To Mint",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0x4bF47E25e8B42579C5CBaF84EdaeFB1A0F30c1b8"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "Share Receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "requestRedeem(uint256 shares)": {
+        "intent": "Request Cover Pool Exit",
+        "interpolatedIntent": "Request an irreversible exit of {shares} from the wstETH cover pool",
+        "fields": [
+          {
+            "path": "#.shares",
+            "label": "Shares To Exit",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0x4bF47E25e8B42579C5CBaF84EdaeFB1A0F30c1b8"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "completeRedeem(address receiver)": {
+        "intent": "Complete Cover Pool Exit",
+        "interpolatedIntent": "Complete the matured cover pool exit and send the assets to {receiver}",
+        "fields": [
+          {
+            "path": "#.receiver",
+            "label": "Asset Receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "claimReward()": {
+        "intent": "Claim Cover Pool Rewards",
+        "interpolatedIntent": "Claim pending USD8 cover pool rewards",
+        "fields": []
+      },
+      "settleMaturedExitEpochs(uint256 maxEpochs)": {
+        "intent": "Settle Matured Exit Epochs",
+        "interpolatedIntent": "Settle up to {maxEpochs} matured cover pool exit epochs",
+        "fields": [
+          {
+            "path": "#.maxEpochs",
+            "label": "Maximum Epochs",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "receiveProfitDistribution(uint256 amount)": {
+        "intent": "Add USD8 To Cover Pool Rewards",
+        "interpolatedIntent": "Add {amount} to the wstETH cover pool reward stream",
+        "fields": [
+          {
+            "path": "#.amount",
+            "label": "USD8 To Add",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0x2fE01f5E235eeaB9045066f873f531dE20f31947"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "transfer(address to, uint256 value)": {
+        "intent": "Send Pool Shares",
+        "interpolatedIntent": "Send {value} to {to}",
+        "fields": [
+          {
+            "path": "#.to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0x4bF47E25e8B42579C5CBaF84EdaeFB1A0F30c1b8"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "approve(address spender, uint256 value)": {
+        "intent": "Approve Pool Shares Spending",
+        "interpolatedIntent": "Allow {spender} to spend {value}",
+        "fields": [
+          {
+            "path": "#.spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0x4bF47E25e8B42579C5CBaF84EdaeFB1A0F30c1b8",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "transferFrom(address from, address to, uint256 value)": {
+        "intent": "Send Pool Shares From Account",
+        "interpolatedIntent": "Send {value} from {from} to {to}",
+        "fields": [
+          {
+            "path": "#.from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0x4bF47E25e8B42579C5CBaF84EdaeFB1A0F30c1b8"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s)": {
+        "intent": "Permit Pool Shares Spending",
+        "interpolatedIntent": "Permit {spender} to spend {value} of {owner} until {deadline}",
+        "fields": [
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0x4bF47E25e8B42579C5CBaF84EdaeFB1A0F30c1b8",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.deadline",
+            "label": "Valid Until",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.v",
+            "label": "Signature V",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.r",
+            "label": "Signature R",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.s",
+            "label": "Signature S",
+            "format": "raw",
+            "visible": "never"
+          }
+        ]
+      },
+      "sweepETH(address to)": {
+        "intent": "Sweep Stray ETH",
+        "interpolatedIntent": "Sweep all stray ETH to {to}",
+        "fields": [
+          {
+            "path": "#.to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "sweepToken(address token, address to)": {
+        "intent": "Sweep Stray Token",
+        "interpolatedIntent": "Sweep all stray {token} to {to}",
+        "fields": [
+          {
+            "path": "#.token",
+            "label": "Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setDepositCap(uint256 newCap)": {
+        "intent": "Set Cover Pool Cap",
+        "interpolatedIntent": "Set cover pool deposit cap to {newCap} (0 is uncapped)",
+        "fields": [
+          {
+            "path": "#.newCap",
+            "label": "Cap (0 = Uncapped)",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setRewardsDuration(uint64 newDuration)": {
+        "intent": "Set Rewards Duration",
+        "interpolatedIntent": "Set cover pool rewards duration to {newDuration}",
+        "fields": [
+          {
+            "path": "#.newDuration",
+            "label": "New Duration",
+            "format": "duration",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
