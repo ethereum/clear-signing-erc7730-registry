@@ -104,6 +104,7 @@ Common cases that are never critical, with the severity they get instead. Check 
 13. **The scope or the detail of a grant whose grantee and nature are shown**: the permission list inside a delegation whose delegate and audience are shown, the conditions of a role whose target and function are shown. Warning: the right is stated, its extent is not.
 14. **Possibilities**: what a wallet might do with an optional field, what some other input could do, a nested descriptor that might not resolve, a lookup that may fail. "Could", "may" and "can" belong to warnings; a critical states what the transaction does.
 15. **Owned by the deterministic checks**: a missing test file, an empty case list, a runner that renders differently from the expected rendering, the unit's deployments being fewer than the descriptor's, an unverified contract, `context.contract.abi`. Not a finding.
+16. **A hidden nested array**: an array inside an array element (`a.[].b.[]`) that the descriptor replaces with a fixed notice or leaves out. Neither test runner iterates a nested array (issue #3091), so no descriptor change can show it today. Info, and the Fix says it waits on the runners; propose no path into the inner array, neither `a.[].b.[]` nor a group on `a.[]` with a field `b.[]`.
 
 When a candidate critical matches one of these, place it at the severity given here and say so in its Gap line. When it matches none and its Effect is not shown or shown differently, it is critical.
 </not_critical>
