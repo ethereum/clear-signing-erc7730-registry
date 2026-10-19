@@ -201,7 +201,7 @@ Rules:
 Read your findings once more and apply these, in order:
 
 1. For each function you reviewed, go back to the effects you listed in step 1 of the method: a transfer, an approval, a delegation, a stake move, a revocation, a module or role change, a delegate call, native value sent (every `payable` function of the ABI, the inherited ones included, has a `@.value` field or a check that forces the value to zero). Is each one shown as the code does it? Any that is not is a critical you may have missed.
-2. For each critical, read its Shown line and walk the fifteen cases of the not-critical list. If it matches one, move it to the severity given there. If the value is shown at all, raw, unlabelled or through another field, it is not critical.
+2. For each critical, read its Shown line and walk the cases of the not-critical list. If it matches one, move it to the severity given there. If the value is shown at all, raw, unlabelled or through another field, it is not critical.
 3. Delete any finding about a missing test file or an empty case list, about `unit.deployments` being fewer than the descriptor's, about `context.contract.abi`, about a runner rendering differently from the expected rendering, or about the source being unverified.
 4. Check every constant address, ticker or token in the descriptor against every chain of `unit.deployments`: a mainnet token address used on another chain is a critical even without source.
 5. Delete any finding whose Gap says nothing differs and that has no Fix, and any block that says it is not a finding or belongs in another section: move it or drop it.
