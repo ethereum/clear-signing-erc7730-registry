@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-Conduit.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" },
+      "0x08c366c9b10a34d707c56962ad6457513bdb416f": {
+        "symbol": "MV-2-csUSDCigd-USDC",
+        "decimals": 18,
+        "name": "Multi Vehicle #2 - CoinShares USDC Permissionless IG Diversified Income"
+      },
+      "0xbb09c703e48a54e8e48f6b088cb9578ace9848cb": { "symbol": "csUSDCigd", "decimals": 18, "name": "Safe - CoinShares USDC IG Diversified Income" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit 1 USDC into csUSDCigd",
+      "rawTx": "0x02f901ce01178408f0d18084123408c08345cb1094bb09c703e48a54e8e48f6b088cb9578ace9848cb80b901a450bb3af40000000000000000000000000000000000000000000000000000000000000060000000000000000000000000fe2f597f40da9c6abf6dea0b9cefe376a6117c7abf538a9b0f01ea6075bc889523004cbf4b115862a994148bfd4118b2927aa9aa000000000000000000000000bb09c703e48a54e8e48f6b088cb9578ace9848cb000000000000000000000000bb09c703e48a54e8e48f6b088cb9578ace9848cb000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000f424000000000000000000000000008c366c9b10a34d707c56962ad6457513bdb416f0000000000000000000000000000000000000000000000000dcd4388d75c640d00000000000000000000000000000000000000000000000000000000000000002b3901a22bd2b23be6b5f6539de9f4b04bd85cf12e2d7ecc215d1065ba01d1d500000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0xff49a4cccd64ca3e7d08d70fa80f788a24a61c2582166a3fe27079cbcfb5027e",
+      "expected": {
+        "intent": "Deposit or redeem",
+        "interpolatedIntent": "Deposit 1 USDC",
+        "owner": "Railnet",
+        "fields": [
+          { "label": "Operation", "value": "Deposit" },
+          { "label": "Amount", "value": "1 USDC" },
+          { "label": "Minimum output", "value": "0.994525347726517261 MV-2-csUSDCigd-USDC" },
+          { "label": "Receiver", "value": "0xfe2F597f40Da9C6abf6DEA0b9Cefe376A6117C7a" },
+          { "label": "Vehicle data", "value": "0x" }
+        ]
+      }
+    },
+    {
+      "description": "Deposit 0.5 USDC into csUSDCigd",
+      "rawTx": "0x02f901ce011a8408f0d180841829e9c0835cd5a294bb09c703e48a54e8e48f6b088cb9578ace9848cb80b901a450bb3af40000000000000000000000000000000000000000000000000000000000000060000000000000000000000000fe2f597f40da9c6abf6dea0b9cefe376a6117c7aba2e4bfa306872af5a8b306d769649afae2fbfb8134baf360368094b48fcbcd6000000000000000000000000bb09c703e48a54e8e48f6b088cb9578ace9848cb000000000000000000000000bb09c703e48a54e8e48f6b088cb9578ace9848cb000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000007a12000000000000000000000000008c366c9b10a34d707c56962ad6457513bdb416f00000000000000000000000000000000000000000000000006e69ca8588dc9ec000000000000000000000000000000000000000000000000000000000000000094f867f76221a2c2f48d516a76789afa7f1d67487f34e8267f53f1f2de227a7900000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0x4cd413a21d4b470167c02c2d3394a95cc85d1b066cb3389623ce76cb6831c92e",
+      "expected": {
+        "intent": "Deposit or redeem",
+        "interpolatedIntent": "Deposit 0.5 USDC",
+        "owner": "Railnet",
+        "fields": [
+          { "label": "Operation", "value": "Deposit" },
+          { "label": "Amount", "value": "0.5 USDC" },
+          { "label": "Minimum output", "value": "0.497257055725144556 MV-2-csUSDCigd-USDC" },
+          { "label": "Receiver", "value": "0xfe2F597f40Da9C6abf6DEA0b9Cefe376A6117C7a" },
+          { "label": "Vehicle data", "value": "0x" }
+        ]
+      }
+    },
+    {
+      "description": "Redeem 0.0999 csUSDCigd for USDC (inner call of Safe tx 0x06c074b471c7feb1c244c117039e517ab4abc61bc1233013deb7ff8da7e4939b)",
+      "rawTx": "0x02f8cd01208408f0d1808429d7ab808341b2ad94bb09c703e48a54e8e48f6b088cb9578ace9848cb80b8a44c717f8d00000000000000000000000000000000000000000000000001633a6774b1f79b000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000184ac87aec6fad0b63445c30f13f83a2391492594b73e275a36b2513d21ca82ecfcc500000000000000000000000016a4126fbee16908dfaa7da3b965563c3eaf7593c0",
+      "expected": {
+        "intent": "Redeem Conduit shares",
+        "interpolatedIntent": "Redeem 0.099987832746145691 csUSDCigd",
+        "owner": "Railnet",
+        "fields": [
+          { "label": "Shares to redeem", "value": "0.099987832746145691 csUSDCigd" },
+          { "label": "Minimum output", "value": "0.0995 USDC" },
+          { "label": "Receiver", "value": "0x16A4126fBEe16908DFaA7Da3B965563C3EAf7593" }
+        ]
+      }
+    }
+  ]
+}
