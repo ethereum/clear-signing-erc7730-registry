@@ -1,0 +1,53 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-CryptoPunks721.json",
+  "tests": [
+    {
+      "description": "Wrap Punk - chain 1",
+      "rawTx": "0x02f84c01318477359400847bd969fc8304fe0694000000000000003607fce1ac9e043a86675c5c2f80a490aaf2ff0000000000000000000000000000000000000000000000000000000000000ff8c0",
+      "txHash": "0x1bf5d867f0884689ef4ee76d387624d029ccbcfdfba66e3f095ae4a2bc8ee972",
+      "expected": {
+        "intent": "Wrap Punk",
+        "owner": "CryptoPunks",
+        "fields": [{ "label": "Punk", "value": "4088" }],
+        "interpolatedIntent": "Wrap Punk #4088"
+      }
+    },
+    {
+      "description": "Unwrap Punk - chain 1",
+      "rawTx": "0x02f84e01821d138429b927008429b927008301ec4294000000000000003607fce1ac9e043a86675c5c2f80a49f8f573f00000000000000000000000000000000000000000000000000000000000015cdc0",
+      "txHash": "0x0ff7f10b7999c6719583482b42bf2b3337eae169e5aeeb8cf4abf181d1708511",
+      "expected": {
+        "intent": "Unwrap Punk",
+        "owner": "CryptoPunks",
+        "fields": [{ "label": "Punk", "value": "5581" }],
+        "interpolatedIntent": "Unwrap Punk #5581"
+      }
+    },
+    {
+      "description": "Safe Transfer Wrapped Punk - chain 1",
+      "rawTx": "0x02f88d01148423c34600842affb0c083016a4c94000000000000003607fce1ac9e043a86675c5c2f80b86442842e0e0000000000000000000000000e4dc24547fa37d27e530e21f58de86a00955b3800000000000000000000000037d992ce46e6ae90fff0451f3d46f5079476ea4200000000000000000000000000000000000000000000000000000000000020b6c0",
+      "txHash": "0x439d60b420a7fe91043dadd1ac39182852acdf6f1aba8bfa36f2c542e362d48a",
+      "expected": {
+        "intent": "Transfer Wrapped Punk",
+        "owner": "CryptoPunks",
+        "fields": [
+          { "label": "Punk", "value": "8374" },
+          { "label": "From", "value": "0x0E4DC24547fA37D27e530E21F58DE86A00955b38" },
+          { "label": "Recipient", "value": "0x37D992Ce46E6aE90FFF0451F3d46f5079476Ea42" }
+        ],
+        "interpolatedIntent": "Transfer Punk #8374"
+      }
+    },
+    {
+      "description": "Wrap Punks batch (synthetic) - chain 1",
+      "rawTx": "0x02f8ce0107843b9aca008506fc23ac0083030d4094000000000000003607fce1ac9e043a86675c5c2f80b8a49e88cf4200000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003c0",
+      "expected": {
+        "intent": "Wrap Punks",
+        "owner": "CryptoPunks",
+        "fields": [{ "label": "Punk", "value": "1" }, { "label": "Punk", "value": "2" }, { "label": "Punk", "value": "3" }],
+        "interpolatedIntent": "Wrap the selected Punks as ERC-721s"
+      }
+    }
+  ]
+}
