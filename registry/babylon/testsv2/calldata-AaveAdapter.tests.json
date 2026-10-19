@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-AaveAdapter.json",
+  "tests": [
+    {
+      "description": "Borrow USDC to the depositor",
+      "rawTx": "0x02f89083aa36a707843b9aca008477359400830dbba094b08dfb1d04373a30a33ca64ae85061e452e5cef780b864f84dede20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009a679f57000000000000000000000000f3b2a5e73280e8f24fe596cd1cf839a75d3d786dc0",
+      "expected": {
+        "intent": "Borrow",
+        "owner": "Babylon Labs",
+        "fields": [
+          {
+            "label": "Asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Amount (base units)",
+            "value": "2590482263"
+          },
+          {
+            "label": "Recipient",
+            "value": "0xf3B2A5E73280E8F24Fe596cD1cf839a75d3d786d"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Repay part of a USDT debt",
+      "rawTx": "0x02f89083aa36a707843b9aca008477359400830dbba094b08dfb1d04373a30a33ca64ae85061e452e5cef780b86471f4e822000000000000000000000000f3b2a5e73280e8f24fe596cd1cf839a75d3d786d0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000003b9aca00c0",
+      "expected": {
+        "intent": "Repay",
+        "owner": "Babylon Labs",
+        "fields": [
+          {
+            "label": "Asset",
+            "value": "USDT"
+          },
+          {
+            "label": "Max repay (units)",
+            "value": "1000000000"
+          },
+          {
+            "label": "Borrower",
+            "value": "0xf3B2A5E73280E8F24Fe596cD1cf839a75d3d786d"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Repay a whole WBTC debt (max uint256 amount)",
+      "rawTx": "0x02f89083aa36a707843b9aca008477359400830dbba094b08dfb1d04373a30a33ca64ae85061e452e5cef780b86471f4e822000000000000000000000000f3b2a5e73280e8f24fe596cd1cf839a75d3d786d0000000000000000000000000000000000000000000000000000000000000002ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Repay",
+        "owner": "Babylon Labs",
+        "fields": [
+          {
+            "label": "Asset",
+            "value": "WBTC"
+          },
+          {
+            "label": "Max repay (units)",
+            "value": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+          },
+          {
+            "label": "Borrower",
+            "value": "0xf3B2A5E73280E8F24Fe596cD1cf839a75d3d786d"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw two BTC vaults",
+      "rawTx": "0x02f8b083aa36a707843b9aca008477359400830dbba094b08dfb1d04373a30a33ca64ae85061e452e5cef780b8845f108a2800000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002cace5ce930d9b3d5621d23a59beff9ecd4cc11cbb125b28bf50cd39d41b1e5bd22434dc68720caccebbe4978f8955b30bb01ca434248c5023cc0eee40d2df5cbc0",
+      "expected": {
+        "intent": "Withdraw BTC vaults",
+        "owner": "Babylon Labs",
+        "fields": [
+          {
+            "label": "Vault ID",
+            "value": "0xcace5ce930d9b3d5621d23a59beff9ecd4cc11cbb125b28bf50cd39d41b1e5bd"
+          },
+          {
+            "label": "Vault ID",
+            "value": "0x22434dc68720caccebbe4978f8955b30bb01ca434248c5023cc0eee40d2df5cb"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Reorder two BTC vaults",
+      "rawTx": "0x02f8b083aa36a707843b9aca008477359400830dbba094b08dfb1d04373a30a33ca64ae85061e452e5cef780b8841d47e7e60000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000222434dc68720caccebbe4978f8955b30bb01ca434248c5023cc0eee40d2df5cbcace5ce930d9b3d5621d23a59beff9ecd4cc11cbb125b28bf50cd39d41b1e5bdc0",
+      "expected": {
+        "intent": "Reorder BTC vaults",
+        "owner": "Babylon Labs",
+        "fields": [
+          {
+            "label": "Vault ID",
+            "value": "0x22434dc68720caccebbe4978f8955b30bb01ca434248c5023cc0eee40d2df5cb"
+          },
+          {
+            "label": "Vault ID",
+            "value": "0xcace5ce930d9b3d5621d23a59beff9ecd4cc11cbb125b28bf50cd39d41b1e5bd"
+          }
+        ]
+      }
+    }
+  ]
+}

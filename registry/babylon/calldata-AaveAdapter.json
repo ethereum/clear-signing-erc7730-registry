@@ -1,0 +1,71 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "AaveAdapter",
+    "contract": {
+      "deployments": [{ "chainId": 11155111, "address": "0xb08dfb1D04373a30A33CA64Ae85061e452E5CeF7" }]
+    }
+  },
+  "metadata": {
+    "owner": "Babylon Labs",
+    "info": { "url": "https://babylonlabs.io" },
+    "enums": { "debtReserve": { "0": "USDC", "1": "USDT", "2": "WBTC" } },
+    "contractName": "AaveAdapter"
+  },
+  "display": {
+    "formats": {
+      "borrowFromCorePosition(uint256 debtReserveId, uint256 amount, address receiver)": {
+        "$id": "borrowFromCorePosition",
+        "intent": "Borrow",
+        "fields": [
+          {
+            "path": "debtReserveId",
+            "label": "Asset",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.debtReserve" },
+            "visible": "always"
+          },
+          { "path": "amount", "label": "Amount (base units)", "format": "raw", "visible": "always" },
+          {
+            "path": "receiver",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "repayToCorePosition(address borrower, uint256 debtReserveId, uint256 amount)": {
+        "$id": "repayToCorePosition",
+        "intent": "Repay",
+        "fields": [
+          {
+            "path": "debtReserveId",
+            "label": "Asset",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.debtReserve" },
+            "visible": "always"
+          },
+          { "path": "amount", "label": "Max repay (units)", "format": "raw", "visible": "always" },
+          {
+            "path": "borrower",
+            "label": "Borrower",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdrawCollaterals(bytes32[] vaultsToWithdraw)": {
+        "$id": "withdrawCollaterals",
+        "intent": "Withdraw BTC vaults",
+        "fields": [{ "path": "vaultsToWithdraw.[]", "label": "Vault ID", "format": "raw", "visible": "always" }]
+      },
+      "reorderVaults(bytes32[] permuted)": {
+        "$id": "reorderVaults",
+        "intent": "Reorder BTC vaults",
+        "fields": [{ "path": "permuted.[]", "label": "Vault ID", "format": "raw", "visible": "always" }]
+      }
+    }
+  }
+}
