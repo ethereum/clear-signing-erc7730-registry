@@ -5,10 +5,10 @@
  * Goes through every open pull request that has a failed check on its last
  * commit or a pending change request, and decides one of three things for it:
  *
- * - the two test runners (Sourcify SDK and Rust SDK) disagree, one green and
- *   one red: comment and tag the maintainers, once per head commit, so they
- *   compare the two runners before the author rewrites the descriptor. The
- *   pull request is not closed while the disagreement is open;
+ * - one test runner (Sourcify SDK or Rust SDK) is red and the other one is
+ *   green or did not run: comment and tag the maintainers, once per head
+ *   commit, so they compare the two runners before the author rewrites the
+ *   descriptor. The pull request is not closed while this is open;
  * - both runners are red: the descriptor most likely has a bug. Comment and
  *   tag the author and the maintainers, once per head commit, and treat the
  *   runners like any other red check for the close rule;
@@ -151,7 +151,8 @@ function classifyChecks(pr) {
     // Two red runners count like any other red check: the descriptor is broken.
     otherRed: [...others.filter(isRed), ...(bothRed ? [...sourcify, ...rust].filter(isRed) : [])],
     runners,
-    runnersDisagree: verdicts.includes('red') && verdicts.includes('green'),
+    // A red runner next to a green one, or next to one that did not run: a maintainer must look.
+    runnersDisagree: verdicts.includes('red') && !bothRed,
     runnersBothRed: bothRed,
   };
 }
@@ -311,7 +312,7 @@ function attestedComment(pr) {
 function runnerComment(pr, checks, decision, opts) {
   const tags = opts.maintainers.map((m) => `@${m}`).join(' ');
   const advice = decision.comment === 'runners-disagree'
-    ? `A disagreement between the runners is often a runner bug, not a descriptor bug, so a maintainer should compare the two before the author changes the descriptor. ${tags} please take a look.`
+    ? `A red runner next to a green one, or next to one that did not run, is often a runner bug, not a descriptor bug, so a maintainer should compare the two before the author changes the descriptor. ${tags} please take a look.`
     : `The tests fail on both implementations, so the descriptor or its tests most likely have a bug. @${pr.author.login} please look at the test results. ${tags} for your information.`;
   return [
     `<!-- ${RUNNER_MARKER}:${pr.headRefOid} -->`,
