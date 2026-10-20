@@ -6,7 +6,7 @@
 | --- | --- |
 | One test runner (Sourcify SDK or Rust SDK) is red and the other one is green or did not run | Comment on the pull request and tag the maintainers, so they compare the two runners before the author rewrites the descriptor: a disagreement is often a runner bug. The comment is posted once per head commit, and the pull request is not closed while the disagreement is open, whatever the other checks say. |
 | Both test runners are red | The descriptor or its tests most likely have a bug. Comment once per head commit, tag the author and the maintainers, and count the runners like any other red check for the close rule below. |
-| A check other than the two runners is red for more than N weeks and the author did nothing for more than N weeks | Close the pull request with a comment that lists the red checks and says how to reopen. |
+| Every red check other than the two runners is red for more than N weeks and the author did nothing for more than N weeks | Close the pull request with a comment that lists the red checks and says how to reopen. When a merge of master adds a new red check, the CI result changed, and the author gets N weeks for it. |
 | A reviewer requested changes and the author did nothing for more than N weeks | Close the pull request with a comment. This rule needs no red check. |
 | The check `Attested descriptors are unchanged` is red | The pull request changes a descriptor that an auditor attested, and the fix is to delete the attestation files from `sigs/`. Comment once to ask the author for that. For the close rule, this check counts as red from the day of that comment, not before. |
 

@@ -12,8 +12,8 @@
  * - both runners are red: the descriptor most likely has a bug. Comment and
  *   tag the author and the maintainers, once per head commit, and treat the
  *   runners like any other red check for the close rule;
- * - a check other than the two runners is red for more than N weeks and the
- *   author did nothing for more than N weeks: close it with a comment;
+ * - every red check other than the two runners is red for more than N weeks
+ *   and the author did nothing for more than N weeks: close it with a comment;
  * - the check "Attested descriptors are unchanged" is red: the pull request
  *   changes a descriptor that an auditor attested, and the fix is to delete
  *   the attestation files. Comment once to ask the author for that. The
