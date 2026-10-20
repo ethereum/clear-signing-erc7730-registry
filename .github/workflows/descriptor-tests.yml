@@ -15,15 +15,15 @@ name: Descriptor Tests
 # Do not merge the three workflows into one.
 #
 # merge_group runs the tests on the merge queue branch, which is in this
-# repository. A paths filter does not apply to merge_group, so every queued
-# pull request runs the detect job, and the runner jobs skip when it affects
-# no descriptor. The report and the results comment are for the pull request
+# repository. The report and the results comment are for the pull request
 # run only: the results workflow ignores a merge_group run.
+#
+# No paths filter: the verdict jobs are required checks, and a required
+# check that never reports blocks the pull request, also from the merge
+# queue. The detect job is cheap and runs on every pull request; the runner
+# jobs skip when no descriptor is affected.
 on:
   pull_request:
-    paths:
-      - "registry/**/*.json"
-      - "ercs/**/*.json"
   merge_group:
 
 concurrency:
