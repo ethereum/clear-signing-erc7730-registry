@@ -25,9 +25,9 @@
  * author. Comments of bots and merges pushed by maintainers (Update branch) do
  * not count. A pull request whose author acted after the last comment or
  * review of a maintainer is never closed: the ball is with the maintainer.
- * A check is red since the run that made it red: a merge of master that turns
- * a green check red starts the clock again, a merge that keeps a red check
- * red does not. The checks of the optional AI Review workflow and of the label
+ * A check is red since the oldest run that made it red, looking back along the
+ * previous heads: a merge of master that turns a green check red starts the
+ * clock again, a merge that keeps a red check red does not. The checks of the optional AI Review workflow and of the label
  * bots are ignored, a cancelled run is not red, and a rerun that passed
  * supersedes an earlier failure of the same check on the same commit.
  *
@@ -65,6 +65,7 @@ const IGNORED_WORKFLOWS = new Set(['AI Review', 'PR Labels', '🏷️ pull reque
 const IGNORED_JOBS = new Set(['Notify fork PR']);
 const RED_STATES = new Set(['FAILURE', 'TIMED_OUT', 'STARTUP_FAILURE', 'ERROR']);
 const MAINTAINER_ASSOCIATIONS = new Set(['OWNER', 'MEMBER', 'COLLABORATOR']);
+const LOOKBACK = 10;
 // The names of the registry checks before #3046, so a check that was red
 // under its old name on the previous head commit is not counted as newly red.
 const RENAMED_CHECKS = new Map([
@@ -168,24 +169,46 @@ function fetchTimeline(repo, number) {
   return { ...view, reviewComments };
 }
 
-// The checks of the commit before the head commit, by name. The first parent
-// of the head is the previous head, also when the head is a merge of master.
-function fetchParentChecks(repo, sha) {
-  const commit = ghJson(['api', `repos/${repo}/commits/${sha}`]);
-  const parent = commit.parents && commit.parents[0];
-  if (!parent) return new Map();
-  const runs = ghJson(['api', `repos/${repo}/commits/${parent.sha}/check-runs?per_page=100`]);
-  const checks = dedupeChecks((runs.check_runs || []).map((c) => ({
-    name: RENAMED_CHECKS.get(c.name) || c.name, workflow: '', state: (c.conclusion || '').toUpperCase(), completedAt: c.completed_at,
-  })));
-  return new Map(checks.map((c) => [c.name, c]));
+// The previous head commits of a pull request and their checks, fetched on
+// demand and cached. The first parent of a commit is the previous head, also
+// when the commit is a merge of master.
+function commitHistory(repo) {
+  const parents = new Map();
+  const checks = new Map();
+  return {
+    parentOf(sha) {
+      if (!parents.has(sha)) {
+        const commit = ghJson(['api', `repos/${repo}/commits/${sha}`]);
+        parents.set(sha, commit.parents && commit.parents[0] ? commit.parents[0].sha : null);
+      }
+      return parents.get(sha);
+    },
+    checksOf(sha) {
+      if (!checks.has(sha)) {
+        const runs = ghJson(['api', `repos/${repo}/commits/${sha}/check-runs?per_page=100`]);
+        const list = dedupeChecks((runs.check_runs || []).map((c) => ({
+          name: RENAMED_CHECKS.get(c.name) || c.name, workflow: '', state: (c.conclusion || '').toUpperCase(), completedAt: c.completed_at,
+        })));
+        checks.set(sha, new Map(list.map((c) => [c.name, c])));
+      }
+      return checks.get(sha);
+    },
+  };
 }
 
-// When the same check was already red on the previous head, it is red since
-// that run; otherwise since the run on the head commit.
-function redSince(check, parentChecks) {
-  const before = parentChecks.get(check.name);
-  const since = before && RED_STATES.has(before.state) ? before.completedAt : check.completedAt;
+// A check is red since the oldest run that made it red: the script walks back
+// along the previous heads while the same check stays red, at most LOOKBACK
+// commits.
+function redSince(check, headSha, history) {
+  let since = check.completedAt;
+  let sha = headSha;
+  for (let i = 0; i < LOOKBACK; i++) {
+    const parent = history.parentOf(sha);
+    const before = parent && history.checksOf(parent).get(check.name);
+    if (!before || !RED_STATES.has(before.state)) break;
+    since = before.completedAt || since;
+    sha = parent;
+  }
   return since ? new Date(since) : null;
 }
 
@@ -250,7 +273,7 @@ function day(date) {
   return date.toISOString().slice(0, 10);
 }
 
-function decide(pr, checks, timeline, parentChecks, opts, now) {
+function decide(pr, checks, timeline, history, opts, now) {
   const activity = lastAuthorActivity(pr, timeline);
   const maintainerActivity = lastMaintainerActivity(pr, timeline, opts);
   const changesAt = lastChangesRequested(timeline);
@@ -262,7 +285,7 @@ function decide(pr, checks, timeline, parentChecks, opts, now) {
   // The attested check counts from the day the script asked for the attestation files, not before.
   const otherRed = checks.otherRed
     .filter((c) => c.name !== ATTESTED_CHECK || askedAt)
-    .map((c) => ({ ...c, since: c.name === ATTESTED_CHECK ? askedAt : redSince(c, parentChecks) }));
+    .map((c) => ({ ...c, since: c.name === ATTESTED_CHECK ? askedAt : redSince(c, pr.headRefOid, history) }));
   const redFor = otherRed.length ? Math.min(...otherRed.map((c) => (c.since ? weeksSince(c.since, now) : Infinity))) : 0;
   if (idle > opts.weeks && otherRed.length && redFor > opts.weeks) {
     reasons.push({
@@ -354,8 +377,7 @@ function main() {
     const checks = classifyChecks(pr);
     if (!checks.red.length && pr.reviewDecision !== 'CHANGES_REQUESTED') continue;
     const timeline = fetchTimeline(opts.repo, pr.number);
-    const parentChecks = checks.otherRed.length ? fetchParentChecks(opts.repo, pr.headRefOid) : new Map();
-    const decision = decide(pr, checks, timeline, parentChecks, opts, now);
+    const decision = decide(pr, checks, timeline, commitHistory(opts.repo), opts, now);
     plan.push({ pr, checks, decision });
   }
 
