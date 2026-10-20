@@ -8,8 +8,9 @@
 | Both test runners are red | The descriptor or its tests most likely have a bug. Comment once per head commit, tag the author and the maintainers, and count the runners like any other red check for the close rule below. |
 | A check other than the two runners is red for more than N weeks and the author did nothing for more than N weeks | Close the pull request with a comment that lists the red checks and says how to reopen. |
 | A reviewer requested changes and the author did nothing for more than N weeks | Close the pull request with a comment. This rule needs no red check. |
+| The check `Attested descriptors are unchanged` is red | The pull request changes a descriptor that an auditor attested, and the fix is to delete the attestation files from `sigs/`. Comment once to ask the author for that. For the close rule, this check counts as red from the day of that comment, not before. |
 
-N is 4 weeks by default. A pull request that matches both close rules gets one comment with both reasons. The script does one thing per pull request and run: a runner disagreement comes first, then a close, then the comment for two red runners.
+N is 4 weeks by default. A pull request that matches both close rules gets one comment with both reasons. The script does one thing per pull request and run: a runner disagreement comes first, then the attestation question, then a close, then the comment for two red runners.
 
 ## What counts
 
@@ -42,4 +43,4 @@ Run the dry run first and read the plan: the script closes pull requests. It pos
 
 ## Comments
 
-Every comment ends with a link to this script, so a contributor knows where it came from. The runner comment carries a hidden marker with the head commit, which is how the script knows it already reported that commit.
+Every comment ends with a link to this script, so a contributor knows where it came from. The runner comment carries a hidden marker with the head commit, which is how the script knows it already reported that commit. The attestation comment carries a marker without a commit, so it is posted once per pull request.

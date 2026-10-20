@@ -14,6 +14,10 @@
  *   runners like any other red check for the close rule;
  * - a check other than the two runners is red for more than N weeks and the
  *   author did nothing for more than N weeks: close it with a comment;
+ * - the check "Attested descriptors are unchanged" is red: the pull request
+ *   changes a descriptor that an auditor attested, and the fix is to delete
+ *   the attestation files. Comment once to ask the author for that. The
+ *   check counts for the close rule only N weeks after that comment;
  * - a reviewer requested changes and the author did nothing for more than
  *   N weeks: close it with a comment.
  *
@@ -48,7 +52,10 @@ const DEFAULT_REPO = 'ethereum/clear-signing-erc7730-registry';
 const DEFAULT_WEEKS = 4;
 const DEFAULT_MAINTAINERS = ['kuzdogan', 'manuelwedler', 'marcocastignoli', 'austintgriffith'];
 const SCRIPT_URL = `https://github.com/${DEFAULT_REPO}/blob/master/tools/scripts/triage-red-prs.js`;
-const MARKER = 'triage-red-prs:runner-failure';
+const MARKER = 'triage-red-prs';
+const RUNNER_MARKER = `${MARKER}:runner-failure`;
+const ATTESTED_MARKER = `${MARKER}:attested`;
+const ATTESTED_CHECK = 'Attested descriptors are unchanged';
 
 const SOURCIFY_RUNNER = /^(Typescript - Sourcify SDK tests|Sourcify tests for )/;
 const RUST_RUNNER = /^(Rust - llbartekll SDK tests|Rust tests for )/;
@@ -219,7 +226,11 @@ function lastChangesRequested(timeline) {
 }
 
 function hasRunnerComment(timeline, sha) {
-  return timeline.comments.some((c) => (c.body || '').includes(`${MARKER}:${sha}`));
+  return timeline.comments.some((c) => (c.body || '').includes(`${RUNNER_MARKER}:${sha}`));
+}
+
+function attestedAskedAt(timeline) {
+  return latest(timeline.comments.filter((c) => (c.body || '').includes(ATTESTED_MARKER)).map((c) => c.createdAt));
 }
 
 function weeksSince(date, now) {
@@ -237,7 +248,12 @@ function decide(pr, checks, timeline, parentChecks, opts, now) {
   const idle = weeksSince(activity, now);
   const waitingForMaintainer = maintainerActivity && activity > maintainerActivity;
   const reasons = [];
-  const otherRed = checks.otherRed.map((c) => ({ ...c, since: redSince(c, parentChecks) }));
+  const askedAt = attestedAskedAt(timeline);
+  const attestedRed = checks.otherRed.some((c) => c.name === ATTESTED_CHECK);
+  // The attested check counts from the day the script asked for the attestation files, not before.
+  const otherRed = checks.otherRed
+    .filter((c) => c.name !== ATTESTED_CHECK || askedAt)
+    .map((c) => ({ ...c, since: c.name === ATTESTED_CHECK ? askedAt : redSince(c, parentChecks) }));
   const redFor = otherRed.length ? Math.min(...otherRed.map((c) => (c.since ? weeksSince(c.since, now) : Infinity))) : 0;
   if (idle > opts.weeks && otherRed.length && redFor > opts.weeks) {
     reasons.push({
@@ -254,6 +270,7 @@ function decide(pr, checks, timeline, parentChecks, opts, now) {
     if (reported) return { action: 'skip', note: 'runner disagreement reported, waiting for a maintainer', ...info };
     return { action: 'comment', comment: 'runners-disagree', ...info };
   }
+  if (attestedRed && !askedAt) return { action: 'comment', comment: 'attested', ...info };
   if (reasons.length && waitingForMaintainer) return { action: 'skip', note: `waiting for a maintainer since ${day(activity)}`, ...info };
   if (reasons.length) return { action: 'close', reasons, ...info };
   if (idle > opts.weeks && otherRed.length) return { action: 'skip', note: `red only since ${day(earliest(otherRed.map((c) => c.since).filter(Boolean)))}`, ...info };
@@ -280,19 +297,36 @@ function runnersSentence(runners) {
   return Object.entries(runners).map(([name, verdict]) => `the ${name} runner is ${verdict}`).join(' and ');
 }
 
+function attestedComment(pr) {
+  return [
+    `<!-- ${ATTESTED_MARKER} -->`,
+    `@${pr.author.login} this pull request changes a descriptor that an auditor attested, so the check "${ATTESTED_CHECK}" is red.`,
+    '',
+    'When the change is intended, delete the attestation files of that descriptor from its `sigs/` folder, as the check says. The attestation is for the previous version of the descriptor and does not cover the new one.',
+    '',
+    `*Posted by [triage-red-prs.js](${SCRIPT_URL}).*`,
+  ].join('\n');
+}
+
 function runnerComment(pr, checks, decision, opts) {
   const tags = opts.maintainers.map((m) => `@${m}`).join(' ');
   const advice = decision.comment === 'runners-disagree'
     ? `A disagreement between the runners is often a runner bug, not a descriptor bug, so a maintainer should compare the two before the author changes the descriptor. ${tags} please take a look.`
     : `The tests fail on both implementations, so the descriptor or its tests most likely have a bug. @${pr.author.login} please look at the test results. ${tags} for your information.`;
   return [
-    `<!-- ${MARKER}:${pr.headRefOid} -->`,
+    `<!-- ${RUNNER_MARKER}:${pr.headRefOid} -->`,
     `On commit ${pr.headRefOid.slice(0, 7)} ${runnersSentence(checks.runners)}.`,
     '',
     advice,
     '',
     `*Posted by [triage-red-prs.js](${SCRIPT_URL}).*`,
   ].join('\n');
+}
+
+function commentBody(pr, checks, decision, opts) {
+  if (decision.action === 'close') return closeComment(pr, decision, opts);
+  if (decision.comment === 'attested') return attestedComment(pr);
+  return runnerComment(pr, checks, decision, opts);
 }
 
 function sleep(ms) {
@@ -324,10 +358,10 @@ function main() {
     const since = new Map(decision.otherRed.map((c) => [c.name, c.since]));
     console.log(`  red: ${checks.red.map((c) => (since.get(c.name) ? `${c.name} (since ${day(since.get(c.name))})` : c.name)).join('; ') || 'none'}`);
     if (decision.action === 'close') console.log(`  CLOSE: ${decision.reasons.map((r) => r.text + (r.items ? ' ' + r.items.join('; ') : '')).join(' | ')}`);
-    else if (decision.action === 'comment') console.log(`  COMMENT (${decision.comment}): ${runnersSentence(checks.runners)}`);
+    else if (decision.action === 'comment') console.log(`  COMMENT (${decision.comment}): ${decision.comment === 'attested' ? 'ask the author to delete the attestation files' : runnersSentence(checks.runners)}`);
     else console.log(`  skip: ${decision.note}`);
     if (opts.verbose && decision.action !== 'skip') {
-      const body = decision.action === 'close' ? closeComment(pr, decision, opts) : runnerComment(pr, checks, decision, opts);
+      const body = commentBody(pr, checks, decision, opts);
       console.log(body.split('\n').map((line) => `    | ${line}`).join('\n'));
     }
     console.log('');
@@ -347,7 +381,7 @@ function main() {
       gh(['pr', 'close', String(pr.number), '--repo', opts.repo, '--comment', closeComment(pr, decision, opts)]);
     } else {
       console.log(`commenting on #${pr.number}`);
-      gh(['pr', 'comment', String(pr.number), '--repo', opts.repo, '--body-file', '-'], { input: runnerComment(pr, checks, decision, opts) });
+      gh(['pr', 'comment', String(pr.number), '--repo', opts.repo, '--body-file', '-'], { input: commentBody(pr, checks, decision, opts) });
     }
     sleep(3000);
   }
