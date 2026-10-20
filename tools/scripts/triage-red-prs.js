@@ -15,7 +15,8 @@
  *
  * Activity of the author = commits by the author, comments and reviews by the
  * author. Comments of bots and merges pushed by maintainers (Update branch) do
- * not count. The checks of the optional AI Review workflow and of the label
+ * not count. A pull request whose author acted after the last comment or
+ * review of a maintainer is never closed: the ball is with the maintainer. The checks of the optional AI Review workflow and of the label
  * bots are ignored, a cancelled run is not red, and a rerun that passed
  * supersedes an earlier failure of the same check on the same commit.
  *
@@ -124,6 +125,18 @@ function fetchTimeline(repo, number) {
   return { ...view, reviewComments };
 }
 
+function isBot(login) {
+  return !login || /\[bot\]$/.test(login) || login === 'github-actions' || login.startsWith('app/');
+}
+
+function isTriageComment(body) {
+  return (body || '').includes(MARKER);
+}
+
+function latest(dates) {
+  return dates.length ? new Date(Math.max(...dates.map((d) => new Date(d).getTime()))) : null;
+}
+
 function lastAuthorActivity(pr, timeline) {
   const author = pr.author.login;
   const dates = [pr.createdAt];
@@ -131,7 +144,18 @@ function lastAuthorActivity(pr, timeline) {
   for (const c of timeline.comments) if (c.author && c.author.login === author) dates.push(c.createdAt);
   for (const r of timeline.reviews) if (r.author && r.author.login === author) dates.push(r.submittedAt);
   for (const c of timeline.reviewComments) if (c.user && c.user.login === author) dates.push(c.created_at);
-  return new Date(Math.max(...dates.map((d) => new Date(d).getTime())));
+  return latest(dates);
+}
+
+// Comments and reviews of humans other than the author, the triage comments excluded.
+function lastMaintainerActivity(pr, timeline) {
+  const author = pr.author.login;
+  const human = (login) => login && login !== author && !isBot(login);
+  const dates = [];
+  for (const c of timeline.comments) if (c.author && human(c.author.login) && !isTriageComment(c.body)) dates.push(c.createdAt);
+  for (const r of timeline.reviews) if (r.author && human(r.author.login)) dates.push(r.submittedAt);
+  for (const c of timeline.reviewComments) if (c.user && human(c.user.login)) dates.push(c.created_at);
+  return latest(dates);
 }
 
 function lastChangesRequested(timeline) {
@@ -153,8 +177,10 @@ function day(date) {
 
 function decide(pr, checks, timeline, opts, now) {
   const activity = lastAuthorActivity(pr, timeline);
+  const maintainerActivity = lastMaintainerActivity(pr, timeline);
   const changesAt = lastChangesRequested(timeline);
   const idle = weeksSince(activity, now);
+  const waitingForMaintainer = maintainerActivity && activity > maintainerActivity;
   const reasons = [];
   if (idle > opts.weeks && checks.otherRed.length) {
     reasons.push({
@@ -162,10 +188,11 @@ function decide(pr, checks, timeline, opts, now) {
       items: checks.otherRed.map((c) => c.name),
     });
   }
-  if (idle > opts.weeks && pr.reviewDecision === 'CHANGES_REQUESTED' && changesAt) {
+  if (idle > opts.weeks && pr.reviewDecision === 'CHANGES_REQUESTED' && changesAt && weeksSince(changesAt, now) > opts.weeks) {
     reasons.push({ text: `a reviewer requested changes on ${day(changesAt)} and the author made no change since ${day(activity)}, more than ${opts.weeks} weeks ago` });
   }
-  const info = { activity, changesAt, idle };
+  const info = { activity, maintainerActivity, changesAt, idle };
+  if (reasons.length && waitingForMaintainer) return { action: 'skip', note: `waiting for a maintainer since ${day(activity)}`, ...info };
   if (reasons.length) return { action: 'close', reasons, ...info };
   if (checks.runnersRed) {
     if (hasRunnerComment(timeline, pr.headRefOid)) return { action: 'skip', note: 'runner failure already reported for this commit', ...info };
@@ -229,7 +256,7 @@ function main() {
   for (const { pr, checks, decision } of plan) {
     const flags = pr.isDraft ? ' (draft)' : '';
     console.log(`#${pr.number}${flags} ${pr.author.login}: ${pr.title}`);
-    console.log(`  opened ${day(new Date(pr.createdAt))}, last author activity ${day(decision.activity)}, review ${pr.reviewDecision || 'none'}`);
+    console.log(`  opened ${day(new Date(pr.createdAt))}, last author activity ${day(decision.activity)}, last maintainer activity ${decision.maintainerActivity ? day(decision.maintainerActivity) : 'none'}, review ${pr.reviewDecision || 'none'}`);
     console.log(`  red: ${checks.red.map((c) => c.name).join('; ') || 'none'}`);
     if (decision.action === 'close') console.log(`  CLOSE: ${decision.reasons.map((r) => r.text + (r.items ? ' ' + r.items.join('; ') : '')).join(' | ')}`);
     else if (decision.action === 'comment') console.log(`  COMMENT: ${runnersSentence(decision.runners)}`);
