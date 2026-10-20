@@ -394,12 +394,18 @@ An approval that stays open is work left for someone else, so a pull request you
 ```bash
 gh pr view "$N" -R "$R" --json isDraft,mergeable,headRefOid,reviewDecision,reviews \
   --jq '{isDraft, mergeable, head: .headRefOid, decision: .reviewDecision, changesRequested: [.reviews[] | select(.state == "CHANGES_REQUESTED") | .author.login]}'
-gh pr merge "$N" -R "$R" --squash
+gh pr merge "$N" -R "$R"
 ```
 
-The repository merges by squash and deletes the branch, so the commit on master is the pull request title with its number, as every other merge. When a condition does not hold, leave the pull request open and say why in the report. A pull request you did not approve is never merged.
+master requires a merge queue, so the command does not merge: it adds the pull request to the queue. GitHub then builds master plus the queued pull requests, runs the required checks on that, and merges when they pass, some minutes later. The queue sets the merge method, squash, so the command takes no strategy flag. Never pass `--admin`: it bypasses the queue, and the queue is the point.
 
-In dry run mode, after the approval is posted, ask with AskUserQuestion: **Merge now**, **Leave open**. In live mode, merge and show the merge commit.
+The queue is the only way to merge, and it is the preferred one: the checks of a pull request run against master as it was at the push, so two green pull requests can still conflict in the index. The queue tests each pull request on top of the ones before it and catches that before the merge.
+
+Do not wait for the merge. Go on with the next pull request, and at the end of the batch read the state of every pull request you queued: merged, still queued, or back to open with a failed check on the queue run. The queue removes a pull request whose group fails and leaves it open; the failed run is on the pull request page, under the checks, with "merge_group" as its event. Report such a pull request as queued and rejected, with the check that failed. Do not queue it again.
+
+When a condition does not hold, leave the pull request open and say why in the report. A pull request you did not approve is never merged.
+
+In dry run mode, after the approval is posted, ask with AskUserQuestion: **Merge now**, **Leave open**. In live mode, queue the pull request and show the queue message of the command.
 
 ## Step 5: improve the prompt
 
@@ -444,4 +450,4 @@ A count says the change is wanted; it does not say it works. The body of the pul
 
 ## Step 6: report
 
-End with one table: pull request, verdict, posted or not, merged or not, criticals confirmed, false positives, missed findings, units read in the source, one column group per model that ran. Then the prompt changes in one paragraph, with the groups that did not pass a bar; the `model`, `pipeline` and `input` patterns in one line each; the branches you updated and the runs you approved, the units you reviewed yourself with the reason the CI review gave no answer, and the list of pull requests you skipped with the reason. Keep `$WORK` in place and name the path, so the user can read the review bodies and the scorecard.
+End with one table: pull request, verdict, posted or not, queued and merged or not, criticals confirmed, false positives, missed findings, units read in the source, one column group per model that ran. Then the prompt changes in one paragraph, with the groups that did not pass a bar; the `model`, `pipeline` and `input` patterns in one line each; the branches you updated and the runs you approved, the units you reviewed yourself with the reason the CI review gave no answer, and the list of pull requests you skipped with the reason. Keep `$WORK` in place and name the path, so the user can read the review bodies and the scorecard.
