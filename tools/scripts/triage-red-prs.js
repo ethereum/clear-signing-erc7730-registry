@@ -70,6 +70,8 @@ const RENAMED_CHECKS = new Map([
   ['🔎 validate index', 'No index entry is overwritten'],
   ['🔎 validate file names', 'File names follow the registry layout'],
   ['🔎 validate attested descriptors', 'Attested descriptors are unchanged'],
+  ['Check test coverage', 'Every function has a test case'],
+  ['Require testsv2 files', 'Every affected descriptor has a test file'],
 ]);
 
 function parseArgs(argv) {
