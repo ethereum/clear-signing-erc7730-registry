@@ -8,15 +8,18 @@
  * - a test runner (Sourcify SDK or Rust SDK) is red: comment on the pull
  *   request and tag the maintainers, once per head commit, so they compare
  *   the two runners before the author rewrites the descriptor;
- * - a check other than the two runners is red and the author did nothing for
- *   more than N weeks: close it with a comment;
+ * - a check other than the two runners is red for more than N weeks and the
+ *   author did nothing for more than N weeks: close it with a comment;
  * - a reviewer requested changes and the author did nothing for more than
  *   N weeks: close it with a comment.
  *
  * Activity of the author = commits by the author, comments and reviews by the
  * author. Comments of bots and merges pushed by maintainers (Update branch) do
  * not count. A pull request whose author acted after the last comment or
- * review of a maintainer is never closed: the ball is with the maintainer. The checks of the optional AI Review workflow and of the label
+ * review of a maintainer is never closed: the ball is with the maintainer.
+ * A check is red since the run that made it red: a merge of master that turns
+ * a green check red starts the clock again, a merge that keeps a red check
+ * red does not. The checks of the optional AI Review workflow and of the label
  * bots are ignored, a cancelled run is not red, and a rerun that passed
  * supersedes an earlier failure of the same check on the same commit.
  *
@@ -48,6 +51,15 @@ const RUST_RUNNER = /^(Rust - llbartekll SDK tests|Rust tests for )/;
 const IGNORED_WORKFLOWS = new Set(['AI Review', 'PR Labels', '🏷️ pull request labels', '✨ pull request setup', 'Descriptor Tests Queued', 'Clear Signing Tests Started']);
 const IGNORED_JOBS = new Set(['Notify fork PR']);
 const RED_STATES = new Set(['FAILURE', 'TIMED_OUT', 'STARTUP_FAILURE', 'ERROR']);
+// The names of the registry checks before #3046, so a check that was red
+// under its old name on the previous head commit is not counted as newly red.
+const RENAMED_CHECKS = new Map([
+  ['🔎 validate descriptors', 'Descriptors pass the ERC-7730 linter'],
+  ['🔎 validate JSON schemas', 'JSON files match their schema'],
+  ['🔎 validate index', 'No index entry is overwritten'],
+  ['🔎 validate file names', 'File names follow the registry layout'],
+  ['🔎 validate attested descriptors', 'Attested descriptors are unchanged'],
+]);
 
 function parseArgs(argv) {
   const opts = { apply: false, weeks: DEFAULT_WEEKS, repo: DEFAULT_REPO, maintainers: DEFAULT_MAINTAINERS, prs: [], verbose: false };
@@ -97,15 +109,24 @@ function listOpenPrs(repo) {
     'number,title,url,author,createdAt,isDraft,reviewDecision,headRefOid,statusCheckRollup']);
 }
 
-function classifyChecks(pr) {
+// One entry per check name: a rerun that passed supersedes a failed run.
+function dedupeChecks(list) {
   const byName = new Map();
-  for (const c of pr.statusCheckRollup || []) {
-    const check = { name: c.name || c.context || '', workflow: c.workflowName || '', state: c.conclusion || c.state || '' };
+  for (const check of list) {
     if (IGNORED_WORKFLOWS.has(check.workflow) || IGNORED_JOBS.has(check.name)) continue;
     const seen = byName.get(check.name);
     if (!seen || seen.state !== 'SUCCESS') byName.set(check.name, check);
   }
-  const checks = [...byName.values()];
+  return [...byName.values()];
+}
+
+function classifyChecks(pr) {
+  const checks = dedupeChecks((pr.statusCheckRollup || []).map((c) => ({
+    name: c.name || c.context || '',
+    workflow: c.workflowName || '',
+    state: c.conclusion || c.state || '',
+    completedAt: c.completedAt || c.startedAt || null,
+  })));
   const sourcify = checks.filter((c) => SOURCIFY_RUNNER.test(c.name));
   const rust = checks.filter((c) => RUST_RUNNER.test(c.name));
   const others = checks.filter((c) => !SOURCIFY_RUNNER.test(c.name) && !RUST_RUNNER.test(c.name));
@@ -125,6 +146,27 @@ function fetchTimeline(repo, number) {
   return { ...view, reviewComments };
 }
 
+// The checks of the commit before the head commit, by name. The first parent
+// of the head is the previous head, also when the head is a merge of master.
+function fetchParentChecks(repo, sha) {
+  const commit = ghJson(['api', `repos/${repo}/commits/${sha}`]);
+  const parent = commit.parents && commit.parents[0];
+  if (!parent) return new Map();
+  const runs = ghJson(['api', '--paginate', `repos/${repo}/commits/${parent.sha}/check-runs?per_page=100`]);
+  const checks = dedupeChecks((runs.check_runs || []).map((c) => ({
+    name: RENAMED_CHECKS.get(c.name) || c.name, workflow: '', state: (c.conclusion || '').toUpperCase(), completedAt: c.completed_at,
+  })));
+  return new Map(checks.map((c) => [c.name, c]));
+}
+
+// When the same check was already red on the previous head, it is red since
+// that run; otherwise since the run on the head commit.
+function redSince(check, parentChecks) {
+  const before = parentChecks.get(check.name);
+  const since = before && RED_STATES.has(before.state) ? before.completedAt : check.completedAt;
+  return since ? new Date(since) : null;
+}
+
 function isBot(login) {
   return !login || /\[bot\]$/.test(login) || login === 'github-actions' || login.startsWith('app/');
 }
@@ -135,6 +177,10 @@ function isTriageComment(body) {
 
 function latest(dates) {
   return dates.length ? new Date(Math.max(...dates.map((d) => new Date(d).getTime()))) : null;
+}
+
+function earliest(dates) {
+  return dates.length ? new Date(Math.min(...dates.map((d) => new Date(d).getTime()))) : null;
 }
 
 function lastAuthorActivity(pr, timeline) {
@@ -175,25 +221,28 @@ function day(date) {
   return date.toISOString().slice(0, 10);
 }
 
-function decide(pr, checks, timeline, opts, now) {
+function decide(pr, checks, timeline, parentChecks, opts, now) {
   const activity = lastAuthorActivity(pr, timeline);
   const maintainerActivity = lastMaintainerActivity(pr, timeline);
   const changesAt = lastChangesRequested(timeline);
   const idle = weeksSince(activity, now);
   const waitingForMaintainer = maintainerActivity && activity > maintainerActivity;
   const reasons = [];
-  if (idle > opts.weeks && checks.otherRed.length) {
+  const otherRed = checks.otherRed.map((c) => ({ ...c, since: redSince(c, parentChecks) }));
+  const redFor = otherRed.length ? Math.min(...otherRed.map((c) => (c.since ? weeksSince(c.since, now) : Infinity))) : 0;
+  if (idle > opts.weeks && otherRed.length && redFor > opts.weeks) {
     reasons.push({
       text: `the author made no change since ${day(activity)}, more than ${opts.weeks} weeks ago, and these checks are red:`,
-      items: checks.otherRed.map((c) => c.name),
+      items: otherRed.map((c) => `${c.name}${c.since ? ` (since ${day(c.since)})` : ''}`),
     });
   }
   if (idle > opts.weeks && pr.reviewDecision === 'CHANGES_REQUESTED' && changesAt && weeksSince(changesAt, now) > opts.weeks) {
     reasons.push({ text: `a reviewer requested changes on ${day(changesAt)} and the author made no change since ${day(activity)}, more than ${opts.weeks} weeks ago` });
   }
-  const info = { activity, maintainerActivity, changesAt, idle };
+  const info = { activity, maintainerActivity, changesAt, idle, otherRed };
   if (reasons.length && waitingForMaintainer) return { action: 'skip', note: `waiting for a maintainer since ${day(activity)}`, ...info };
   if (reasons.length) return { action: 'close', reasons, ...info };
+  if (idle > opts.weeks && otherRed.length) return { action: 'skip', note: `red only since ${day(earliest(otherRed.map((c) => c.since).filter(Boolean)))}`, ...info };
   if (checks.runnersRed) {
     if (hasRunnerComment(timeline, pr.headRefOid)) return { action: 'skip', note: 'runner failure already reported for this commit', ...info };
     return { action: 'comment', runners: checks.runnersRed, ...info };
@@ -248,7 +297,8 @@ function main() {
     const checks = classifyChecks(pr);
     if (!checks.red.length && pr.reviewDecision !== 'CHANGES_REQUESTED') continue;
     const timeline = fetchTimeline(opts.repo, pr.number);
-    const decision = decide(pr, checks, timeline, opts, now);
+    const parentChecks = checks.otherRed.length ? fetchParentChecks(opts.repo, pr.headRefOid) : new Map();
+    const decision = decide(pr, checks, timeline, parentChecks, opts, now);
     plan.push({ pr, checks, decision });
   }
 
@@ -257,7 +307,8 @@ function main() {
     const flags = pr.isDraft ? ' (draft)' : '';
     console.log(`#${pr.number}${flags} ${pr.author.login}: ${pr.title}`);
     console.log(`  opened ${day(new Date(pr.createdAt))}, last author activity ${day(decision.activity)}, last maintainer activity ${decision.maintainerActivity ? day(decision.maintainerActivity) : 'none'}, review ${pr.reviewDecision || 'none'}`);
-    console.log(`  red: ${checks.red.map((c) => c.name).join('; ') || 'none'}`);
+    const since = new Map(decision.otherRed.map((c) => [c.name, c.since]));
+    console.log(`  red: ${checks.red.map((c) => (since.get(c.name) ? `${c.name} (since ${day(since.get(c.name))})` : c.name)).join('; ') || 'none'}`);
     if (decision.action === 'close') console.log(`  CLOSE: ${decision.reasons.map((r) => r.text + (r.items ? ' ' + r.items.join('; ') : '')).join(' | ')}`);
     else if (decision.action === 'comment') console.log(`  COMMENT: ${runnersSentence(decision.runners)}`);
     else console.log(`  skip: ${decision.note}`);
