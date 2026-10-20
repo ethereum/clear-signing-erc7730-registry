@@ -4,11 +4,12 @@
 
 | Situation | Action |
 | --- | --- |
-| A test runner (Sourcify SDK or Rust SDK) is red, whatever the other one says | Comment on the pull request and tag the maintainers, so they compare the two runners before the author rewrites the descriptor: a red runner can be a runner bug. The comment is posted once per head commit. |
+| The two test runners (Sourcify SDK and Rust SDK) disagree, one green and one red | Comment on the pull request and tag the maintainers, so they compare the two runners before the author rewrites the descriptor: a disagreement is often a runner bug. The comment is posted once per head commit, and the pull request is not closed while the disagreement is open, whatever the other checks say. |
+| Both test runners are red | The descriptor or its tests most likely have a bug. Comment once per head commit, tag the author and the maintainers, and count the runners like any other red check for the close rule below. |
 | A check other than the two runners is red for more than N weeks and the author did nothing for more than N weeks | Close the pull request with a comment that lists the red checks and says how to reopen. |
 | A reviewer requested changes and the author did nothing for more than N weeks | Close the pull request with a comment. This rule needs no red check. |
 
-N is 4 weeks by default. A pull request that matches both close rules gets one comment with both reasons. A pull request that matches a close rule and the runner rule is closed, not commented.
+N is 4 weeks by default. A pull request that matches both close rules gets one comment with both reasons. The script does one thing per pull request and run: a runner disagreement comes first, then a close, then the comment for two red runners.
 
 ## What counts
 

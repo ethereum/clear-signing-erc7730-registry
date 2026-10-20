@@ -5,9 +5,13 @@
  * Goes through every open pull request that has a failed check on its last
  * commit or a pending change request, and decides one of three things for it:
  *
- * - a test runner (Sourcify SDK or Rust SDK) is red: comment on the pull
- *   request and tag the maintainers, once per head commit, so they compare
- *   the two runners before the author rewrites the descriptor;
+ * - the two test runners (Sourcify SDK and Rust SDK) disagree, one green and
+ *   one red: comment and tag the maintainers, once per head commit, so they
+ *   compare the two runners before the author rewrites the descriptor. The
+ *   pull request is not closed while the disagreement is open;
+ * - both runners are red: the descriptor most likely has a bug. Comment and
+ *   tag the author and the maintainers, once per head commit, and treat the
+ *   runners like any other red check for the close rule;
  * - a check other than the two runners is red for more than N weeks and the
  *   author did nothing for more than N weeks: close it with a comment;
  * - a reviewer requested changes and the author did nothing for more than
@@ -133,10 +137,15 @@ function classifyChecks(pr) {
   const isRed = (c) => RED_STATES.has(c.state);
   const verdict = (list) => (list.some(isRed) ? 'red' : list.length && list.every((c) => c.state === 'SUCCESS') ? 'green' : 'not run');
   const runners = { 'Sourcify SDK': verdict(sourcify), 'Rust SDK': verdict(rust) };
+  const verdicts = Object.values(runners);
+  const bothRed = verdicts.every((v) => v === 'red');
   return {
     red: checks.filter(isRed),
-    otherRed: others.filter(isRed),
-    runnersRed: Object.values(runners).includes('red') ? runners : null,
+    // Two red runners count like any other red check: the descriptor is broken.
+    otherRed: [...others.filter(isRed), ...(bothRed ? [...sourcify, ...rust].filter(isRed) : [])],
+    runners,
+    runnersDisagree: verdicts.includes('red') && verdicts.includes('green'),
+    runnersBothRed: bothRed,
   };
 }
 
@@ -240,14 +249,16 @@ function decide(pr, checks, timeline, parentChecks, opts, now) {
     reasons.push({ text: `a reviewer requested changes on ${day(changesAt)} and the author made no change since ${day(activity)}, more than ${opts.weeks} weeks ago` });
   }
   const info = { activity, maintainerActivity, changesAt, idle, otherRed };
+  const reported = hasRunnerComment(timeline, pr.headRefOid);
+  if (checks.runnersDisagree) {
+    if (reported) return { action: 'skip', note: 'runner disagreement reported, waiting for a maintainer', ...info };
+    return { action: 'comment', comment: 'runners-disagree', ...info };
+  }
   if (reasons.length && waitingForMaintainer) return { action: 'skip', note: `waiting for a maintainer since ${day(activity)}`, ...info };
   if (reasons.length) return { action: 'close', reasons, ...info };
   if (idle > opts.weeks && otherRed.length) return { action: 'skip', note: `red only since ${day(earliest(otherRed.map((c) => c.since).filter(Boolean)))}`, ...info };
-  if (checks.runnersRed) {
-    if (hasRunnerComment(timeline, pr.headRefOid)) return { action: 'skip', note: 'runner failure already reported for this commit', ...info };
-    return { action: 'comment', runners: checks.runnersRed, ...info };
-  }
-  return { action: 'skip', note: 'not stale', ...info };
+  if (checks.runnersBothRed && !reported) return { action: 'comment', comment: 'runners-both-red', ...info };
+  return { action: 'skip', note: checks.runnersBothRed ? 'both runners red, already reported for this commit' : 'not stale', ...info };
 }
 
 function closeComment(pr, decision, opts) {
@@ -269,13 +280,16 @@ function runnersSentence(runners) {
   return Object.entries(runners).map(([name, verdict]) => `the ${name} runner is ${verdict}`).join(' and ');
 }
 
-function runnerComment(pr, decision, opts) {
+function runnerComment(pr, checks, decision, opts) {
   const tags = opts.maintainers.map((m) => `@${m}`).join(' ');
+  const advice = decision.comment === 'runners-disagree'
+    ? `A disagreement between the runners is often a runner bug, not a descriptor bug, so a maintainer should compare the two before the author changes the descriptor. ${tags} please take a look.`
+    : `The tests fail on both implementations, so the descriptor or its tests most likely have a bug. @${pr.author.login} please look at the test results. ${tags} for your information.`;
   return [
     `<!-- ${MARKER}:${pr.headRefOid} -->`,
-    `On commit ${pr.headRefOid.slice(0, 7)} ${runnersSentence(decision.runners)}.`,
+    `On commit ${pr.headRefOid.slice(0, 7)} ${runnersSentence(checks.runners)}.`,
     '',
-    `A red runner can be a runner bug, not a descriptor bug, so a maintainer should compare the two before the author changes the descriptor. ${tags} please take a look.`,
+    advice,
     '',
     `*Posted by [triage-red-prs.js](${SCRIPT_URL}).*`,
   ].join('\n');
@@ -310,10 +324,10 @@ function main() {
     const since = new Map(decision.otherRed.map((c) => [c.name, c.since]));
     console.log(`  red: ${checks.red.map((c) => (since.get(c.name) ? `${c.name} (since ${day(since.get(c.name))})` : c.name)).join('; ') || 'none'}`);
     if (decision.action === 'close') console.log(`  CLOSE: ${decision.reasons.map((r) => r.text + (r.items ? ' ' + r.items.join('; ') : '')).join(' | ')}`);
-    else if (decision.action === 'comment') console.log(`  COMMENT: ${runnersSentence(decision.runners)}`);
+    else if (decision.action === 'comment') console.log(`  COMMENT (${decision.comment}): ${runnersSentence(checks.runners)}`);
     else console.log(`  skip: ${decision.note}`);
     if (opts.verbose && decision.action !== 'skip') {
-      const body = decision.action === 'close' ? closeComment(pr, decision, opts) : runnerComment(pr, decision, opts);
+      const body = decision.action === 'close' ? closeComment(pr, decision, opts) : runnerComment(pr, checks, decision, opts);
       console.log(body.split('\n').map((line) => `    | ${line}`).join('\n'));
     }
     console.log('');
@@ -327,13 +341,13 @@ function main() {
     return;
   }
 
-  for (const { pr, decision } of actions) {
+  for (const { pr, checks, decision } of actions) {
     if (decision.action === 'close') {
       console.log(`closing #${pr.number}`);
       gh(['pr', 'close', String(pr.number), '--repo', opts.repo, '--comment', closeComment(pr, decision, opts)]);
     } else {
       console.log(`commenting on #${pr.number}`);
-      gh(['pr', 'comment', String(pr.number), '--repo', opts.repo, '--body-file', '-'], { input: runnerComment(pr, decision, opts) });
+      gh(['pr', 'comment', String(pr.number), '--repo', opts.repo, '--body-file', '-'], { input: runnerComment(pr, checks, decision, opts) });
     }
     sleep(3000);
   }
