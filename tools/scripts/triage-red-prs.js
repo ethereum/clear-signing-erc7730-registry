@@ -3,7 +3,7 @@
  * Triage of the open pull requests with red CI.
  *
  * Goes through every open pull request that has a failed check on its last
- * commit or a pending change request, and decides one of three things for it:
+ * commit or a pending change request, and decides one thing for it:
  *
  * - one test runner (Sourcify SDK or Rust SDK) is red and the other one is
  *   green or did not run: comment and tag the maintainers, once per head

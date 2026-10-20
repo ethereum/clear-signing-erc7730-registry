@@ -1,6 +1,6 @@
 # Triage of pull requests with red CI
 
-`triage-red-prs.js` goes through the open pull requests that have a failed check on their last commit or a pending change request, and does one of three things for each of them.
+`triage-red-prs.js` goes through the open pull requests that have a failed check on their last commit or a pending change request, and does one thing for each of them.
 
 | Situation | Action |
 | --- | --- |
