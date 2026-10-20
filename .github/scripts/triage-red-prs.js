@@ -32,7 +32,7 @@
  * supersedes an earlier failure of the same check on the same commit.
  *
  * Usage:
- *   node tools/scripts/triage-red-prs.js [options]
+ *   node .github/scripts/triage-red-prs.js [options]
  *
  * Options:
  *   --apply               Post the comments and close the pull requests.
@@ -53,7 +53,7 @@ const { execFileSync } = require('child_process');
 const DEFAULT_REPO = 'ethereum/clear-signing-erc7730-registry';
 const DEFAULT_WEEKS = 4;
 const DEFAULT_MAINTAINERS = ['kuzdogan', 'manuelwedler', 'marcocastignoli', 'austintgriffith'];
-const SCRIPT_URL = `https://github.com/${DEFAULT_REPO}/blob/master/tools/scripts/triage-red-prs.js`;
+const SCRIPT_URL = `https://github.com/${DEFAULT_REPO}/blob/master/.github/scripts/triage-red-prs.js`;
 const MARKER = 'triage-red-prs';
 const RUNNER_MARKER = `${MARKER}:runner-failure`;
 const ATTESTED_MARKER = `${MARKER}:attested`;

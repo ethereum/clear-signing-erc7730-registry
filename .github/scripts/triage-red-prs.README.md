@@ -27,16 +27,16 @@ The script needs the GitHub CLI (`gh`) logged in with write access to the reposi
 
 ```bash
 # Print the plan
-node tools/scripts/triage-red-prs.js
+node .github/scripts/triage-red-prs.js
 
 # Print the plan with the full text of every comment
-node tools/scripts/triage-red-prs.js --verbose
+node .github/scripts/triage-red-prs.js --verbose
 
 # Post the comments and close the pull requests
-node tools/scripts/triage-red-prs.js --apply
+node .github/scripts/triage-red-prs.js --apply
 
 # Other options
-node tools/scripts/triage-red-prs.js --weeks 6 --maintainers kuzdogan,manuelwedler --pr 2994 --pr 3005
+node .github/scripts/triage-red-prs.js --weeks 6 --maintainers kuzdogan,manuelwedler --pr 2994 --pr 3005
 ```
 
 Run the dry run first and read the plan: the script closes pull requests. It posts sequentially with a pause between calls, because GitHub applies a secondary rate limit to bursts of comments.

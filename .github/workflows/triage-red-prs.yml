@@ -1,9 +1,9 @@
 name: Triage red PRs
 
-# Runs tools/scripts/triage-red-prs.js once a week as a dry run and writes
+# Runs .github/scripts/triage-red-prs.js once a week as a dry run and writes
 # the plan to the job summary, so the maintainers see what the script would
 # do without a local setup. A manual run with the "apply" input posts the
-# comments and closes the pull requests. See tools/scripts/triage-red-prs.README.md.
+# comments and closes the pull requests. See .github/scripts/triage-red-prs.README.md.
 
 on:
   schedule:
@@ -38,7 +38,7 @@ jobs:
       - name: Checkout the script
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          sparse-checkout: tools/scripts
+          sparse-checkout: .github/scripts
           sparse-checkout-cone-mode: false
 
       - name: Setup node
@@ -55,6 +55,6 @@ jobs:
           set -o pipefail
           {
             echo '```'
-            node tools/scripts/triage-red-prs.js --repo "$GITHUB_REPOSITORY" --weeks "$WEEKS" --verbose $APPLY
+            node .github/scripts/triage-red-prs.js --repo "$GITHUB_REPOSITORY" --weeks "$WEEKS" --verbose $APPLY
             echo '```'
           } | tee -a "$GITHUB_STEP_SUMMARY"
