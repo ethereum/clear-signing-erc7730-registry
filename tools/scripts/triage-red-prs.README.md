@@ -41,6 +41,10 @@ node tools/scripts/triage-red-prs.js --weeks 6 --maintainers kuzdogan,manuelwedl
 
 Run the dry run first and read the plan: the script closes pull requests. It posts sequentially with a pause between calls, because GitHub applies a secondary rate limit to bursts of comments.
 
+## In CI
+
+The workflow `.github/workflows/triage-red-prs.yml` runs the dry run every Monday and writes the plan to the job summary, so the maintainers see it without a local setup. A manual run of the workflow with the `apply` input posts the comments and closes the pull requests. The comments then come from the GitHub Actions bot, which never counts as activity, so a run of the workflow does not reset any clock.
+
 ## Comments
 
 Every comment ends with a link to this script, so a contributor knows where it came from. The runner comment carries a hidden marker with the head commit, which is how the script knows it already reported that commit. The attestation comment carries a marker without a commit, so it is posted once per pull request.
