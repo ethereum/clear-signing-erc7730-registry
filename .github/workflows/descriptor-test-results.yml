@@ -114,6 +114,16 @@ jobs:
             core.setOutput('url', pr.html_url);
             core.setOutput('title', pr.title);
 
+      # The detect job writes has_affected to the context. A pull request
+      # that affects no descriptor gets no bundle: the comment step only
+      # removes its note. A missing context does not skip the bundle.
+      - name: Read the context
+        id: ctx
+        if: steps.pr.outputs.found == 'true'
+        run: |
+          affected=$(jq -r 'if .has_affected == false then "false" else "true" end' pr-context/context.json 2>/dev/null || echo true)
+          echo "has_affected=$affected" >> "$GITHUB_OUTPUT"
+
       # The scripts come from the default branch, so a fork cannot change
       # them. Every step up to the comment continues on error: the comment
       # matters more than the report.
@@ -152,7 +162,7 @@ jobs:
       # from the pull_request event.
       - name: Build the test report bundle
         id: bundle
-        if: steps.pr.outputs.found == 'true'
+        if: steps.pr.outputs.found == 'true' && steps.ctx.outputs.has_affected == 'true'
         continue-on-error: true
         env:
           RUN_ID: ${{ github.event.workflow_run.id }}
