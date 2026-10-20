@@ -18,7 +18,7 @@ N is 4 weeks by default. A pull request that matches both close rules gets one c
 - **Red since**: a check is red since the run that made it red. When a merge of master turns a green check red, the clock starts at that run, so the author gets N weeks to react. When the same check was already red on the commit before the merge, it is red since that earlier run.
 - **Ignored checks**: the optional AI Review workflow, the label bots (`PR Labels` and its predecessors), the `Descriptor Tests Queued` note and its predecessor `Clear Signing Tests Started`, and the `Notify fork PR` job of the old test workflow.
 - **Author activity**: commits by the author, and comments, reviews and review replies by the author. Comments of bots and the merge commits a maintainer pushes with Update branch do not count, so a bulk Update branch does not reset the clock.
-- **Waiting for a maintainer**: when the author acted after the last comment or review of a maintainer, the pull request is never closed, whatever the checks say. The ball is with the maintainer. Comments of bots and of this script do not count as maintainer activity.
+- **Waiting for a maintainer**: when the author acted after the last comment or review of a maintainer, the pull request is never closed, whatever the checks say. The ball is with the maintainer. A maintainer is a member or collaborator of the repository, by the author association GitHub attaches to every comment, or a login given with `--maintainers`. Comments of other people, of bots and of this script do not count as maintainer activity.
 - **Drafts** are treated like any other pull request.
 
 ## Usage

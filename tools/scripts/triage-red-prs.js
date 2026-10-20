@@ -39,7 +39,9 @@
  *                         Without it the script only prints what it would do.
  *   --weeks <n>           Inactivity threshold in weeks (default 4)
  *   --repo <owner/name>   Repository (default ethereum/clear-signing-erc7730-registry)
- *   --maintainers <a,b>   GitHub logins to tag on a runner failure
+ *   --maintainers <a,b>   GitHub logins to tag on a runner failure. They count
+ *                         as maintainers for the activity rule, together with
+ *                         the members and collaborators of the repository.
  *   --pr <n>              Only this pull request (repeatable)
  *   --verbose             Print the full text of every comment the script would post
  *
@@ -62,6 +64,7 @@ const RUST_RUNNER = /^(Rust - llbartekll SDK tests|Rust tests for )/;
 const IGNORED_WORKFLOWS = new Set(['AI Review', 'PR Labels', '🏷️ pull request labels', '✨ pull request setup', 'Descriptor Tests Queued', 'Clear Signing Tests Started']);
 const IGNORED_JOBS = new Set(['Notify fork PR']);
 const RED_STATES = new Set(['FAILURE', 'TIMED_OUT', 'STARTUP_FAILURE', 'ERROR']);
+const MAINTAINER_ASSOCIATIONS = new Set(['OWNER', 'MEMBER', 'COLLABORATOR']);
 // The names of the registry checks before #3046, so a check that was red
 // under its old name on the previous head commit is not counted as newly red.
 const RENAMED_CHECKS = new Map([
@@ -212,14 +215,17 @@ function lastAuthorActivity(pr, timeline) {
   return latest(dates);
 }
 
-// Comments and reviews of humans other than the author, the triage comments excluded.
-function lastMaintainerActivity(pr, timeline) {
+// Comments and reviews of the maintainers, the triage comments excluded. A
+// maintainer is a member or collaborator of the repository, by the author
+// association GitHub attaches to every comment, or a login in --maintainers.
+function lastMaintainerActivity(pr, timeline, opts) {
   const author = pr.author.login;
-  const human = (login) => login && login !== author && !isBot(login);
+  const maintainer = (login, association) =>
+    login && login !== author && !isBot(login) && (MAINTAINER_ASSOCIATIONS.has(association) || opts.maintainers.includes(login));
   const dates = [];
-  for (const c of timeline.comments) if (c.author && human(c.author.login) && !isTriageComment(c.body)) dates.push(c.createdAt);
-  for (const r of timeline.reviews) if (r.author && human(r.author.login)) dates.push(r.submittedAt);
-  for (const c of timeline.reviewComments) if (c.user && human(c.user.login)) dates.push(c.created_at);
+  for (const c of timeline.comments) if (c.author && maintainer(c.author.login, c.authorAssociation) && !isTriageComment(c.body)) dates.push(c.createdAt);
+  for (const r of timeline.reviews) if (r.author && maintainer(r.author.login, r.authorAssociation)) dates.push(r.submittedAt);
+  for (const c of timeline.reviewComments) if (c.user && maintainer(c.user.login, c.author_association)) dates.push(c.created_at);
   return latest(dates);
 }
 
@@ -246,7 +252,7 @@ function day(date) {
 
 function decide(pr, checks, timeline, parentChecks, opts, now) {
   const activity = lastAuthorActivity(pr, timeline);
-  const maintainerActivity = lastMaintainerActivity(pr, timeline);
+  const maintainerActivity = lastMaintainerActivity(pr, timeline, opts);
   const changesAt = lastChangesRequested(timeline);
   const idle = weeksSince(activity, now);
   const waitingForMaintainer = maintainerActivity && activity > maintainerActivity;
