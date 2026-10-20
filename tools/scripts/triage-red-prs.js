@@ -169,7 +169,7 @@ function fetchParentChecks(repo, sha) {
   const commit = ghJson(['api', `repos/${repo}/commits/${sha}`]);
   const parent = commit.parents && commit.parents[0];
   if (!parent) return new Map();
-  const runs = ghJson(['api', '--paginate', `repos/${repo}/commits/${parent.sha}/check-runs?per_page=100`]);
+  const runs = ghJson(['api', `repos/${repo}/commits/${parent.sha}/check-runs?per_page=100`]);
   const checks = dedupeChecks((runs.check_runs || []).map((c) => ({
     name: RENAMED_CHECKS.get(c.name) || c.name, workflow: '', state: (c.conclusion || '').toUpperCase(), completedAt: c.completed_at,
   })));
