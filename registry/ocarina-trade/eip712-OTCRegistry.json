@@ -64,7 +64,7 @@
   "display": {
     "formats": {
       "OrderRegistration(bytes32 orderHash,bytes seaportSignature,string memo)": {
-        "intent": "Authorize offer",
+        "intent": "Authorize listing",
         "fields": [
           { "path": "orderHash", "label": "Order hash", "format": "raw", "visible": "always" },
           { "path": "memo", "label": "Memo", "format": "raw", "visible": { "ifNotIn": [""] } },
@@ -73,7 +73,7 @@
       },
       "TipAuthorization(bytes32 orderHash,address fulfiller,TipItem[] tips,uint256 deadline)TipItem(uint8 itemType,address token,uint256 identifier,uint256 amount,address recipient)": {
         "intent": "Authorize tip",
-        "interpolatedIntent": "Authorize {tips.[].amount} tip",
+        "interpolatedIntent": "Authorize {tips.[].amount} tip to {tips.[].recipient}",
         "fields": [
           { "path": "tips.[]", "label": "Tips", "visible": "never" },
           {
@@ -96,7 +96,13 @@
                 "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
                 "visible": "always"
               },
-              { "path": "tips.[].token", "label": "Tip token", "visible": "never" },
+              {
+                "path": "tips.[].token",
+                "label": "Tip token",
+                "format": "addressName",
+                "params": { "types": ["token", "contract"] },
+                "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+              },
               { "path": "tips.[].identifier", "label": "Tip identifier", "format": "raw", "visible": { "mustMatch": ["0"] } }
             ]
           },
@@ -108,7 +114,7 @@
             "visible": "always"
           },
           { "path": "deadline", "label": "Expires", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" },
-          { "path": "orderHash", "label": "Order hash", "visible": "never" }
+          { "path": "orderHash", "label": "Order hash", "format": "raw", "visible": "always" }
         ]
       }
     }

@@ -75,7 +75,17 @@
     "owner": "Ocarina",
     "contractName": "OTCRegistry",
     "info": { "url": "https://ocarina.trade/" },
-    "constants": { "nativeAssetAddress": "0x0000000000000000000000000000000000000000" }
+    "constants": { "nativeAssetAddress": "0x0000000000000000000000000000000000000000" },
+    "enums": {
+      "itemType": {
+        "0": "Native currency",
+        "1": "ERC-20 token",
+        "2": "ERC-721: exact ID",
+        "3": "ERC-1155: exact ID",
+        "4": "ERC-721: allowed ID",
+        "5": "ERC-1155: allowed ID"
+      }
+    }
   },
   "display": {
     "formats": {
@@ -91,10 +101,10 @@
           },
           {
             "path": "#.reg.components.zoneHash.[-20:]",
-            "label": "Taker",
+            "label": "Taker (zero: anyone)",
             "format": "addressName",
             "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+            "visible": "always"
           },
           { "path": "#.reg.components.offer.[]", "label": "Offer items", "visible": "never" },
           {
@@ -104,20 +114,21 @@
               {
                 "path": "#.reg.components.offer.[].itemType",
                 "label": "Offer type",
-                "format": "raw",
-                "visible": { "mustMatch": ["1", "2", "3", "4", "5"] }
+                "format": "enum",
+                "separator": "Offer item {index}",
+                "params": { "$ref": "$.metadata.enums.itemType" },
+                "visible": "always"
               },
               {
                 "path": "#.reg.components.offer.[].token",
                 "label": "Offer token",
                 "format": "addressName",
-                "separator": "Offer item {index}",
                 "params": { "types": ["token", "collection", "contract"] },
                 "visible": "always"
               },
               {
                 "path": "#.reg.components.offer.[].identifierOrCriteria",
-                "label": "Offer ID/criteria",
+                "label": "Offer ID/set hash",
                 "format": "raw",
                 "visible": "always"
               },
@@ -139,20 +150,21 @@
               {
                 "path": "#.reg.components.consideration.[].itemType",
                 "label": "Receive type",
-                "format": "raw",
-                "visible": { "mustMatch": ["0", "1", "2", "3", "4", "5"] }
+                "format": "enum",
+                "separator": "Receive item {index}",
+                "params": { "$ref": "$.metadata.enums.itemType" },
+                "visible": "always"
               },
               {
                 "path": "#.reg.components.consideration.[].token",
                 "label": "Receive token",
                 "format": "addressName",
-                "separator": "Receive item {index}",
                 "params": { "types": ["token", "collection", "contract"] },
-                "visible": "always"
+                "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
               },
               {
                 "path": "#.reg.components.consideration.[].identifierOrCriteria",
-                "label": "Receive ID/criteria",
+                "label": "Receive ID/set hash",
                 "format": "raw",
                 "visible": "always"
               },
