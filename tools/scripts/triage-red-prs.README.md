@@ -1,12 +1,12 @@
 # Triage of pull requests with red CI
 
-`triage-red-prs.js` goes through the open pull requests whose last commit has a failed check and does one of three things for each of them.
+`triage-red-prs.js` goes through the open pull requests that have a failed check on their last commit or a pending change request, and does one of three things for each of them.
 
 | Situation | Action |
 | --- | --- |
 | A test runner (Sourcify SDK or Rust SDK) is red, whatever the other one says | Comment on the pull request and tag the maintainers, so they compare the two runners before the author rewrites the descriptor: a red runner can be a runner bug. The comment is posted once per head commit. |
 | A check other than the two runners is red and the author did nothing for more than N weeks | Close the pull request with a comment that lists the red checks and says how to reopen. |
-| A reviewer requested changes and the author did nothing for more than N weeks | Close the pull request with a comment. |
+| A reviewer requested changes and the author did nothing for more than N weeks | Close the pull request with a comment. This rule needs no red check. |
 
 N is 4 weeks by default. A pull request that matches both close rules gets one comment with both reasons. A pull request that matches a close rule and the runner rule is closed, not commented.
 

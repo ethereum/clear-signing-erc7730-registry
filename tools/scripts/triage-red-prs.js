@@ -2,8 +2,8 @@
 /**
  * Triage of the open pull requests with red CI.
  *
- * Goes through every open pull request whose last commit has a failed check
- * and decides one of three things for it:
+ * Goes through every open pull request that has a failed check on its last
+ * commit or a pending change request, and decides one of three things for it:
  *
  * - a test runner (Sourcify SDK or Rust SDK) is red: comment on the pull
  *   request and tag the maintainers, once per head commit, so they compare
@@ -171,7 +171,7 @@ function decide(pr, checks, timeline, opts, now) {
     if (hasRunnerComment(timeline, pr.headRefOid)) return { action: 'skip', note: 'runner failure already reported for this commit', ...info };
     return { action: 'comment', runners: checks.runnersRed, ...info };
   }
-  return { action: 'skip', note: 'red but not stale', ...info };
+  return { action: 'skip', note: 'not stale', ...info };
 }
 
 function closeComment(pr, decision, opts) {
@@ -219,18 +219,18 @@ function main() {
   const plan = [];
   for (const pr of prs) {
     const checks = classifyChecks(pr);
-    if (!checks.red.length) continue;
+    if (!checks.red.length && pr.reviewDecision !== 'CHANGES_REQUESTED') continue;
     const timeline = fetchTimeline(opts.repo, pr.number);
     const decision = decide(pr, checks, timeline, opts, now);
     plan.push({ pr, checks, decision });
   }
 
-  console.log(`${prs.length} open pull requests, ${plan.length} with red checks, threshold ${opts.weeks} weeks\n`);
+  console.log(`${prs.length} open pull requests, ${plan.length} with red checks or requested changes, threshold ${opts.weeks} weeks\n`);
   for (const { pr, checks, decision } of plan) {
     const flags = pr.isDraft ? ' (draft)' : '';
     console.log(`#${pr.number}${flags} ${pr.author.login}: ${pr.title}`);
     console.log(`  opened ${day(new Date(pr.createdAt))}, last author activity ${day(decision.activity)}, review ${pr.reviewDecision || 'none'}`);
-    console.log(`  red: ${checks.red.map((c) => c.name).join('; ')}`);
+    console.log(`  red: ${checks.red.map((c) => c.name).join('; ') || 'none'}`);
     if (decision.action === 'close') console.log(`  CLOSE: ${decision.reasons.map((r) => r.text + (r.items ? ' ' + r.items.join('; ') : '')).join(' | ')}`);
     else if (decision.action === 'comment') console.log(`  COMMENT: ${runnersSentence(decision.runners)}`);
     else console.log(`  skip: ${decision.note}`);
