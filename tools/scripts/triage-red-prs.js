@@ -44,7 +44,7 @@ const MARKER = 'triage-red-prs:runner-failure';
 
 const SOURCIFY_RUNNER = /^(Typescript - Sourcify SDK tests|Sourcify tests for )/;
 const RUST_RUNNER = /^(Rust - llbartekll SDK tests|Rust tests for )/;
-const IGNORED_WORKFLOWS = new Set(['AI Review', 'PR Labels', '🏷️ pull request labels', '✨ pull request setup', 'Descriptor Tests Queued']);
+const IGNORED_WORKFLOWS = new Set(['AI Review', 'PR Labels', '🏷️ pull request labels', '✨ pull request setup', 'Descriptor Tests Queued', 'Clear Signing Tests Started']);
 const IGNORED_JOBS = new Set(['Notify fork PR']);
 const RED_STATES = new Set(['FAILURE', 'TIMED_OUT', 'STARTUP_FAILURE', 'ERROR']);
 
