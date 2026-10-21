@@ -1,0 +1,50 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-GovernanceVotePower-Flare.json",
+  "tests": [
+    {
+      "description": "Delegate governance vote power - chain 14",
+      "rawTx": "0x02f84c0e01840f2f16ee8411807b358307a1209495ed14840d3a1c75b8629ae5599fe55270c51e0480a45c19a95c0000000000000000000000004444444444444444444444444444444444444444c0",
+      "expected": {
+        "intent": "delegate all vote power",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "To",
+            "value": "Delegate Target"
+          }
+        ],
+        "interpolatedIntent": "Delegate all vote power to Delegate Target"
+      }
+    },
+    {
+      "description": "Undelegate governance vote power - chain 14",
+      "rawTx": "0x02ec0e02840f2f16ee8411807b358307a1209495ed14840d3a1c75b8629ae5599fe55270c51e04808492ab89bbc0",
+      "expected": {
+        "intent": "undelegate vote power",
+        "owner": "Flare Foundation",
+        "fields": []
+      }
+    },
+    {
+      "description": "Delegate to zero (revoke) - chain 14",
+      "rawTx": "0x02f84c0e29840f2f16ee8411807b358307a1209495ed14840d3a1c75b8629ae5599fe55270c51e0480a45c19a95c0000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "delegate all vote power",
+        "owner": "Flare Foundation",
+        "fields": [
+          {
+            "label": "To",
+            "value": "0x0000000000000000000000000000000000000000"
+          }
+        ],
+        "interpolatedIntent": "Delegate all vote power to 0x0000000000000000000000000000000000000000"
+      }
+    }
+  ],
+  "dataProvider": {
+    "addressNames": {
+      "0x4444444444444444444444444444444444444444": "Delegate Target"
+    }
+  }
+}

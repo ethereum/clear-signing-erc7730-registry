@@ -3,16 +3,25 @@ name: Descriptor Lint
 # pull_request_target gives fork PRs the Sourcify token, and it runs before a
 # maintainer approves a first-time contributor: add no secret that must not
 # reach an unreviewed PR. No PR code runs, only registry/ and ercs/ come from it.
+#
+# merge_group runs the linter on the merge queue branch, in this repository.
+# There the checkout is the merge, so .github/requirements.txt, the affected
+# descriptors script and the erc7730 package of the queued pull request run,
+# with SOURCIFY_TOKEN. On pull_request_target only the base runs them. This
+# is acceptable: only a maintainer can queue a pull request, and master runs
+# the merged code with its secrets after the merge anyway.
 on:
   pull_request_target:
+  merge_group:
 
 permissions:
   contents: read
   pull-requests: read
 
-# github.ref is the base branch on pull_request_target.
+# github.ref is the base branch on pull_request_target, and the queue branch
+# on merge_group.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -36,7 +45,9 @@ jobs:
         id: changed-descriptor-files
         uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
         with:
-          use_rest_api: true
+          # The REST API diff is for pull_request_target, where the checkout is
+          # the base. On merge_group the checkout is the merge, so git diffs it.
+          use_rest_api: ${{ github.event_name == 'pull_request_target' }}
           files: |
             registry/**/*.json
             ercs/**/*.json
@@ -48,6 +59,7 @@ jobs:
 
       - name: Use the registry files of the pull request
         timeout-minutes: 5
+        if: github.event_name == 'pull_request_target'
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}

@@ -1,0 +1,208 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-Ophis-CoWSwapEthFlow.json",
+  "dataProvider": {
+    "tokens": {
+      "0x0b2c639c533813f4aa9d7837caf62653d097ff85": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0x078d782b760474a361dda0af3839290b0ef57ad6": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "OP: sell 0.5 ETH for at least 1200 USDC",
+      "rawTx": "0x02f901550a05830f4240843b9aca0083030d4094764fe4aa1ff493cf39931c7923c8ff58375965048806f05b59d3b20000b90124322bba210000000000000000000000000b2c639c533813f4aa9d7837caf62653d097ff85000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa9604500000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000047868c00eaebfbe19166b047ddcc2a0e0a685827db7404ece65a02c50aa3bc60645d15d80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006ae681000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001e240c0",
+      "expected": {
+        "intent": "Deposit ETH for swap order",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Deposit to sell",
+            "value": "0.5 ETH"
+          },
+          {
+            "label": "Min if fully filled",
+            "value": "1200 USDC"
+          },
+          {
+            "label": "Recipient",
+            "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+          },
+          {
+            "label": "Expires",
+            "value": "2026-11-01 00:00:00Z"
+          },
+          {
+            "label": "Partial fills",
+            "value": "false"
+          }
+        ]
+      }
+    },
+    {
+      "description": "OP: cancel a native ETH sell order and refund",
+      "rawTx": "0x02f9014d0a05830f4240843b9aca0083030d4094764fe4aa1ff493cf39931c7923c8ff583759650480b901247bc41b960000000000000000000000000b2c639c533813f4aa9d7837caf62653d097ff85000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa9604500000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000047868c00eaebfbe19166b047ddcc2a0e0a685827db7404ece65a02c50aa3bc60645d15d80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006ae681000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001e240c0",
+      "expected": {
+        "intent": "Cancel and refund owner",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Order max to sell",
+            "value": "0.5 ETH"
+          },
+          {
+            "label": "Min if fully filled",
+            "value": "1200 USDC"
+          },
+          {
+            "label": "Order swap recipient",
+            "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+          },
+          {
+            "label": "Partial fills",
+            "value": "false"
+          },
+          {
+            "label": "App data",
+            "value": "0xeaebfbe19166b047ddcc2a0e0a685827db7404ece65a02c50aa3bc60645d15d8"
+          }
+        ]
+      }
+    },
+    {
+      "description": "OP: identical cancellation terms with different app data",
+      "rawTx": "0x02f9014d0a05830f4240843b9aca0083030d4094764fe4aa1ff493cf39931c7923c8ff583759650480b901247bc41b960000000000000000000000000b2c639c533813f4aa9d7837caf62653d097ff85000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa9604500000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000047868c0011111111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006ae681000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001e240c0",
+      "expected": {
+        "intent": "Cancel and refund owner",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Order max to sell",
+            "value": "0.5 ETH"
+          },
+          {
+            "label": "Min if fully filled",
+            "value": "1200 USDC"
+          },
+          {
+            "label": "Order swap recipient",
+            "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+          },
+          {
+            "label": "Partial fills",
+            "value": "false"
+          },
+          {
+            "label": "App data",
+            "value": "0x1111111111111111111111111111111111111111111111111111111111111111"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Unichain: partially fillable 0.5 ETH order with 0.001 ETH fee",
+      "rawTx": "0x02f90156818205830f4240843b9aca0083030d409438c03729153bccf6a281daf41d7c6a14c543f1d78806f3e8d878788000b90124322bba21000000000000000000000000078d782b760474a361dda0af3839290b0ef57ad6000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa9604500000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000047868c00eaebfbe19166b047ddcc2a0e0a685827db7404ece65a02c50aa3bc60645d15d800000000000000000000000000000000000000000000000000038d7ea4c68000000000000000000000000000000000000000000000000000000000006ae681000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000001e240c0",
+      "expected": {
+        "intent": "Deposit ETH for swap order",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Deposit to sell",
+            "value": "0.5 ETH"
+          },
+          {
+            "label": "Min if fully filled",
+            "value": "1200 USDC"
+          },
+          {
+            "label": "Deposit for fees",
+            "value": "0.001 ETH"
+          },
+          {
+            "label": "Recipient",
+            "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+          },
+          {
+            "label": "Expires",
+            "value": "2026-11-01 00:00:00Z"
+          },
+          {
+            "label": "Partial fills",
+            "value": "true"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Unichain: cancel a partially fillable order with a nonzero fee",
+      "rawTx": "0x02f9014e818205830f4240843b9aca0083030d409438c03729153bccf6a281daf41d7c6a14c543f1d780b901247bc41b96000000000000000000000000078d782b760474a361dda0af3839290b0ef57ad6000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa9604500000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000047868c00eaebfbe19166b047ddcc2a0e0a685827db7404ece65a02c50aa3bc60645d15d800000000000000000000000000000000000000000000000000038d7ea4c68000000000000000000000000000000000000000000000000000000000006ae681000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000001e240c0",
+      "expected": {
+        "intent": "Cancel and refund owner",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Order max to sell",
+            "value": "0.5 ETH"
+          },
+          {
+            "label": "Min if fully filled",
+            "value": "1200 USDC"
+          },
+          {
+            "label": "Order max fee",
+            "value": "0.001 ETH"
+          },
+          {
+            "label": "Order swap recipient",
+            "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+          },
+          {
+            "label": "Partial fills",
+            "value": "true"
+          },
+          {
+            "label": "App data",
+            "value": "0xeaebfbe19166b047ddcc2a0e0a685827db7404ece65a02c50aa3bc60645d15d8"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: native ETH buy token is displayed in native currency",
+      "rawTx": "0x02f9015782123705830f4240843b9aca0083030d4094c1ee77e8a1b85d5eed702a9bb435f434408a4d298806f05b59d3b20000b90124322bba21000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa9604500000000000000000000000000000000000000000000000006f05b59d3b2000000000000000000000000000000000000000000000000000006ccd46763f10000eaebfbe19166b047ddcc2a0e0a685827db7404ece65a02c50aa3bc60645d15d80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006ae681000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001e240c0",
+      "expected": {
+        "intent": "Deposit ETH for swap order",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Deposit to sell",
+            "value": "0.5 ETH"
+          },
+          {
+            "label": "Min if fully filled",
+            "value": "0.49 ETH"
+          },
+          {
+            "label": "Recipient",
+            "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+          },
+          {
+            "label": "Expires",
+            "value": "2026-11-01 00:00:00Z"
+          },
+          {
+            "label": "Partial fills",
+            "value": "false"
+          }
+        ]
+      }
+    }
+  ]
+}
