@@ -1,0 +1,105 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "MintingTagManager-FXRP-Flare",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 14,
+          "address": "0xb426b5AE61c23fF1B901a8AD1f1A3921D1E9D2F1"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Flare Foundation",
+    "info": {
+      "url": "https://flare.network/"
+    },
+    "contractName": "MintingTagManager-FXRP-Flare"
+  },
+  "display": {
+    "formats": {
+      "reserve()": {
+        "intent": "reserve minting tag",
+        "fields": [
+          {
+            "label": "Reservation Fee",
+            "format": "amount",
+            "path": "@.value",
+            "visible": "always"
+          }
+        ]
+      },
+      "setMintingRecipient(uint256 _mintingTag, address _recipient)": {
+        "intent": "set mint recipient",
+        "fields": [
+          {
+            "label": "Tag Id",
+            "format": "raw",
+            "path": "#._mintingTag",
+            "visible": "always"
+          },
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            },
+            "path": "#._recipient",
+            "visible": "always"
+          }
+        ]
+      },
+      "setAllowedExecutor(uint256 _mintingTag, address _executor)": {
+        "intent": "Set mint executor (delayed)",
+        "fields": [
+          {
+            "label": "Tag Id",
+            "format": "raw",
+            "path": "#._mintingTag",
+            "visible": "always"
+          },
+          {
+            "label": "Executor (zero = anyone)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            },
+            "path": "#._executor",
+            "visible": "always"
+          }
+        ]
+      },
+      "transfer(address _to, uint256 _mintingTag)": {
+        "intent": "Transfer minting tag, reset settings",
+        "fields": [
+          {
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            },
+            "path": "#._to",
+            "visible": "always"
+          },
+          {
+            "label": "Tag Id",
+            "format": "raw",
+            "path": "#._mintingTag",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
