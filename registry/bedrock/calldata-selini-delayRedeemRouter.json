@@ -1,0 +1,48 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "seliniDelayRedeemRouter",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x641dc9E75A1b0a4c011926C4Aa1BB4721778EC2a" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Bedrock",
+    "info": { "url": "https://bedrock.technology" },
+    "contractName": "Bedrock suniBTC DelayRedeemRouter (Selini)",
+    "constants": { "suniBTC": "0x8731e4a2b68e72bb22cebf6fb45a8902cb57129d" }
+  },
+  "display": {
+    "formats": {
+      "createDelayedRedeem(address token, uint256 amount)": {
+        "$id": "createDelayedRedeem",
+        "intent": "Create a delayed redeem (a redeem fee may apply)",
+        "interpolatedIntent": "Redeem {amount} with a delay, a fee may apply",
+        "fields": [
+          {
+            "path": "#.token",
+            "label": "Token to Receive",
+            "format": "addressName",
+            "params": { "types": ["token", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.amount",
+            "label": "suniBTC Amount Submitted",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.suniBTC" },
+            "visible": "always"
+          }
+        ]
+      },
+      "claimDelayedRedeems()": {
+        "$id": "claimDelayedRedeems",
+        "intent": "Claim delayed redeems",
+        "interpolatedIntent": "Claim all delayed redeems",
+        "fields": []
+      }
+    }
+  }
+}
