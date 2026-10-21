@@ -1,0 +1,45 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "eip712": {
+      "deployments": [
+        { "chainId": 10, "address": "0x310784c7FCE12d578dA6f53460777bAc9718B859" },
+        { "chainId": 130, "address": "0x108A678716e5E1776036eF044CAB7064226F714E" },
+        { "chainId": 4663, "address": "0x886d9fd312F442C4E1f3cdeAE7b4AB73493e57cD" },
+        { "chainId": 5042, "address": "0x78799F98276efba1EdeeD32eae03a3fd8Cdfec3A" }
+      ],
+      "domain": { "name": "Gnosis Protocol", "version": "v2" }
+    }
+  },
+  "metadata": {
+    "owner": "Ophis",
+    "contractName": "GPv2Settlement",
+    "info": { "url": "https://ophis.fi" }
+  },
+  "display": {
+    "formats": {
+      "Order(address sellToken,address buyToken,address receiver,uint256 sellAmount,uint256 buyAmount,uint32 validTo,bytes32 appData,uint256 feeAmount,string kind,bool partiallyFillable,string sellTokenBalance,string buyTokenBalance)": {
+        "intent": "Swap order",
+        "fields": [
+          { "path": "sellAmount", "label": "Max to sell", "format": "tokenAmount", "params": { "tokenPath": "sellToken" } },
+          { "path": "buyAmount", "label": "Min if fully filled", "format": "tokenAmount", "params": { "tokenPath": "buyToken", "nativeCurrencyAddress": ["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"] } },
+          { "path": "feeAmount", "label": "Max fee on top", "format": "tokenAmount", "params": { "tokenPath": "sellToken" }, "visible": { "ifNotIn": [0, "0"] } },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "senderAddress": ["0x0000000000000000000000000000000000000000"] } },
+          { "path": "validTo", "label": "Expires", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "kind", "label": "Order type", "format": "raw" },
+          { "path": "partiallyFillable", "label": "Partial fills", "format": "raw" },
+          { "path": "appData", "label": "App data", "visible": "never" },
+          { "path": "sellTokenBalance", "label": "Wallet via Balancer", "format": "raw", "visible": { "ifNotIn": ["erc20", "internal"] } },
+          { "path": "sellTokenBalance", "label": "Sell: Balancer Vault", "format": "raw", "visible": { "ifNotIn": ["erc20", "external"] } },
+          { "path": "buyTokenBalance", "label": "Buy: Balancer Vault", "format": "raw", "visible": { "ifNotIn": ["erc20"] } }
+        ]
+      },
+      "OrderCancellations(bytes[] orderUids)": {
+        "intent": "Request offchain cancel",
+        "fields": [
+          { "path": "orderUids.[]", "label": "Order ID", "format": "raw" }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        { "chainId": 10, "address": "0x764fE4aa1FF493cf39931c7923C8ff5837596504" },
+        { "chainId": 130, "address": "0x38C03729153BCCF6a281DaF41D7C6a14C543F1D7" },
+        { "chainId": 4663, "address": "0xC1Ee77e8a1B85D5EED702a9bB435f434408A4d29" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Ophis",
+    "contractName": "CoWSwapEthFlow",
+    "info": { "url": "https://ophis.fi" }
+  },
+  "display": {
+    "definitions": {
+      "sellAmount": { "label": "Deposit to sell", "format": "amount" },
+      "buyAmount": { "label": "Min if fully filled", "format": "tokenAmount", "params": { "tokenPath": "order.buyToken", "nativeCurrencyAddress": ["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"] } },
+      "feeAmount": { "label": "Deposit for fees", "format": "amount" },
+      "receiver": { "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] } },
+      "validTo": { "label": "Expires", "format": "date", "params": { "encoding": "timestamp" } },
+      "partiallyFillable": { "label": "Partial fills", "format": "raw" }
+    },
+    "formats": {
+      "createOrder((address buyToken,address receiver,uint256 sellAmount,uint256 buyAmount,bytes32 appData,uint256 feeAmount,uint32 validTo,bool partiallyFillable,int64 quoteId) order)": {
+        "intent": "Deposit ETH for swap order",
+        "fields": [
+          { "path": "order.sellAmount", "$ref": "$.display.definitions.sellAmount" },
+          { "path": "order.buyAmount", "$ref": "$.display.definitions.buyAmount" },
+          { "path": "order.feeAmount", "$ref": "$.display.definitions.feeAmount", "visible": { "ifNotIn": [0, "0"] } },
+          { "path": "order.receiver", "$ref": "$.display.definitions.receiver" },
+          { "path": "order.validTo", "$ref": "$.display.definitions.validTo" },
+          { "path": "order.partiallyFillable", "$ref": "$.display.definitions.partiallyFillable" },
+          { "path": "order.appData", "label": "App data", "visible": "never" },
+          { "path": "order.quoteId", "label": "Quote ID", "visible": "never" }
+        ]
+      },
+      "invalidateOrder((address buyToken,address receiver,uint256 sellAmount,uint256 buyAmount,bytes32 appData,uint256 feeAmount,uint32 validTo,bool partiallyFillable,int64 quoteId) order)": {
+        "intent": "Cancel and refund owner",
+        "fields": [
+          { "path": "order.sellAmount", "label": "Order max to sell", "format": "amount" },
+          { "path": "order.buyAmount", "$ref": "$.display.definitions.buyAmount" },
+          { "path": "order.feeAmount", "label": "Order max fee", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
+          { "path": "order.receiver", "label": "Order swap recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] } },
+          { "path": "order.validTo", "label": "Expires", "visible": "never" },
+          { "path": "order.partiallyFillable", "$ref": "$.display.definitions.partiallyFillable" },
+          { "path": "order.appData", "label": "App data", "format": "raw" },
+          { "path": "order.quoteId", "label": "Quote ID", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
