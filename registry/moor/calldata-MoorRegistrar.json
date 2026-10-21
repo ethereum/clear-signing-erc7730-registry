@@ -1,0 +1,146 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "MoorRegistrar",
+    "contract": {
+      "abi": [
+        {
+          "type": "function",
+          "name": "createPosition",
+          "inputs": [
+            { "name": "registry", "type": "address", "internalType": "contract IPermissionedRegistry" },
+            { "name": "resolver", "type": "address", "internalType": "contract PermissionedResolver" },
+            { "name": "parentName", "type": "string", "internalType": "string" },
+            { "name": "label", "type": "string", "internalType": "string" },
+            { "name": "expiry", "type": "uint64", "internalType": "uint64" },
+            {
+              "name": "records",
+              "type": "tuple[]",
+              "internalType": "struct MoorRegistrar.Record[]",
+              "components": [
+                { "name": "key", "type": "string", "internalType": "string" },
+                { "name": "value", "type": "string", "internalType": "string" }
+              ]
+            }
+          ],
+          "outputs": [{ "name": "positionNode", "type": "bytes32", "internalType": "bytes32" }],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "setupAgent",
+          "inputs": [
+            { "name": "registry", "type": "address", "internalType": "contract IPermissionedRegistry" },
+            { "name": "resolver", "type": "address", "internalType": "contract PermissionedResolver" },
+            { "name": "parentName", "type": "string", "internalType": "string" },
+            { "name": "agent", "type": "address", "internalType": "address" },
+            { "name": "expiry", "type": "uint64", "internalType": "uint64" }
+          ],
+          "outputs": [{ "name": "agentNode", "type": "bytes32", "internalType": "bytes32" }],
+          "stateMutability": "nonpayable"
+        },
+        {
+          "type": "function",
+          "name": "revokeAgent",
+          "inputs": [
+            { "name": "resolver", "type": "address", "internalType": "contract PermissionedResolver" },
+            { "name": "agent", "type": "address", "internalType": "address" }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      ],
+      "deployments": [{ "chainId": 11155111, "address": "0xe6915D2E5e8Db86661a66472e5B178d0dB419966" }]
+    }
+  },
+  "metadata": {
+    "owner": "Moor",
+    "info": { "url": "https://getmoor.vercel.app", "deploymentDate": "2026-09-05T00:00:00Z" },
+    "contractName": "MoorRegistrar"
+  },
+  "display": {
+    "formats": {
+      "createPosition(address registry, address resolver, string parentName, string label, uint64 expiry, (string key, string value)[] records)": {
+        "$id": "createPosition",
+        "intent": "Name Moor position",
+        "fields": [
+          { "path": "label", "label": "Position name", "format": "raw", "visible": "always" },
+          { "path": "parentName", "label": "Under name", "format": "raw", "visible": "always" },
+          {
+            "path": "expiry",
+            "label": "Name expires",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "records.[].key", "label": "Record", "format": "raw", "visible": "always" },
+          { "path": "records.[].value", "label": "Value", "format": "raw", "visible": "always" },
+          {
+            "path": "registry",
+            "label": "Name registry",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "resolver",
+            "label": "Resolver",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "setupAgent(address registry, address resolver, string parentName, address agent, uint64 expiry)": {
+        "$id": "setupAgent",
+        "intent": "Authorize Moor agent",
+        "fields": [
+          {
+            "path": "agent",
+            "label": "Agent address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "parentName", "label": "Under name", "format": "raw", "visible": "always" },
+          {
+            "path": "expiry",
+            "label": "Agent name expires",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          {
+            "path": "registry",
+            "label": "Name registry",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "resolver",
+            "label": "Resolver",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "revokeAgent(address resolver, address agent)": {
+        "$id": "revokeAgent",
+        "intent": "Revoke Moor agent",
+        "fields": [
+          {
+            "path": "agent",
+            "label": "Agent address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "resolver",
+            "label": "Resolver",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      }
+    }
+  }
+}
