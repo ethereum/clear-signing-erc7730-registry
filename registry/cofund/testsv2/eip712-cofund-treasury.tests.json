@@ -1,0 +1,4629 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-cofund-treasury.json",
+  "dataProvider": {
+    "tokens": {
+      "0x7e57000000000000000000000000000000000001": {
+        "symbol": "MOCK18",
+        "decimals": 18,
+        "name": "Fixture token 18"
+      },
+      "0x7e57000000000000000000000000000000000004": {
+        "symbol": "MOCK6",
+        "decimals": 6,
+        "name": "Fixture token 6"
+      }
+    },
+    "addressNames": {
+      "0x7e57000000000000000000000000000000000001": "Fixture token 18",
+      "0x7e57000000000000000000000000000000000004": "Fixture token 6",
+      "0x7e57000000000000000000000000000000000002": "Fixture wrapper",
+      "0x1c6a8b23670c208f43fdaa0c922d682116d8f471": "Fixture recipient"
+    },
+    "ensNames": {
+      "0x8ce75d56a7a83442c4588b5d8cdb9ee4e78dc4a8": "fixture.eth"
+    }
+  },
+  "tests": [
+    {
+      "description": "Ethereum: invite-user/founder-self",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "InviteUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "callerId",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "userIsAdmin",
+              "type": "bool"
+            },
+            {
+              "name": "userPosition",
+              "type": "string"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "InviteUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "callerId": "founder",
+          "userId": "founder",
+          "userIsAdmin": true,
+          "userPosition": "admin",
+          "expiresAt": "1800086400",
+          "authId": "vec-create-acme"
+        }
+      },
+      "expected": {
+        "intent": "Invite member",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Invited by",
+            "value": "founder"
+          },
+          {
+            "label": "Member ID",
+            "value": "founder"
+          },
+          {
+            "label": "Admin rights",
+            "value": "true"
+          },
+          {
+            "label": "Position",
+            "value": "admin"
+          },
+          {
+            "label": "Expires",
+            "value": "2027-01-16 08:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: invite-user/member",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "InviteUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "callerId",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "userIsAdmin",
+              "type": "bool"
+            },
+            {
+              "name": "userPosition",
+              "type": "string"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "InviteUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "callerId": "founder",
+          "userId": "alice",
+          "userIsAdmin": false,
+          "userPosition": "Engineer",
+          "expiresAt": "1800086400",
+          "authId": "vec-add-alice"
+        }
+      },
+      "expected": {
+        "intent": "Invite member",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Invited by",
+            "value": "founder"
+          },
+          {
+            "label": "Member ID",
+            "value": "alice"
+          },
+          {
+            "label": "Admin rights",
+            "value": "false"
+          },
+          {
+            "label": "Position",
+            "value": "Engineer"
+          },
+          {
+            "label": "Expires",
+            "value": "2027-01-16 08:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: invite-user/admin-seat",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "InviteUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "callerId",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "userIsAdmin",
+              "type": "bool"
+            },
+            {
+              "name": "userPosition",
+              "type": "string"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "InviteUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "callerId": "founder",
+          "userId": "bob",
+          "userIsAdmin": true,
+          "userPosition": "CFO",
+          "expiresAt": "1800086400",
+          "authId": "vec-add-bob"
+        }
+      },
+      "expected": {
+        "intent": "Invite member",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Invited by",
+            "value": "founder"
+          },
+          {
+            "label": "Member ID",
+            "value": "bob"
+          },
+          {
+            "label": "Admin rights",
+            "value": "true"
+          },
+          {
+            "label": "Position",
+            "value": "CFO"
+          },
+          {
+            "label": "Expires",
+            "value": "2027-01-16 08:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: invite-user/empty-position",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "InviteUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "callerId",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "userIsAdmin",
+              "type": "bool"
+            },
+            {
+              "name": "userPosition",
+              "type": "string"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "InviteUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "callerId": "founder",
+          "userId": "dana",
+          "userIsAdmin": false,
+          "userPosition": "",
+          "expiresAt": "1800086400",
+          "authId": "vec-add-dana"
+        }
+      },
+      "expected": {
+        "intent": "Invite member",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Invited by",
+            "value": "founder"
+          },
+          {
+            "label": "Member ID",
+            "value": "dana"
+          },
+          {
+            "label": "Admin rights",
+            "value": "false"
+          },
+          {
+            "label": "Position",
+            "value": ""
+          },
+          {
+            "label": "Expires",
+            "value": "2027-01-16 08:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: invite-user/unicode-company",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "InviteUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "callerId",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "userIsAdmin",
+              "type": "bool"
+            },
+            {
+              "name": "userPosition",
+              "type": "string"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "InviteUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Ünïcödé Ltd — 株式会社",
+          "callerId": "carol",
+          "userId": "carol",
+          "userIsAdmin": true,
+          "userPosition": "admin",
+          "expiresAt": "1800086400",
+          "authId": "vec-create-unicode"
+        }
+      },
+      "expected": {
+        "intent": "Invite member",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Ünïcödé Ltd — 株式会社"
+          },
+          {
+            "label": "Invited by",
+            "value": "carol"
+          },
+          {
+            "label": "Member ID",
+            "value": "carol"
+          },
+          {
+            "label": "Admin rights",
+            "value": "true"
+          },
+          {
+            "label": "Position",
+            "value": "admin"
+          },
+          {
+            "label": "Expires",
+            "value": "2027-01-16 08:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: invite-user/founder-self",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "InviteUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "callerId",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "userIsAdmin",
+              "type": "bool"
+            },
+            {
+              "name": "userPosition",
+              "type": "string"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "InviteUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "callerId": "founder",
+          "userId": "founder",
+          "userIsAdmin": true,
+          "userPosition": "admin",
+          "expiresAt": "1800086400",
+          "authId": "vec-create-acme"
+        }
+      },
+      "expected": {
+        "intent": "Invite member",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Invited by",
+            "value": "founder"
+          },
+          {
+            "label": "Member ID",
+            "value": "founder"
+          },
+          {
+            "label": "Admin rights",
+            "value": "true"
+          },
+          {
+            "label": "Position",
+            "value": "admin"
+          },
+          {
+            "label": "Expires",
+            "value": "2027-01-16 08:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: invite-user/member",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "InviteUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "callerId",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "userIsAdmin",
+              "type": "bool"
+            },
+            {
+              "name": "userPosition",
+              "type": "string"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "InviteUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "callerId": "founder",
+          "userId": "alice",
+          "userIsAdmin": false,
+          "userPosition": "Engineer",
+          "expiresAt": "1800086400",
+          "authId": "vec-add-alice"
+        }
+      },
+      "expected": {
+        "intent": "Invite member",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Invited by",
+            "value": "founder"
+          },
+          {
+            "label": "Member ID",
+            "value": "alice"
+          },
+          {
+            "label": "Admin rights",
+            "value": "false"
+          },
+          {
+            "label": "Position",
+            "value": "Engineer"
+          },
+          {
+            "label": "Expires",
+            "value": "2027-01-16 08:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: invite-user/admin-seat",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "InviteUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "callerId",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "userIsAdmin",
+              "type": "bool"
+            },
+            {
+              "name": "userPosition",
+              "type": "string"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "InviteUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "callerId": "founder",
+          "userId": "bob",
+          "userIsAdmin": true,
+          "userPosition": "CFO",
+          "expiresAt": "1800086400",
+          "authId": "vec-add-bob"
+        }
+      },
+      "expected": {
+        "intent": "Invite member",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Invited by",
+            "value": "founder"
+          },
+          {
+            "label": "Member ID",
+            "value": "bob"
+          },
+          {
+            "label": "Admin rights",
+            "value": "true"
+          },
+          {
+            "label": "Position",
+            "value": "CFO"
+          },
+          {
+            "label": "Expires",
+            "value": "2027-01-16 08:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: invite-user/empty-position",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "InviteUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "callerId",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "userIsAdmin",
+              "type": "bool"
+            },
+            {
+              "name": "userPosition",
+              "type": "string"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "InviteUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "callerId": "founder",
+          "userId": "dana",
+          "userIsAdmin": false,
+          "userPosition": "",
+          "expiresAt": "1800086400",
+          "authId": "vec-add-dana"
+        }
+      },
+      "expected": {
+        "intent": "Invite member",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Invited by",
+            "value": "founder"
+          },
+          {
+            "label": "Member ID",
+            "value": "dana"
+          },
+          {
+            "label": "Admin rights",
+            "value": "false"
+          },
+          {
+            "label": "Position",
+            "value": ""
+          },
+          {
+            "label": "Expires",
+            "value": "2027-01-16 08:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: invite-user/unicode-company",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "InviteUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "callerId",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "userIsAdmin",
+              "type": "bool"
+            },
+            {
+              "name": "userPosition",
+              "type": "string"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "InviteUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Ünïcödé Ltd — 株式会社",
+          "callerId": "carol",
+          "userId": "carol",
+          "userIsAdmin": true,
+          "userPosition": "admin",
+          "expiresAt": "1800086400",
+          "authId": "vec-create-unicode"
+        }
+      },
+      "expected": {
+        "intent": "Invite member",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Ünïcödé Ltd — 株式会社"
+          },
+          {
+            "label": "Invited by",
+            "value": "carol"
+          },
+          {
+            "label": "Member ID",
+            "value": "carol"
+          },
+          {
+            "label": "Admin rights",
+            "value": "true"
+          },
+          {
+            "label": "Position",
+            "value": "admin"
+          },
+          {
+            "label": "Expires",
+            "value": "2027-01-16 08:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: remove-user/member",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "RemoveUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "removedUserId",
+              "type": "string"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "RemoveUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "removedUserId": "dana",
+          "authId": "vec-remove-dana"
+        }
+      },
+      "expected": {
+        "intent": "Remove member",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Member ID",
+            "value": "dana"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: remove-user/admin",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "RemoveUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "removedUserId",
+              "type": "string"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "RemoveUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "removedUserId": "bob",
+          "authId": "vec-remove-bob"
+        }
+      },
+      "expected": {
+        "intent": "Remove member",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Member ID",
+            "value": "bob"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: remove-user/member",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "RemoveUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "removedUserId",
+              "type": "string"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "RemoveUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "removedUserId": "dana",
+          "authId": "vec-remove-dana"
+        }
+      },
+      "expected": {
+        "intent": "Remove member",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Member ID",
+            "value": "dana"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: remove-user/admin",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "RemoveUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "removedUserId",
+              "type": "string"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "RemoveUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "removedUserId": "bob",
+          "authId": "vec-remove-bob"
+        }
+      },
+      "expected": {
+        "intent": "Remove member",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Member ID",
+            "value": "bob"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: rotate-user/self",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "RotateUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "newAddress",
+              "type": "address"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "RotateUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "userId": "alice",
+          "newAddress": "0xf65A27FBF56cdb03614f52FCD94a96658f8F176D",
+          "authId": "vec-rotate-alice"
+        }
+      },
+      "expected": {
+        "intent": "Rotate signing key",
+        "interpolatedIntent": "Move member alice to 0xf65A27FBF56cdb03614f52FCD94a96658f8F176D",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Member ID",
+            "value": "alice"
+          },
+          {
+            "label": "New key",
+            "value": "0xf65A27FBF56cdb03614f52FCD94a96658f8F176D"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: rotate-user/recovery",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "RotateUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "newAddress",
+              "type": "address"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "RotateUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "userId": "alice",
+          "newAddress": "0x0e17303Dce73c4AB2966858a11BC49F6E54ca561",
+          "authId": "vec-recover-alice"
+        }
+      },
+      "expected": {
+        "intent": "Rotate signing key",
+        "interpolatedIntent": "Move member alice to 0x0e17303Dce73c4AB2966858a11BC49F6E54ca561",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Member ID",
+            "value": "alice"
+          },
+          {
+            "label": "New key",
+            "value": "0x0e17303Dce73c4AB2966858a11BC49F6E54ca561"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: rotate-user/self",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "RotateUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "newAddress",
+              "type": "address"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "RotateUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "userId": "alice",
+          "newAddress": "0xf65A27FBF56cdb03614f52FCD94a96658f8F176D",
+          "authId": "vec-rotate-alice"
+        }
+      },
+      "expected": {
+        "intent": "Rotate signing key",
+        "interpolatedIntent": "Move member alice to 0xf65A27FBF56cdb03614f52FCD94a96658f8F176D",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Member ID",
+            "value": "alice"
+          },
+          {
+            "label": "New key",
+            "value": "0xf65A27FBF56cdb03614f52FCD94a96658f8F176D"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: rotate-user/recovery",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "RotateUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "newAddress",
+              "type": "address"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "RotateUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "userId": "alice",
+          "newAddress": "0x0e17303Dce73c4AB2966858a11BC49F6E54ca561",
+          "authId": "vec-recover-alice"
+        }
+      },
+      "expected": {
+        "intent": "Rotate signing key",
+        "interpolatedIntent": "Move member alice to 0x0e17303Dce73c4AB2966858a11BC49F6E54ca561",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Member ID",
+            "value": "alice"
+          },
+          {
+            "label": "New key",
+            "value": "0x0e17303Dce73c4AB2966858a11BC49F6E54ca561"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: complete-onboarding/acme",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "CompleteOnboarding": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "CompleteOnboarding",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "authId": "vec-lock-acme"
+        }
+      },
+      "expected": {
+        "intent": "Complete onboarding",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: complete-onboarding/unicode",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "CompleteOnboarding": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "CompleteOnboarding",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Ünïcödé Ltd — 株式会社",
+          "authId": "vec-lock-unicode"
+        }
+      },
+      "expected": {
+        "intent": "Complete onboarding",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Ünïcödé Ltd — 株式会社"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: complete-onboarding/acme",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "CompleteOnboarding": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "CompleteOnboarding",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "authId": "vec-lock-acme"
+        }
+      },
+      "expected": {
+        "intent": "Complete onboarding",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: complete-onboarding/unicode",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "CompleteOnboarding": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "CompleteOnboarding",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Ünïcödé Ltd — 株式会社",
+          "authId": "vec-lock-unicode"
+        }
+      },
+      "expected": {
+        "intent": "Complete onboarding",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Ünïcödé Ltd — 株式会社"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: transfer-policy-activation/allowlist",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "TransferPolicyActivation": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "title",
+              "type": "string"
+            },
+            {
+              "name": "policyType",
+              "type": "string"
+            },
+            {
+              "name": "signerIds",
+              "type": "string[]"
+            },
+            {
+              "name": "threshold",
+              "type": "uint256"
+            },
+            {
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "name": "maxAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "recipients",
+              "type": "address[]"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "TransferPolicyActivation",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "ops",
+          "title": "Operations",
+          "policyType": "Operational_Expense",
+          "signerIds": [
+            "alice",
+            "bob"
+          ],
+          "threshold": "2",
+          "token": "0x7e57000000000000000000000000000000000001",
+          "maxAmount": "1000000000000000000000",
+          "recipients": [
+            "0xFf3da4b2D025454a5ab0f8B4dF72fa8C6eBd188C",
+            "0xf3E61a315300ea6534860E360906b17a66aDb507"
+          ],
+          "authId": "vec-activate-ops"
+        }
+      },
+      "expected": {
+        "intent": "Activate transfer policy",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Policy",
+            "value": "Operations"
+          },
+          {
+            "label": "Policy ID",
+            "value": "ops"
+          },
+          {
+            "label": "Policy type",
+            "value": "Operational_Expense"
+          },
+          {
+            "label": "Signer",
+            "value": "alice"
+          },
+          {
+            "label": "Signer",
+            "value": "bob"
+          },
+          {
+            "label": "Signatures required",
+            "value": "2"
+          },
+          {
+            "label": "Token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "Max per transfer",
+            "value": "1000 MOCK18"
+          },
+          {
+            "label": "Allowed recipient",
+            "value": "0xFf3da4b2D025454a5ab0f8B4dF72fa8C6eBd188C"
+          },
+          {
+            "label": "Allowed recipient",
+            "value": "0xf3E61a315300ea6534860E360906b17a66aDb507"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: transfer-policy-activation/open-threshold-1",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "TransferPolicyActivation": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "title",
+              "type": "string"
+            },
+            {
+              "name": "policyType",
+              "type": "string"
+            },
+            {
+              "name": "signerIds",
+              "type": "string[]"
+            },
+            {
+              "name": "threshold",
+              "type": "uint256"
+            },
+            {
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "name": "maxAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "recipients",
+              "type": "address[]"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "TransferPolicyActivation",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "stipend",
+          "title": "Stipends",
+          "policyType": "Contractor_Stipend",
+          "signerIds": [
+            "founder"
+          ],
+          "threshold": "1",
+          "token": "0x7e57000000000000000000000000000000000001",
+          "maxAmount": "50000000000000000000",
+          "recipients": [],
+          "authId": "vec-activate-stipend"
+        }
+      },
+      "expected": {
+        "intent": "Activate transfer policy",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Policy",
+            "value": "Stipends"
+          },
+          {
+            "label": "Policy ID",
+            "value": "stipend"
+          },
+          {
+            "label": "Policy type",
+            "value": "Contractor_Stipend"
+          },
+          {
+            "label": "Signer",
+            "value": "founder"
+          },
+          {
+            "label": "Signatures required",
+            "value": "1"
+          },
+          {
+            "label": "Token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "Max per transfer",
+            "value": "50 MOCK18"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: transfer-policy-activation/allowlist",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "TransferPolicyActivation": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "title",
+              "type": "string"
+            },
+            {
+              "name": "policyType",
+              "type": "string"
+            },
+            {
+              "name": "signerIds",
+              "type": "string[]"
+            },
+            {
+              "name": "threshold",
+              "type": "uint256"
+            },
+            {
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "name": "maxAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "recipients",
+              "type": "address[]"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "TransferPolicyActivation",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "ops",
+          "title": "Operations",
+          "policyType": "Operational_Expense",
+          "signerIds": [
+            "alice",
+            "bob"
+          ],
+          "threshold": "2",
+          "token": "0x7e57000000000000000000000000000000000001",
+          "maxAmount": "1000000000000000000000",
+          "recipients": [
+            "0xFf3da4b2D025454a5ab0f8B4dF72fa8C6eBd188C",
+            "0xf3E61a315300ea6534860E360906b17a66aDb507"
+          ],
+          "authId": "vec-activate-ops"
+        }
+      },
+      "expected": {
+        "intent": "Activate transfer policy",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Policy",
+            "value": "Operations"
+          },
+          {
+            "label": "Policy ID",
+            "value": "ops"
+          },
+          {
+            "label": "Policy type",
+            "value": "Operational_Expense"
+          },
+          {
+            "label": "Signer",
+            "value": "alice"
+          },
+          {
+            "label": "Signer",
+            "value": "bob"
+          },
+          {
+            "label": "Signatures required",
+            "value": "2"
+          },
+          {
+            "label": "Token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "Max per transfer",
+            "value": "1000 MOCK18"
+          },
+          {
+            "label": "Allowed recipient",
+            "value": "0xFf3da4b2D025454a5ab0f8B4dF72fa8C6eBd188C"
+          },
+          {
+            "label": "Allowed recipient",
+            "value": "0xf3E61a315300ea6534860E360906b17a66aDb507"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: transfer-policy-activation/open-threshold-1",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "TransferPolicyActivation": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "title",
+              "type": "string"
+            },
+            {
+              "name": "policyType",
+              "type": "string"
+            },
+            {
+              "name": "signerIds",
+              "type": "string[]"
+            },
+            {
+              "name": "threshold",
+              "type": "uint256"
+            },
+            {
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "name": "maxAmount",
+              "type": "uint256"
+            },
+            {
+              "name": "recipients",
+              "type": "address[]"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "TransferPolicyActivation",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "stipend",
+          "title": "Stipends",
+          "policyType": "Contractor_Stipend",
+          "signerIds": [
+            "founder"
+          ],
+          "threshold": "1",
+          "token": "0x7e57000000000000000000000000000000000001",
+          "maxAmount": "50000000000000000000",
+          "recipients": [],
+          "authId": "vec-activate-stipend"
+        }
+      },
+      "expected": {
+        "intent": "Activate transfer policy",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Policy",
+            "value": "Stipends"
+          },
+          {
+            "label": "Policy ID",
+            "value": "stipend"
+          },
+          {
+            "label": "Policy type",
+            "value": "Contractor_Stipend"
+          },
+          {
+            "label": "Signer",
+            "value": "founder"
+          },
+          {
+            "label": "Signatures required",
+            "value": "1"
+          },
+          {
+            "label": "Token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "Max per transfer",
+            "value": "50 MOCK18"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: transaction-policy-activation/mint",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "TransactionPolicyActivation": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "title",
+              "type": "string"
+            },
+            {
+              "name": "policyType",
+              "type": "string"
+            },
+            {
+              "name": "signerIds",
+              "type": "string[]"
+            },
+            {
+              "name": "threshold",
+              "type": "uint256"
+            },
+            {
+              "name": "wrapper",
+              "type": "address"
+            },
+            {
+              "name": "func",
+              "type": "string"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "TransactionPolicyActivation",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "treasury",
+          "title": "Treasury",
+          "policyType": "Treasury_Management",
+          "signerIds": [
+            "alice"
+          ],
+          "threshold": "1",
+          "wrapper": "0x7e57000000000000000000000000000000000002",
+          "func": "mint-token",
+          "authId": "vec-activate-treasury"
+        }
+      },
+      "expected": {
+        "intent": "Activate transaction policy",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Policy",
+            "value": "Treasury"
+          },
+          {
+            "label": "Policy ID",
+            "value": "treasury"
+          },
+          {
+            "label": "Policy type",
+            "value": "Treasury_Management"
+          },
+          {
+            "label": "Signer",
+            "value": "alice"
+          },
+          {
+            "label": "Signatures required",
+            "value": "1"
+          },
+          {
+            "label": "Contract",
+            "value": "Fixture wrapper"
+          },
+          {
+            "label": "Function",
+            "value": "mint-token"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: transaction-policy-activation/mint",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "TransactionPolicyActivation": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "title",
+              "type": "string"
+            },
+            {
+              "name": "policyType",
+              "type": "string"
+            },
+            {
+              "name": "signerIds",
+              "type": "string[]"
+            },
+            {
+              "name": "threshold",
+              "type": "uint256"
+            },
+            {
+              "name": "wrapper",
+              "type": "address"
+            },
+            {
+              "name": "func",
+              "type": "string"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "TransactionPolicyActivation",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "treasury",
+          "title": "Treasury",
+          "policyType": "Treasury_Management",
+          "signerIds": [
+            "alice"
+          ],
+          "threshold": "1",
+          "wrapper": "0x7e57000000000000000000000000000000000002",
+          "func": "mint-token",
+          "authId": "vec-activate-treasury"
+        }
+      },
+      "expected": {
+        "intent": "Activate transaction policy",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Policy",
+            "value": "Treasury"
+          },
+          {
+            "label": "Policy ID",
+            "value": "treasury"
+          },
+          {
+            "label": "Policy type",
+            "value": "Treasury_Management"
+          },
+          {
+            "label": "Signer",
+            "value": "alice"
+          },
+          {
+            "label": "Signatures required",
+            "value": "1"
+          },
+          {
+            "label": "Contract",
+            "value": "Fixture wrapper"
+          },
+          {
+            "label": "Function",
+            "value": "mint-token"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: policy-deactivation/stipend",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "PolicyDeactivation": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "PolicyDeactivation",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "stipend",
+          "authId": "vec-deactivate-stipend"
+        }
+      },
+      "expected": {
+        "intent": "Deactivate policy",
+        "interpolatedIntent": "Deactivate policy stipend",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Policy ID",
+            "value": "stipend"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: policy-deactivation/empty-auth-id",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "PolicyDeactivation": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "PolicyDeactivation",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "treasury",
+          "authId": ""
+        }
+      },
+      "expected": {
+        "intent": "Deactivate policy",
+        "interpolatedIntent": "Deactivate policy treasury",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Policy ID",
+            "value": "treasury"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: policy-deactivation/stipend",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "PolicyDeactivation": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "PolicyDeactivation",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "stipend",
+          "authId": "vec-deactivate-stipend"
+        }
+      },
+      "expected": {
+        "intent": "Deactivate policy",
+        "interpolatedIntent": "Deactivate policy stipend",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Policy ID",
+            "value": "stipend"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: policy-deactivation/empty-auth-id",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "PolicyDeactivation": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "PolicyDeactivation",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "treasury",
+          "authId": ""
+        }
+      },
+      "expected": {
+        "intent": "Deactivate policy",
+        "interpolatedIntent": "Deactivate policy treasury",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Policy ID",
+            "value": "treasury"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: transfer/allowlisted",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Transfer": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "messageType",
+              "type": "string"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "Transfer",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "ops",
+          "messageType": "Operational_Expense",
+          "amount": "100000000000000000000",
+          "token": "0x7e57000000000000000000000000000000000001",
+          "recipient": "0xFf3da4b2D025454a5ab0f8B4dF72fa8C6eBd188C",
+          "authId": "vec-transfer-1"
+        }
+      },
+      "expected": {
+        "intent": "Approve transfer",
+        "interpolatedIntent": "Approve transfer of 100 MOCK18 to 0xFf3da4b2D025454a5ab0f8B4dF72fa8C6eBd188C",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Amount",
+            "value": "100 MOCK18"
+          },
+          {
+            "label": "Token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "To",
+            "value": "0xFf3da4b2D025454a5ab0f8B4dF72fa8C6eBd188C"
+          },
+          {
+            "label": "Policy ID",
+            "value": "ops"
+          },
+          {
+            "label": "Policy type",
+            "value": "Operational_Expense"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: transfer/after-rotation",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Transfer": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "messageType",
+              "type": "string"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "Transfer",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "ops",
+          "messageType": "Operational_Expense",
+          "amount": "5000000000000000000",
+          "token": "0x7e57000000000000000000000000000000000001",
+          "recipient": "0xf3E61a315300ea6534860E360906b17a66aDb507",
+          "authId": "vec-transfer-2"
+        }
+      },
+      "expected": {
+        "intent": "Approve transfer",
+        "interpolatedIntent": "Approve transfer of 5 MOCK18 to 0xf3E61a315300ea6534860E360906b17a66aDb507",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Amount",
+            "value": "5 MOCK18"
+          },
+          {
+            "label": "Token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "To",
+            "value": "0xf3E61a315300ea6534860E360906b17a66aDb507"
+          },
+          {
+            "label": "Policy ID",
+            "value": "ops"
+          },
+          {
+            "label": "Policy type",
+            "value": "Operational_Expense"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: transfer/allowlisted",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Transfer": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "messageType",
+              "type": "string"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "Transfer",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "ops",
+          "messageType": "Operational_Expense",
+          "amount": "100000000000000000000",
+          "token": "0x7e57000000000000000000000000000000000001",
+          "recipient": "0xFf3da4b2D025454a5ab0f8B4dF72fa8C6eBd188C",
+          "authId": "vec-transfer-1"
+        }
+      },
+      "expected": {
+        "intent": "Approve transfer",
+        "interpolatedIntent": "Approve transfer of 100 MOCK18 to 0xFf3da4b2D025454a5ab0f8B4dF72fa8C6eBd188C",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Amount",
+            "value": "100 MOCK18"
+          },
+          {
+            "label": "Token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "To",
+            "value": "0xFf3da4b2D025454a5ab0f8B4dF72fa8C6eBd188C"
+          },
+          {
+            "label": "Policy ID",
+            "value": "ops"
+          },
+          {
+            "label": "Policy type",
+            "value": "Operational_Expense"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: transfer/after-rotation",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Transfer": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "messageType",
+              "type": "string"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "Transfer",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "ops",
+          "messageType": "Operational_Expense",
+          "amount": "5000000000000000000",
+          "token": "0x7e57000000000000000000000000000000000001",
+          "recipient": "0xf3E61a315300ea6534860E360906b17a66aDb507",
+          "authId": "vec-transfer-2"
+        }
+      },
+      "expected": {
+        "intent": "Approve transfer",
+        "interpolatedIntent": "Approve transfer of 5 MOCK18 to 0xf3E61a315300ea6534860E360906b17a66aDb507",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Amount",
+            "value": "5 MOCK18"
+          },
+          {
+            "label": "Token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "To",
+            "value": "0xf3E61a315300ea6534860E360906b17a66aDb507"
+          },
+          {
+            "label": "Policy ID",
+            "value": "ops"
+          },
+          {
+            "label": "Policy type",
+            "value": "Operational_Expense"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: transaction/mint-no-allowances",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Transaction": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "messageType",
+              "type": "string"
+            },
+            {
+              "name": "wrapper",
+              "type": "address"
+            },
+            {
+              "name": "func",
+              "type": "string"
+            },
+            {
+              "name": "allowances",
+              "type": "Allowance[]"
+            },
+            {
+              "name": "instructionsHash",
+              "type": "bytes32"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ],
+          "Allowance": [
+            {
+              "name": "asset",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Transaction",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "treasury",
+          "messageType": "Treasury_Management",
+          "wrapper": "0x7e57000000000000000000000000000000000002",
+          "func": "mint-token",
+          "allowances": [],
+          "instructionsHash": "0x2e10ea65e8842925cf2e61b19c59a6ae6a6e5674f868567d525f06e32af93215",
+          "authId": "vec-tx-1"
+        }
+      },
+      "expected": {
+        "intent": "Approve transaction",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Contract",
+            "value": "Fixture wrapper"
+          },
+          {
+            "label": "Function",
+            "value": "mint-token"
+          },
+          {
+            "label": "Hash (see Cofund)",
+            "value": "0x2e10ea65e8842925cf2e61b19c59a6ae6a6e5674f868567d525f06e32af93215"
+          },
+          {
+            "label": "Policy ID",
+            "value": "treasury"
+          },
+          {
+            "label": "Policy type",
+            "value": "Treasury_Management"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: transaction/with-allowances",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Transaction": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "messageType",
+              "type": "string"
+            },
+            {
+              "name": "wrapper",
+              "type": "address"
+            },
+            {
+              "name": "func",
+              "type": "string"
+            },
+            {
+              "name": "allowances",
+              "type": "Allowance[]"
+            },
+            {
+              "name": "instructionsHash",
+              "type": "bytes32"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ],
+          "Allowance": [
+            {
+              "name": "asset",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Transaction",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "treasury",
+          "messageType": "Treasury_Management",
+          "wrapper": "0x7e57000000000000000000000000000000000002",
+          "func": "mint-token",
+          "allowances": [
+            {
+              "asset": "0x7e57000000000000000000000000000000000001",
+              "amount": "1000000000000000000"
+            },
+            {
+              "asset": "0x7e57000000000000000000000000000000000001",
+              "amount": "2000000000000000000"
+            }
+          ],
+          "instructionsHash": "0xeb56b1d3ea8cb70aecb2523bb3f1061affbd3cc2b5d6307a2fafc6a1c1f4c868",
+          "authId": "vec-tx-2"
+        }
+      },
+      "expected": {
+        "intent": "Approve transaction",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Contract",
+            "value": "Fixture wrapper"
+          },
+          {
+            "label": "Function",
+            "value": "mint-token"
+          },
+          {
+            "label": "Approve token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "Approve amount",
+            "value": "1 MOCK18"
+          },
+          {
+            "label": "Approve token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "Approve amount",
+            "value": "2 MOCK18"
+          },
+          {
+            "label": "Hash (see Cofund)",
+            "value": "0xeb56b1d3ea8cb70aecb2523bb3f1061affbd3cc2b5d6307a2fafc6a1c1f4c868"
+          },
+          {
+            "label": "Policy ID",
+            "value": "treasury"
+          },
+          {
+            "label": "Policy type",
+            "value": "Treasury_Management"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: transaction/mint-no-allowances",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Transaction": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "messageType",
+              "type": "string"
+            },
+            {
+              "name": "wrapper",
+              "type": "address"
+            },
+            {
+              "name": "func",
+              "type": "string"
+            },
+            {
+              "name": "allowances",
+              "type": "Allowance[]"
+            },
+            {
+              "name": "instructionsHash",
+              "type": "bytes32"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ],
+          "Allowance": [
+            {
+              "name": "asset",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Transaction",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "treasury",
+          "messageType": "Treasury_Management",
+          "wrapper": "0x7e57000000000000000000000000000000000002",
+          "func": "mint-token",
+          "allowances": [],
+          "instructionsHash": "0x2e10ea65e8842925cf2e61b19c59a6ae6a6e5674f868567d525f06e32af93215",
+          "authId": "vec-tx-1"
+        }
+      },
+      "expected": {
+        "intent": "Approve transaction",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Contract",
+            "value": "Fixture wrapper"
+          },
+          {
+            "label": "Function",
+            "value": "mint-token"
+          },
+          {
+            "label": "Hash (see Cofund)",
+            "value": "0x2e10ea65e8842925cf2e61b19c59a6ae6a6e5674f868567d525f06e32af93215"
+          },
+          {
+            "label": "Policy ID",
+            "value": "treasury"
+          },
+          {
+            "label": "Policy type",
+            "value": "Treasury_Management"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: transaction/with-allowances",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Transaction": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "messageType",
+              "type": "string"
+            },
+            {
+              "name": "wrapper",
+              "type": "address"
+            },
+            {
+              "name": "func",
+              "type": "string"
+            },
+            {
+              "name": "allowances",
+              "type": "Allowance[]"
+            },
+            {
+              "name": "instructionsHash",
+              "type": "bytes32"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ],
+          "Allowance": [
+            {
+              "name": "asset",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Transaction",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "treasury",
+          "messageType": "Treasury_Management",
+          "wrapper": "0x7e57000000000000000000000000000000000002",
+          "func": "mint-token",
+          "allowances": [
+            {
+              "asset": "0x7e57000000000000000000000000000000000001",
+              "amount": "1000000000000000000"
+            },
+            {
+              "asset": "0x7e57000000000000000000000000000000000001",
+              "amount": "2000000000000000000"
+            }
+          ],
+          "instructionsHash": "0xeb56b1d3ea8cb70aecb2523bb3f1061affbd3cc2b5d6307a2fafc6a1c1f4c868",
+          "authId": "vec-tx-2"
+        }
+      },
+      "expected": {
+        "intent": "Approve transaction",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Contract",
+            "value": "Fixture wrapper"
+          },
+          {
+            "label": "Function",
+            "value": "mint-token"
+          },
+          {
+            "label": "Approve token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "Approve amount",
+            "value": "1 MOCK18"
+          },
+          {
+            "label": "Approve token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "Approve amount",
+            "value": "2 MOCK18"
+          },
+          {
+            "label": "Hash (see Cofund)",
+            "value": "0xeb56b1d3ea8cb70aecb2523bb3f1061affbd3cc2b5d6307a2fafc6a1c1f4c868"
+          },
+          {
+            "label": "Policy ID",
+            "value": "treasury"
+          },
+          {
+            "label": "Policy type",
+            "value": "Treasury_Management"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: fractional six-decimal token and local recipient",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Transfer": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "messageType",
+              "type": "string"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "Transfer",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "ops",
+          "messageType": "Operational_Expense",
+          "amount": "1250000",
+          "token": "0x7e57000000000000000000000000000000000004",
+          "recipient": "0x1C6A8B23670c208f43fDAa0C922d682116D8F471",
+          "authId": "vec-transfer-1"
+        }
+      },
+      "expected": {
+        "intent": "Approve transfer",
+        "interpolatedIntent": "Approve transfer of 1.25 MOCK6 to Fixture recipient",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Amount",
+            "value": "1.25 MOCK6"
+          },
+          {
+            "label": "Token",
+            "value": "Fixture token 6"
+          },
+          {
+            "label": "To",
+            "value": "Fixture recipient"
+          },
+          {
+            "label": "Policy ID",
+            "value": "ops"
+          },
+          {
+            "label": "Policy type",
+            "value": "Operational_Expense"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: zero principal and ENS recipient",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Transfer": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "messageType",
+              "type": "string"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "Transfer",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "ops",
+          "messageType": "Operational_Expense",
+          "amount": "0",
+          "token": "0x7e57000000000000000000000000000000000001",
+          "recipient": "0x8CE75d56a7A83442C4588b5D8cDB9EE4E78dC4A8",
+          "authId": "vec-transfer-1"
+        }
+      },
+      "expected": {
+        "intent": "Approve transfer",
+        "interpolatedIntent": "Approve transfer of 0 MOCK18 to fixture.eth",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Amount",
+            "value": "0 MOCK18"
+          },
+          {
+            "label": "Token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "To",
+            "value": "fixture.eth"
+          },
+          {
+            "label": "Policy ID",
+            "value": "ops"
+          },
+          {
+            "label": "Policy type",
+            "value": "Operational_Expense"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: maximum uint256 principal",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Transfer": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "messageType",
+              "type": "string"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "Transfer",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "ops",
+          "messageType": "Operational_Expense",
+          "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+          "token": "0x7e57000000000000000000000000000000000001",
+          "recipient": "0xFf3da4b2D025454a5ab0f8B4dF72fa8C6eBd188C",
+          "authId": "vec-transfer-1"
+        }
+      },
+      "expected": {
+        "intent": "Approve transfer",
+        "interpolatedIntent": "Approve transfer of 115792089237316195423570985008687907853269984665640564039457.584007913129639935 MOCK18 to 0xFf3da4b2D025454a5ab0f8B4dF72fa8C6eBd188C",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Amount",
+            "value": "115792089237316195423570985008687907853269984665640564039457.584007913129639935 MOCK18"
+          },
+          {
+            "label": "Token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "To",
+            "value": "0xFf3da4b2D025454a5ab0f8B4dF72fa8C6eBd188C"
+          },
+          {
+            "label": "Policy ID",
+            "value": "ops"
+          },
+          {
+            "label": "Policy type",
+            "value": "Operational_Expense"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: two tokens keep each allowance paired with its amount",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Transaction": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "messageType",
+              "type": "string"
+            },
+            {
+              "name": "wrapper",
+              "type": "address"
+            },
+            {
+              "name": "func",
+              "type": "string"
+            },
+            {
+              "name": "allowances",
+              "type": "Allowance[]"
+            },
+            {
+              "name": "instructionsHash",
+              "type": "bytes32"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ],
+          "Allowance": [
+            {
+              "name": "asset",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Transaction",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "treasury",
+          "messageType": "Treasury_Management",
+          "wrapper": "0x7e57000000000000000000000000000000000002",
+          "func": "mint-token",
+          "allowances": [
+            {
+              "asset": "0x7e57000000000000000000000000000000000001",
+              "amount": "1000000000000000000"
+            },
+            {
+              "asset": "0x7e57000000000000000000000000000000000004",
+              "amount": "2500000"
+            }
+          ],
+          "instructionsHash": "0x2e10ea65e8842925cf2e61b19c59a6ae6a6e5674f868567d525f06e32af93215",
+          "authId": "vec-tx-1"
+        }
+      },
+      "expected": {
+        "intent": "Approve transaction",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Contract",
+            "value": "Fixture wrapper"
+          },
+          {
+            "label": "Function",
+            "value": "mint-token"
+          },
+          {
+            "label": "Approve token",
+            "value": "Fixture token 18"
+          },
+          {
+            "label": "Approve amount",
+            "value": "1 MOCK18"
+          },
+          {
+            "label": "Approve token",
+            "value": "Fixture token 6"
+          },
+          {
+            "label": "Approve amount",
+            "value": "2.5 MOCK6"
+          },
+          {
+            "label": "Hash (see Cofund)",
+            "value": "0x2e10ea65e8842925cf2e61b19c59a6ae6a6e5674f868567d525f06e32af93215"
+          },
+          {
+            "label": "Policy ID",
+            "value": "treasury"
+          },
+          {
+            "label": "Policy type",
+            "value": "Treasury_Management"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: explicit zero allowance",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Transaction": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "messageType",
+              "type": "string"
+            },
+            {
+              "name": "wrapper",
+              "type": "address"
+            },
+            {
+              "name": "func",
+              "type": "string"
+            },
+            {
+              "name": "allowances",
+              "type": "Allowance[]"
+            },
+            {
+              "name": "instructionsHash",
+              "type": "bytes32"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ],
+          "Allowance": [
+            {
+              "name": "asset",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Transaction",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "treasury",
+          "messageType": "Treasury_Management",
+          "wrapper": "0x7e57000000000000000000000000000000000002",
+          "func": "mint-token",
+          "allowances": [
+            {
+              "asset": "0x7e57000000000000000000000000000000000004",
+              "amount": "0"
+            }
+          ],
+          "instructionsHash": "0x2e10ea65e8842925cf2e61b19c59a6ae6a6e5674f868567d525f06e32af93215",
+          "authId": "vec-tx-1"
+        }
+      },
+      "expected": {
+        "intent": "Approve transaction",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Contract",
+            "value": "Fixture wrapper"
+          },
+          {
+            "label": "Function",
+            "value": "mint-token"
+          },
+          {
+            "label": "Approve token",
+            "value": "Fixture token 6"
+          },
+          {
+            "label": "Approve amount",
+            "value": "0 MOCK6"
+          },
+          {
+            "label": "Hash (see Cofund)",
+            "value": "0x2e10ea65e8842925cf2e61b19c59a6ae6a6e5674f868567d525f06e32af93215"
+          },
+          {
+            "label": "Policy ID",
+            "value": "treasury"
+          },
+          {
+            "label": "Policy type",
+            "value": "Treasury_Management"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: new key resolves from ENS",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "RotateUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "newAddress",
+              "type": "address"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "RotateUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "userId": "alice",
+          "newAddress": "0x8CE75d56a7A83442C4588b5D8cDB9EE4E78dC4A8",
+          "authId": "vec-rotate-alice"
+        }
+      },
+      "expected": {
+        "intent": "Rotate signing key",
+        "interpolatedIntent": "Move member alice to fixture.eth",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Member ID",
+            "value": "alice"
+          },
+          {
+            "label": "New key",
+            "value": "fixture.eth"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Robinhood: new key resolves from local name",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "RotateUser": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "userId",
+              "type": "string"
+            },
+            {
+              "name": "newAddress",
+              "type": "address"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ]
+        },
+        "primaryType": "RotateUser",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 4663,
+          "verifyingContract": "0xF3B43952BcC2560789be8076529df8F908cEf535"
+        },
+        "message": {
+          "company": "Acme",
+          "userId": "alice",
+          "newAddress": "0x1C6A8B23670c208f43fDAa0C922d682116D8F471",
+          "authId": "vec-rotate-alice"
+        }
+      },
+      "expected": {
+        "intent": "Rotate signing key",
+        "interpolatedIntent": "Move member alice to Fixture recipient",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Member ID",
+            "value": "alice"
+          },
+          {
+            "label": "New key",
+            "value": "Fixture recipient"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Ethereum: contract field excludes ENS-only name",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Transaction": [
+            {
+              "name": "company",
+              "type": "string"
+            },
+            {
+              "name": "policyId",
+              "type": "string"
+            },
+            {
+              "name": "messageType",
+              "type": "string"
+            },
+            {
+              "name": "wrapper",
+              "type": "address"
+            },
+            {
+              "name": "func",
+              "type": "string"
+            },
+            {
+              "name": "allowances",
+              "type": "Allowance[]"
+            },
+            {
+              "name": "instructionsHash",
+              "type": "bytes32"
+            },
+            {
+              "name": "authId",
+              "type": "string"
+            }
+          ],
+          "Allowance": [
+            {
+              "name": "asset",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256"
+            }
+          ]
+        },
+        "primaryType": "Transaction",
+        "domain": {
+          "name": "Cofund",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0"
+        },
+        "message": {
+          "company": "Acme",
+          "policyId": "treasury",
+          "messageType": "Treasury_Management",
+          "wrapper": "0x8CE75d56a7A83442C4588b5D8cDB9EE4E78dC4A8",
+          "func": "mint-token",
+          "allowances": [],
+          "instructionsHash": "0x2e10ea65e8842925cf2e61b19c59a6ae6a6e5674f868567d525f06e32af93215",
+          "authId": "vec-tx-1"
+        }
+      },
+      "expected": {
+        "intent": "Approve transaction",
+        "owner": "Cofund",
+        "fields": [
+          {
+            "label": "Company",
+            "value": "Acme"
+          },
+          {
+            "label": "Contract",
+            "value": "0x8CE75d56a7A83442C4588b5D8cDB9EE4E78dC4A8"
+          },
+          {
+            "label": "Function",
+            "value": "mint-token"
+          },
+          {
+            "label": "Hash (see Cofund)",
+            "value": "0x2e10ea65e8842925cf2e61b19c59a6ae6a6e5674f868567d525f06e32af93215"
+          },
+          {
+            "label": "Policy ID",
+            "value": "treasury"
+          },
+          {
+            "label": "Policy type",
+            "value": "Treasury_Management"
+          }
+        ]
+      }
+    }
+  ]
+}

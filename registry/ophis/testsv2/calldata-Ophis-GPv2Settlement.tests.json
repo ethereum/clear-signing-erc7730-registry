@@ -1,0 +1,56 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-Ophis-GPv2Settlement.json",
+  "tests": [
+    {
+      "description": "OP: cancel an order on-chain",
+      "rawTx": "0x02f8ac0a05830f4240843b9aca0083030d4094310784c7fce12d578da6f53460777bac9718b85980b88415337bc0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000383fae3ee0f1be9bc367e7b3760b2b903a9c00ff1dd0f7a0e80fa63cf3fec5e6b6d8da6bf26964af9d7eed9e03e53415d37aa960456b36ec800000000000000000c0",
+      "expected": {
+        "intent": "Cancel order",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Order ID",
+            "value": "0x3fae3ee0f1be9bc367e7b3760b2b903a9c00ff1dd0f7a0e80fa63cf3fec5e6b6d8da6bf26964af9d7eed9e03e53415d37aa960456b36ec80"
+          }
+        ]
+      }
+    },
+    {
+      "description": "OP: pre-sign an order",
+      "rawTx": "0x02f8cc0a05830f4240843b9aca0083030d4094310784c7fce12d578da6f53460777bac9718b85980b8a4ec6cb13f0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000383fae3ee0f1be9bc367e7b3760b2b903a9c00ff1dd0f7a0e80fa63cf3fec5e6b6d8da6bf26964af9d7eed9e03e53415d37aa960456b36ec800000000000000000c0",
+      "expected": {
+        "intent": "Authorize or revoke order",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Order ID",
+            "value": "0x3fae3ee0f1be9bc367e7b3760b2b903a9c00ff1dd0f7a0e80fa63cf3fec5e6b6d8da6bf26964af9d7eed9e03e53415d37aa960456b36ec80"
+          },
+          {
+            "label": "Authorized",
+            "value": "true"
+          }
+        ]
+      }
+    },
+    {
+      "description": "OP: revoke an order pre-signature",
+      "rawTx": "0x02f8cc0a05830f4240843b9aca0083030d4094310784c7fce12d578da6f53460777bac9718b85980b8a4ec6cb13f0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000383fae3ee0f1be9bc367e7b3760b2b903a9c00ff1dd0f7a0e80fa63cf3fec5e6b6d8da6bf26964af9d7eed9e03e53415d37aa960456b36ec800000000000000000c0",
+      "expected": {
+        "intent": "Authorize or revoke order",
+        "owner": "Ophis",
+        "fields": [
+          {
+            "label": "Order ID",
+            "value": "0x3fae3ee0f1be9bc367e7b3760b2b903a9c00ff1dd0f7a0e80fa63cf3fec5e6b6d8da6bf26964af9d7eed9e03e53415d37aa960456b36ec80"
+          },
+          {
+            "label": "Authorized",
+            "value": "false"
+          }
+        ]
+      }
+    }
+  ]
+}

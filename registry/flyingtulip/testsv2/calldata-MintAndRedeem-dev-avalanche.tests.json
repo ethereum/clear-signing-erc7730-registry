@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-MintAndRedeem-dev-avalanche.json",
+  "dataProvider": {
+    "tokens": {
+      "0xD6DDD9c61B038f768ddcfA3F43C26Df6e0ba0285": { "symbol": "ftUSD", "decimals": 6, "name": "Flying Tulip USD" },
+      "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Buy ftUSD (synthetic)",
+      "rawTx": "0x02f8af82a86a32843b9aca00843b9aca008307a1209483d889120ab0a0683bc59245e77a9d510d5acda080b884a647e8ec000000000000000000000000b97ef9ef8734c71904d8002f8b6bc66dd9c48a6e00000000000000000000000000000000000000000000000000000000004c3686000000000000000000000000000000000000000000000000000000006a25e6e400000000000000000000000000000000000000000000000000000000004bcf88c0",
+      "expected": {
+        "intent": "Buy ftUSD",
+        "owner": "Flying Tulip",
+        "fields": [
+          { "label": "Pay", "value": "4.994694 USDC" },
+          { "label": "Minimum receive", "value": "4.968328 ftUSD" },
+          { "label": "Deadline", "value": "2026-06-07 21:47:16Z" }
+        ],
+        "interpolatedIntent": "Buy 4.968328 ftUSD"
+      }
+    },
+    {
+      "description": "Sell ftUSD (synthetic)",
+      "rawTx": "0x02f8af82a86a33843b9aca00843b9aca008307a1209483d889120ab0a0683bc59245e77a9d510d5acda080b884ea2092f3000000000000000000000000b97ef9ef8734c71904d8002f8b6bc66dd9c48a6e000000000000000000000000000000000000000000000000000000000080c4b9000000000000000000000000000000000000000000000000000000006a4d6ff300000000000000000000000000000000000000000000000000000000008024cfc0",
+      "expected": {
+        "intent": "Sell ftUSD",
+        "owner": "Flying Tulip",
+        "fields": [
+          { "label": "Pay", "value": "8.438969 ftUSD" },
+          { "label": "Minimum receive", "value": "8.398031 USDC" },
+          { "label": "Deadline", "value": "2026-07-07 21:30:27Z" }
+        ],
+        "interpolatedIntent": "Sell 8.438969 ftUSD"
+      }
+    }
+  ]
+}
