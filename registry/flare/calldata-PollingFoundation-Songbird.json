@@ -2,42 +2,143 @@
   "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "PollingFoundation-Songbird",
-    "contract": { "deployments": [{ "chainId": 19, "address": "0x79Df47237292Dbd1477502CFF3F61cD535B0FAce" }] }
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 19,
+          "address": "0x79Df47237292Dbd1477502CFF3F61cD535B0FAce"
+        }
+      ]
+    }
   },
-  "metadata": { "owner": "Flare Labs", "info": { "url": "https://flare.network/" }, "contractName": "PollingFoundation-Songbird", "enums": { "voteType": { "0": "Against", "1": "For" } } },
+  "metadata": {
+    "owner": "Flare Foundation",
+    "info": {
+      "url": "https://flare.network/"
+    },
+    "contractName": "PollingFoundation-Songbird",
+    "enums": {
+      "voteType": {
+        "0": "Against",
+        "1": "For"
+      }
+    }
+  },
   "display": {
     "formats": {
       "castVote(uint256 _proposalId, uint8 _support)": {
         "intent": "cast vote",
         "fields": [
-          { "label": "Proposal Id", "format": "raw", "path": "#._proposalId", "visible": "always" },
-          { "label": "Support", "format": "enum", "params": { "$ref": "$.metadata.enums.voteType" }, "path": "#._support", "visible": "always" }
+          {
+            "label": "Proposal Id",
+            "format": "raw",
+            "path": "#._proposalId",
+            "visible": "always"
+          },
+          {
+            "label": "Support",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.voteType"
+            },
+            "path": "#._support",
+            "visible": "always"
+          }
         ]
       },
       "propose(address[] _targets, uint256[] _values, bytes[] _calldatas, string _description, (bool accept, uint256 votingStartTs, uint256 votingPeriodSeconds, uint256 vpBlockPeriodSeconds, uint256 thresholdConditionBIPS, uint256 majorityConditionBIPS, uint256 executionDelaySeconds, uint256 executionPeriodSeconds) _settings)": {
         "intent": "create proposal",
         "fields": [
           {
-            "label": "Targets",
-            "format": "addressName",
-            "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-            "path": "#._targets.[]",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "label": "Targets",
+                "format": "addressName",
+                "params": {
+                  "types": [
+                    "wallet",
+                    "eoa",
+                    "contract",
+                    "token",
+                    "collection"
+                  ]
+                },
+                "path": "#._targets.[]",
+                "visible": "always"
+              },
+              {
+                "label": "Values",
+                "format": "amount",
+                "path": "#._values.[]",
+                "visible": "always"
+              },
+              {
+                "label": "Calldatas",
+                "format": "raw",
+                "path": "#._calldatas.[]",
+                "visible": "always"
+              }
+            ]
+          },
+          {
+            "label": "Description",
+            "format": "raw",
+            "path": "#._description",
             "visible": "always"
           },
-          { "label": "Values", "format": "amount", "path": "#._values.[]", "visible": "always" },
-          { "label": "Calldatas", "format": "raw", "path": "#._calldatas.[]", "visible": "always" },
-          { "label": "Description", "format": "raw", "path": "#._description", "visible": "always" },
           {
             "path": "#._settings",
             "fields": [
-              { "label": "Accept", "format": "raw", "path": "accept" },
-              { "label": "Voting Start Ts", "format": "date", "params": { "encoding": "timestamp" }, "path": "votingStartTs" },
-              { "label": "Voting Period", "format": "duration", "path": "votingPeriodSeconds" },
-              { "label": "Vp Block Period", "format": "duration", "path": "vpBlockPeriodSeconds" },
-              { "label": "Threshold", "format": "unit", "params": { "base": "bps" }, "path": "thresholdConditionBIPS" },
-              { "label": "Majority", "format": "unit", "params": { "base": "bps" }, "path": "majorityConditionBIPS" },
-              { "label": "Execution Delay", "format": "duration", "path": "executionDelaySeconds" },
-              { "label": "Execution Period", "format": "duration", "path": "executionPeriodSeconds" }
+              {
+                "label": "Accept if vote passes",
+                "format": "raw",
+                "path": "accept"
+              },
+              {
+                "label": "Earliest voting start",
+                "format": "date",
+                "params": {
+                  "encoding": "timestamp"
+                },
+                "path": "votingStartTs"
+              },
+              {
+                "label": "Voting Period",
+                "format": "duration",
+                "path": "votingPeriodSeconds"
+              },
+              {
+                "label": "Vp Block Period",
+                "format": "duration",
+                "path": "vpBlockPeriodSeconds"
+              },
+              {
+                "label": "Threshold (bps)",
+                "format": "unit",
+                "params": {
+                  "base": "bps"
+                },
+                "path": "thresholdConditionBIPS"
+              },
+              {
+                "label": "Majority (bps)",
+                "format": "unit",
+                "params": {
+                  "base": "bps"
+                },
+                "path": "majorityConditionBIPS"
+              },
+              {
+                "label": "Execution Delay",
+                "format": "duration",
+                "path": "executionDelaySeconds"
+              },
+              {
+                "label": "Execution Period",
+                "format": "duration",
+                "path": "executionPeriodSeconds"
+              }
             ]
           }
         ]
@@ -45,16 +146,54 @@
       "propose(string _description, (bool accept, uint256 votingStartTs, uint256 votingPeriodSeconds, uint256 vpBlockPeriodSeconds, uint256 thresholdConditionBIPS, uint256 majorityConditionBIPS) _settings)": {
         "intent": "create proposal",
         "fields": [
-          { "label": "Description", "format": "raw", "path": "#._description", "visible": "always" },
+          {
+            "label": "Description",
+            "format": "raw",
+            "path": "#._description",
+            "visible": "always"
+          },
           {
             "path": "#._settings",
             "fields": [
-              { "label": "Accept", "format": "raw", "path": "accept" },
-              { "label": "Voting Start Ts", "format": "date", "params": { "encoding": "timestamp" }, "path": "votingStartTs" },
-              { "label": "Voting Period", "format": "duration", "path": "votingPeriodSeconds" },
-              { "label": "Vp Block Period", "format": "duration", "path": "vpBlockPeriodSeconds" },
-              { "label": "Threshold", "format": "unit", "params": { "base": "bps" }, "path": "thresholdConditionBIPS" },
-              { "label": "Majority", "format": "unit", "params": { "base": "bps" }, "path": "majorityConditionBIPS" }
+              {
+                "label": "Accept if vote passes",
+                "format": "raw",
+                "path": "accept"
+              },
+              {
+                "label": "Earliest voting start",
+                "format": "date",
+                "params": {
+                  "encoding": "timestamp"
+                },
+                "path": "votingStartTs"
+              },
+              {
+                "label": "Voting Period",
+                "format": "duration",
+                "path": "votingPeriodSeconds"
+              },
+              {
+                "label": "Vp Block Period",
+                "format": "duration",
+                "path": "vpBlockPeriodSeconds"
+              },
+              {
+                "label": "Threshold (bps)",
+                "format": "unit",
+                "params": {
+                  "base": "bps"
+                },
+                "path": "thresholdConditionBIPS"
+              },
+              {
+                "label": "Majority (bps)",
+                "format": "unit",
+                "params": {
+                  "base": "bps"
+                },
+                "path": "majorityConditionBIPS"
+              }
             ]
           }
         ]

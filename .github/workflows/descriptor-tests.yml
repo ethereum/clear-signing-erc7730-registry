@@ -13,11 +13,18 @@ name: Descriptor Tests
 # descriptor-tests-queued.yml and descriptor-test-results.yml, which run
 # the workflow file of the base branch and no code from the pull request.
 # Do not merge the three workflows into one.
+#
+# merge_group runs the tests on the merge queue branch, which is in this
+# repository. The report and the results comment are for the pull request
+# run only: the results workflow ignores a merge_group run.
+#
+# No paths filter: the verdict jobs are required checks, and a required
+# check that never reports blocks the pull request, also from the merge
+# queue. The detect job is cheap and runs on every pull request; the runner
+# jobs skip when no descriptor is affected.
 on:
   pull_request:
-    paths:
-      - "registry/**/*.json"
-      - "ercs/**/*.json"
+  merge_group:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -45,14 +52,14 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha }}
 
       # The registry and ercs trees of the base are for the test report: the
       # base version of a modified descriptor, with its includes.
       - name: Checkout base scripts
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ github.event.pull_request.base.sha }}
+          ref: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha }}
           path: base-scripts
           sparse-checkout: |
             .github/scripts
@@ -108,7 +115,7 @@ jobs:
       # step: the runner jobs give the verdict, and the report shows a gap
       # where a file could not be read.
       - name: Build the pull request context
-        if: always()
+        if: always() && github.event_name == 'pull_request'
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -178,7 +185,7 @@ jobs:
         # when the base does not hold the script. An older base script writes
         # Markdown, not JSON; the results workflow ignores a file that is not
         # valid JSON, so the step starts to work by itself after the merge.
-        if: always() && hashFiles('base-scripts/.github/scripts/check-recommended-fields.js') != ''
+        if: always() && github.event_name == 'pull_request' && hashFiles('base-scripts/.github/scripts/check-recommended-fields.js') != ''
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
           # For the "includes" chain of each descriptor, which the test report
@@ -190,7 +197,7 @@ jobs:
         run: node base-scripts/.github/scripts/check-recommended-fields.js > pr-context/recommendations.json
 
       - name: Upload the pull request context
-        if: always()
+        if: always() && github.event_name == 'pull_request'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: pr-context
@@ -212,13 +219,13 @@ jobs:
       - name: Checkout registry
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha }}
           path: registry
 
       - name: Checkout base scripts and actions
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ github.event.pull_request.base.sha }}
+          ref: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha }}
           path: base-scripts
           sparse-checkout: .github
 
@@ -249,13 +256,13 @@ jobs:
       - name: Checkout registry
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha }}
           path: registry
 
       - name: Checkout base scripts and actions
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ github.event.pull_request.base.sha }}
+          ref: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha }}
           path: base-scripts
           sparse-checkout: .github
 
@@ -286,12 +293,12 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha }}
 
       - name: Checkout base scripts and their dependencies
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ github.event.pull_request.base.sha }}
+          ref: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha }}
           path: base-scripts
           sparse-checkout: |
             .github/scripts
