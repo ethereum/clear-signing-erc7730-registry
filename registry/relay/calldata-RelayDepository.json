@@ -1,0 +1,29 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "RelayDepository",
+    "contract": { "deployments": [{ "chainId": 137, "address": "0x4cD00E387622C35bDDB9b4c962C136462338BC31" }] }
+  },
+  "metadata": { "owner": "Relay", "contractName": "RelayDepository", "info": { "url": "https://relay.link" } },
+  "display": {
+    "formats": {
+      "depositErc20(address depositor, address token, uint256 amount, bytes32 id)": {
+        "$id": "depositErc20",
+        "intent": "Deposit",
+        "interpolatedIntent": "Deposit {amount} to Relay",
+        "fields": [
+          { "path": "amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "token" }, "visible": "always" },
+          {
+            "path": "depositor",
+            "label": "Depositor",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "token", "label": "Token", "visible": "never" },
+          { "path": "id", "label": "Order Id", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
