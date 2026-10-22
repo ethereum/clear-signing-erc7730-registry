@@ -5,7 +5,8 @@
     "owner": "Uniswap Labs",
     "contractName": "Uniswap v2 Router 2",
     "constants": { "factory": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f", "WETH": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" },
-    "info": { "url": "https://uniswap.org/" }
+    "info": { "url": "https://uniswap.org/" },
+    "enums": { "lpApproval": { "true": "Unlimited to router", "false": "This removal only" } }
   },
   "display": {
     "formats": {
@@ -85,7 +86,7 @@
         "intent": "Remove Liquidity",
         "fields": [
           { "path": "liquidity", "label": "LP Tokens (UNI-V2)", "format": "unit", "params": { "base": "", "decimals": 18 } },
-          { "path": "amountTokenMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "amountTokenMin", "label": "Minimum Before Fees", "format": "tokenAmount", "params": { "tokenPath": "token" } },
           { "path": "amountETHMin", "label": "Minimum to Receive", "format": "amount" },
           {
             "path": "to",
@@ -96,7 +97,7 @@
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
           { "path": "token", "label": "Token", "visible": "never" }
         ],
-        "interpolatedIntent": "Remove {liquidity} UNI-V2 for at least {amountTokenMin} and {amountETHMin}"
+        "interpolatedIntent": "Remove {liquidity} UNI-V2 for at least {amountETHMin} and {amountTokenMin} before token fees"
       },
       "removeLiquidityETHWithPermit(address token,uint256 liquidity,uint256 amountTokenMin,uint256 amountETHMin,address to,uint256 deadline,bool approveMax,uint8 v,bytes32 r,bytes32 s)": {
         "intent": "Remove Liquidity",
@@ -112,7 +113,7 @@
           },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
           { "path": "token", "label": "Token", "visible": "never" },
-          { "path": "approveMax", "label": "Unlimited approval", "format": "raw" },
+          { "path": "approveMax", "label": "LP Token Approval", "format": "enum", "params": { "$ref": "$.metadata.enums.lpApproval" } },
           { "path": "v", "label": "V", "visible": "never" },
           { "path": "r", "label": "R", "visible": "never" },
           { "path": "s", "label": "S", "visible": "never" }
@@ -123,7 +124,7 @@
         "intent": "Remove Liquidity",
         "fields": [
           { "path": "liquidity", "label": "LP Tokens (UNI-V2)", "format": "unit", "params": { "base": "", "decimals": 18 } },
-          { "path": "amountTokenMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "amountTokenMin", "label": "Minimum Before Fees", "format": "tokenAmount", "params": { "tokenPath": "token" } },
           { "path": "amountETHMin", "label": "Minimum to Receive", "format": "amount" },
           {
             "path": "to",
@@ -133,12 +134,12 @@
           },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
           { "path": "token", "label": "Token", "visible": "never" },
-          { "path": "approveMax", "label": "Unlimited approval", "format": "raw" },
+          { "path": "approveMax", "label": "LP Token Approval", "format": "enum", "params": { "$ref": "$.metadata.enums.lpApproval" } },
           { "path": "v", "label": "V", "visible": "never" },
           { "path": "r", "label": "R", "visible": "never" },
           { "path": "s", "label": "S", "visible": "never" }
         ],
-        "interpolatedIntent": "Remove {liquidity} UNI-V2 for at least {amountTokenMin} and {amountETHMin}"
+        "interpolatedIntent": "Remove {liquidity} UNI-V2 for at least {amountETHMin} and {amountTokenMin} before token fees"
       },
       "removeLiquidityWithPermit(address tokenA,address tokenB,uint256 liquidity,uint256 amountAMin,uint256 amountBMin,address to,uint256 deadline,bool approveMax,uint8 v,bytes32 r,bytes32 s)": {
         "intent": "Remove Liquidity",
@@ -155,7 +156,7 @@
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
           { "path": "tokenA", "label": "Token A", "visible": "never" },
           { "path": "tokenB", "label": "Token B", "visible": "never" },
-          { "path": "approveMax", "label": "Unlimited approval", "format": "raw" },
+          { "path": "approveMax", "label": "LP Token Approval", "format": "enum", "params": { "$ref": "$.metadata.enums.lpApproval" } },
           { "path": "v", "label": "V", "visible": "never" },
           { "path": "r", "label": "R", "visible": "never" },
           { "path": "s", "label": "S", "visible": "never" }
