@@ -9,33 +9,6 @@
   },
   "display": {
     "formats": {
-      "exactInput((bytes path,address recipient,uint256 deadline,uint256 amountIn,uint256 amountOutMinimum) params)": {
-        "intent": "Swap",
-        "fields": [
-          {
-            "path": "params.amountIn",
-            "label": "Amount to Send",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "params.path.[0:20]" }
-          },
-          {
-            "path": "params.amountOutMinimum",
-            "label": "Minimum to Receive",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "params.path.[-20:]" }
-          },
-          {
-            "path": "params.recipient",
-            "label": "Recipient",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
-          },
-          { "path": "params.deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
-          { "path": "params.path", "label": "Path", "visible": "never" }
-        ],
-        "interpolatedIntent": "Swap {params.amountIn} for at least {params.amountOutMinimum}"
-      },
       "exactInputSingle((address tokenIn,address tokenOut,uint24 fee,address recipient,uint256 deadline,uint256 amountIn,uint256 amountOutMinimum,uint160 sqrtPriceLimitX96) params)": {
         "intent": "Swap",
         "fields": [
@@ -60,37 +33,6 @@
           { "path": "params.sqrtPriceLimitX96", "label": "Sqrt Price Limit X96", "visible": "never" }
         ],
         "interpolatedIntent": "Swap {params.amountIn} for at least {params.amountOutMinimum}"
-      },
-      "exactOutput((bytes path,address recipient,uint256 deadline,uint256 amountOut,uint256 amountInMaximum) params)": {
-        "intent": "Swap",
-        "fields": [
-          {
-            "path": "params.amountOut",
-            "label": "Amount to Receive",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "params.path.[0:20]" }
-          },
-          {
-            "path": "params.amountInMaximum",
-            "label": "Maximum to Send",
-            "format": "tokenAmount",
-            "params": {
-              "tokenPath": "params.path.[-20:]",
-              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
-              "message": "Unlimited"
-            }
-          },
-          {
-            "path": "params.recipient",
-            "label": "Recipient",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
-          },
-          { "path": "params.deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
-          { "path": "params.path", "label": "Path", "visible": "never" }
-        ],
-        "interpolatedIntent": "Swap at most {params.amountInMaximum} for {params.amountOut}"
       },
       "exactOutputSingle((address tokenIn,address tokenOut,uint24 fee,address recipient,uint256 deadline,uint256 amountOut,uint256 amountInMaximum,uint160 sqrtPriceLimitX96) params)": {
         "intent": "Swap",
@@ -120,7 +62,7 @@
           { "path": "params.deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
           { "path": "params.fee", "label": "Pool Fee", "format": "unit", "params": { "decimals": 4, "base": "%", "prefix": false } },
           { "path": "@.value", "label": "ETH Sent", "format": "amount" },
-          { "path": "params.sqrtPriceLimitX96", "label": "Price Limit", "format": "raw" },
+          { "path": "params.sqrtPriceLimitX96", "label": "Price Limit (0=none)", "format": "raw" },
           { "path": "params.tokenIn", "label": "Token In", "visible": "never" },
           { "path": "params.tokenOut", "label": "Token Out", "visible": "never" }
         ],
