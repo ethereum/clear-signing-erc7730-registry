@@ -3589,6 +3589,44 @@
           { "path": "_swapData.[].callTo", "label": "Swap Data Call To", "visible": "never" },
           { "path": "_swapData.[].approveTo", "label": "Swap Data Approve To", "visible": "never" }
         ]
+      },
+      "swapTokensGeneric(bytes32 _transactionId, string _integrator, string _referrer, address _receiver, uint256 _minAmount, (address callTo, address approveTo, address sendingAssetId, address receivingAssetId, uint256 fromAmount, bytes callData, bool requiresDeposit)[] _swapData)": {
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {_swapData.[0].fromAmount} for at least {_minAmount}, sent to {_receiver}",
+        "fields": [
+          {
+            "path": "_swapData.[].fromAmount",
+            "label": "Amount to Send",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "_swapData.[].sendingAssetId",
+              "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"]
+            },
+            "visible": "always"
+          },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "ifNotIn": [0] } },
+          {
+            "path": "_minAmount",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_swapData.[-1].receivingAssetId" },
+            "visible": "always"
+          },
+          {
+            "path": "_receiver",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "label": "Transaction Id", "path": "_transactionId", "visible": "never" },
+          { "label": "Integrator", "path": "_integrator", "visible": "never" },
+          { "label": "Referrer", "path": "_referrer", "visible": "never" },
+          { "label": "Swap Data Call Data", "path": "_swapData.[].callData", "visible": "never" },
+          { "label": "Swap Data Call To", "path": "_swapData.[].callTo", "visible": "never" },
+          { "label": "Swap Data Approve To", "path": "_swapData.[].approveTo", "visible": "never" },
+          { "label": "Swap Data Requires Deposit", "path": "_swapData.[].requiresDeposit", "visible": "never" }
+        ]
       }
     }
   }
