@@ -305,14 +305,8 @@
             "params": { "base": "%", "decimals": 2 },
             "visible": "always"
           },
-          { "path": "_renegotiationOffer.duration", "label": "New duration", "format": "duration", "visible": "always" },
-          {
-            "path": "_renegotiationOffer.fee",
-            "label": "Lender fee",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_loan.principalAddress" },
-            "visible": "always"
-          },
+          { "path": "_renegotiationOffer.duration", "label": "Offer duration", "visible": "never" },
+          { "path": "_renegotiationOffer.fee", "label": "Offer fee", "visible": "never" },
           {
             "path": "_renegotiationOffer.expirationTime",
             "label": "Offer expires",
@@ -389,7 +383,7 @@
             "params": { "base": "%", "decimals": 2 },
             "visible": "always"
           },
-          { "path": "_renegotiationOffer.duration", "label": "New duration", "format": "duration", "visible": "always" },
+          { "path": "_renegotiationOffer.duration", "label": "Offer duration", "visible": "never" },
           {
             "path": "_renegotiationOffer.fee",
             "label": "Lender fee",
@@ -743,7 +737,10 @@
       },
       "multicall(bytes[] data)": {
         "intent": "Batch loan actions",
-        "fields": [{ "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to" }, "visible": "always" }]
+        "fields": [
+          { "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to" }, "visible": "always" },
+          { "path": "@.value", "label": "Value sent", "format": "amount", "visible": "always" }
+        ]
       }
     }
   }

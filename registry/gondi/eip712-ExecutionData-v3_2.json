@@ -10,7 +10,7 @@
   "display": {
     "formats": {
       "ExecutionData(OfferExecution[] offerExecution,uint256 loanId,address nftCollateralAddress,uint256 tokenId,uint256 duration,uint256 expirationTime,address principalReceiver,bytes callbackData)LoanOffer(uint256 offerId,address lender,uint256 fee,uint256 capacity,address nftCollateralAddress,uint256 nftCollateralTokenId,address principalAddress,uint256 principalAmount,uint256 aprBps,uint256 expirationTime,uint256 duration,uint256 maxSeniorRepayment,OfferValidator[] validators,bool lenderRefinanceDisabled,address borrower)OfferExecution(LoanOffer offer,uint256 amount,bytes lenderOfferSignature)OfferValidator(address validator,bytes arguments)": {
-        "intent": "Accept loan offers",
+        "intent": "Accept loan offers (new loan or refinance)",
         "interpolatedIntent": "Borrow against {tokenId}",
         "fields": [
           {
@@ -84,7 +84,7 @@
           },
           { "path": "callbackData", "label": "Callback data", "format": "raw", "visible": "always" },
           { "path": "nftCollateralAddress", "label": "Collection", "visible": "never" },
-          { "path": "loanId", "label": "Loan ID", "visible": "never" }
+          { "path": "loanId", "label": "Loan to refinance", "format": "raw", "visible": { "ifNotIn": ["0"] } }
         ]
       }
     }

@@ -91,7 +91,7 @@
         }
       },
       "expected": {
-        "intent": "Accept loan offers",
+        "intent": "Accept loan offers (new loan or refinance)",
         "fields": [
           { "label": "Collateral", "value": "Art Blocks #8400" },
           { "label": "Lender", "value": "0x631F1a569Adc029Ee9aECA46a5b864F2612Bc64C" },
@@ -191,7 +191,7 @@
         }
       },
       "expected": {
-        "intent": "Accept loan offers",
+        "intent": "Accept loan offers (new loan or refinance)",
         "fields": [
           { "label": "Collateral", "value": "Hoodnanas #3374" },
           { "label": "Lender", "value": "0x5b85d6DCd8BEcF25F4cB1502497B81B8348A2d70" },
@@ -207,6 +207,104 @@
           }
         ],
         "interpolatedIntent": "Borrow against Hoodnanas #3374",
+        "owner": "GONDI"
+      }
+    },
+    {
+      "description": "Buy-now-pay-later loan terms on Ethereum, refinancing loan 15551 (constructed, never signed)",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "ExecutionData": [
+            { "name": "offerExecution", "type": "OfferExecution[]" },
+            { "name": "loanId", "type": "uint256" },
+            { "name": "nftCollateralAddress", "type": "address" },
+            { "name": "tokenId", "type": "uint256" },
+            { "name": "duration", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "principalReceiver", "type": "address" },
+            { "name": "callbackData", "type": "bytes" }
+          ],
+          "OfferExecution": [
+            { "name": "offer", "type": "LoanOffer" },
+            { "name": "amount", "type": "uint256" },
+            { "name": "lenderOfferSignature", "type": "bytes" }
+          ],
+          "LoanOffer": [
+            { "name": "offerId", "type": "uint256" },
+            { "name": "lender", "type": "address" },
+            { "name": "fee", "type": "uint256" },
+            { "name": "capacity", "type": "uint256" },
+            { "name": "nftCollateralAddress", "type": "address" },
+            { "name": "nftCollateralTokenId", "type": "uint256" },
+            { "name": "principalAddress", "type": "address" },
+            { "name": "principalAmount", "type": "uint256" },
+            { "name": "aprBps", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "duration", "type": "uint256" },
+            { "name": "maxSeniorRepayment", "type": "uint256" },
+            { "name": "validators", "type": "OfferValidator[]" }
+          ],
+          "OfferValidator": [{ "name": "validator", "type": "address" }, { "name": "arguments", "type": "bytes" }]
+        },
+        "primaryType": "ExecutionData",
+        "domain": {
+          "name": "GONDI_MULTI_SOURCE_LOAN",
+          "version": "3.1",
+          "chainId": 1,
+          "verifyingContract": "0xf41B389E0C1950dc0B16C9498eaE77131CC08A56"
+        },
+        "message": {
+          "offerExecution": [
+            {
+              "offer": {
+                "offerId": "12",
+                "lender": "0x631F1a569Adc029Ee9aECA46a5b864F2612Bc64C",
+                "fee": "82379862700228833",
+                "capacity": "0",
+                "nftCollateralAddress": "0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a",
+                "nftCollateralTokenId": "8400",
+                "principalAddress": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+                "principalAmount": "2000000000000000000",
+                "aprBps": "1500",
+                "expirationTime": "1792080772",
+                "duration": "31104000",
+                "maxSeniorRepayment": "0",
+                "validators": []
+              },
+              "amount": "1999979862700228832",
+              "lenderOfferSignature": "0x5dd16f75d051c042a48bf891feb894d87a5b7122f7a4868e14caf3f016878a8f2e0f3d2b050e9fa1086bda000fdf164e50f1504eaf1ab13ef11a4cbe1cc167141c"
+            }
+          ],
+          "loanId": "15551",
+          "nftCollateralAddress": "0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a",
+          "tokenId": "8400",
+          "duration": "31104000",
+          "expirationTime": "1791938211",
+          "principalReceiver": "0xf46a58cadA29FF34CF62F72357D2B37815506fEB",
+          "callbackData": "0x"
+        }
+      },
+      "expected": {
+        "intent": "Accept loan offers (new loan or refinance)",
+        "fields": [
+          { "label": "Collateral", "value": "Art Blocks #8400" },
+          { "label": "Lender", "value": "0x631F1a569Adc029Ee9aECA46a5b864F2612Bc64C" },
+          { "label": "Amount", "value": "1.999979862700228832 WETH" },
+          { "label": "APR", "value": "15%" },
+          { "label": "Lender fee (max)", "value": "0.082379862700228833 WETH" },
+          { "label": "Duration", "value": "8640:00:00" },
+          { "label": "Principal receiver", "value": "0xf46a58cadA29FF34CF62F72357D2B37815506fEB" },
+          { "label": "Valid until", "value": "2026-10-14 00:36:51Z" },
+          { "label": "Callback data", "value": "0x" },
+          { "label": "Loan to refinance", "value": "15551" }
+        ],
+        "interpolatedIntent": "Borrow against Art Blocks #8400",
         "owner": "GONDI"
       }
     }
