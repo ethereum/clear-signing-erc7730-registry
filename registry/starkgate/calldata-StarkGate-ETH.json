@@ -1,0 +1,119 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "L1StarkGateETHBridge",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0xae0Ee0A63A2cE6BaeEFFE56e7714FB4EFE48D419"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "StarkWare",
+    "info": {
+      "url": "https://starkgate.starknet.io/",
+      "deploymentDate": "2022-03-21T00:00:00Z"
+    },
+    "constants": {
+      "ethTokenAddress": "0x0000000000000000000000000000000000455448"
+    },
+    "contractName": "L1StarkGateETHBridge"
+  },
+  "display": {
+    "formats": {
+      "deposit(address token, uint256 amount, uint256 l2Recipient)": {
+        "$id": "deposit",
+        "intent": "Bridge",
+        "interpolatedIntent": "Bridge {amount} to {l2Recipient}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to deposit",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "token",
+              "nativeCurrencyAddress": "$.metadata.constants.ethTokenAddress"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "l2Recipient",
+            "label": "Recipient",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Total ETH sent",
+            "format": "amount"
+          }
+        ]
+      },
+      "deposit(uint256 amount, uint256 l2Recipient)": {
+        "$id": "depositLegacy",
+        "intent": "Bridge",
+        "interpolatedIntent": "Bridge {amount} to {l2Recipient}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to deposit",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.ethTokenAddress",
+              "nativeCurrencyAddress": "$.metadata.constants.ethTokenAddress"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "l2Recipient",
+            "label": "Recipient",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Total ETH sent",
+            "format": "amount"
+          }
+        ]
+      },
+      "depositWithMessage(address token, uint256 amount, uint256 l2Recipient, uint256[] message)": {
+        "$id": "depositWithMessage",
+        "intent": "Bridge",
+        "interpolatedIntent": "Bridge {amount} to {l2Recipient}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to deposit",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "token",
+              "nativeCurrencyAddress": "$.metadata.constants.ethTokenAddress"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "l2Recipient",
+            "label": "Recipient",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "message.[]",
+            "label": "Message",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Total ETH sent",
+            "format": "amount"
+          }
+        ]
+      }
+    }
+  }
+}

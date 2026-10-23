@@ -1,7 +1,15 @@
 {
   "$schema": "../../../specs/erc7730-tests-v2.schema.json",
   "descriptor": "../calldata-StarkGate-STRK.json",
-  "dataProvider": { "tokens": { "0xca14007eff0db1f8135f4c25b34de49ab0d42766": { "symbol": "STRK", "decimals": 18, "name": "StarkNet Token" } } },
+  "dataProvider": {
+    "tokens": {
+      "0xca14007eff0db1f8135f4c25b34de49ab0d42766": {
+        "symbol": "STRK",
+        "decimals": 18,
+        "name": "StarkNet Token"
+      }
+    }
+  },
   "tests": [
     {
       "description": "Bridge - chain 1",
@@ -11,10 +19,75 @@
         "intent": "Bridge",
         "owner": "StarkWare",
         "fields": [
-          { "label": "Amount to deposit", "value": "980000 STRK" },
-          { "label": "Recipient", "value": "2616435859392095438933830530918590163965998318332799566221709688513359830273" },
-          { "label": "Deposit fee", "value": "0.000022148627586501 ETH" }
-        ]
+          {
+            "label": "Amount to deposit",
+            "value": "980000 STRK"
+          },
+          {
+            "label": "Recipient",
+            "value": "2616435859392095438933830530918590163965998318332799566221709688513359830273"
+          },
+          {
+            "label": "Deposit fee",
+            "value": "0.000022148627586501 ETH"
+          }
+        ],
+        "interpolatedIntent": "Bridge 980000 STRK to 2616435859392095438933830530918590163965998318332799566221709688513359830273"
+      }
+    },
+    {
+      "description": "Bridge STRK legacy deposit - chain 1",
+      "rawTx": "0x02f872011a8477359400847c854b8f8302d8a794ce5485cfb26914c5dce00b9baf0580364dafc7a485e8d4a51000b844e2bbb1580000000000000000000000000000000000000000000000008ac7230489e8000006f63ad68afb9c429bf636980b4804db5cb2f5a4f8e08530f41fa4353d0d2826c0",
+      "txHash": "0x0c686d7ad0a4c6d16c05c88e6852014b38f32166db64e55867bb3f09645eebbd",
+      "expected": {
+        "intent": "Bridge",
+        "owner": "StarkWare",
+        "fields": [
+          {
+            "label": "Amount to deposit",
+            "value": "10 STRK"
+          },
+          {
+            "label": "Recipient",
+            "value": "3148927554788384259934611288666454302534984920816328835353023987866946840614"
+          },
+          {
+            "label": "Deposit fee",
+            "value": "0.000001 ETH"
+          }
+        ],
+        "interpolatedIntent": "Bridge 10 STRK to 3148927554788384259934611288666454302534984920816328835353023987866946840614"
+      }
+    },
+    {
+      "description": "Bridge STRK deposit with message - chain 1",
+      "rawTx": "0x02f901140181fd847735940084817274488302e5a994ce5485cfb26914c5dce00b9baf0580364dafc7a4861424e1145dc5b8e4be58b18e000000000000000000000000ca14007eff0db1f8135f4c25b34de49ab0d4276600000000000000000000000000000000000000000000cf85e80d39783c80000005c8d9a7d34afb96d69422539f8dbf1aa85a5ac7276b9e46f6897bf0f210dd010000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002c0",
+      "expected": {
+        "intent": "Bridge",
+        "owner": "StarkWare",
+        "fields": [
+          {
+            "label": "Amount to deposit",
+            "value": "980000 STRK"
+          },
+          {
+            "label": "Recipient",
+            "value": "2616435859392095438933830530918590163965998318332799566221709688513359830273"
+          },
+          {
+            "label": "Message",
+            "value": "1"
+          },
+          {
+            "label": "Message",
+            "value": "2"
+          },
+          {
+            "label": "Deposit fee",
+            "value": "0.000022148627586501 ETH"
+          }
+        ],
+        "interpolatedIntent": "Bridge 980000 STRK to 2616435859392095438933830530918590163965998318332799566221709688513359830273"
       }
     }
   ]
