@@ -1,0 +1,459 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 42161,
+          "address": "0xae878dCfc09dB47000F851d69b1b557F5bF307b5"
+        }
+      ]
+    },
+    "$id": "CosmiX Prediction Market v3"
+  },
+  "metadata": {
+    "owner": "CosmiX DAO",
+    "info": {
+      "url": "https://cosmixdao.xyz"
+    },
+    "constants": {
+      "csmxa": "0x5e9692B45B7B47566F64acD312C0293F8acecbC5"
+    }
+  },
+  "display": {
+    "formats": {
+      "buyShares(bytes32 marketId, uint8 option, uint256 amount)": {
+        "intent": "Place bet",
+        "interpolatedIntent": "Bet {amount} on option {option}",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          },
+          {
+            "path": "option",
+            "label": "Option index",
+            "format": "raw"
+          },
+          {
+            "path": "amount",
+            "label": "Bet amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.csmxa"
+            }
+          }
+        ]
+      },
+      "claimWinnings(bytes32 marketId)": {
+        "intent": "Claim winnings",
+        "interpolatedIntent": "Claim CosmiX Predict winnings after fees",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          }
+        ]
+      },
+      "refundBet(bytes32 marketId)": {
+        "intent": "Refund bet",
+        "interpolatedIntent": "Refund bet from a cancelled market",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          }
+        ]
+      },
+      "withdrawFees(bytes32 marketId)": {
+        "intent": "Withdraw fees",
+        "interpolatedIntent": "Withdraw market fees",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          }
+        ]
+      },
+      "updateCreatorFee(bytes32 marketId, uint256 newFeeBps)": {
+        "intent": "Update creator fee",
+        "interpolatedIntent": "Set creator fee to {newFeeBps}",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          },
+          {
+            "path": "newFeeBps",
+            "label": "New fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 2
+            }
+          }
+        ]
+      },
+      "createMarket(bytes32 marketId, address creator, string title, uint8 optionCount, uint256 endTime, uint256 creatorFeeBps)": {
+        "intent": "Create market",
+        "interpolatedIntent": "Create market \"{title}\"",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          },
+          {
+            "path": "creator",
+            "label": "Creator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "title",
+            "label": "Title",
+            "format": "raw"
+          },
+          {
+            "path": "optionCount",
+            "label": "Options",
+            "format": "raw"
+          },
+          {
+            "path": "endTime",
+            "label": "Ends",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "path": "creatorFeeBps",
+            "label": "Creator fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 2
+            }
+          }
+        ]
+      },
+      "resolveMarket(bytes32 marketId, uint8 winningOption)": {
+        "intent": "Resolve market",
+        "interpolatedIntent": "Resolve market: option {winningOption} wins",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          },
+          {
+            "path": "winningOption",
+            "label": "Winning option",
+            "format": "raw"
+          }
+        ]
+      },
+      "cancelMarket(bytes32 marketId)": {
+        "intent": "Cancel market",
+        "interpolatedIntent": "Cancel CosmiX Predict market",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          }
+        ]
+      },
+      "setPlatformFee(uint256 bps)": {
+        "intent": "Set platform fee",
+        "interpolatedIntent": "Set platform fee to {bps}",
+        "fields": [
+          {
+            "path": "bps",
+            "label": "Platform fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 2
+            }
+          }
+        ]
+      },
+      "setTreasury(address _treasury)": {
+        "intent": "Set treasury",
+        "interpolatedIntent": "Set treasury to {_treasury}",
+        "fields": [
+          {
+            "path": "_treasury",
+            "label": "Treasury",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "addResolver(address resolver)": {
+        "intent": "Add resolver",
+        "interpolatedIntent": "Add resolver {resolver}",
+        "fields": [
+          {
+            "path": "resolver",
+            "label": "Resolver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "removeResolver(address resolver)": {
+        "intent": "Remove resolver",
+        "interpolatedIntent": "Remove resolver {resolver}",
+        "fields": [
+          {
+            "path": "resolver",
+            "label": "Resolver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "transferOwnership(address newOwner)": {
+        "intent": "Transfer ownership",
+        "interpolatedIntent": "Transfer ownership to {newOwner}",
+        "fields": [
+          {
+            "path": "newOwner",
+            "label": "New owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "sponsorMarket(bytes32 marketId, uint256 amount)": {
+        "intent": "Sponsor market",
+        "interpolatedIntent": "Add {amount} bonus to a CosmiX Predict market",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          },
+          {
+            "path": "amount",
+            "label": "Bonus amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.csmxa"
+            }
+          }
+        ]
+      },
+      "closeMarket(bytes32 marketId)": {
+        "intent": "Close betting",
+        "interpolatedIntent": "Close betting on a CosmiX Predict market",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          }
+        ]
+      },
+      "sweepExpired(bytes32 marketId)": {
+        "intent": "Sweep expired",
+        "interpolatedIntent": "Send expired unclaimed winnings to the treasury",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          }
+        ]
+      },
+      "freezeMarket(bytes32 marketId)": {
+        "intent": "Freeze payouts",
+        "interpolatedIntent": "Freeze payouts of a CosmiX Predict market",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          }
+        ]
+      },
+      "unfreezeMarket(bytes32 marketId)": {
+        "intent": "Unfreeze payouts",
+        "interpolatedIntent": "Unfreeze payouts of a CosmiX Predict market",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          }
+        ]
+      },
+      "overrideResolution(bytes32 marketId, uint8 newWinningOption)": {
+        "intent": "Override result",
+        "interpolatedIntent": "Change winning option to {newWinningOption}",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          },
+          {
+            "path": "newWinningOption",
+            "label": "New winning option",
+            "format": "raw"
+          }
+        ]
+      },
+      "voidMarket(bytes32 marketId)": {
+        "intent": "Void market",
+        "interpolatedIntent": "Void market and refund all bets",
+        "fields": [
+          {
+            "path": "marketId",
+            "label": "Market ID",
+            "format": "raw"
+          }
+        ]
+      },
+      "setGuardian(address guardian, bool enabled)": {
+        "intent": "Set guardian",
+        "interpolatedIntent": "Set guardian {guardian}: {enabled}",
+        "fields": [
+          {
+            "path": "guardian",
+            "label": "Guardian",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "enabled",
+            "label": "Enabled",
+            "format": "raw"
+          }
+        ]
+      },
+      "setChallengeParams(uint256 delay, uint256 marketLimit, uint256 windowLimit)": {
+        "intent": "Set payout safeguard",
+        "interpolatedIntent": "Set payout delay {delay}",
+        "fields": [
+          {
+            "path": "delay",
+            "label": "Payout delay",
+            "format": "duration"
+          },
+          {
+            "path": "marketLimit",
+            "label": "Instant limit per market",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.csmxa"
+            }
+          },
+          {
+            "path": "windowLimit",
+            "label": "Instant limit per day",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.csmxa"
+            }
+          }
+        ]
+      },
+      "rescueTokens(address token, address to, uint256 amount)": {
+        "intent": "Rescue tokens",
+        "interpolatedIntent": "Return {amount} sent by mistake to {to}",
+        "fields": [
+          {
+            "path": "token",
+            "label": "Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
+          },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "token"
+            }
+          }
+        ]
+      },
+      "acceptOwnership()": {
+        "intent": "Accept ownership",
+        "interpolatedIntent": "Accept ownership of CosmiX Predict",
+        "fields": []
+      },
+      "pause()": {
+        "intent": "Pause contract",
+        "interpolatedIntent": "Pause CosmiX Predict",
+        "fields": []
+      },
+      "unpause()": {
+        "intent": "Unpause contract",
+        "interpolatedIntent": "Unpause CosmiX Predict",
+        "fields": []
+      }
+    }
+  }
+}
