@@ -1,0 +1,82 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "$comment": "TODO: add the production Conduit deployment once it is live on Ethereum mainnet. The current entry is a test Syrup USDC Conduit (rstgSyrUSDC), used as the reference deployment and test fixture.",
+  "context": { "$id": "Conduit", "contract": { "deployments": [{ "chainId": 1, "address": "0x6B2Bc4d0614D7744dC5f71B7A2555A9Cef2535D9" }] } },
+  "metadata": {
+    "owner": "Railnet",
+    "info": { "url": "https://railnet.org" },
+    "enums": { "mode": { "0": "Deposit", "1": "Redeem" } },
+    "contractName": "Conduit"
+  },
+  "display": {
+    "formats": {
+      "create((address owner, address receiver, (address asset, uint256 value) input, (address asset, uint256 value) output, uint8 mode, bytes32 salt, bytes data) query, address receiver, bytes32 sourceSalt)": {
+        "intent": "Deposit or redeem",
+        "interpolatedIntent": "{#.query.mode} {#.query.input.value}",
+        "fields": [
+          {
+            "path": "#.query.mode",
+            "label": "Operation",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.mode" },
+            "visible": "always"
+          },
+          {
+            "path": "#.query.input.value",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.query.input.asset" },
+            "visible": "always"
+          },
+          {
+            "path": "#.query.output.value",
+            "label": "Minimum output",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.query.output.asset" },
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.query.data", "label": "Vehicle data", "format": "raw", "visible": "optional" },
+          { "path": "#.query.owner", "label": "Query owner", "visible": "never" },
+          { "path": "#.query.receiver", "label": "Query receiver", "visible": "never" },
+          { "path": "#.query.salt", "label": "Query salt", "visible": "never" },
+          { "path": "#.sourceSalt", "label": "Source salt", "visible": "never" }
+        ]
+      },
+      "createRedeemFromConduitShares(uint256 conduitShares, (address asset, uint256 value) outputAsset, bytes32 sourceSalt, address receiver)": {
+        "intent": "Redeem Conduit shares",
+        "interpolatedIntent": "Redeem {#.conduitShares}",
+        "fields": [
+          {
+            "path": "#.conduitShares",
+            "label": "Shares to redeem",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "#.outputAsset.value",
+            "label": "Minimum output",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.outputAsset.asset" },
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.sourceSalt", "label": "Source salt", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
