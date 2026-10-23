@@ -1,0 +1,152 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-LiquidityPoolV3.json",
+  "dataProvider": {
+    "tokens": {
+      "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Supply 25,000 USDC (plain calldata)",
+      "rawTx": "0x02f84d8221052a830f42408402faf080830493e094ee755f1bbcbf6e3260469d0f473522d71d3bddda80a4b6b55f2500000000000000000000000000000000000000000000000000000005d21dba00c0",
+      "expected": {
+        "intent": "Supply to Surge",
+        "owner": "Surge",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "25000 USDC"
+          }
+        ],
+        "interpolatedIntent": "Supply 25000 USDC to Surge"
+      }
+    },
+    {
+      "description": "Supply 25,000 USDC (with ERC-8021 builder-code suffix)",
+      "rawTx": "0x02f86b8221052a830f42408402faf080830493e094ee755f1bbcbf6e3260469d0f473522d71d3bddda80b841b6b55f2500000000000000000000000000000000000000000000000000000005d21dba0062635f756f7661327869790b0080218021802180218021802180218021c0",
+      "expected": {
+        "intent": "Supply to Surge",
+        "owner": "Surge",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "25000 USDC"
+          }
+        ],
+        "interpolatedIntent": "Supply 25000 USDC to Surge"
+      }
+    },
+    {
+      "description": "Withdraw 1,000 USDC",
+      "rawTx": "0x02f84d8221052a830f42408402faf080830493e094ee755f1bbcbf6e3260469d0f473522d71d3bddda80a42e1a7d4d000000000000000000000000000000000000000000000000000000003b9aca00c0",
+      "expected": {
+        "intent": "Withdraw from Surge",
+        "owner": "Surge",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "1000 USDC"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 1000 USDC from Surge"
+      }
+    },
+    {
+      "description": "Request 20 USDC withdrawal from fixed market 11",
+      "rawTx": "0x02f86e8221052a830f42408402faf080830493e094ee755f1bbcbf6e3260469d0f473522d71d3bddda80b844b24e86ed000000000000000000000000000000000000000000000000000000000000000b0000000000000000000000000000000000000000000000000000000001312d00c0",
+      "expected": {
+        "intent": "Request withdrawal",
+        "owner": "Surge",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "20 USDC"
+          },
+          {
+            "label": "Fixed market",
+            "value": "11"
+          }
+        ],
+        "interpolatedIntent": "Request 20 USDC withdrawal"
+      }
+    },
+    {
+      "description": "Set market 11 exposure to 100% (with ERC-8021 suffix)",
+      "rawTx": "0x02f88b8221052a830f42408402faf080830493e094ee755f1bbcbf6e3260469d0f473522d71d3bddda80b861d9c902df000000000000000000000000000000000000000000000000000000000000000b000000000000000000000000000000000000000000000000000000000000271062635f756f7661327869790b0080218021802180218021802180218021c0",
+      "expected": {
+        "intent": "Set market exposure",
+        "owner": "Surge",
+        "fields": [
+          {
+            "label": "Fixed market",
+            "value": "11"
+          },
+          {
+            "label": "Exposure",
+            "value": "100%"
+          }
+        ],
+        "interpolatedIntent": "Set exposure 100%"
+      }
+    },
+    {
+      "description": "Set exposures for fixed markets 11 and 12 to 60% and 40%",
+      "rawTx": "0x02f9012f8221052a830f42408402faf080830493e094ee755f1bbcbf6e3260469d0f473522d71d3bddda80b901048c07b80b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000b000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000017700000000000000000000000000000000000000000000000000000000000000fa0c0",
+      "expected": {
+        "intent": "Set market exposures",
+        "owner": "Surge",
+        "fields": [
+          {
+            "label": "Fixed market",
+            "value": "11"
+          },
+          {
+            "label": "Fixed market",
+            "value": "12"
+          },
+          {
+            "label": "Exposure",
+            "value": "60%"
+          },
+          {
+            "label": "Exposure",
+            "value": "40%"
+          }
+        ],
+        "interpolatedIntent": "Set exposures 60% and 40%"
+      }
+    },
+    {
+      "description": "Set exposures for fixed markets 11 and 12 (with ERC-8021 builder-code suffix)",
+      "rawTx": "0x02f9014c8221052a830f42408402faf080830493e094ee755f1bbcbf6e3260469d0f473522d71d3bddda80b901218c07b80b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000b000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000017700000000000000000000000000000000000000000000000000000000000000fa062635f756f7661327869790b0080218021802180218021802180218021c0",
+      "expected": {
+        "intent": "Set market exposures",
+        "owner": "Surge",
+        "fields": [
+          {
+            "label": "Fixed market",
+            "value": "11"
+          },
+          {
+            "label": "Fixed market",
+            "value": "12"
+          },
+          {
+            "label": "Exposure",
+            "value": "60%"
+          },
+          {
+            "label": "Exposure",
+            "value": "40%"
+          }
+        ],
+        "interpolatedIntent": "Set exposures 60% and 40%"
+      }
+    }
+  ]
+}
