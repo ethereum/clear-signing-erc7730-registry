@@ -57,9 +57,9 @@
         ]
       },
       "wrapAndTransferETH(uint16 recipientChain,bytes32 recipient,uint256 arbiterFee,uint32 nonce)": {
-        "intent": "Wrap ETH and bridge",
+        "intent": "Wrap native coin and bridge",
         "fields": [
-          { "path": "@.value", "label": "ETH sent (includes Wormhole fee)", "format": "amount" },
+          { "path": "@.value", "label": "Total sent (Wormhole fee included)", "format": "amount" },
           { "path": "#.recipientChain", "label": "Destination chain", "format": "enum", "params": { "$ref": "$.metadata.enums.wormholeChain" } },
           { "path": "#.recipient", "label": "Recipient", "format": "raw" },
           { "path": "#.arbiterFee", "label": "Relayer fee", "format": "amount" },
@@ -67,9 +67,9 @@
         ]
       },
       "wrapAndTransferETHWithPayload(uint16 recipientChain,bytes32 recipient,uint32 nonce,bytes payload)": {
-        "intent": "Wrap ETH + bridge payload",
+        "intent": "Wrap native coin + bridge payload",
         "fields": [
-          { "path": "@.value", "label": "ETH sent (includes Wormhole fee)", "format": "amount" },
+          { "path": "@.value", "label": "Total sent (Wormhole fee included)", "format": "amount" },
           { "path": "#.recipientChain", "label": "Destination chain", "format": "enum", "params": { "$ref": "$.metadata.enums.wormholeChain" } },
           { "path": "#.recipient", "label": "Recipient", "format": "raw" },
           { "path": "#.payload", "label": "Payload", "format": "raw" },
@@ -79,6 +79,7 @@
       "attestToken(address tokenAddress,uint32 nonce)": {
         "intent": "Attest token for bridging",
         "fields": [
+          { "path": "@.value", "label": "Wormhole fee", "format": "amount" },
           { "path": "#.tokenAddress", "label": "Token", "format": "addressName", "params": { "types": ["token", "contract"], "sources": ["local"] } },
           { "path": "#.nonce", "label": "Nonce", "visible": "never" }
         ]
@@ -96,13 +97,13 @@
         ]
       },
       "completeTransferAndUnwrapETH(bytes encodedVm)": {
-        "intent": "Complete & unwrap ETH",
+        "intent": "Complete transfer, unwrap native coin",
         "fields": [
           { "path": "#.encodedVm", "label": "Attestation", "visible": "never" }
         ]
       },
       "completeTransferAndUnwrapETHWithPayload(bytes encodedVm)": {
-        "intent": "Complete unwrap with payload",
+        "intent": "Complete with payload, unwrap native coin",
         "fields": [
           { "path": "#.encodedVm", "label": "Attestation", "visible": "never" }
         ]
