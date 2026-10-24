@@ -3,7 +3,11 @@
   "descriptor": "../calldata-TokenBridge.json",
   "dataProvider": {
     "tokens": {
-      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" }
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      }
     }
   },
   "tests": [
@@ -43,10 +47,10 @@
       "description": "TokenBridge wrapAndTransferETH 0.1 ETH to Base",
       "rawTx": "0x02f8b60180843b9aca008506fc23ac0083030d40943ee18b2214aff97000d974cf647e7c347e8fa58588016345785d8a0000b8849981509f000000000000000000000000000000000000000000000000000000000000001e000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa9604500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0",
       "expected": {
-        "intent": "Wrap ETH and bridge",
+        "intent": "Wrap native coin and bridge",
         "owner": "Wormhole",
         "fields": [
-          { "label": "ETH sent (includes Wormhole fee)", "value": "0.1 ETH" },
+          { "label": "Total sent (Wormhole fee included)", "value": "0.1 ETH" },
           { "label": "Destination chain", "value": "Base" },
           { "label": "Recipient", "value": "0x000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045" },
           { "label": "Relayer fee", "value": "0 ETH" }
@@ -57,10 +61,10 @@
       "description": "TokenBridge wrapAndTransferETHWithPayload 0.1 ETH to Base",
       "rawTx": "0x02f8d60180843b9aca008506fc23ac0083030d40943ee18b2214aff97000d974cf647e7c347e8fa58588016345785d8a0000b8a4bee9cdfc000000000000000000000000000000000000000000000000000000000000001e000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000c0",
       "expected": {
-        "intent": "Wrap ETH + bridge payload",
+        "intent": "Wrap native coin + bridge payload",
         "owner": "Wormhole",
         "fields": [
-          { "label": "ETH sent (includes Wormhole fee)", "value": "0.1 ETH" },
+          { "label": "Total sent (Wormhole fee included)", "value": "0.1 ETH" },
           { "label": "Destination chain", "value": "Base" },
           { "label": "Recipient", "value": "0x000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045" },
           { "label": "Payload", "value": "0x" }
@@ -74,6 +78,7 @@
         "intent": "Attest token for bridging",
         "owner": "Wormhole",
         "fields": [
+          { "label": "Wormhole fee", "value": "0 ETH" },
           { "label": "Token", "value": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" }
         ]
       }
@@ -100,7 +105,7 @@
       "description": "TokenBridge completeTransferAndUnwrapETH",
       "rawTx": "0x02f88e0101843b9aca008506fc23ac0083030d40943ee18b2214aff97000d974cf647e7c347e8fa58500b864ff200cde000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000037661610000000000000000000000000000000000000000000000000000000000c0",
       "expected": {
-        "intent": "Complete & unwrap ETH",
+        "intent": "Complete transfer, unwrap native coin",
         "owner": "Wormhole",
         "fields": []
       }
@@ -109,7 +114,7 @@
       "description": "TokenBridge completeTransferAndUnwrapETHWithPayload",
       "rawTx": "0x02f8ee0180843b9aca008506fc23ac0083030d40943ee18b2214aff97000d974cf647e7c347e8fa58580b8c41c8475e4000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000640101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010100000000000000000000000000000000000000000000000000000000c0",
       "expected": {
-        "intent": "Complete unwrap with payload",
+        "intent": "Complete with payload, unwrap native coin",
         "owner": "Wormhole",
         "fields": []
       }
