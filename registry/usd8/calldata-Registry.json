@@ -1,0 +1,642 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "USD8 Registry",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x9BfF24a44Bb20F8D1f1dE86EcA56295c5Bb46430"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "USD8",
+    "info": {
+      "url": "https://usd8.fi"
+    },
+    "contractName": "Registry"
+  },
+  "display": {
+    "formats": {
+      "upgradeToAndCall(address newImplementation, bytes data)": {
+        "intent": "Upgrade Contract",
+        "interpolatedIntent": "Upgrade to {newImplementation} and run setup call",
+        "fields": [
+          {
+            "path": "#.newImplementation",
+            "label": "New Implementation",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.data",
+            "label": "Setup Call Data",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "ETH Sent",
+            "format": "amount",
+            "visible": "optional"
+          }
+        ]
+      },
+      "addPool(address pool, address usdFeed)": {
+        "intent": "Add Cover Pool",
+        "interpolatedIntent": "Register cover pool {pool} with USD feed {usdFeed}",
+        "fields": [
+          {
+            "path": "#.pool",
+            "label": "Pool",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.usdFeed",
+            "label": "USD Feed",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "removePool(address pool)": {
+        "intent": "Remove Cover Pool",
+        "interpolatedIntent": "Remove cover pool {pool}",
+        "fields": [
+          {
+            "path": "#.pool",
+            "label": "Pool",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setAssetUsdFeed(address asset, address newFeed)": {
+        "intent": "Set Asset USD Feed",
+        "interpolatedIntent": "Set the USD feed of {asset} to {newFeed}",
+        "fields": [
+          {
+            "path": "#.asset",
+            "label": "Asset",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.newFeed",
+            "label": "New Feed",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setMaxOracleStaleness(uint64 newStaleness)": {
+        "intent": "Set Max Oracle Age",
+        "interpolatedIntent": "Set max oracle age to {newStaleness}",
+        "fields": [
+          {
+            "path": "#.newStaleness",
+            "label": "Max Age",
+            "format": "duration",
+            "visible": "always"
+          }
+        ]
+      },
+      "setUsd8PriceOracle(address newOracle)": {
+        "intent": "Set USD8 Price Oracle",
+        "interpolatedIntent": "Set USD8 price oracle to {newOracle}",
+        "fields": [
+          {
+            "path": "#.newOracle",
+            "label": "New Oracle",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setProtocolFeeConfig((address receiver, uint16 claimProtocolFeeShareBps, uint16 reserveYieldFeeBps) config)": {
+        "intent": "Set Protocol Fees",
+        "interpolatedIntent": "Set protocol fee receiver to {config.receiver}",
+        "fields": [
+          {
+            "path": "#.config.receiver",
+            "label": "Fee Receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.config.claimProtocolFeeShareBps",
+            "label": "Claim Fee Share",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 2,
+              "prefix": false
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.config.reserveYieldFeeBps",
+            "label": "Reserve Yield Fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 2,
+              "prefix": false
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setIncidentTimingConfig((uint64 phaseWindow, uint64 maxReferenceBlockAge) config)": {
+        "intent": "Set Incident Timing",
+        "interpolatedIntent": "Set incident phase window to {config.phaseWindow}",
+        "fields": [
+          {
+            "path": "#.config.phaseWindow",
+            "label": "Phase Window",
+            "format": "duration",
+            "visible": "always"
+          },
+          {
+            "path": "#.config.maxReferenceBlockAge",
+            "label": "Max Ref Age Blocks",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "setExitTimingConfig((uint64 unstakeCooldown, uint64 exitBatchInterval) config)": {
+        "intent": "Set Exit Timing",
+        "interpolatedIntent": "Set exit cooldown to {config.unstakeCooldown}",
+        "fields": [
+          {
+            "path": "#.config.unstakeCooldown",
+            "label": "Unstake Cooldown",
+            "format": "duration",
+            "visible": "always"
+          },
+          {
+            "path": "#.config.exitBatchInterval",
+            "label": "Exit Batch Interval",
+            "format": "duration",
+            "visible": "always"
+          }
+        ]
+      },
+      "setIncidentOpenPriceConfig((uint64 twapBlocks, uint64 sampleStepBlocks, uint16 minimumDropBps) config)": {
+        "intent": "Set Incident Price Rule",
+        "interpolatedIntent": "Set minimum price drop to {config.minimumDropBps}",
+        "fields": [
+          {
+            "path": "#.config.twapBlocks",
+            "label": "TWAP Blocks",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.config.sampleStepBlocks",
+            "label": "Sample Step Blocks",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.config.minimumDropBps",
+            "label": "Min Price Drop",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 2,
+              "prefix": false
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setMaxCoverPoolPayoutBps(uint256 newBps)": {
+        "intent": "Set Max Pool Payout",
+        "interpolatedIntent": "Set per-incident pool payout cap to {newBps}",
+        "fields": [
+          {
+            "path": "#.newBps",
+            "label": "Payout Cap",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 2,
+              "prefix": false
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setScoredToken(address token, uint128 rate)": {
+        "intent": "Set Score Rate",
+        "interpolatedIntent": "Set score rate of {token} to {rate} per block",
+        "fields": [
+          {
+            "path": "#.token",
+            "label": "Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.rate",
+            "label": "Rate (1e18/Block)",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "setBoosterConfig(address collection, uint64 tokenId, uint16 boostBps)": {
+        "intent": "Set Booster Config",
+        "interpolatedIntent": "Set booster collection to {collection}, boost {boostBps}",
+        "fields": [
+          {
+            "path": "#.collection",
+            "label": "Collection",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.tokenId",
+            "label": "Token ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.boostBps",
+            "label": "Boost Per Unit",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 2,
+              "prefix": false
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setDefiInsurance(address newModule)": {
+        "intent": "Set Insurance Module",
+        "interpolatedIntent": "Set insurance module to {newModule}",
+        "fields": [
+          {
+            "path": "#.newModule",
+            "label": "New Module",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "clearDefiInsurance(address expectedModule, uint256 expectedIncidentId)": {
+        "intent": "Clear Insurance Module",
+        "interpolatedIntent": "Unregister insurance module {expectedModule}",
+        "fields": [
+          {
+            "path": "#.expectedModule",
+            "label": "Expected Module",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.expectedIncidentId",
+            "label": "Expected Incident",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "setTreasury(address newTreasury)": {
+        "intent": "Set Treasury",
+        "interpolatedIntent": "Permanently set treasury to {newTreasury}",
+        "fields": [
+          {
+            "path": "#.newTreasury",
+            "label": "New Treasury",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setUsd8(address newUsd8)": {
+        "intent": "Set USD8 Token",
+        "interpolatedIntent": "Permanently set USD8 token to {newUsd8}",
+        "fields": [
+          {
+            "path": "#.newUsd8",
+            "label": "New USD8",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setSavingsVault(address newSavingsVault)": {
+        "intent": "Set Savings Vault",
+        "interpolatedIntent": "Permanently set savings vault to {newSavingsVault}",
+        "fields": [
+          {
+            "path": "#.newSavingsVault",
+            "label": "New Vault",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setTimelock(address newTimelock)": {
+        "intent": "Transfer Timelock",
+        "interpolatedIntent": "Transfer root governance timelock to {newTimelock}",
+        "fields": [
+          {
+            "path": "#.newTimelock",
+            "label": "New Timelock",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setAdmin(address account, bool allowed)": {
+        "intent": "Set Admin",
+        "interpolatedIntent": "Set admin status of {account} to {allowed}",
+        "fields": [
+          {
+            "path": "#.account",
+            "label": "Account",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.allowed",
+            "label": "Allowed",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "setTeePcrHash(bytes32 newHash)": {
+        "intent": "Set TEE PCR Hash",
+        "interpolatedIntent": "Set accepted enclave PCR hash to {newHash}",
+        "fields": [
+          {
+            "path": "#.newHash",
+            "label": "PCR Hash",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "endBetaMode()": {
+        "intent": "End Beta Mode",
+        "interpolatedIntent": "Permanently end beta mode and freeze upgrades",
+        "fields": []
+      },
+      "setPaused(address target, bool p)": {
+        "intent": "Set Pause State",
+        "interpolatedIntent": "Set pause state of {target} to {p}",
+        "fields": [
+          {
+            "path": "#.target",
+            "label": "Target",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.p",
+            "label": "Paused",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "setPausedBatch(address[] targets, bool p)": {
+        "intent": "Set Pause State Batch",
+        "interpolatedIntent": "Set pause state of several contracts to {p}",
+        "fields": [
+          {
+            "path": "#.targets.[]",
+            "label": "Targets",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.p",
+            "label": "Paused",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

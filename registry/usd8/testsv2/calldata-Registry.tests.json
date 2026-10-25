@@ -1,0 +1,452 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-Registry.json",
+  "tests": [
+    {
+      "description": "Admin: upgrade",
+      "rawTx": "0x02f88e0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080b8644f1ef286000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc528417600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Upgrade Contract",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "New Implementation",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Setup Call Data",
+            "value": "0x"
+          },
+          {
+            "label": "ETH Sent",
+            "value": "0 ETH"
+          }
+        ],
+        "interpolatedIntent": "Upgrade to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176 and run setup call"
+      }
+    },
+    {
+      "description": "Admin: add pool",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080b844eb511dd40000000000000000000000004bf47e25e8b42579c5cbaf84edaefb1a0f30c1b8000000000000000000000000164b276057258d81941e97b0a900d4c7b358bce0c0",
+      "expected": {
+        "intent": "Add Cover Pool",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Pool",
+            "value": "0x4bF47E25e8B42579C5CBaF84EdaeFB1A0F30c1b8"
+          },
+          {
+            "label": "USD Feed",
+            "value": "0x164b276057258d81941e97B0a900D4C7B358bCe0"
+          }
+        ],
+        "interpolatedIntent": "Register cover pool 0x4bF47E25e8B42579C5CBaF84EdaeFB1A0F30c1b8 with USD feed 0x164b276057258d81941e97B0a900D4C7B358bCe0"
+      }
+    },
+    {
+      "description": "Admin: remove pool",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080a43b7d09460000000000000000000000004bf47e25e8b42579c5cbaf84edaefb1a0f30c1b8c0",
+      "expected": {
+        "intent": "Remove Cover Pool",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Pool",
+            "value": "0x4bF47E25e8B42579C5CBaF84EdaeFB1A0F30c1b8"
+          }
+        ],
+        "interpolatedIntent": "Remove cover pool 0x4bF47E25e8B42579C5CBaF84EdaeFB1A0F30c1b8"
+      }
+    },
+    {
+      "description": "Admin: set feed",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080b8447fe746df0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000164b276057258d81941e97b0a900d4c7b358bce0c0",
+      "expected": {
+        "intent": "Set Asset USD Feed",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Asset",
+            "value": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+          },
+          {
+            "label": "New Feed",
+            "value": "0x164b276057258d81941e97B0a900D4C7B358bCe0"
+          }
+        ],
+        "interpolatedIntent": "Set the USD feed of 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0 to 0x164b276057258d81941e97B0a900D4C7B358bCe0"
+      }
+    },
+    {
+      "description": "Admin: oracle age",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080a4c2b10ee70000000000000000000000000000000000000000000000000000000000015f90c0",
+      "expected": {
+        "intent": "Set Max Oracle Age",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Max Age",
+            "value": "25:00:00"
+          }
+        ],
+        "interpolatedIntent": "Set max oracle age to 25:00:00"
+      }
+    },
+    {
+      "description": "Admin: usd8 oracle",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080a4a60082c4000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc5284176c0",
+      "expected": {
+        "intent": "Set USD8 Price Oracle",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "New Oracle",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          }
+        ],
+        "interpolatedIntent": "Set USD8 price oracle to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: fees 20% 5%",
+      "rawTx": "0x02f88e0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080b864b34c270c000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc528417600000000000000000000000000000000000000000000000000000000000007d000000000000000000000000000000000000000000000000000000000000001f4c0",
+      "expected": {
+        "intent": "Set Protocol Fees",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Fee Receiver",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Claim Fee Share",
+            "value": "20%"
+          },
+          {
+            "label": "Reserve Yield Fee",
+            "value": "5%"
+          }
+        ],
+        "interpolatedIntent": "Set protocol fee receiver to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: incident timing",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080b84419fe45ca000000000000000000000000000000000000000000000000000000000003f4800000000000000000000000000000000000000000000000000000000000001c20c0",
+      "expected": {
+        "intent": "Set Incident Timing",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Phase Window",
+            "value": "72:00:00"
+          },
+          {
+            "label": "Max Ref Age Blocks",
+            "value": "7200"
+          }
+        ],
+        "interpolatedIntent": "Set incident phase window to 72:00:00"
+      }
+    },
+    {
+      "description": "Admin: exit timing 7d 3d",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080b844d4a1a6660000000000000000000000000000000000000000000000000000000000093a80000000000000000000000000000000000000000000000000000000000003f480c0",
+      "expected": {
+        "intent": "Set Exit Timing",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Unstake Cooldown",
+            "value": "168:00:00"
+          },
+          {
+            "label": "Exit Batch Interval",
+            "value": "72:00:00"
+          }
+        ],
+        "interpolatedIntent": "Set exit cooldown to 168:00:00"
+      }
+    },
+    {
+      "description": "Admin: price rule 10%",
+      "rawTx": "0x02f88e0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080b864008f3fd70000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000003e8c0",
+      "expected": {
+        "intent": "Set Incident Price Rule",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "TWAP Blocks",
+            "value": "256"
+          },
+          {
+            "label": "Sample Step Blocks",
+            "value": "32"
+          },
+          {
+            "label": "Min Price Drop",
+            "value": "10%"
+          }
+        ],
+        "interpolatedIntent": "Set minimum price drop to 10%"
+      }
+    },
+    {
+      "description": "Admin: payout cap 50%",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080a4be3bffd90000000000000000000000000000000000000000000000000000000000001388c0",
+      "expected": {
+        "intent": "Set Max Pool Payout",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Payout Cap",
+            "value": "50%"
+          }
+        ],
+        "interpolatedIntent": "Set per-incident pool payout cap to 50%"
+      }
+    },
+    {
+      "description": "Admin: score rate 3x",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080b8444148c5d30000000000000000000000002fe01f5e235eeab9045066f873f531de20f3194700000000000000000000000000000000000000000000000000017af4c4a80aabc0",
+      "expected": {
+        "intent": "Set Score Rate",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "0x2fE01f5E235eeaB9045066f873f531dE20f31947"
+          },
+          {
+            "label": "Rate (1e18/Block)",
+            "value": "416666666666667"
+          }
+        ],
+        "interpolatedIntent": "Set score rate of 0x2fE01f5E235eeaB9045066f873f531dE20f31947 to 416666666666667 per block"
+      }
+    },
+    {
+      "description": "Admin: booster 1%",
+      "rawTx": "0x02f88e0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080b864be33655e0000000000000000000000006f74ce39bb1d75c56e2fe5f349a6a5f51ce6f12d00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000064c0",
+      "expected": {
+        "intent": "Set Booster Config",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Collection",
+            "value": "0x6f74Ce39Bb1D75C56E2fe5f349a6A5f51ce6f12d"
+          },
+          {
+            "label": "Token ID",
+            "value": "1"
+          },
+          {
+            "label": "Boost Per Unit",
+            "value": "1%"
+          }
+        ],
+        "interpolatedIntent": "Set booster collection to 0x6f74Ce39Bb1D75C56E2fe5f349a6A5f51ce6f12d, boost 1%"
+      }
+    },
+    {
+      "description": "Admin: set insurance",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080a427b5a2f3000000000000000000000000ac1a522d0fdc1c39d455d1688ad54615de5b48b9c0",
+      "expected": {
+        "intent": "Set Insurance Module",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "New Module",
+            "value": "0xAC1a522D0FdC1C39d455D1688AD54615dE5B48b9"
+          }
+        ],
+        "interpolatedIntent": "Set insurance module to 0xAC1a522D0FdC1C39d455D1688AD54615dE5B48b9"
+      }
+    },
+    {
+      "description": "Admin: clear insurance",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080b844008f8de1000000000000000000000000ac1a522d0fdc1c39d455d1688ad54615de5b48b90000000000000000000000000000000000000000000000000000000000000002c0",
+      "expected": {
+        "intent": "Clear Insurance Module",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Expected Module",
+            "value": "0xAC1a522D0FdC1C39d455D1688AD54615dE5B48b9"
+          },
+          {
+            "label": "Expected Incident",
+            "value": "2"
+          }
+        ],
+        "interpolatedIntent": "Unregister insurance module 0xAC1a522D0FdC1C39d455D1688AD54615dE5B48b9"
+      }
+    },
+    {
+      "description": "Admin: set treasury",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080a4f0f442600000000000000000000000000eae2d44dfeb2154f60cd702dc2c9c5abb090f05c0",
+      "expected": {
+        "intent": "Set Treasury",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "New Treasury",
+            "value": "0x0EaE2d44dfeb2154F60CD702Dc2C9c5aBb090F05"
+          }
+        ],
+        "interpolatedIntent": "Permanently set treasury to 0x0EaE2d44dfeb2154F60CD702Dc2C9c5aBb090F05"
+      }
+    },
+    {
+      "description": "Admin: set usd8",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080a4a4fce6260000000000000000000000002fe01f5e235eeab9045066f873f531de20f31947c0",
+      "expected": {
+        "intent": "Set USD8 Token",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "New USD8",
+            "value": "0x2fE01f5E235eeaB9045066f873f531dE20f31947"
+          }
+        ],
+        "interpolatedIntent": "Permanently set USD8 token to 0x2fE01f5E235eeaB9045066f873f531dE20f31947"
+      }
+    },
+    {
+      "description": "Admin: set vault",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080a49bfdc0c2000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc5284176c0",
+      "expected": {
+        "intent": "Set Savings Vault",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "New Vault",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          }
+        ],
+        "interpolatedIntent": "Permanently set savings vault to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: transfer timelock",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080a4bdacb303000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc5284176c0",
+      "expected": {
+        "intent": "Transfer Timelock",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "New Timelock",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          }
+        ],
+        "interpolatedIntent": "Transfer root governance timelock to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: add admin",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080b8444b0bddd2000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc52841760000000000000000000000000000000000000000000000000000000000000001c0",
+      "expected": {
+        "intent": "Set Admin",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Account",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Allowed",
+            "value": "true"
+          }
+        ],
+        "interpolatedIntent": "Set admin status of 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176 to true"
+      }
+    },
+    {
+      "description": "Admin: remove admin",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080b8444b0bddd2000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc52841760000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Set Admin",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Account",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Allowed",
+            "value": "false"
+          }
+        ],
+        "interpolatedIntent": "Set admin status of 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176 to false"
+      }
+    },
+    {
+      "description": "Admin: pcr hash",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080a415f29014ababababababababababababababababababababababababababababababababc0",
+      "expected": {
+        "intent": "Set TEE PCR Hash",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "PCR Hash",
+            "value": "0xabababababababababababababababababababababababababababababababab"
+          }
+        ],
+        "interpolatedIntent": "Set accepted enclave PCR hash to 0xabababababababababababababababababababababababababababababababab"
+      }
+    },
+    {
+      "description": "Admin: end beta",
+      "rawTx": "0x02ed0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb464308084868672fcc0",
+      "expected": {
+        "intent": "End Beta Mode",
+        "owner": "USD8",
+        "fields": [],
+        "interpolatedIntent": "Permanently end beta mode and freeze upgrades"
+      }
+    },
+    {
+      "description": "Admin: pause pool",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080b84489eba0d20000000000000000000000004bf47e25e8b42579c5cbaf84edaefb1a0f30c1b80000000000000000000000000000000000000000000000000000000000000001c0",
+      "expected": {
+        "intent": "Set Pause State",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Target",
+            "value": "0x4bF47E25e8B42579C5CBaF84EdaeFB1A0F30c1b8"
+          },
+          {
+            "label": "Paused",
+            "value": "true"
+          }
+        ],
+        "interpolatedIntent": "Set pause state of 0x4bF47E25e8B42579C5CBaF84EdaeFB1A0F30c1b8 to true"
+      }
+    },
+    {
+      "description": "Admin: pause batch",
+      "rawTx": "0x02f8ce0107843b9aca008504a817c800830493e0949bff24a44bb20f8d1f1de86eca56295c5bb4643080b8a44af835870000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000004bf47e25e8b42579c5cbaf84edaefb1a0f30c1b80000000000000000000000000eae2d44dfeb2154f60cd702dc2c9c5abb090f05c0",
+      "expected": {
+        "intent": "Set Pause State Batch",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Targets",
+            "value": "0x4bF47E25e8B42579C5CBaF84EdaeFB1A0F30c1b8"
+          },
+          {
+            "label": "Targets",
+            "value": "0x0EaE2d44dfeb2154F60CD702Dc2C9c5aBb090F05"
+          },
+          {
+            "label": "Paused",
+            "value": "true"
+          }
+        ],
+        "interpolatedIntent": "Set pause state of several contracts to true"
+      }
+    }
+  ]
+}

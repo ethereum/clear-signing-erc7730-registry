@@ -1,0 +1,324 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-SingleAssetCoverPool-wstETH.json",
+  "dataProvider": {
+    "tokens": {
+      "0x2fe01f5e235eeab9045066f873f531de20f31947": {
+        "symbol": "USD8",
+        "decimals": 18,
+        "name": "USD8"
+      },
+      "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0": {
+        "symbol": "wstETH",
+        "decimals": 18,
+        "name": "Wrapped stETH"
+      },
+      "0x4bf47e25e8b42579c5cbaf84edaefb1a0f30c1b8": {
+        "symbol": "USD8-cp-wstETH",
+        "decimals": 21,
+        "name": "USD8 Cover Pool wstETH"
+      },
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Mainnet: deposit 2 wstETH",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880b8446e553f650000000000000000000000000000000000000000000000001bc16d674ec80000000000000000000000000000724e8951d39e14cebcb5fb02638f49a637c97838c0",
+      "expected": {
+        "intent": "Deposit Into Cover Pool",
+        "interpolatedIntent": "Deposit 2 wstETH into the wstETH cover pool for 0x724e8951d39E14CEBcB5fB02638f49A637C97838",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Deposit Amount",
+            "value": "2 wstETH"
+          },
+          {
+            "label": "Share Receiver",
+            "value": "0x724e8951d39E14CEBcB5fB02638f49A637C97838"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet: mint 1 pool share",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880b84494bf804d00000000000000000000000000000000000000000000003635c9adc5dea00000000000000000000000000000724e8951d39e14cebcb5fb02638f49a637c97838c0",
+      "expected": {
+        "intent": "Mint Cover Pool Shares",
+        "interpolatedIntent": "Mint 1 USD8-cp-wstETH of the wstETH cover pool for 0x724e8951d39E14CEBcB5fB02638f49A637C97838",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Shares To Mint",
+            "value": "1 USD8-cp-wstETH"
+          },
+          {
+            "label": "Share Receiver",
+            "value": "0x724e8951d39E14CEBcB5fB02638f49A637C97838"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet: request exit of 0.5 pool shares",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880a4aa2f892d00000000000000000000000000000000000000000000001b1ae4d6e2ef500000c0",
+      "expected": {
+        "intent": "Request Cover Pool Exit",
+        "interpolatedIntent": "Request an irreversible exit of 0.5 USD8-cp-wstETH from the wstETH cover pool",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Shares To Exit",
+            "value": "0.5 USD8-cp-wstETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet: complete exit",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880a459d76fe7000000000000000000000000724e8951d39e14cebcb5fb02638f49a637c97838c0",
+      "expected": {
+        "intent": "Complete Cover Pool Exit",
+        "interpolatedIntent": "Complete the matured cover pool exit and send the assets to 0x724e8951d39E14CEBcB5fB02638f49A637C97838",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Asset Receiver",
+            "value": "0x724e8951d39E14CEBcB5fB02638f49A637C97838"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet: claim rewards",
+      "rawTx": "0x02ed0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b88084b88a802fc0",
+      "expected": {
+        "intent": "Claim Cover Pool Rewards",
+        "interpolatedIntent": "Claim pending USD8 cover pool rewards",
+        "owner": "USD8",
+        "fields": []
+      }
+    },
+    {
+      "description": "Mainnet: settle 5 matured exit epochs",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880a4f61456530000000000000000000000000000000000000000000000000000000000000005c0",
+      "expected": {
+        "intent": "Settle Matured Exit Epochs",
+        "interpolatedIntent": "Settle up to 5 matured cover pool exit epochs",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Maximum Epochs",
+            "value": "5"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet: add 10 USD8 to reward stream",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880a494419e750000000000000000000000000000000000000000000000008ac7230489e80000c0",
+      "expected": {
+        "intent": "Add USD8 To Cover Pool Rewards",
+        "interpolatedIntent": "Add 10 USD8 to the wstETH cover pool reward stream",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "USD8 To Add",
+            "value": "10 USD8"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet pool share: send 1.5 USD8-cp-wstETH",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880b844a9059cbb000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc528417600000000000000000000000000000000000000000000005150ae84a8cdf00000c0",
+      "expected": {
+        "intent": "Send Pool Shares",
+        "interpolatedIntent": "Send 1.5 USD8-cp-wstETH to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Recipient",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Amount",
+            "value": "1.5 USD8-cp-wstETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet pool share: approve 100 USD8-cp-wstETH",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880b844095ea7b3000000000000000000000000724e8951d39e14cebcb5fb02638f49a637c9783800000000000000000000000000000000000000000000152d02c7e14af6800000c0",
+      "expected": {
+        "intent": "Approve Pool Shares Spending",
+        "interpolatedIntent": "Allow 0x724e8951d39E14CEBcB5fB02638f49A637C97838 to spend 100 USD8-cp-wstETH",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x724e8951d39E14CEBcB5fB02638f49A637C97838"
+          },
+          {
+            "label": "Amount",
+            "value": "100 USD8-cp-wstETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet pool share: approve unlimited USD8-cp-wstETH",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880b844095ea7b3000000000000000000000000724e8951d39e14cebcb5fb02638f49a637c97838ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Approve Pool Shares Spending",
+        "interpolatedIntent": "Allow 0x724e8951d39E14CEBcB5fB02638f49A637C97838 to spend Unlimited USD8-cp-wstETH",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x724e8951d39E14CEBcB5fB02638f49A637C97838"
+          },
+          {
+            "label": "Amount",
+            "value": "Unlimited USD8-cp-wstETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet pool share: send 2 USD8-cp-wstETH from another account",
+      "rawTx": "0x02f88e0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880b86423b872dd000000000000000000000000724e8951d39e14cebcb5fb02638f49a637c97838000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc528417600000000000000000000000000000000000000000000006c6b935b8bbd400000c0",
+      "expected": {
+        "intent": "Send Pool Shares From Account",
+        "interpolatedIntent": "Send 2 USD8-cp-wstETH from 0x724e8951d39E14CEBcB5fB02638f49A637C97838 to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "From",
+            "value": "0x724e8951d39E14CEBcB5fB02638f49A637C97838"
+          },
+          {
+            "label": "To",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Amount",
+            "value": "2 USD8-cp-wstETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet: permit 1 pool share",
+      "rawTx": "0x02f9010e0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880b8e4d505accf000000000000000000000000724e8951d39e14cebcb5fb02638f49a637c97838000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc528417600000000000000000000000000000000000000000000003635c9adc5dea00000000000000000000000000000000000000000000000000000000000006adf0240000000000000000000000000000000000000000000000000000000000000001c33333333333333333333333333333333333333333333333333333333333333334444444444444444444444444444444444444444444444444444444444444444c0",
+      "expected": {
+        "intent": "Permit Pool Shares Spending",
+        "interpolatedIntent": "Permit 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176 to spend 1 USD8-cp-wstETH of 0x724e8951d39E14CEBcB5fB02638f49A637C97838 until 2026-10-26 07:33:20Z",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Owner",
+            "value": "0x724e8951d39E14CEBcB5fB02638f49A637C97838"
+          },
+          {
+            "label": "Spender",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Amount",
+            "value": "1 USD8-cp-wstETH"
+          },
+          {
+            "label": "Valid Until",
+            "value": "2026-10-26 07:33:20Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Admin: sweep ETH",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880a41163b2b0000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc5284176c0",
+      "expected": {
+        "intent": "Sweep Stray ETH",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Recipient",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          }
+        ],
+        "interpolatedIntent": "Sweep all stray ETH to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: sweep token",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880b844258836fe0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc5284176c0",
+      "expected": {
+        "intent": "Sweep Stray Token",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+          },
+          {
+            "label": "Recipient",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          }
+        ],
+        "interpolatedIntent": "Sweep all stray 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0 to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: cap 100 wstETH",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880a4866512030000000000000000000000000000000000000000000000056bc75e2d63100000c0",
+      "expected": {
+        "intent": "Set Cover Pool Cap",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Cap (0 = Uncapped)",
+            "value": "100 wstETH"
+          }
+        ],
+        "interpolatedIntent": "Set cover pool deposit cap to 100 wstETH (0 is uncapped)"
+      }
+    },
+    {
+      "description": "Admin: remove cap",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880a4866512030000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Set Cover Pool Cap",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Cap (0 = Uncapped)",
+            "value": "0 wstETH"
+          }
+        ],
+        "interpolatedIntent": "Set cover pool deposit cap to 0 wstETH (0 is uncapped)"
+      }
+    },
+    {
+      "description": "Admin: rewards 30 days",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0944bf47e25e8b42579c5cbaf84edaefb1a0f30c1b880a45fe8301b0000000000000000000000000000000000000000000000000000000000278d00c0",
+      "expected": {
+        "intent": "Set Rewards Duration",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "New Duration",
+            "value": "720:00:00"
+          }
+        ],
+        "interpolatedIntent": "Set cover pool rewards duration to 720:00:00"
+      }
+    }
+  ]
+}

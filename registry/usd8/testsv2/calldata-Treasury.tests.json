@@ -1,0 +1,298 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-Treasury.json",
+  "dataProvider": {
+    "tokens": {
+      "0x2fe01f5e235eeab9045066f873f531de20f31947": {
+        "symbol": "USD8",
+        "decimals": 18,
+        "name": "USD8"
+      },
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0": {
+        "symbol": "wstETH",
+        "decimals": 18,
+        "name": "Wrapped stETH"
+      },
+      "0x4bf47e25e8b42579c5cbaf84edaefb1a0f30c1b8": {
+        "symbol": "USD8-cp-wstETH",
+        "decimals": 21,
+        "name": "USD8 Cover Pool wstETH"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Mainnet: mint with 100 USDC",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f0580a48d0972280000000000000000000000000000000000000000000000000000000005f5e100c0",
+      "expected": {
+        "intent": "Mint USD8",
+        "interpolatedIntent": "Deposit 100 USDC to mint USD8 at 1:1",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "USDC To Deposit",
+            "value": "100 USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet: redeem 50 USD8 for at least 49.5 USDC",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f0580b844d2840edb000000000000000000000000000000000000000000000002b5e3af16b18800000000000000000000000000000000000000000000000000000000000002f34f60c0",
+      "expected": {
+        "intent": "Redeem USD8 For USDC",
+        "interpolatedIntent": "Redeem 50 USD8 for at least 49.5 USDC",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "USD8 To Redeem",
+            "value": "50 USD8"
+          },
+          {
+            "label": "Min USDC To Receive",
+            "value": "49.5 USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet: redeem accepting any payout",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f0580b844d2840edb0000000000000000000000000000000000000000000000008ac7230489e800000000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Redeem USD8 For USDC",
+        "interpolatedIntent": "Redeem 10 USD8 for at least 0 USDC",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "USD8 To Redeem",
+            "value": "10 USD8"
+          },
+          {
+            "label": "Min USDC To Receive",
+            "value": "0 USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Admin: sweep ETH",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f0580a41163b2b0000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc5284176c0",
+      "expected": {
+        "intent": "Sweep Stray ETH",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Recipient",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          }
+        ],
+        "interpolatedIntent": "Sweep all stray ETH to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: sweep token",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f0580b844258836fe0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc5284176c0",
+      "expected": {
+        "intent": "Sweep Stray Token",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+          },
+          {
+            "label": "Recipient",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          }
+        ],
+        "interpolatedIntent": "Sweep all stray 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0 to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: upgrade",
+      "rawTx": "0x02f88e0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f0580b8644f1ef286000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc528417600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Upgrade Contract",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "New Implementation",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Setup Call Data",
+            "value": "0x"
+          },
+          {
+            "label": "ETH Sent",
+            "value": "0 ETH"
+          }
+        ],
+        "interpolatedIntent": "Upgrade to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176 and run setup call"
+      }
+    },
+    {
+      "description": "Admin: add strategy at front",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f0580b844c9411e22000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc52841760000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Add Treasury Strategy",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Strategy",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Queue Position",
+            "value": "0"
+          }
+        ],
+        "interpolatedIntent": "Add strategy 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176 at queue position 0"
+      }
+    },
+    {
+      "description": "Admin: remove strategy",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f0580a4175188e8000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc5284176c0",
+      "expected": {
+        "intent": "Remove Treasury Strategy",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Strategy",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          }
+        ],
+        "interpolatedIntent": "Remove strategy 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: deposit 250 USDC",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f0580b844af76d4bd000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc5284176000000000000000000000000000000000000000000000000000000000ee6b280c0",
+      "expected": {
+        "intent": "Deposit To Strategy",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Strategy",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "USDC Amount",
+            "value": "250 USDC"
+          }
+        ],
+        "interpolatedIntent": "Move 250 USDC idle to strategy 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: withdraw 100.5 USDC",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f0580b844b53d0958000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc52841760000000000000000000000000000000000000000000000000000000005fd8220c0",
+      "expected": {
+        "intent": "Withdraw From Strategy",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Strategy",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "USDC Amount",
+            "value": "100.5 USDC"
+          }
+        ],
+        "interpolatedIntent": "Pull 100.5 USDC from strategy 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: harvest",
+      "rawTx": "0x02ed0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f058084e4d87320c0",
+      "expected": {
+        "intent": "Harvest And Distribute",
+        "owner": "USD8",
+        "fields": [],
+        "interpolatedIntent": "Mint surplus USD8 and distribute revenue"
+      }
+    },
+    {
+      "description": "Admin: set receiver weight 5000 hook mode",
+      "rawTx": "0x02f88e0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f0580b8647ad9e610000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc528417600000000000000000000000000000000000000000000000000000000000013880000000000000000000000000000000000000000000000000000000000000001c0",
+      "expected": {
+        "intent": "Set Profit Receiver",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Receiver",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Weight",
+            "value": "5000"
+          },
+          {
+            "label": "Delivery Mode",
+            "value": "Receive Profit Distribution"
+          }
+        ],
+        "interpolatedIntent": "Set 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176 revenue weight to 5000"
+      }
+    },
+    {
+      "description": "Admin: set receiver direct mode",
+      "rawTx": "0x02f88e0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f0580b8647ad9e610000000000000000000000000724e8951d39e14cebcb5fb02638f49a637c9783800000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Set Profit Receiver",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Receiver",
+            "value": "0x724e8951d39E14CEBcB5fB02638f49A637C97838"
+          },
+          {
+            "label": "Weight",
+            "value": "100"
+          },
+          {
+            "label": "Delivery Mode",
+            "value": "Direct Transfer"
+          }
+        ],
+        "interpolatedIntent": "Set 0x724e8951d39E14CEBcB5fB02638f49A637C97838 revenue weight to 100"
+      }
+    },
+    {
+      "description": "Admin: remove receiver",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f0580a4d90761e6000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc5284176c0",
+      "expected": {
+        "intent": "Remove Profit Receiver",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Receiver",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          }
+        ],
+        "interpolatedIntent": "Remove revenue receiver 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: set buffer divisor",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0940eae2d44dfeb2154f60cd702dc2c9c5abb090f0580a467b6f3ed0000000000000000000000000000000000000000000000000000000000000064c0",
+      "expected": {
+        "intent": "Set Harvest Buffer",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Buffer Divisor",
+            "value": "100"
+          }
+        ],
+        "interpolatedIntent": "Set harvest buffer divisor to 100"
+      }
+    }
+  ]
+}
