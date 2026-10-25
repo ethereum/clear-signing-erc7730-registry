@@ -3,8 +3,16 @@
   "descriptor": "../calldata-LeverageLSTZapper-rETH.json",
   "dataProvider": {
     "tokens": {
-      "0x6440f144b7e50d6a8439336510312d2f54beb01d": { "symbol": "BOLD", "decimals": 18, "name": "BOLD Stablecoin" },
-      "0xae78736cd615f374d3085123a210448e74fc6393": { "symbol": "rETH", "decimals": 18, "name": "Rocket Pool ETH" }
+      "0x6440f144b7e50d6a8439336510312d2f54beb01d": {
+        "symbol": "BOLD",
+        "decimals": 18,
+        "name": "BOLD Stablecoin"
+      },
+      "0xae78736cd615f374d3085123a210448e74fc6393": {
+        "symbol": "rETH",
+        "decimals": 18,
+        "name": "Rocket Pool ETH"
+      }
     }
   },
   "tests": [
@@ -15,10 +23,417 @@
         "intent": "Decrease leverage",
         "owner": "Liquity",
         "fields": [
-          { "label": "Trove ID", "value": "42" },
-          { "label": "Deleverage", "value": "2 rETH" },
-          { "label": "Min BOLD repaid", "value": "1000 BOLD" }
+          {
+            "label": "Trove ID",
+            "value": "42"
+          },
+          {
+            "label": "Deleverage",
+            "value": "2 rETH"
+          },
+          {
+            "label": "Min BOLD repaid",
+            "value": "1000 BOLD"
+          }
         ]
+      }
+    },
+    {
+      "description": "addColl: on-chain calldata (LeverageLSTZapper-rETH)",
+      "rawTx": "0xf86a81de8403598b408308ef679475036b1d6de5665c60f5c33bb4a64e8e123211a280b84459f54f40049d52882bf0e6991c90c749cb7a16700dbebae22ce2810bcc029d4fff9b97b9000000000000000000000000000000000000000000000000153b78b9e829738f018080",
+      "txHash": "0x4c5ba22639185502ad17981d8389dfe22e8621639171d65baa48af8c2f1d7327",
+      "expected": {
+        "intent": "Add collateral",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "2087215997883984823989857570303840868393009558886359831340025592090082383801"
+          },
+          {
+            "label": "Collateral",
+            "value": "1.529949238281728911 rETH"
+          }
+        ],
+        "interpolatedIntent": "Add 1.529949238281728911 rETH"
+      }
+    },
+    {
+      "description": "withdrawColl: on-chain calldata (LeverageLSTZapper-rETH)",
+      "rawTx": "0xf86b821e268421a817388308e4609475036b1d6de5665c60f5c33bb4a64e8e123211a280b844580de360c51b0a7cc95f4892ceb044702ad4f567b443d4da15d0249a6f6c43d2888d98a5000000000000000000000000000000000000000000000007c0860e5a80dc0000018080",
+      "txHash": "0x9a86c0db824bc0d728c3fe65eb6951df10185d13450f9a7a9729241a0668b592",
+      "expected": {
+        "intent": "Withdraw collateral",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "89153408423356317498441219019190060814792756931025781950331537913435309054117"
+          },
+          {
+            "label": "Collateral",
+            "value": "143 rETH"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 143 rETH"
+      }
+    },
+    {
+      "description": "withdrawBold: on-chain calldata (LeverageLSTZapper-rETH)",
+      "rawTx": "0xf88a81f8840cd904ed830959519475036b1d6de5665c60f5c33bb4a64e8e123211a280b86490de348a081f57ecc1cea72f668b21961b327304bc624c017502af7f80c204f0e3440fbc00000000000000000000000000000000000000000000010f0cf064dd59200000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff018080",
+      "txHash": "0x2199d4bf479816e0329f2a5e3e81f46a2f89267231f2119c098f0fccab188fde",
+      "expected": {
+        "intent": "Borrow BOLD",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "3673881882564129680729284671490026501051850371611007540774605441848674881468"
+          },
+          {
+            "label": "Borrow BOLD",
+            "value": "5000 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "No limit BOLD"
+          }
+        ],
+        "interpolatedIntent": "Borrow 5000 BOLD"
+      }
+    },
+    {
+      "description": "repayBold: on-chain calldata (LeverageLSTZapper-rETH)",
+      "rawTx": "0xf86b82014f8404faf078830714ee9475036b1d6de5665c60f5c33bb4a64e8e123211a280b8445cd067cfff7601aba90333713e9d128cf82d6e3636311d25b39d969d55c6090fea211bf30000000000000000000000000000000000000000000005dcb20b00593ec52361018080",
+      "txHash": "0x8dd09f95fdd19586294046b98914596f8ec4339abf63c1b820b7d59ab00b9da0",
+      "expected": {
+        "intent": "Repay BOLD",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "115548275872073099344503871169739894288944381702600403187151111274411537275891"
+          },
+          {
+            "label": "Repay BOLD",
+            "value": "27682.945458911127610209 BOLD"
+          }
+        ],
+        "interpolatedIntent": "Repay 27682.945458911127610209 BOLD"
+      }
+    },
+    {
+      "description": "adjustTrove: on-chain calldata (LeverageLSTZapper-rETH)",
+      "rawTx": "0xf8e90a84114e83cb830bbb599475036b1d6de5665c60f5c33bb4a64e8e123211a280b8c484e5253c875cce590a5eafb307e8d8ccbc797e0d9958109cb2b714d9ea4179dbfb74bc910000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000025f273933db57000000000000000000000000000000000000000000000000000000000000000000001ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff018080",
+      "txHash": "0x1bdd25e4f1a39eb3031d2fb030c096459c2b33365ae0efa9f288915c202362db",
+      "expected": {
+        "intent": "Adjust Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "61226208648975340633003096247635889286597297947945908060950107125058943368337"
+          },
+          {
+            "label": "Collateral change",
+            "value": "true"
+          },
+          {
+            "label": "Collateral amount",
+            "value": "1 rETH"
+          },
+          {
+            "label": "Debt change",
+            "value": "true"
+          },
+          {
+            "label": "BOLD amount",
+            "value": "700 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "No limit BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "closeTroveFromCollateral: on-chain calldata (LeverageLSTZapper-rETH)",
+      "rawTx": "0xf88a81ac84a44ab36a831bba879475036b1d6de5665c60f5c33bb4a64e8e123211a280b864ade8971a1195acb0cfbf703e161565931cc42470acea5013b8e80e55c72d23311170bc6300000000000000000000000000000000000000000000000018278940d7440ed50000000000000000000000000000000000000000000000000517c7e9be6a2714018080",
+      "txHash": "0x2b7b41d75682b621aa68f55e17851b75c07e0f328de98ece73cc07a7f8eac6a9",
+      "expected": {
+        "intent": "Close Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "7953770505768166847724642360487323504895562115099040065377302914991349873763"
+          },
+          {
+            "label": "Min collateral out",
+            "value": "0.36698170138992002 rETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "openTroveWithRawETH: on-chain calldata (LeverageLSTZapper-rETH)",
+      "rawTx": "0xf901b382016e841c10f7b0830f70269475036b1d6de5665c60f5c33bb4a64e8e123211a287853a0d2313c000b90184f926c2d2000000000000000000000000605e168cb8de305429c3f2393bd9796c9b38ed9a0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000002b5e3af16b1880000000000000000000000000000000000000000000000000fe1c215e8f838e000009a6a784c5f391f4ee8a943ca8bea0449f035ea7d6c51cb984159d4119ae31863000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000cbed6433d0777552ee00f9c8e40f76ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000018080",
+      "txHash": "0x03f84c56fb9bdb48e7b36b62879ac0ce25033c928d80a27fbc02c118ad04900f",
+      "expected": {
+        "intent": "Open Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Owner",
+            "value": "0x605E168cb8DE305429C3F2393Bd9796c9b38Ed9a"
+          },
+          {
+            "label": "Collateral",
+            "value": "50 rETH"
+          },
+          {
+            "label": "Borrow BOLD",
+            "value": "75000 BOLD"
+          },
+          {
+            "label": "Interest rate",
+            "value": "0%"
+          },
+          {
+            "label": "Batch manager",
+            "value": "0x0000000000cbEd6433D0777552eE00F9C8E40f76"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "No limit BOLD"
+          },
+          {
+            "label": "Receiver",
+            "value": "0x0000000000000000000000000000000000000000"
+          }
+        ]
+      }
+    },
+    {
+      "description": "openLeveragedTroveWithRawETH: on-chain calldata (LeverageLSTZapper-rETH)",
+      "rawTx": "0xf901d14e840523698683205b5a9475036b1d6de5665c60f5c33bb4a64e8e123211a287853a0d2313c000b901a4facb886f0000000000000000000000002131753ba5968ce42762f20ed067d933ca30ef3a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f00811f24cd6c980000000000000000000000000000000000000000000000000f00811f24cd6c9800000000000000000000000000000000000000000000008eba4eb5a6e552c8717e12b047b7923e19dac8ba8ffc668df28028b311a5bbcdae2b40799d469bd9d088038a8b1483539536c1cbb31c28abacced94b7e4391cd192eb28889307c1990c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e707784292289be3aa0fb6f9d33d420291f98695ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000018080",
+      "txHash": "0x7d8a81efcd53fa29edcc4a089863734d7e5c6d7f51c46316ac778bfb4c333957",
+      "expected": {
+        "intent": "Open leveraged Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Owner",
+            "value": "0x2131753bA5968Ce42762F20ED067D933ca30EF3a"
+          },
+          {
+            "label": "Deposit",
+            "value": "17.296094101285292416 rETH"
+          },
+          {
+            "label": "Leverage",
+            "value": "17.296094101285292416 rETH"
+          },
+          {
+            "label": "Borrow BOLD",
+            "value": "42125.800411750575408919 BOLD"
+          },
+          {
+            "label": "Interest rate",
+            "value": "0%"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "No limit BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "leverUpTrove: on-chain calldata (LeverageLSTZapper-rETH)",
+      "rawTx": "0xf8aa81c8840492c95e83170f369475036b1d6de5665c60f5c33bb4a64e8e123211a280b8842e59d86bbabf40109e9d3d2fd6890f9f2bd1799bf4cb8114e5048760493db4f802af61000000000000000000000000000000000000000000000000001430b80bf54eef31000000000000000000000000000000000000000000000092c2eabb5c2b4e78edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff018080",
+      "txHash": "0xb11568415ef03c7d0b504ef5289f3bf55a08301ed5cd286cfd83ec76c8af9858",
+      "expected": {
+        "intent": "Increase leverage",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "84468099785689587375893102923859240845709724687238591199800715159525930262784"
+          },
+          {
+            "label": "Leverage",
+            "value": "1.454865041140412209 rETH"
+          },
+          {
+            "label": "Borrow BOLD",
+            "value": "2707.269879154040797421 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "No limit BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Synthetic adjustTrove: withdraw collateral, repay BOLD (LeverageLSTZapper-rETH)",
+      "rawTx": "0x02f8ed0180843b9aca008477359400832dc6c09475036b1d6de5665c60f5c33bb4a64e8e123211a280b8c484e5253c000000000000010000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000f9ccd8a1c508000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d90ea991e618100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001a745c467716a0000c0",
+      "expected": {
+        "intent": "Adjust Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Collateral change",
+            "value": "false"
+          },
+          {
+            "label": "Collateral amount",
+            "value": "1.125 rETH"
+          },
+          {
+            "label": "Debt change",
+            "value": "false"
+          },
+          {
+            "label": "BOLD amount",
+            "value": "250.25 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "30.5 BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Synthetic adjustTrove: withdraw collateral, borrow BOLD (LeverageLSTZapper-rETH)",
+      "rawTx": "0x02f8ed0180843b9aca008477359400832dc6c09475036b1d6de5665c60f5c33bb4a64e8e123211a280b8c484e5253c000000000000010000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000f9ccd8a1c508000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d90ea991e618100000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000001a745c467716a0000c0",
+      "expected": {
+        "intent": "Adjust Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Collateral change",
+            "value": "false"
+          },
+          {
+            "label": "Collateral amount",
+            "value": "1.125 rETH"
+          },
+          {
+            "label": "Debt change",
+            "value": "true"
+          },
+          {
+            "label": "BOLD amount",
+            "value": "250.25 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "30.5 BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Synthetic adjustTrove: add collateral, repay BOLD (LeverageLSTZapper-rETH)",
+      "rawTx": "0x02f8ed0180843b9aca008477359400832dc6c09475036b1d6de5665c60f5c33bb4a64e8e123211a280b8c484e5253c000000000000010000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000f9ccd8a1c508000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000d90ea991e618100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001a745c467716a0000c0",
+      "expected": {
+        "intent": "Adjust Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Collateral change",
+            "value": "true"
+          },
+          {
+            "label": "Collateral amount",
+            "value": "1.125 rETH"
+          },
+          {
+            "label": "Debt change",
+            "value": "false"
+          },
+          {
+            "label": "BOLD amount",
+            "value": "250.25 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "30.5 BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Synthetic adjustTrove: add collateral, borrow BOLD (LeverageLSTZapper-rETH)",
+      "rawTx": "0x02f8ed0180843b9aca008477359400832dc6c09475036b1d6de5665c60f5c33bb4a64e8e123211a280b8c484e5253c000000000000010000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000f9ccd8a1c508000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000d90ea991e618100000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000001a745c467716a0000c0",
+      "expected": {
+        "intent": "Adjust Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Collateral change",
+            "value": "true"
+          },
+          {
+            "label": "Collateral amount",
+            "value": "1.125 rETH"
+          },
+          {
+            "label": "Debt change",
+            "value": "true"
+          },
+          {
+            "label": "BOLD amount",
+            "value": "250.25 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "30.5 BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Synthetic withdrawBold: unlimited upfront fee (LeverageLSTZapper-rETH)",
+      "rawTx": "0x02f88d0180843b9aca008477359400832dc6c09475036b1d6de5665c60f5c33bb4a64e8e123211a280b86490de348a000000000000010000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000008788344945217c8000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Borrow BOLD",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Borrow BOLD",
+            "value": "2500.125 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "No limit BOLD"
+          }
+        ],
+        "interpolatedIntent": "Borrow 2500.125 BOLD"
       }
     }
   ]
