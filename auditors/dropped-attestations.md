@@ -14,3 +14,6 @@ When you remove an attestation, add a row here in the same pull request. When th
 | `registry/sei/calldata-sei-staking.json` | Cyfrin | #3042 | Deployments that Sourcify cannot verify were removed |
 | `registry/tether/calldata-usdt.json` | Cyfrin | #3043 | The Polygon deployment moved to `calldata-usdt-polygon.json`, because its ABI names parameters differently |
 | `registry/kiln/calldata-kiln-fee-splitter-factory.json` | Cyfrin | #3036 | `$schema` changed from a URL to the relative path `../../specs/erc7730-v2.schema.json` |
+| `registry/flare/calldata-RewardManager-Flare.json` | Cyfrin | #3058 | Added `claim` and `claimProxy` formats and tests |
+| `registry/flare/calldata-RewardManager-Songbird.json` | Cyfrin | #3058 | Added `claim` and `claimProxy` formats and tests |
+| `registry/avvatar-labs-alia/calldata-ScoreEngineV2-base.json` | Cyfrin | #3128 | Removed the deprecated `context.contract.abi` field |
