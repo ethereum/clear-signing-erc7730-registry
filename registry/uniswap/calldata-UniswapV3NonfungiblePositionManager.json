@@ -45,7 +45,7 @@
           },
           { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
         ],
-        "interpolatedIntent": "Collect up to {params.amount0Max} token0 and up to {params.amount1Max} token1 (raw units) owed to position {params.tokenId}, sent to {params.recipient}"
+        "interpolatedIntent": "Collect up to {params.amount0Max} token0 and up to {params.amount1Max} token1 (raw units) owed to position {params.tokenId}, sent to {params.recipient}. The zero address keeps them in this contract, where any caller can sweep them"
       },
       "createAndInitializePoolIfNecessary(address token0,address token1,uint24 fee,uint160 sqrtPriceX96)": {
         "intent": "Create pool if needed",
@@ -125,6 +125,14 @@
           { "path": "params.token1", "label": "Token 1", "visible": "never" }
         ],
         "interpolatedIntent": "Add up to {params.amount0Desired} and up to {params.amount1Desired} to a new position for {params.recipient}"
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Batch position actions",
+        "fields": [
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
+          { "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to", "amountPath": "@.value" } }
+        ],
+        "interpolatedIntent": "Send {@.value} and run every action below in one transaction; if one action fails, the whole transaction reverts"
       },
       "permit(address spender,uint256 tokenId,uint256 deadline,uint8 v,bytes32 r,bytes32 s)": {
         "intent": "Approve operator by permit",
