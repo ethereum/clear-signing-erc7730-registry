@@ -30,7 +30,12 @@
           { "path": "hintId", "label": "Checkpoint Hint", "visible": "never" },
           { "path": "_tx.nonce", "label": "Nonce", "visible": "never" },
           { "path": "_tx.gasLimit", "label": "Minimum L1 Gas", "visible": "never" },
-          { "path": "_tx.data", "label": "L1 Call Data", "visible": "never" }
+          {
+            "path": "_tx.data",
+            "label": "L1 Call",
+            "format": "calldata",
+            "params": { "calleePath": "_tx.target", "amountPath": "_tx.value", "spenderPath": "@.to" }
+          }
         ],
         "interpolatedIntent": "Finalize withdrawal of up to {_tx.value} from {_tx.sender} to {_tx.target}"
       },
@@ -42,7 +47,12 @@
           { "path": "_tx.sender", "label": "L2 Sender", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
           { "path": "_tx.nonce", "label": "Nonce", "visible": "never" },
           { "path": "_tx.gasLimit", "label": "Minimum L1 Gas", "visible": "never" },
-          { "path": "_tx.data", "label": "L1 Call Data", "visible": "never" },
+          {
+            "path": "_tx.data",
+            "label": "Call at Finalization",
+            "format": "calldata",
+            "params": { "calleePath": "_tx.target", "amountPath": "_tx.value", "spenderPath": "@.to" }
+          },
           { "path": "_l2OutputIndex", "label": "L2 Output Index", "visible": "never" },
           { "path": "_outputRootProof.version", "label": "Proof Version", "visible": "never" },
           { "path": "_outputRootProof.stateRoot", "label": "State Root", "visible": "never" },
