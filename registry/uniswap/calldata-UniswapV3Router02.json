@@ -2,7 +2,15 @@
   "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "Uniswap v3 Router 2",
-    "contract": { "deployments": [{ "chainId": 1, "address": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45" }] }
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45" },
+        { "chainId": 10, "address": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45" },
+        { "chainId": 137, "address": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45" },
+        { "chainId": 42161, "address": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45" },
+        { "chainId": 8453, "address": "0x2626664c2603336E57B271c5C0b26F421741e481" }
+      ]
+    }
   },
   "metadata": {
     "owner": "Uniswap Labs",
@@ -171,6 +179,116 @@
               "senderAddress": ["0x0000000000000000000000000000000000000001"]
             }
           }
+        ]
+      },
+      "multicall(uint256 deadline, bytes[] data)": {
+        "$id": "multicallDeadline",
+        "intent": "Multicall",
+        "fields": [
+          { "path": "@.value", "label": "Amount sent", "format": "amount" },
+          { "path": "data.[]", "label": "Call", "format": "calldata", "params": { "calleePath": "@.to" } },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
+        ]
+      },
+      "multicall(bytes32 previousBlockhash, bytes[] data)": {
+        "$id": "multicallBlockhash",
+        "intent": "Multicall",
+        "fields": [
+          { "path": "@.value", "label": "Amount sent", "format": "amount" },
+          { "path": "data.[]", "label": "Call", "format": "calldata", "params": { "calleePath": "@.to" } }
+        ]
+      },
+      "multicall(bytes[] data)": {
+        "$id": "multicall",
+        "intent": "Multicall",
+        "fields": [
+          { "path": "@.value", "label": "Amount sent", "format": "amount" },
+          { "path": "data.[]", "label": "Call", "format": "calldata", "params": { "calleePath": "@.to" } }
+        ]
+      },
+      "unwrapWETH9(uint256 amountMinimum, address recipient)": {
+        "$id": "unwrapWETH9",
+        "intent": "Unwrap WETH",
+        "fields": [
+          { "path": "amountMinimum", "label": "Minimum to Receive", "format": "amount" },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "unwrapWETH9(uint256 amountMinimum)": {
+        "$id": "unwrapWETH9ToSender",
+        "intent": "Unwrap WETH",
+        "fields": [{ "path": "amountMinimum", "label": "Minimum to Receive", "format": "amount" }]
+      },
+      "unwrapWETH9WithFee(uint256 amountMinimum, address recipient, uint256 feeBips, address feeRecipient)": {
+        "$id": "unwrapWETH9WithFee",
+        "intent": "Unwrap WETH",
+        "fields": [
+          { "path": "amountMinimum", "label": "Minimum to Receive", "format": "amount" },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "feeBips", "label": "Fee", "format": "unit", "params": { "base": "%", "decimals": 2 } },
+          {
+            "path": "feeRecipient",
+            "label": "Fee recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "sweepToken(address token, uint256 amountMinimum, address recipient)": {
+        "$id": "sweepToken",
+        "intent": "Sweep tokens",
+        "fields": [
+          { "path": "amountMinimum", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "sweepToken(address token, uint256 amountMinimum)": {
+        "$id": "sweepTokenToSender",
+        "intent": "Sweep tokens",
+        "fields": [{ "path": "amountMinimum", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "token" } }]
+      },
+      "sweepTokenWithFee(address token, uint256 amountMinimum, address recipient, uint256 feeBips, address feeRecipient)": {
+        "$id": "sweepTokenWithFee",
+        "intent": "Sweep tokens",
+        "fields": [
+          { "path": "amountMinimum", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "feeBips", "label": "Fee", "format": "unit", "params": { "base": "%", "decimals": 2 } },
+          {
+            "path": "feeRecipient",
+            "label": "Fee recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "refundETH()": { "$id": "refundETH", "intent": "Refund ETH", "fields": [] },
+      "wrapETH(uint256 value)": {
+        "$id": "wrapETH",
+        "intent": "Wrap ETH",
+        "fields": [
+          { "path": "value", "label": "Amount", "format": "amount" },
+          { "path": "@.value", "label": "Amount sent", "format": "amount" }
         ]
       }
     }
