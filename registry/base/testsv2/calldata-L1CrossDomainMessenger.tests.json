@@ -1,0 +1,43 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-L1CrossDomainMessenger.json",
+  "dataProvider": {
+    "tokens": {},
+    "addressNames": { "0x3154cf16ccdb4c6d922629664174b904d80f2c35": "Base L1StandardBridge", "0x4200000000000000000000000000000000000010": "L2StandardBridge" }
+  },
+  "tests": [
+    {
+      "description": "relayMessage-eth-to-eoa - chain 1 (encoded; same calldata as the L1 call of the withdrawal proven in portal tx 0x74d7ba73dd1033a36870d8c52ca4f9a07ba9aefe6ac032f93ee5eecd35acea56)",
+      "rawTx": "0x02f9010501808080830f424094866e82a600a1414e583f7f13623f1ac5d58b0afa80b8e4d764ad0b000100000000000000000000000000000000000000000000000000000000dd99000000000000000000000000f4abfd8d2bcc5ebc6e9e65c3a8ffda2c28487ada000000000000000000000000f4abfd8d2bcc5ebc6e9e65c3a8ffda2c28487ada00000000000000000000000000000000000000000000000000005af3107a4000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0xF4AbFD8d2bCc5ebc6E9E65c3a8FfdA2C28487ADa",
+      "expected": {
+        "intent": "Relay message from Base",
+        "interpolatedIntent": "Pay 0.0001 ETH sent by 0xF4AbFD8d2bCc5ebc6E9E65c3a8FfdA2C28487ADa on Base to 0xF4AbFD8d2bCc5ebc6E9E65c3a8FfdA2C28487ADa",
+        "owner": "Base",
+        "fields": [
+          { "label": "ETH Amount", "value": "0.0001 ETH" },
+          { "label": "L1 Target", "value": "0xF4AbFD8d2bCc5ebc6E9E65c3a8FfdA2C28487ADa" },
+          { "label": "L2 Sender", "value": "0xF4AbFD8d2bCc5ebc6E9E65c3a8FfdA2C28487ADa" },
+          { "label": "L1 Call", "value": "0x" },
+          { "label": "ETH from Caller", "value": "0 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "sendMessage - chain 1",
+      "rawTx": "0x02f8ed01808080830f424094866e82a600a1414e583f7f13623f1ac5d58b0afa8801b22440a78d8000b8c43dbb202b000000000000000000000000e2fd97cdd6182c1223ff8bc6344abaf7132b51d50000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000246126fdea000000000000000000000000663133473ba8d9887c8337bc6bb7b2dc59adfaf100000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x828d7F0bc4aBEE3A8D80C15739A8E86FC7cF3e48",
+      "txHash": "0x6a0f40b5c646ebdd2276d74f215e195c85734a266765d5162775aa8b69ac538c",
+      "expected": {
+        "intent": "Send message to Base",
+        "interpolatedIntent": "Send 0.1222 ETH and a call to 0xE2fd97cdD6182C1223ff8Bc6344abAF7132b51D5 on Base",
+        "owner": "Base",
+        "fields": [
+          { "label": "ETH to Bridge", "value": "0.1222 ETH" },
+          { "label": "L2 Target", "value": "0xE2fd97cdD6182C1223ff8Bc6344abAF7132b51D5" },
+          { "label": "L2 Call Data", "value": "0x6126fdea000000000000000000000000663133473ba8d9887c8337bc6bb7b2dc59adfaf1" }
+        ]
+      }
+    }
+  ]
+}
