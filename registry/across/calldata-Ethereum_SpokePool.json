@@ -163,6 +163,11 @@
         ],
         "interpolatedIntent": "Bridge {inputAmount} to {recipient} on {destinationChainId}; depositor {depositor}"
       },
+      "multicall(bytes[] data)": {
+        "intent": "Batch SpokePool actions",
+        "fields": [{ "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to", "amountPath": "@.value" } }],
+        "interpolatedIntent": "Run every action below in one transaction; if one action fails, the whole transaction reverts"
+      },
       "speedUpDeposit(bytes32 depositor,uint256 depositId,uint256 updatedOutputAmount,bytes32 updatedRecipient,bytes updatedMessage,bytes depositorSignature)": {
         "intent": "Update bridge deposit",
         "fields": [
@@ -196,6 +201,11 @@
           { "path": "depositorSignature", "label": "Depositor Signature", "visible": "never" }
         ],
         "interpolatedIntent": "Update deposit {depositId} of {depositor}: {updatedOutputAmount} raw units to {updatedRecipient}"
+      },
+      "tryMulticall(bytes[] data)": {
+        "intent": "Batch, skip failed actions",
+        "fields": [{ "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to", "amountPath": "@.value" } }],
+        "interpolatedIntent": "Run every action below in one transaction; an action that fails is skipped and the others still run"
       },
       "unsafeDeposit(bytes32 depositor,bytes32 recipient,bytes32 inputToken,bytes32 outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,bytes32 exclusiveRelayer,uint256 depositNonce,uint32 quoteTimestamp,uint32 fillDeadline,uint32 exclusivityParameter,bytes message)": {
         "intent": "Bridge tokens",
