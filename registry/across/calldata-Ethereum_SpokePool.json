@@ -1,0 +1,232 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5" }] } },
+  "metadata": {
+    "owner": "Across Protocol",
+    "contractName": "Ethereum SpokePool",
+    "constants": {
+      "gateway": "0x998d7c178A1F9607b47eA3A8e22426451b3ce707",
+      "wrappedNativeToken": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+    },
+    "info": { "url": "https://across.to/" },
+    "enums": {
+      "destinationChain": {
+        "1": "Ethereum",
+        "10": "OP Mainnet",
+        "56": "BNB Smart Chain",
+        "130": "Unichain",
+        "137": "Polygon",
+        "143": "Monad",
+        "324": "zkSync",
+        "480": "World Chain",
+        "999": "HyperEVM",
+        "1868": "Soneium",
+        "4217": "Tempo",
+        "4326": "MegaETH",
+        "4663": "Robinhood Chain",
+        "5042": "Arc",
+        "8453": "Base",
+        "9745": "Plasma",
+        "42161": "Arbitrum One",
+        "43114": "Avalanche",
+        "57073": "Ink",
+        "59144": "Linea",
+        "81457": "Blast",
+        "728126428": "Tron",
+        "34268394551451": "Solana"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "deposit(bytes32 depositor,bytes32 recipient,bytes32 inputToken,bytes32 outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,bytes32 exclusiveRelayer,uint32 quoteTimestamp,uint32 fillDeadline,uint32 exclusivityParameter,bytes message)": {
+        "intent": "Bridge tokens",
+        "fields": [
+          {
+            "path": "inputAmount",
+            "label": "Amount to Bridge",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "inputToken.[12:32]" }
+          },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.destinationChain" }
+          },
+          { "path": "recipient", "label": "Recipient", "format": "raw" },
+          { "path": "outputAmount", "label": "Output Amount (raw)", "format": "raw" },
+          { "path": "outputToken", "label": "Output Token (dest.)", "format": "raw" },
+          { "path": "depositor", "label": "Depositor", "format": "raw" },
+          { "path": "fillDeadline", "label": "Fill Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "inputToken", "label": "Input Token", "visible": "never" },
+          { "path": "quoteTimestamp", "label": "Quote Timestamp", "visible": "never" },
+          { "path": "exclusiveRelayer", "label": "Exclusive Relayer", "visible": "never" },
+          { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
+          { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ],
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on {destinationChainId}; depositor {depositor}"
+      },
+      "depositNow(bytes32 depositor,bytes32 recipient,bytes32 inputToken,bytes32 outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,bytes32 exclusiveRelayer,uint32 fillDeadlineOffset,uint32 exclusivityParameter,bytes message)": {
+        "intent": "Bridge tokens",
+        "fields": [
+          {
+            "path": "inputAmount",
+            "label": "Amount to Bridge",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "inputToken.[12:32]" }
+          },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.destinationChain" }
+          },
+          { "path": "recipient", "label": "Recipient", "format": "raw" },
+          { "path": "outputAmount", "label": "Output Amount (raw)", "format": "raw" },
+          { "path": "outputToken", "label": "Output Token (dest.)", "format": "raw" },
+          { "path": "depositor", "label": "Depositor", "format": "raw" },
+          { "path": "fillDeadlineOffset", "label": "Fill Window", "format": "duration" },
+          { "path": "inputToken", "label": "Input Token", "visible": "never" },
+          { "path": "exclusiveRelayer", "label": "Exclusive Relayer", "visible": "never" },
+          { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
+          { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ],
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on {destinationChainId}; depositor {depositor}"
+      },
+      "depositV3(address depositor,address recipient,address inputToken,address outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,address exclusiveRelayer,uint32 quoteTimestamp,uint32 fillDeadline,uint32 exclusivityParameter,bytes message)": {
+        "intent": "Bridge tokens",
+        "fields": [
+          { "path": "inputAmount", "label": "Amount to Bridge", "format": "tokenAmount", "params": { "tokenPath": "inputToken" } },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.destinationChain" }
+          },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "outputAmount", "label": "Output Amount (raw)", "format": "raw" },
+          { "path": "outputToken", "label": "Output Token (dest.)", "format": "raw" },
+          {
+            "path": "depositor",
+            "label": "Depositor",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "fillDeadline", "label": "Fill Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "inputToken", "label": "Input Token", "visible": "never" },
+          { "path": "quoteTimestamp", "label": "Quote Timestamp", "visible": "never" },
+          { "path": "exclusiveRelayer", "label": "Exclusive Relayer", "visible": "never" },
+          { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
+          { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ],
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on {destinationChainId}; depositor {depositor}"
+      },
+      "depositV3Now(address depositor,address recipient,address inputToken,address outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,address exclusiveRelayer,uint32 fillDeadlineOffset,uint32 exclusivityParameter,bytes message)": {
+        "intent": "Bridge tokens",
+        "fields": [
+          { "path": "inputAmount", "label": "Amount to Bridge", "format": "tokenAmount", "params": { "tokenPath": "inputToken" } },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.destinationChain" }
+          },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "outputAmount", "label": "Output Amount (raw)", "format": "raw" },
+          { "path": "outputToken", "label": "Output Token (dest.)", "format": "raw" },
+          {
+            "path": "depositor",
+            "label": "Depositor",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "fillDeadlineOffset", "label": "Fill Window", "format": "duration" },
+          { "path": "inputToken", "label": "Input Token", "visible": "never" },
+          { "path": "exclusiveRelayer", "label": "Exclusive Relayer", "visible": "never" },
+          { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
+          { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ],
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on {destinationChainId}; depositor {depositor}"
+      },
+      "speedUpDeposit(bytes32 depositor,uint256 depositId,uint256 updatedOutputAmount,bytes32 updatedRecipient,bytes updatedMessage,bytes depositorSignature)": {
+        "intent": "Update bridge deposit",
+        "fields": [
+          { "path": "depositId", "label": "Deposit ID", "format": "raw" },
+          { "path": "updatedOutputAmount", "label": "New Output (raw)", "format": "raw" },
+          { "path": "updatedRecipient", "label": "New Recipient", "format": "raw" },
+          { "path": "depositor", "label": "Depositor", "format": "raw" },
+          { "path": "updatedMessage", "label": "New Message", "format": "raw", "visible": { "mustMatch": ["0x"] } },
+          { "path": "depositorSignature", "label": "Depositor Signature", "visible": "never" }
+        ],
+        "interpolatedIntent": "Update deposit {depositId} of {depositor}: {updatedOutputAmount} raw units to {updatedRecipient}"
+      },
+      "speedUpV3Deposit(address depositor,uint256 depositId,uint256 updatedOutputAmount,address updatedRecipient,bytes updatedMessage,bytes depositorSignature)": {
+        "intent": "Update bridge deposit",
+        "fields": [
+          { "path": "depositId", "label": "Deposit ID", "format": "raw" },
+          { "path": "updatedOutputAmount", "label": "New Output (raw)", "format": "raw" },
+          {
+            "path": "updatedRecipient",
+            "label": "New Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "depositor",
+            "label": "Depositor",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "updatedMessage", "label": "New Message", "format": "raw", "visible": { "mustMatch": ["0x"] } },
+          { "path": "depositorSignature", "label": "Depositor Signature", "visible": "never" }
+        ],
+        "interpolatedIntent": "Update deposit {depositId} of {depositor}: {updatedOutputAmount} raw units to {updatedRecipient}"
+      },
+      "unsafeDeposit(bytes32 depositor,bytes32 recipient,bytes32 inputToken,bytes32 outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,bytes32 exclusiveRelayer,uint256 depositNonce,uint32 quoteTimestamp,uint32 fillDeadline,uint32 exclusivityParameter,bytes message)": {
+        "intent": "Bridge tokens",
+        "fields": [
+          {
+            "path": "inputAmount",
+            "label": "Amount to Bridge",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "inputToken.[12:32]" }
+          },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.destinationChain" }
+          },
+          { "path": "recipient", "label": "Recipient", "format": "raw" },
+          { "path": "outputAmount", "label": "Output Amount (raw)", "format": "raw" },
+          { "path": "outputToken", "label": "Output Token (dest.)", "format": "raw" },
+          { "path": "depositor", "label": "Depositor", "format": "raw" },
+          { "path": "fillDeadline", "label": "Fill Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "inputToken", "label": "Input Token", "visible": "never" },
+          { "path": "quoteTimestamp", "label": "Quote Timestamp", "visible": "never" },
+          { "path": "exclusiveRelayer", "label": "Exclusive Relayer", "visible": "never" },
+          { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
+          { "path": "depositNonce", "label": "Deposit Nonce", "visible": "never" },
+          { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ],
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on {destinationChainId}; depositor {depositor}"
+      }
+    }
+  }
+}
