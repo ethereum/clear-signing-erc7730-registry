@@ -9,15 +9,15 @@
       ]
     }
   },
-  "metadata": {
-    "owner": "Ophis",
-    "contractName": "CoWSwapEthFlow",
-    "info": { "url": "https://ophis.fi" }
-  },
+  "metadata": { "owner": "Ophis", "contractName": "CoWSwapEthFlow", "info": { "url": "https://ophis.fi" } },
   "display": {
     "definitions": {
       "sellAmount": { "label": "Deposit to sell", "format": "amount" },
-      "buyAmount": { "label": "Min if fully filled", "format": "tokenAmount", "params": { "tokenPath": "order.buyToken", "nativeCurrencyAddress": ["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"] } },
+      "buyAmount": {
+        "label": "Min if fully filled",
+        "format": "tokenAmount",
+        "params": { "tokenPath": "order.buyToken", "nativeCurrencyAddress": ["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"] }
+      },
       "feeAmount": { "label": "Deposit for fees", "format": "amount" },
       "receiver": { "label": "Recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] } },
       "validTo": { "label": "Expires", "format": "date", "params": { "encoding": "timestamp" } },
@@ -43,7 +43,12 @@
           { "path": "order.sellAmount", "label": "Order max to sell", "format": "amount" },
           { "path": "order.buyAmount", "$ref": "$.display.definitions.buyAmount" },
           { "path": "order.feeAmount", "label": "Order max fee", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
-          { "path": "order.receiver", "label": "Order swap recipient", "format": "addressName", "params": { "types": ["wallet", "eoa", "contract"] } },
+          {
+            "path": "order.receiver",
+            "label": "Order swap recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"] }
+          },
           { "path": "order.validTo", "label": "Expires", "visible": "never" },
           { "path": "order.partiallyFillable", "$ref": "$.display.definitions.partiallyFillable" },
           { "path": "order.appData", "label": "App data", "format": "raw" },
