@@ -1,0 +1,1607 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x78edB268D228529715744211E11A5d50fd2BDbA4"
+        },
+        {
+          "chainId": 8453,
+          "address": "0x0bF30B530f816a619C3F28a3b9f44C441122555D"
+        },
+        {
+          "chainId": 5042,
+          "address": "0xEC9FE35d70E770De5f55392Cc0E8D3125f225f91"
+        },
+        {
+          "chainId": 4663,
+          "address": "0xf2032F94025C921E8b31511650AfA60094ceD32b"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Morpho DAO",
+    "contractName": "MidnightBundlesV2",
+    "info": {
+      "url": "https://morpho.org"
+    },
+    "enums": {
+      "makerSide": {
+        "false": "Seller",
+        "true": "Buyer"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "midnightBundlesV2CancelAndMake((address loanToken,address collateralToken,address oracle,address irm,uint256 lltv) blueMarket,uint256 assetsToPark,bytes32 callbackSalt,(uint256 chainId,address midnight,address loanToken,(address token,uint256 lltv,uint256 liquidationCursor,address oracle)[] collateralParams,uint256 maturity,uint256 rcfThreshold,address enterGate,address liquidatorGate) market,(uint256 collateralIndex,uint256 assets)[] collateralSupplies,address ratifier,bytes32 newRoot,uint256 signatureHeight,uint128 signatureNonce,uint256 signatureDeadline,uint8 v,bytes32 r,bytes32 s,(bytes32 group,uint128 maxConsumed)[] groupsToCancel,bytes payload,uint256 deadline,address wrappedNative)": {
+        "intent": "Authorize ratifier and manage offers",
+        "interpolatedIntent": "Authorize {#.ratifier} on Midnight and update offers",
+        "fields": [
+          {
+            "path": "#.blueMarket.loanToken",
+            "label": "Blue loan token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.blueMarket.collateralToken",
+            "label": "Blue collateral",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Oracle",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract",
+                "token",
+                "collection"
+              ]
+            },
+            "path": "#.blueMarket.oracle",
+            "visible": "always"
+          },
+          {
+            "label": "Irm",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract",
+                "token",
+                "collection"
+              ]
+            },
+            "path": "#.blueMarket.irm",
+            "visible": "always"
+          },
+          {
+            "label": "Liquidation LTV",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            },
+            "path": "#.blueMarket.lltv",
+            "visible": "always"
+          },
+          {
+            "path": "#.assetsToPark",
+            "label": "Assets to park",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "#.blueMarket.loanToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.callbackSalt",
+            "label": "Callback salt",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "label": "Loan token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.market.loanToken"
+          },
+          {
+            "label": "Maturity",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.market.maturity"
+          },
+          {
+            "path": "#.market.collateralParams.[]",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "label": "Collateral token",
+                "format": "addressName",
+                "params": {
+                  "types": [
+                    "token"
+                  ]
+                },
+                "path": "token",
+                "visible": "always"
+              },
+              {
+                "label": "LLTV",
+                "format": "unit",
+                "params": {
+                  "base": "%",
+                  "decimals": 16
+                },
+                "path": "lltv",
+                "visible": "always"
+              },
+              {
+                "label": "Oracle",
+                "format": "addressName",
+                "params": {
+                  "types": [
+                    "contract"
+                  ]
+                },
+                "path": "oracle",
+                "visible": "always"
+              },
+              {
+                "label": "Liquidation cursor",
+                "format": "raw",
+                "path": "liquidationCursor",
+                "visible": "never"
+              }
+            ]
+          },
+          {
+            "path": "#.market.chainId",
+            "label": "Chain ID",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.midnight",
+            "label": "Midnight",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.rcfThreshold",
+            "label": "RCF threshold",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.enterGate",
+            "label": "Enter gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.liquidatorGate",
+            "label": "Liquidator gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.collateralSupplies.[].collateralIndex",
+            "label": "Collateral index",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.collateralSupplies.[].assets",
+            "label": "Collateral amount (base units of the token at the index)",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.ratifier",
+            "label": "Ratifier (full account access when a new root is set)",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.newRoot",
+            "label": "New root",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.signatureHeight",
+            "label": "Signature height",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.signatureNonce",
+            "label": "Signature nonce",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.signatureDeadline",
+            "label": "Signature deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.v",
+            "label": "Signature v",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.r",
+            "label": "Signature r",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.s",
+            "label": "Signature s",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.groupsToCancel.[].group",
+            "label": "Cancel group",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.groupsToCancel.[].maxConsumed",
+            "label": "Max consumed",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.payload",
+            "label": "Payload",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.deadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.wrappedNative",
+            "label": "Wrapped native",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Native amount to wrap",
+            "format": "amount",
+            "path": "@.value",
+            "visible": "always"
+          }
+        ]
+      },
+      "midnightBundlesV2BuyWithUnitsTargetAndWithdrawCollateral((uint256 chainId,address midnight,address loanToken,(address token,uint256 lltv,uint256 liquidationCursor,address oracle)[] collateralParams,uint256 maturity,uint256 rcfThreshold,address enterGate,address liquidatorGate) market,uint256 targetUnits,uint256 maxBuyerAssets,bool reduceOnly,bool repayEnabled,(((uint256 chainId,address midnight,address loanToken,(address token,uint256 lltv,uint256 liquidationCursor,address oracle)[] collateralParams,uint256 maturity,uint256 rcfThreshold,address enterGate,address liquidatorGate) market,bool buy,address maker,uint256 start,uint256 expiry,uint256 tick,bytes32 group,address callback,bytes callbackData,address receiverIfMakerIsSeller,address ratifier,bool reduceOnly,uint128 maxUnits,uint128 maxAssets,uint256 continuousFeeCap) offer,bytes ratifierData,uint256 units)[] offerFills,(uint256 collateralIndex,uint256 assets)[] collateralWithdrawals,address collateralReceiver,uint256 referralFeePct,address referralFeeRecipient,uint256 maxContinuousFee,uint256 deadline,address wrappedNative)": {
+        "intent": "Lend or repay, withdraw collateral",
+        "interpolatedIntent": "Buy {#.targetUnits} at maturity for max {#.maxBuyerAssets}",
+        "fields": [
+          {
+            "label": "Loan token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.market.loanToken"
+          },
+          {
+            "label": "Maturity",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.market.maturity"
+          },
+          {
+            "path": "#.market.collateralParams.[]",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "label": "Collateral token",
+                "format": "addressName",
+                "params": {
+                  "types": [
+                    "token"
+                  ]
+                },
+                "path": "token",
+                "visible": "always"
+              },
+              {
+                "label": "LLTV",
+                "format": "unit",
+                "params": {
+                  "base": "%",
+                  "decimals": 16
+                },
+                "path": "lltv",
+                "visible": "always"
+              },
+              {
+                "label": "Oracle",
+                "format": "addressName",
+                "params": {
+                  "types": [
+                    "contract"
+                  ]
+                },
+                "path": "oracle",
+                "visible": "always"
+              },
+              {
+                "label": "Liquidation cursor",
+                "format": "raw",
+                "path": "liquidationCursor",
+                "visible": "never"
+              }
+            ]
+          },
+          {
+            "path": "#.market.chainId",
+            "label": "Chain ID",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.midnight",
+            "label": "Midnight",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.rcfThreshold",
+            "label": "RCF threshold",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.enterGate",
+            "label": "Enter gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.liquidatorGate",
+            "label": "Liquidator gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.targetUnits",
+            "label": "Target amount",
+            "format": "tokenAmount",
+            "visible": "always",
+            "params": {
+              "tokenPath": "#.market.loanToken",
+              "threshold": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "message": "Full debt"
+            }
+          },
+          {
+            "path": "#.maxBuyerAssets",
+            "label": "Max buyer assets",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "#.market.loanToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.reduceOnly",
+            "label": "Reduce only",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.repayEnabled",
+            "label": "Repay enabled",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.maker",
+            "label": "Offer maker",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Loan token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.offerFills.[].offer.market.loanToken"
+          },
+          {
+            "label": "Maturity",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.offerFills.[].offer.market.maturity"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.collateralParams.[].token",
+            "label": "Collateral token",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.collateralParams.[].lltv",
+            "label": "LLTV",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.collateralParams.[].oracle",
+            "label": "Oracle",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.collateralParams.[].liquidationCursor",
+            "label": "Liquidation cursor",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.chainId",
+            "label": "Chain ID",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.midnight",
+            "label": "Midnight",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.rcfThreshold",
+            "label": "RCF threshold",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.enterGate",
+            "label": "Enter gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.liquidatorGate",
+            "label": "Liquidator gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.maxAssets",
+            "label": "Offer max assets",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "#.offerFills.[].offer.market.loanToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.maxUnits",
+            "label": "Offer max amount",
+            "format": "tokenAmount",
+            "visible": "always",
+            "params": {
+              "tokenPath": "#.offerFills.[].offer.market.loanToken"
+            }
+          },
+          {
+            "path": "#.offerFills.[].units",
+            "label": "Fill amount",
+            "format": "tokenAmount",
+            "visible": "always",
+            "params": {
+              "tokenPath": "#.offerFills.[].offer.market.loanToken"
+            }
+          },
+          {
+            "path": "#.offerFills.[].ratifierData",
+            "label": "Ratifier data",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.offerFills.[].offer.buy",
+            "label": "Maker side",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.makerSide"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.start",
+            "label": "Offer start",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.expiry",
+            "label": "Offer expiry",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.tick",
+            "label": "Offer tick",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.group",
+            "label": "Offer group",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.callback",
+            "label": "Offer callback",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.receiverIfMakerIsSeller",
+            "label": "Offer receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.ratifier",
+            "label": "Offer ratifier",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.reduceOnly",
+            "label": "Offer reduce only",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.continuousFeeCap",
+            "label": "Continuous fee cap (per second, max = no cap)",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.callbackData",
+            "label": "Offer callback data",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.collateralWithdrawals.[].collateralIndex",
+            "label": "Collateral index",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.collateralWithdrawals.[].assets",
+            "label": "Collateral amount (max value = full balance)",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.collateralReceiver",
+            "label": "Collateral receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.referralFeePct",
+            "label": "Referral fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.referralFeeRecipient",
+            "label": "Fee recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.maxContinuousFee",
+            "label": "Max fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.deadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.wrappedNative",
+            "label": "Wrapped native",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Native amount to wrap",
+            "format": "amount",
+            "path": "@.value",
+            "visible": "always"
+          }
+        ]
+      },
+      "midnightBundlesV2BuyWithAssetsTargetAndWithdrawCollateral((uint256 chainId,address midnight,address loanToken,(address token,uint256 lltv,uint256 liquidationCursor,address oracle)[] collateralParams,uint256 maturity,uint256 rcfThreshold,address enterGate,address liquidatorGate) market,uint256 targetBuyerAssets,uint256 minUnits,bool reduceOnly,bool repayEnabled,(((uint256 chainId,address midnight,address loanToken,(address token,uint256 lltv,uint256 liquidationCursor,address oracle)[] collateralParams,uint256 maturity,uint256 rcfThreshold,address enterGate,address liquidatorGate) market,bool buy,address maker,uint256 start,uint256 expiry,uint256 tick,bytes32 group,address callback,bytes callbackData,address receiverIfMakerIsSeller,address ratifier,bool reduceOnly,uint128 maxUnits,uint128 maxAssets,uint256 continuousFeeCap) offer,bytes ratifierData,uint256 units)[] offerFills,(uint256 collateralIndex,uint256 assets)[] collateralWithdrawals,address collateralReceiver,uint256 referralFeePct,address referralFeeRecipient,uint256 maxContinuousFee,uint256 deadline,address wrappedNative)": {
+        "intent": "Lend or repay, withdraw collateral",
+        "interpolatedIntent": "Buy min {#.minUnits} at maturity for {#.targetBuyerAssets}",
+        "fields": [
+          {
+            "label": "Loan token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.market.loanToken"
+          },
+          {
+            "label": "Maturity",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.market.maturity"
+          },
+          {
+            "path": "#.market.collateralParams.[]",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "label": "Collateral token",
+                "format": "addressName",
+                "params": {
+                  "types": [
+                    "token"
+                  ]
+                },
+                "path": "token",
+                "visible": "always"
+              },
+              {
+                "label": "LLTV",
+                "format": "unit",
+                "params": {
+                  "base": "%",
+                  "decimals": 16
+                },
+                "path": "lltv",
+                "visible": "always"
+              },
+              {
+                "label": "Oracle",
+                "format": "addressName",
+                "params": {
+                  "types": [
+                    "contract"
+                  ]
+                },
+                "path": "oracle",
+                "visible": "always"
+              },
+              {
+                "label": "Liquidation cursor",
+                "format": "raw",
+                "path": "liquidationCursor",
+                "visible": "never"
+              }
+            ]
+          },
+          {
+            "path": "#.market.chainId",
+            "label": "Chain ID",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.midnight",
+            "label": "Midnight",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.rcfThreshold",
+            "label": "RCF threshold",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.enterGate",
+            "label": "Enter gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.liquidatorGate",
+            "label": "Liquidator gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.targetBuyerAssets",
+            "label": "Target buyer assets",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "#.market.loanToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.minUnits",
+            "label": "Min amount",
+            "format": "tokenAmount",
+            "visible": "always",
+            "params": {
+              "tokenPath": "#.market.loanToken"
+            }
+          },
+          {
+            "path": "#.reduceOnly",
+            "label": "Reduce only",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.repayEnabled",
+            "label": "Repay enabled",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.maker",
+            "label": "Offer maker",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Loan token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.offerFills.[].offer.market.loanToken"
+          },
+          {
+            "label": "Maturity",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.offerFills.[].offer.market.maturity"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.collateralParams.[].token",
+            "label": "Collateral token",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.collateralParams.[].lltv",
+            "label": "LLTV",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.collateralParams.[].oracle",
+            "label": "Oracle",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.collateralParams.[].liquidationCursor",
+            "label": "Liquidation cursor",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.chainId",
+            "label": "Chain ID",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.midnight",
+            "label": "Midnight",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.rcfThreshold",
+            "label": "RCF threshold",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.enterGate",
+            "label": "Enter gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.liquidatorGate",
+            "label": "Liquidator gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.maxAssets",
+            "label": "Offer max assets",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "#.offerFills.[].offer.market.loanToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.maxUnits",
+            "label": "Offer max amount",
+            "format": "tokenAmount",
+            "visible": "always",
+            "params": {
+              "tokenPath": "#.offerFills.[].offer.market.loanToken"
+            }
+          },
+          {
+            "path": "#.offerFills.[].units",
+            "label": "Fill amount",
+            "format": "tokenAmount",
+            "visible": "always",
+            "params": {
+              "tokenPath": "#.offerFills.[].offer.market.loanToken"
+            }
+          },
+          {
+            "path": "#.offerFills.[].ratifierData",
+            "label": "Ratifier data",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.offerFills.[].offer.buy",
+            "label": "Maker side",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.makerSide"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.start",
+            "label": "Offer start",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.expiry",
+            "label": "Offer expiry",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.tick",
+            "label": "Offer tick",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.group",
+            "label": "Offer group",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.callback",
+            "label": "Offer callback",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.receiverIfMakerIsSeller",
+            "label": "Offer receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.ratifier",
+            "label": "Offer ratifier",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.reduceOnly",
+            "label": "Offer reduce only",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.continuousFeeCap",
+            "label": "Continuous fee cap (per second, max = no cap)",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.callbackData",
+            "label": "Offer callback data",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.collateralWithdrawals.[].collateralIndex",
+            "label": "Collateral index",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.collateralWithdrawals.[].assets",
+            "label": "Collateral amount (max value = full balance)",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.collateralReceiver",
+            "label": "Collateral receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.referralFeePct",
+            "label": "Referral fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.referralFeeRecipient",
+            "label": "Fee recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.maxContinuousFee",
+            "label": "Max fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.deadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.wrappedNative",
+            "label": "Wrapped native",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Native amount to wrap",
+            "format": "amount",
+            "path": "@.value",
+            "visible": "always"
+          }
+        ]
+      },
+      "midnightBundlesV2SupplyCollateralAndSellWithAssetsTarget((uint256 chainId,address midnight,address loanToken,(address token,uint256 lltv,uint256 liquidationCursor,address oracle)[] collateralParams,uint256 maturity,uint256 rcfThreshold,address enterGate,address liquidatorGate) market,uint256 targetSellerAssets,uint256 maxUnits,bool reduceOnly,address receiver,(uint256 collateralIndex,uint256 assets)[] collateralSupplies,(((uint256 chainId,address midnight,address loanToken,(address token,uint256 lltv,uint256 liquidationCursor,address oracle)[] collateralParams,uint256 maturity,uint256 rcfThreshold,address enterGate,address liquidatorGate) market,bool buy,address maker,uint256 start,uint256 expiry,uint256 tick,bytes32 group,address callback,bytes callbackData,address receiverIfMakerIsSeller,address ratifier,bool reduceOnly,uint128 maxUnits,uint128 maxAssets,uint256 continuousFeeCap) offer,bytes ratifierData,uint256 units)[] offerFills,uint256 referralFeePct,address referralFeeRecipient,uint256 deadline,address wrappedNative)": {
+        "intent": "Supply collateral, borrow or exit",
+        "interpolatedIntent": "Sell max {#.maxUnits} at maturity for {#.targetSellerAssets} to {#.receiver}",
+        "fields": [
+          {
+            "label": "Loan token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.market.loanToken"
+          },
+          {
+            "label": "Maturity",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.market.maturity"
+          },
+          {
+            "path": "#.market.collateralParams.[]",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "label": "Collateral token",
+                "format": "addressName",
+                "params": {
+                  "types": [
+                    "token"
+                  ]
+                },
+                "path": "token",
+                "visible": "always"
+              },
+              {
+                "label": "LLTV",
+                "format": "unit",
+                "params": {
+                  "base": "%",
+                  "decimals": 16
+                },
+                "path": "lltv",
+                "visible": "always"
+              },
+              {
+                "label": "Oracle",
+                "format": "addressName",
+                "params": {
+                  "types": [
+                    "contract"
+                  ]
+                },
+                "path": "oracle",
+                "visible": "always"
+              },
+              {
+                "label": "Liquidation cursor",
+                "format": "raw",
+                "path": "liquidationCursor",
+                "visible": "never"
+              }
+            ]
+          },
+          {
+            "path": "#.market.chainId",
+            "label": "Chain ID",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.midnight",
+            "label": "Midnight",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.rcfThreshold",
+            "label": "RCF threshold",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.enterGate",
+            "label": "Enter gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.liquidatorGate",
+            "label": "Liquidator gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.targetSellerAssets",
+            "label": "Target seller assets",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "#.market.loanToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.maxUnits",
+            "label": "Max amount",
+            "format": "tokenAmount",
+            "visible": "always",
+            "params": {
+              "tokenPath": "#.market.loanToken"
+            }
+          },
+          {
+            "path": "#.reduceOnly",
+            "label": "Reduce only",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.collateralSupplies.[].collateralIndex",
+            "label": "Collateral index",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.collateralSupplies.[].assets",
+            "label": "Collateral amount (base units of the token at the index)",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.maker",
+            "label": "Offer maker",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Loan token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.offerFills.[].offer.market.loanToken"
+          },
+          {
+            "label": "Maturity",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.offerFills.[].offer.market.maturity"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.collateralParams.[].token",
+            "label": "Collateral token",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.collateralParams.[].lltv",
+            "label": "LLTV",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.collateralParams.[].oracle",
+            "label": "Oracle",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.collateralParams.[].liquidationCursor",
+            "label": "Liquidation cursor",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.chainId",
+            "label": "Chain ID",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.midnight",
+            "label": "Midnight",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.rcfThreshold",
+            "label": "RCF threshold",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.enterGate",
+            "label": "Enter gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.market.liquidatorGate",
+            "label": "Liquidator gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offerFills.[].offer.maxAssets",
+            "label": "Offer max assets",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "#.offerFills.[].offer.market.loanToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.maxUnits",
+            "label": "Offer max amount",
+            "format": "tokenAmount",
+            "visible": "always",
+            "params": {
+              "tokenPath": "#.offerFills.[].offer.market.loanToken"
+            }
+          },
+          {
+            "path": "#.offerFills.[].units",
+            "label": "Fill amount",
+            "format": "tokenAmount",
+            "visible": "always",
+            "params": {
+              "tokenPath": "#.offerFills.[].offer.market.loanToken"
+            }
+          },
+          {
+            "path": "#.offerFills.[].ratifierData",
+            "label": "Ratifier data",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.referralFeePct",
+            "label": "Referral fee",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.referralFeeRecipient",
+            "label": "Fee recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.deadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.wrappedNative",
+            "label": "Wrapped native",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Native amount to wrap",
+            "format": "amount",
+            "path": "@.value",
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.buy",
+            "label": "Maker side",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.makerSide"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.start",
+            "label": "Offer start",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.expiry",
+            "label": "Offer expiry",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.tick",
+            "label": "Offer tick",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.group",
+            "label": "Offer group",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.callback",
+            "label": "Offer callback",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.receiverIfMakerIsSeller",
+            "label": "Offer receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.ratifier",
+            "label": "Offer ratifier",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.reduceOnly",
+            "label": "Offer reduce only",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.continuousFeeCap",
+            "label": "Continuous fee cap (per second, max = no cap)",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offerFills.[].offer.callbackData",
+            "label": "Offer callback data",
+            "format": "raw",
+            "visible": "never"
+          }
+        ]
+      }
+    }
+  }
+}
