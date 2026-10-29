@@ -4,8 +4,7 @@
   "metadata": {
     "owner": "Blast",
     "contractName": "OptimismPortal",
-    "info": { "url": "https://blast.io" },
-    "enums": { "depositKind": { "true": "Contract creation", "false": "Transfer or call" } }
+    "info": { "url": "https://blast.io" }
   },
   "display": {
     "formats": {
@@ -17,8 +16,13 @@
           { "path": "_to", "label": "L2 Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
           { "path": "_value", "label": "ETH to Send on L2", "format": "amount" },
           { "path": "_gasLimit", "label": "L2 Gas Limit", "format": "unit", "params": { "base": "gas" } },
-          { "path": "_isCreation", "label": "L2 Transaction", "format": "enum", "params": { "$ref": "$.metadata.enums.depositKind" } },
-          { "path": "_data", "label": "L2 Call Data", "format": "raw" }
+          { "path": "_isCreation", "label": "Contract Creation", "format": "raw", "visible": { "mustMatch": [false] } },
+          {
+            "path": "_data",
+            "label": "L2 Call",
+            "format": "calldata",
+            "params": { "calleePath": "_to", "chainId": 81457, "amountPath": "_value", "spenderPath": "@.from" }
+          }
         ],
         "interpolatedIntent": "Deposit {@.value} to Blast and send {_value} on L2 to {_to}"
       },
