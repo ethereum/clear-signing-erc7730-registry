@@ -1,0 +1,45 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Simple7702Account",
+    "contract": {
+      "deployments": [
+        { "chainId": 56, "address": "0x4Cd241E8d1510e30b2076397afc7508Ae59C66c9" },
+        { "chainId": 137, "address": "0x4Cd241E8d1510e30b2076397afc7508Ae59C66c9" },
+        { "chainId": 8453, "address": "0x4Cd241E8d1510e30b2076397afc7508Ae59C66c9" },
+        { "chainId": 42161, "address": "0x4Cd241E8d1510e30b2076397afc7508Ae59C66c9" }
+      ]
+    }
+  },
+  "metadata": { "owner": "eth-infinitism", "info": { "url": "https://erc4337.io" }, "contractName": "Simple7702Account" },
+  "display": {
+    "formats": {
+      "execute(address target, uint256 value, bytes data)": {
+        "$id": "execute",
+        "intent": "Run action",
+        "fields": [
+          {
+            "path": "data",
+            "label": "Action",
+            "format": "calldata",
+            "params": { "calleePath": "target", "amountPath": "value" },
+            "visible": "always"
+          }
+        ]
+      },
+      "executeBatch((address target, uint256 value, bytes data)[] calls)": {
+        "$id": "executeBatch",
+        "intent": "Run actions",
+        "fields": [
+          {
+            "path": "calls.[].data",
+            "label": "Action",
+            "format": "calldata",
+            "params": { "calleePath": "calls.[].target", "amountPath": "calls.[].value" },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
