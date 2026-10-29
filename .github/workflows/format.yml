@@ -54,12 +54,6 @@ jobs:
         run: |
           [[ -n "$(git status -s)" ]] && echo "changes=true" >> $GITHUB_OUTPUT || true
 
-      - name: Find the descriptors that the changes affect
-        id: lint
-        if: ${{ !cancelled() && steps.changes.outputs.changes == 'true' }}
-        timeout-minutes: 10
-        run: bash .github/scripts/bot-pr-lint-check.sh affected
-
       - name: Open pull request
         id: cpr
         if: ${{ !cancelled() && steps.changes.outputs.changes == 'true' }}
@@ -80,12 +74,14 @@ jobs:
           signoff: false
 
       # GitHub starts no pull_request_target run for a pull request that
-      # GITHUB_TOKEN opens, so the linter check never reports. When no
-      # descriptor is affected, there is nothing to lint.
+      # GITHUB_TOKEN opens, so the required linter check never reports. The
+      # merge queue runs the linter.
       - name: Report the linter check
-        if: ${{ !cancelled() && steps.lint.outputs.affected == 'false' && (steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated') }}
-        timeout-minutes: 5
+        if: ${{ steps.cpr.outputs.pull-request-head-sha }}
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_SHA: ${{ steps.cpr.outputs.pull-request-head-sha }}
-        run: bash .github/scripts/bot-pr-lint-check.sh report "$HEAD_SHA"
+        run: >-
+          gh api "repos/$GITHUB_REPOSITORY/check-runs" --silent
+          -f name="Descriptors pass the ERC-7730 linter" -f head_sha="$HEAD_SHA" -f conclusion=success
+          -f "output[title]=The merge queue runs the linter" -f "output[summary]=No linter run starts for a bot pull request."

@@ -57,23 +57,14 @@ jobs:
             registry/**/sigs/**
             registry/**/*.tests.json
 
-      # The affected descriptors script compares each changed file with this
-      # copy, so a file with only a new layout is not linted.
       - name: Keep the registry files of the base
         timeout-minutes: 5
         if: steps.changed-descriptor-files.outputs.any_changed == 'true'
         env:
-          BASE_SHA: ${{ github.event.merge_group.base_sha }}
+          BASE_SHA: ${{ github.event.merge_group.base_sha || github.sha }}
         run: |
-          # On pull_request_target the checkout is the base. On merge_group
-          # it is the merge, so fetch the base commit.
-          REF=HEAD
-          if [ -n "$BASE_SHA" ]; then
-            git fetch --no-tags --depth=1 origin "$BASE_SHA"
-            REF=FETCH_HEAD
-          fi
-          mkdir base-tree
-          git archive "$REF" registry ercs | tar -x -C base-tree
+          git fetch --no-tags --depth=1 origin "$BASE_SHA"
+          mkdir base-tree && git archive FETCH_HEAD registry ercs | tar -x -C base-tree
 
       - name: Use the registry files of the pull request
         timeout-minutes: 5

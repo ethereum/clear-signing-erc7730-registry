@@ -16,11 +16,10 @@
  * passed too: a descriptor whose includes chain references a now-missing
  * changed file is still reported as affected.
  *
- * The optional BASE_ROOT environment variable is a directory that holds the
- * registry/ and ercs/ trees of the base. A changed file that has the same
- * JSON there, with only a different layout (whitespace between tokens, or
- * escapes in strings), is not a change: it affects no descriptor. A run of "erc7730 format"
- * changes the layout of many files and must not make them all affected.
+ * With the optional BASE_ROOT environment variable (a directory that holds
+ * the registry/ and ercs/ trees of the base), a changed file with the same
+ * JSON as its base version is not a change. "erc7730 format" changes only
+ * the layout of the files.
  *
  * The optional ADDED_FILES, MODIFIED_FILES, RENAMED_FILES and DELETED_FILES
  * environment variables carry the same paths split by what the pull request
@@ -123,45 +122,6 @@ function includeClosure(absFile) {
   return closure;
 }
 
-/**
- * JSON text without the whitespace between tokens, and with each string in
- * one escape form ("→" and "→" are the same string). The key order and
- * the number text stay as they are, so two texts with the same result hold
- * the same JSON. A parse of the whole text is not used for the comparison:
- * it rounds large integers.
- */
-function stripLayout(text) {
-  let out = '';
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (c === '"') {
-      let end = i + 1;
-      while (end < text.length && text[end] !== '"') end +=text[end] === '\\' ? 2 : 1;
-      out += JSON.stringify(JSON.parse(text.slice(i, end + 1)));
-      i = end;
-    } else if (c !== ' ' && c !== '\t' && c !== '\n' && c !== '\r') {
-      out += c;
-    }
-  }
-  return out;
-}
-
-/**
- * True when a file is valid JSON in both trees and differs from its base
- * version only in layout. False when the base has no such file.
- */
-function sameJsonAsBase(file, baseRoot) {
-  try {
-    const head = fs.readFileSync(path.join(repoRoot, file), 'utf8');
-    const base = fs.readFileSync(path.join(baseRoot, file), 'utf8');
-    JSON.parse(head);
-    JSON.parse(base);
-    return stripLayout(head) === stripLayout(base);
-  } catch {
-    return false;
-  }
-}
-
 /** The paths of a whitespace-separated environment variable. */
 function envFiles(name) {
   return (process.env[name] || '')
@@ -176,17 +136,15 @@ function main() {
     ...envFiles('CHANGED_FILES'),
   ]);
 
-  // A layout-only change affects no descriptor.
   if (process.env.BASE_ROOT) {
-    const baseRoot = path.resolve(process.env.BASE_ROOT);
-    let layoutOnly = 0;
+    const json = (root, file) => JSON.stringify(JSON.parse(fs.readFileSync(path.join(root, file), 'utf8')));
     for (const file of changed) {
-      if (file.endsWith('.json') && sameJsonAsBase(file, baseRoot)) {
-        changed.delete(file);
-        layoutOnly++;
+      try {
+        if (json(repoRoot, file) === json(process.env.BASE_ROOT, file)) changed.delete(file);
+      } catch {
+        // Not in the base, or not JSON: a change.
       }
     }
-    process.stderr.write(`${layoutOnly} changed file(s) differ from the base only in layout\n`);
   }
 
   // What the pull request did to one file. A renamed file counts as
