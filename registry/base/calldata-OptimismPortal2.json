@@ -13,7 +13,12 @@
           { "path": "_to", "label": "L2 Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
           { "path": "_gasLimit", "label": "L2 Gas Limit", "format": "unit", "params": { "base": "gas" } },
           { "path": "_isCreation", "label": "Contract Creation", "format": "raw", "visible": { "mustMatch": [false] } },
-          { "path": "_data", "label": "L2 Call Data", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+          {
+            "path": "_data",
+            "label": "L2 Call",
+            "format": "calldata",
+            "params": { "calleePath": "_to", "chainId": 8453, "amountPath": "_value", "spenderPath": "@.from" }
+          }
         ],
         "interpolatedIntent": "Bridge {@.value} to Base, send {_value} to {_to}"
       },

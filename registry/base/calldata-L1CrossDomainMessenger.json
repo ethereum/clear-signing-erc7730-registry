@@ -27,7 +27,12 @@
         "fields": [
           { "path": "@.value", "label": "ETH to Bridge", "format": "amount" },
           { "path": "_target", "label": "L2 Target", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
-          { "path": "_message", "label": "L2 Call Data", "format": "raw" },
+          {
+            "path": "_message",
+            "label": "L2 Call",
+            "format": "calldata",
+            "params": { "calleePath": "_target", "chainId": 8453, "amountPath": "@.value", "spender": "0x4200000000000000000000000000000000000007" }
+          },
           { "path": "_minGasLimit", "label": "Min L2 Gas Limit", "visible": "never" }
         ],
         "interpolatedIntent": "Send {@.value} and a call to {_target} on Base"
