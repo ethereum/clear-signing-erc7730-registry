@@ -8,34 +8,7 @@
       "gateway": "0x998d7c178A1F9607b47eA3A8e22426451b3ce707",
       "wrappedNativeToken": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
     },
-    "info": { "url": "https://across.to/" },
-    "enums": {
-      "destinationChain": {
-        "1": "Ethereum",
-        "10": "OP Mainnet",
-        "56": "BNB Smart Chain",
-        "130": "Unichain",
-        "137": "Polygon",
-        "143": "Monad",
-        "324": "zkSync",
-        "480": "World Chain",
-        "999": "HyperEVM",
-        "1868": "Soneium",
-        "4217": "Tempo",
-        "4326": "MegaETH",
-        "4663": "Robinhood Chain",
-        "5042": "Arc",
-        "8453": "Base",
-        "9745": "Plasma",
-        "42161": "Arbitrum One",
-        "43114": "Avalanche",
-        "57073": "Ink",
-        "59144": "Linea",
-        "81457": "Blast",
-        "728126428": "Tron",
-        "34268394551451": "Solana"
-      }
-    }
+    "info": { "url": "https://across.to/" }
   },
   "display": {
     "formats": {
@@ -49,14 +22,14 @@
             "params": { "tokenPath": "inputToken.[12:32]" }
           },
           { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
-          {
-            "path": "destinationChainId",
-            "label": "Destination Chain",
-            "format": "enum",
-            "params": { "$ref": "$.metadata.enums.destinationChain" }
-          },
+          { "path": "destinationChainId", "label": "Destination Chain", "format": "chainId" },
           { "path": "recipient", "label": "Recipient", "format": "raw" },
-          { "path": "outputAmount", "label": "Output Amount (raw)", "format": "raw" },
+          {
+            "path": "outputAmount",
+            "label": "Relayer Must Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "outputToken.[12:32]", "chainIdPath": "#.destinationChainId" }
+          },
           { "path": "outputToken", "label": "Output Token (dest.)", "format": "raw" },
           { "path": "depositor", "label": "Depositor", "format": "raw" },
           { "path": "fillDeadline", "label": "Fill Deadline", "format": "date", "params": { "encoding": "timestamp" } },
@@ -78,14 +51,14 @@
             "params": { "tokenPath": "inputToken.[12:32]" }
           },
           { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
-          {
-            "path": "destinationChainId",
-            "label": "Destination Chain",
-            "format": "enum",
-            "params": { "$ref": "$.metadata.enums.destinationChain" }
-          },
+          { "path": "destinationChainId", "label": "Destination Chain", "format": "chainId" },
           { "path": "recipient", "label": "Recipient", "format": "raw" },
-          { "path": "outputAmount", "label": "Output Amount (raw)", "format": "raw" },
+          {
+            "path": "outputAmount",
+            "label": "Relayer Must Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "outputToken.[12:32]", "chainIdPath": "#.destinationChainId" }
+          },
           { "path": "outputToken", "label": "Output Token (dest.)", "format": "raw" },
           { "path": "depositor", "label": "Depositor", "format": "raw" },
           { "path": "fillDeadlineOffset", "label": "Fill Window", "format": "duration" },
@@ -101,19 +74,19 @@
         "fields": [
           { "path": "inputAmount", "label": "Amount to Bridge", "format": "tokenAmount", "params": { "tokenPath": "inputToken" } },
           { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
-          {
-            "path": "destinationChainId",
-            "label": "Destination Chain",
-            "format": "enum",
-            "params": { "$ref": "$.metadata.enums.destinationChain" }
-          },
+          { "path": "destinationChainId", "label": "Destination Chain", "format": "chainId" },
           {
             "path": "recipient",
             "label": "Recipient",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
           },
-          { "path": "outputAmount", "label": "Output Amount (raw)", "format": "raw" },
+          {
+            "path": "outputAmount",
+            "label": "Relayer Must Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "outputToken", "chainIdPath": "#.destinationChainId" }
+          },
           { "path": "outputToken", "label": "Output Token (dest.)", "format": "raw" },
           {
             "path": "depositor",
@@ -135,19 +108,19 @@
         "fields": [
           { "path": "inputAmount", "label": "Amount to Bridge", "format": "tokenAmount", "params": { "tokenPath": "inputToken" } },
           { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
-          {
-            "path": "destinationChainId",
-            "label": "Destination Chain",
-            "format": "enum",
-            "params": { "$ref": "$.metadata.enums.destinationChain" }
-          },
+          { "path": "destinationChainId", "label": "Destination Chain", "format": "chainId" },
           {
             "path": "recipient",
             "label": "Recipient",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
           },
-          { "path": "outputAmount", "label": "Output Amount (raw)", "format": "raw" },
+          {
+            "path": "outputAmount",
+            "label": "Relayer Must Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "outputToken", "chainIdPath": "#.destinationChainId" }
+          },
           { "path": "outputToken", "label": "Output Token (dest.)", "format": "raw" },
           {
             "path": "depositor",
@@ -217,14 +190,14 @@
             "params": { "tokenPath": "inputToken.[12:32]" }
           },
           { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
-          {
-            "path": "destinationChainId",
-            "label": "Destination Chain",
-            "format": "enum",
-            "params": { "$ref": "$.metadata.enums.destinationChain" }
-          },
+          { "path": "destinationChainId", "label": "Destination Chain", "format": "chainId" },
           { "path": "recipient", "label": "Recipient", "format": "raw" },
-          { "path": "outputAmount", "label": "Output Amount (raw)", "format": "raw" },
+          {
+            "path": "outputAmount",
+            "label": "Relayer Must Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "outputToken.[12:32]", "chainIdPath": "#.destinationChainId" }
+          },
           { "path": "outputToken", "label": "Output Token (dest.)", "format": "raw" },
           { "path": "depositor", "label": "Depositor", "format": "raw" },
           { "path": "fillDeadline", "label": "Fill Deadline", "format": "date", "params": { "encoding": "timestamp" } },
