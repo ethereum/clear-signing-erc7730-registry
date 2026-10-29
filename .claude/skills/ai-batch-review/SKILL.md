@@ -379,7 +379,7 @@ Then go through the pull requests in the order of the batch. For each one, read 
 In dry run mode, show the user the body and every inline comment with its file and line, and ask with AskUserQuestion: **Post as written**, **Edit first** (the user says what to change; edit the files, then ask again), **Skip this pull request**. In live mode, post and show the link.
 
 ```bash
-gh api -X POST "repos/$R/pulls/$N/reviews" --input "$WORK/$N/review.json" --jq '.html_url'
+gh api -i -X POST "repos/$R/pulls/$N/reviews" --input "$WORK/$N/review.json" --jq '.html_url'
 ```
 
 A rejected request names the first bad line; fix that comment's `line` or move its text to the body, and post again. Nothing is posted until the whole review is accepted.
