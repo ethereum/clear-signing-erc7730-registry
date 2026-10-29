@@ -1,10 +1,15 @@
 {
   "$schema": "../../specs/erc7730-v2.schema.json",
-  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88" }] } },
+  "context": { "contract": { "deployments": [
+      { "chainId": 1, "address": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88" },
+      { "chainId": 10, "address": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88" },
+      { "chainId": 137, "address": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88" },
+      { "chainId": 8453, "address": "0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1" },
+      { "chainId": 42161, "address": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88" }
+    ] } },
   "metadata": {
     "owner": "Uniswap Labs",
     "contractName": "Uniswap V3 Positions NFT-V1",
-    "constants": { "factory": "0x1F98431c8aD98523631AE4a59f267346ea31F984", "WETH9": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" },
     "info": { "url": "https://uniswap.org/" },
     "enums": { "operatorAccess": { "true": "Grant", "false": "Revoke" } }
   },
@@ -27,7 +32,7 @@
         "intent": "Burn empty position NFT",
         "fields": [
           { "path": "tokenId", "label": "Position", "format": "nftName", "params": { "collectionPath": "@.to" } },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "mustMatch": [0] } }
         ],
         "interpolatedIntent": "Burn empty position NFT {tokenId}"
       },
@@ -43,7 +48,7 @@
             "format": "addressName",
             "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
           },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "mustMatch": [0] } }
         ],
         "interpolatedIntent": "Collect up to {params.amount0Max} token0 and up to {params.amount1Max} token1 (raw units) owed to position {params.tokenId}, sent to {params.recipient}. The zero address keeps them in this contract, where any caller can sweep them"
       },
@@ -54,7 +59,7 @@
           { "path": "token1", "label": "Token 1", "format": "addressName", "params": { "types": ["token"] } },
           { "path": "fee", "label": "Pool Fee", "format": "unit", "params": { "decimals": 4, "base": "%", "prefix": false } },
           { "path": "sqrtPriceX96", "label": "Sqrt Price (Q64.96)", "format": "raw" },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "mustMatch": [0] } }
         ],
         "interpolatedIntent": "Create the {token0}/{token1} pool with a {fee} fee if it does not exist, starting at sqrt price {sqrtPriceX96} (Q64.96)"
       },
@@ -66,7 +71,7 @@
           { "path": "params.amount0Min", "label": "Min Token0 Due (raw)", "format": "raw" },
           { "path": "params.amount1Min", "label": "Min Token1 Due (raw)", "format": "raw" },
           { "path": "params.deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "mustMatch": [0] } }
         ],
         "interpolatedIntent": "Remove {params.liquidity} liquidity from position {params.tokenId}: at least {params.amount0Min} token0 and {params.amount1Min} token1 (raw units) become owed to the position; nothing is transferred until collect"
       },
@@ -78,7 +83,7 @@
           { "path": "params.amount1Desired", "label": "Max Token1 (raw)", "format": "raw" },
           { "path": "params.amount0Min", "label": "Min Token0 (raw)", "format": "raw" },
           { "path": "params.amount1Min", "label": "Min Token1 (raw)", "format": "raw" },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "mustMatch": [0] } },
           { "path": "params.deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
         ],
         "interpolatedIntent": "Add up to {params.amount0Desired} token0 and up to {params.amount1Desired} token1 (raw units) to position {params.tokenId}"
@@ -110,7 +115,7 @@
             "format": "tokenAmount",
             "params": { "tokenPath": "params.token1" }
           },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "mustMatch": [0] } },
           { "path": "params.fee", "label": "Pool Fee", "format": "unit", "params": { "decimals": 4, "base": "%", "prefix": false } },
           {
             "path": "params.recipient",
@@ -129,7 +134,7 @@
       "multicall(bytes[] data)": {
         "intent": "Batch position actions",
         "fields": [
-          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
           { "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to", "amountPath": "@.value" } }
         ],
         "interpolatedIntent": "Send {@.value} and run every action below in one transaction; if one action fails, the whole transaction reverts"
@@ -148,14 +153,14 @@
           { "path": "v", "label": "V", "visible": "never" },
           { "path": "r", "label": "R", "visible": "never" },
           { "path": "s", "label": "S", "visible": "never" },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "mustMatch": [0] } }
         ],
         "interpolatedIntent": "Allow {spender} to withdraw and transfer position NFT {tokenId}, as authorized by the owner's signature"
       },
       "refundETH()": {
-        "intent": "Refund leftover ETH",
-        "fields": [{ "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }],
-        "interpolatedIntent": "Send the ETH held by this contract to you"
+        "intent": "Refund leftover native token",
+        "fields": [{ "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "mustMatch": [0] } }],
+        "interpolatedIntent": "Send the native token held by this contract to you"
       },
       "safeTransferFrom(address from,address to,uint256 tokenId,bytes _data)": {
         "intent": "Transfer position NFT",
@@ -214,7 +219,7 @@
           { "path": "v", "label": "V", "visible": "never" },
           { "path": "r", "label": "R", "visible": "never" },
           { "path": "s", "label": "S", "visible": "never" },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "mustMatch": [0] } }
         ],
         "interpolatedIntent": "Allow this contract to spend {value} using your permit signature"
       },
@@ -227,7 +232,7 @@
           { "path": "v", "label": "V", "visible": "never" },
           { "path": "r", "label": "R", "visible": "never" },
           { "path": "s", "label": "S", "visible": "never" },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "mustMatch": [0] } }
         ],
         "interpolatedIntent": "Allow this contract to spend unlimited {token} using your permit signature"
       },
@@ -240,7 +245,7 @@
           { "path": "v", "label": "V", "visible": "never" },
           { "path": "r", "label": "R", "visible": "never" },
           { "path": "s", "label": "S", "visible": "never" },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "mustMatch": [0] } }
         ],
         "interpolatedIntent": "Allow this contract to spend unlimited {token} using your permit signature, unless its allowance is already unlimited"
       },
@@ -262,7 +267,7 @@
           { "path": "v", "label": "V", "visible": "never" },
           { "path": "r", "label": "R", "visible": "never" },
           { "path": "s", "label": "S", "visible": "never" },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "mustMatch": [0] } }
         ],
         "interpolatedIntent": "Allow this contract to spend {value} using your permit signature, unless its allowance is already that high"
       },
@@ -290,7 +295,7 @@
             "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
           },
           { "path": "token", "label": "Token", "visible": "never" },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "mustMatch": [0] } }
         ],
         "interpolatedIntent": "Send the whole token balance held by this contract, at least {amountMinimum}, to {recipient}"
       },
@@ -314,13 +319,12 @@
         "interpolatedIntent": "Transfer position NFT {tokenId} from {from} to {to}"
       },
       "unwrapWETH9(uint256 amountMinimum,address recipient)": {
-        "intent": "Unwrap WETH to ETH",
+        "intent": "Unwrap to native token",
         "fields": [
           {
             "path": "amountMinimum",
             "label": "Minimum to Unwrap",
-            "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.WETH9" }
+            "format": "amount"
           },
           {
             "path": "recipient",
@@ -328,9 +332,9 @@
             "format": "addressName",
             "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
           },
-          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": { "mustMatch": [0] } }
         ],
-        "interpolatedIntent": "Unwrap the WETH held by this contract, at least {amountMinimum}, and send the ETH to {recipient}"
+        "interpolatedIntent": "Unwrap the wrapped native token held by this contract, at least {amountMinimum}, and send it to {recipient}"
       }
     }
   }

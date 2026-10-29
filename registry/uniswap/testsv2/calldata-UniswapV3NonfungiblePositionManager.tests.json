@@ -6,14 +6,26 @@
       "0x951f086a127e280724fd93ccc543f65065afeb5e": { "name": "DAPPOS", "symbol": "DOS", "decimals": 18 },
       "0xdac17f958d2ee523a2206206994597c13d831ec7": { "name": "Tether USD", "symbol": "USDT", "decimals": 6 },
       "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "name": "USD Coin", "symbol": "USDC", "decimals": 6 },
-      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "name": "Wrapped Ether", "symbol": "WETH", "decimals": 18 }
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "name": "Wrapped Ether", "symbol": "WETH", "decimals": 18 },
+      "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359": { "name": "USD Coin", "symbol": "USDC", "decimals": 6 },
+      "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619": { "name": "Wrapped Ether", "symbol": "WETH", "decimals": 18 },
+      "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270": { "name": "Wrapped Polygon Ecosystem Token", "symbol": "WPOL", "decimals": 18 },
+      "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": { "name": "USD Coin", "symbol": "USDC", "decimals": 6 },
+      "0xd3d67a5d353d2f17b797699be8643165320f0125": { "name": "TAGGER", "symbol": "TAG", "decimals": 18 },
+      "0xaf88d065e77c8cc2239327c5edb3a432268e5831": { "name": "USDC", "symbol": "USDC", "decimals": 6 },
+      "0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf": { "name": "Venice Token", "symbol": "VVV", "decimals": 18 },
+      "0x0b2c639c533813f4aa9d7837caf62653d097ff85": { "name": "USD Coin", "symbol": "USDC", "decimals": 6 },
+      "0x4200000000000000000000000000000000000042": { "name": "Optimism", "symbol": "OP", "decimals": 18 }
     },
     "addressNames": {
       "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": "Wrapped Ether",
       "0xfbaf91a662971aa71e6edd6d5aa41c4a0ac4d606": "Ephemeral",
       "0x6b175474e89094c44da98b954eedeac495271d0f": "Dai Stablecoin"
     },
-    "nftCollectionNames": { "0xc36442b4a4522e871399cd717abdd847ab11fe88": "Uniswap V3 Positions NFT-V1" }
+    "nftCollectionNames": {
+      "0xc36442b4a4522e871399cd717abdd847ab11fe88": "Uniswap V3 Positions NFT-V1",
+      "0x03a520b32c04bf3beef7beb72e919cf822ed34f1": "Uniswap V3 Positions NFT-V1"
+    }
   },
   "tests": [
     {
@@ -157,8 +169,8 @@
       "from": "0x317C5a37f685fb99557f045cd2f8BfF65Fb49B68",
       "txHash": "0x039b4a6a21b6f6f0b5c95db5c11da668a918222278ef7309f17c35f526f45f37",
       "expected": {
-        "intent": "Refund leftover ETH",
-        "interpolatedIntent": "Send the ETH held by this contract to you",
+        "intent": "Refund leftover native token",
+        "interpolatedIntent": "Send the native token held by this contract to you",
         "owner": "Uniswap Labs",
         "fields": []
       }
@@ -248,7 +260,10 @@
         "intent": "Set operator for all NFTs",
         "interpolatedIntent": "Revoke 0x90250606563DE829d0D41DD98DD9C2b629B97926 access to withdraw and transfer all your position NFTs",
         "owner": "Uniswap Labs",
-        "fields": [{ "label": "Access", "value": "Revoke" }, { "label": "Operator", "value": "0x90250606563DE829d0D41DD98DD9C2b629B97926" }]
+        "fields": [
+          { "label": "Access", "value": "Revoke" },
+          { "label": "Operator", "value": "0x90250606563DE829d0D41DD98DD9C2b629B97926" }
+        ]
       }
     },
     {
@@ -288,11 +303,11 @@
       "from": "0x467c1D872B7e7cc68121324479f3691bD3052ba8",
       "txHash": "0x75e23178ec59ce70d810154ac6247070c2c15f5267bff3c08cc6281e30263eea",
       "expected": {
-        "intent": "Unwrap WETH to ETH",
-        "interpolatedIntent": "Unwrap the WETH held by this contract, at least 0 WETH, and send the ETH to 0x467c1D872B7e7cc68121324479f3691bD3052ba8",
+        "intent": "Unwrap to native token",
+        "interpolatedIntent": "Unwrap the wrapped native token held by this contract, at least 0 ETH, and send it to 0x467c1D872B7e7cc68121324479f3691bD3052ba8",
         "owner": "Uniswap Labs",
         "fields": [
-          { "label": "Minimum to Unwrap", "value": "0 WETH" },
+          { "label": "Minimum to Unwrap", "value": "0 ETH" },
           { "label": "Recipient", "value": "0x467c1D872B7e7cc68121324479f3691bD3052ba8" }
         ]
       }
@@ -300,7 +315,217 @@
     {
       "description": "multicall, empty batch (encoded) - chain 1",
       "rawTx": "0x02f86501808080830f424094c36442b4a4522e871399cd717abdd847ab11fe8880b844ac9650d800000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000c0",
-      "expected": { "intent": "Batch position actions", "interpolatedIntent": "Send 0 ETH and run every action below in one transaction; if one action fails, the whole transaction reverts", "owner": "Uniswap Labs", "fields": [{ "label": "ETH Sent", "value": "0 ETH" }] }
+      "expected": {
+        "intent": "Batch position actions",
+        "interpolatedIntent": "Send 0 ETH and run every action below in one transaction; if one action fails, the whole transaction reverts",
+        "owner": "Uniswap Labs",
+        "fields": [{ "label": "Native Value Sent", "value": "0 ETH" }]
+      }
+    },
+    {
+      "description": "Create position USDC/OP 0.3% - chain 10",
+      "rawTx": "0x02f9018e0a8203918309062883090948830b406894c36442b4a4522e871399cd717abdd847ab11fe8880b90164883164560000000000000000000000000b2c639c533813f4aa9d7837caf62653d097ff8500000000000000000000000042000000000000000000000000000000000000420000000000000000000000000000000000000000000000000000000000000bb80000000000000000000000000000000000000000000000000000000000048c9c00000000000000000000000000000000000000000000000000000000000493a400000000000000000000000000000000000000000000000000000000001e848000000000000000000000000000000000000000000000000161f42b5d25d377b9000000000000000000000000000000000000000000000000000000000014ba35000000000000000000000000000000000000000000000001086644e72793bcff0000000000000000000000006d71ae149099f5c80b207d15b042e5ea773319c1000000000000000000000000000000000000000000000000000000006ae3b77cc0",
+      "from": "0x6D71aE149099F5c80b207d15b042e5EA773319c1",
+      "expected": {
+        "intent": "Open liquidity position",
+        "interpolatedIntent": "Add up to 2 USDC and up to 25.505058268772530105 OP to a new position for 0x6D71aE149099F5c80b207d15b042e5EA773319c1",
+        "owner": "Uniswap Labs",
+        "fields": [
+          { "label": "Maximum to Add", "value": "2 USDC" },
+          { "label": "Maximum to Add", "value": "25.505058268772530105 OP" },
+          { "label": "Minimum to Add", "value": "1.358389 USDC" },
+          { "label": "Minimum to Add", "value": "19.051991033229589759 OP" },
+          { "label": "Pool Fee", "value": "0.3%" },
+          { "label": "Position Recipient", "value": "0x6D71aE149099F5c80b207d15b042e5EA773319c1" },
+          { "label": "Deadline", "value": "2026-10-29 21:15:40Z" },
+          { "label": "Lower Tick", "value": "298140" },
+          { "label": "Upper Tick", "value": "299940" }
+        ]
+      }
+    },
+    {
+      "description": "Create position USDC/WETH 0.05% - chain 137",
+      "rawTx": "0x02f9019181892b8506fc23ac008514f46b0400830927c094c36442b4a4522e871399cd717abdd847ab11fe8880b90164883164560000000000000000000000003c499c542cef5e3811e1192ce70d8cc03d5c33590000000000000000000000007ceb23fd6bc0add59e62ac25578270cff1b9f61900000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000000000000000000000000000000000000003025000000000000000000000000000000000000000000000000000000000000306240000000000000000000000000000000000000000000000000000000005f5e1000000000000000000000000000000000000000000000000000088c78bc7da40000000000000000000000000000000000000000000000000000000000005ee3fe000000000000000000000000000000000000000000000000000881877e1bbb800000000000000000000000000dad77910dbdfde764fc21fcd4e74d71bbaca6d8d000000000000000000000000000000000000000000000000000000006abd8660c0",
+      "expected": {
+        "intent": "Open liquidity position",
+        "interpolatedIntent": "Add up to 100 USDC and up to 0.0385 WETH to a new position for 0xDad77910DbDFdE764fC21FCD4E74D71bBACA6D8D",
+        "owner": "Uniswap Labs",
+        "fields": [
+          { "label": "Maximum to Add", "value": "100 USDC" },
+          { "label": "Maximum to Add", "value": "0.0385 WETH" },
+          { "label": "Minimum to Add", "value": "99.5 USDC" },
+          { "label": "Minimum to Add", "value": "0.0383075 WETH" },
+          { "label": "Pool Fee", "value": "0.05%" },
+          { "label": "Position Recipient", "value": "0xDad77910DbDFdE764fC21FCD4E74D71bBACA6D8D" },
+          { "label": "Deadline", "value": "2026-09-30 22:00:00Z" },
+          { "label": "Lower Tick", "value": "197200" },
+          { "label": "Upper Tick", "value": "198180" }
+        ]
+      }
+    },
+    {
+      "description": "Remove liquidity from position - chain 137",
+      "rawTx": "0x02f8d081892e8506fc23ac008514f46b04008306ddd094c36442b4a4522e871399cd717abdd847ab11fe8880b8a40c49ccbe00000000000000000000000000000000000000000000000000000000002569a10000000000000000000000000000000000000000000000000000012b206cbbc40000000000000000000000000000000000000000000000000000000002f34f60000000000000000000000000000000000000000000000000004380663abb8000000000000000000000000000000000000000000000000000000000006abd8660c0",
+      "expected": {
+        "intent": "Decrease liquidity",
+        "interpolatedIntent": "Remove 1284739218372 liquidity from position Uniswap V3 Positions NFT-V1 #2451873: at least 49500000 token0 and 19000000000000000 token1 (raw units) become owed to the position; nothing is transferred until collect",
+        "owner": "Uniswap Labs",
+        "fields": [
+          { "label": "Position", "value": "Uniswap V3 Positions NFT-V1 #2451873" },
+          { "label": "Liquidity to Remove", "value": "1284739218372" },
+          { "label": "Min Token0 Due (raw)", "value": "49500000" },
+          { "label": "Min Token1 Due (raw)", "value": "19000000000000000" },
+          { "label": "Deadline", "value": "2026-09-30 22:00:00Z" }
+        ]
+      }
+    },
+    {
+      "description": "Collect everything from position - chain 137",
+      "rawTx": "0x02f8b081892f8506fc23ac008514f46b04008306ddd094c36442b4a4522e871399cd717abdd847ab11fe8880b884fc6f786500000000000000000000000000000000000000000000000000000000002569a1000000000000000000000000dad77910dbdfde764fc21fcd4e74d71bbaca6d8d00000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000ffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Collect from position",
+        "interpolatedIntent": "Collect up to 340282366920938463463374607431768211455 token0 and up to 340282366920938463463374607431768211455 token1 (raw units) owed to position Uniswap V3 Positions NFT-V1 #2451873, sent to 0xDad77910DbDFdE764fC21FCD4E74D71bBACA6D8D. The zero address keeps them in this contract, where any caller can sweep them",
+        "owner": "Uniswap Labs",
+        "fields": [
+          { "label": "Position", "value": "Uniswap V3 Positions NFT-V1 #2451873" },
+          { "label": "Max Token0 (raw)", "value": "340282366920938463463374607431768211455" },
+          { "label": "Max Token1 (raw)", "value": "340282366920938463463374607431768211455" },
+          { "label": "Recipient", "value": "0xDad77910DbDFdE764fC21FCD4E74D71bBACA6D8D" }
+        ]
+      }
+    },
+    {
+      "description": "Remove liquidity and collect - chain 8453",
+      "rawTx": "0x02f902918221057e83118c30837ef40083059d539403a520b32c04bf3beef7beb72e919cf822ed34f180b90224ac9650d8000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000a40c49ccbe0000000000000000000000000000000000000000000000000000000000610f970000000000000000000000000000000000000000000000000004de8dd24061d700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006ae0e534000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000084fc6f78650000000000000000000000000000000000000000000000000000000000610f97000000000000000000000000291a17a2547abeb0aff9e0cb7e20ae6175f00fa800000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000c080a08616439af2366c110058dffe1c0aa2612f621fe44632937bb370d0b755c15070a05b450accfcece14b320ca1fc7420756c7a605cada212ea1c54c9c0acf652d14b",
+      "from": "0x291a17A2547abEb0aFf9e0CB7E20Ae6175f00fa8",
+      "expected": {
+        "intent": "Batch position actions",
+        "interpolatedIntent": "Send 0 ETH and run every action below in one transaction; if one action fails, the whole transaction reverts",
+        "owner": "Uniswap Labs",
+        "fields": [
+          { "label": "Native Value Sent", "value": "0 ETH" },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Decrease liquidity",
+              "fields": [
+                { "label": "Position", "value": "Uniswap V3 Positions NFT-V1 #6360983" },
+                { "label": "Liquidity to Remove", "value": "1370600606032343" },
+                { "label": "Min Token0 Due (raw)", "value": "0" },
+                { "label": "Min Token1 Due (raw)", "value": "0" },
+                { "label": "Deadline", "value": "2026-10-27 17:53:56Z" }
+              ],
+              "interpolatedIntent": "Remove 1370600606032343 liquidity from position Uniswap V3 Positions NFT-V1 #6360983: at least 0 token0 and 0 token1 (raw units) become owed to the position; nothing is transferred until collect",
+              "owner": "Uniswap Labs"
+            }
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Collect from position",
+              "fields": [
+                { "label": "Position", "value": "Uniswap V3 Positions NFT-V1 #6360983" },
+                { "label": "Max Token0 (raw)", "value": "340282366920938463463374607431768211455" },
+                { "label": "Max Token1 (raw)", "value": "340282366920938463463374607431768211455" },
+                { "label": "Recipient", "value": "0x291a17A2547abEb0aFf9e0CB7E20Ae6175f00fa8" }
+              ],
+              "interpolatedIntent": "Collect up to 340282366920938463463374607431768211455 token0 and up to 340282366920938463463374607431768211455 token1 (raw units) owed to position Uniswap V3 Positions NFT-V1 #6360983, sent to 0x291a17A2547abEb0aFf9e0CB7E20Ae6175f00fa8. The zero address keeps them in this contract, where any caller can sweep them",
+              "owner": "Uniswap Labs"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "Unwrap WETH held by the position manager - chain 8453",
+      "rawTx": "0x02f86f82210582047d831312d083aba950830493e09403a520b32c04bf3beef7beb72e919cf822ed34f180b84449404b7c00000000000000000000000000000000000000000000000000470c6252b0fc0c00000000000000000000000061e438a86b1de6a2337b0088a8a3290f066d53f6c0",
+      "from": "0x61E438A86b1dE6A2337B0088a8a3290f066D53F6",
+      "expected": {
+        "intent": "Unwrap to native token",
+        "interpolatedIntent": "Unwrap the wrapped native token held by this contract, at least 0.019998339780115468 ETH, and send it to 0x61E438A86b1dE6A2337B0088a8a3290f066D53F6",
+        "owner": "Uniswap Labs",
+        "fields": [
+          { "label": "Minimum to Unwrap", "value": "0.019998339780115468 ETH" },
+          { "label": "Recipient", "value": "0x61E438A86b1dE6A2337B0088a8a3290f066D53F6" }
+        ]
+      }
+    },
+    {
+      "description": "Refund unused ETH - chain 8453",
+      "rawTx": "0x02ee82210582047e831312d083aba950830493e09403a520b32c04bf3beef7beb72e919cf822ed34f1808412210e8ac0",
+      "from": "0x61E438A86b1dE6A2337B0088a8a3290f066D53F6",
+      "expected": {
+        "intent": "Refund leftover native token",
+        "interpolatedIntent": "Send the native token held by this contract to you",
+        "owner": "Uniswap Labs",
+        "fields": []
+      }
+    },
+    {
+      "description": "Remove liquidity to native token and token - chain 42161",
+      "rawTx": "0x02f903ef82a4b118808401b52a108307769d94c36442b4a4522e871399cd717abdd847ab11fe8880b90384ac9650d80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000160000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000000a40c49ccbe0000000000000000000000000000000000000000000000000000000000565ed6000000000000000000000000000000000000000000000000000005215c54ab510000000000000000000000000000000000000000000000000021796c0d4e56cd000000000000000000000000000000000000000000000000000000000158fbca000000000000000000000000000000000000000000000000000000006ae0f38c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000084fc6f78650000000000000000000000000000000000000000000000000000000000565ed6000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004449404b7c00000000000000000000000000000000000000000000000000232931b488cb74000000000000000000000000e0a6e3b32484a64e30c09c366a862c3e9da14e90000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000064df2ab5bb000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e583100000000000000000000000000000000000000000000000000000000016b1f7c000000000000000000000000e0a6e3b32484a64e30c09c366a862c3e9da14e9000000000000000000000000000000000000000000000000000000000c080a0ab2ad189d4945196e9781603b7d8bf81593932f15dfd884c6e26ff064531149aa00b6dccb4b784a189d05c4273a8104c10794a72217f1131f279e6ed5766cd0527",
+      "from": "0xe0a6E3b32484A64e30C09c366a862C3E9dA14E90",
+      "expected": {
+        "intent": "Batch position actions",
+        "interpolatedIntent": "Send 0 ETH and run every action below in one transaction; if one action fails, the whole transaction reverts",
+        "owner": "Uniswap Labs",
+        "fields": [
+          { "label": "Native Value Sent", "value": "0 ETH" },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Decrease liquidity",
+              "fields": [
+                { "label": "Position", "value": "Uniswap V3 Positions NFT-V1 #5660374" },
+                { "label": "Liquidity to Remove", "value": "5640841112401" },
+                { "label": "Min Token0 Due (raw)", "value": "9422179218118349" },
+                { "label": "Min Token1 Due (raw)", "value": "22608842" },
+                { "label": "Deadline", "value": "2026-10-27 18:55:08Z" }
+              ],
+              "interpolatedIntent": "Remove 5640841112401 liquidity from position Uniswap V3 Positions NFT-V1 #5660374: at least 9422179218118349 token0 and 22608842 token1 (raw units) become owed to the position; nothing is transferred until collect",
+              "owner": "Uniswap Labs"
+            }
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Collect from position",
+              "fields": [
+                { "label": "Position", "value": "Uniswap V3 Positions NFT-V1 #5660374" },
+                { "label": "Max Token0 (raw)", "value": "340282366920938463463374607431768211455" },
+                { "label": "Max Token1 (raw)", "value": "340282366920938463463374607431768211455" },
+                { "label": "Recipient", "value": "0x0000000000000000000000000000000000000000" }
+              ],
+              "interpolatedIntent": "Collect up to 340282366920938463463374607431768211455 token0 and up to 340282366920938463463374607431768211455 token1 (raw units) owed to position Uniswap V3 Positions NFT-V1 #5660374, sent to 0x0000000000000000000000000000000000000000. The zero address keeps them in this contract, where any caller can sweep them",
+              "owner": "Uniswap Labs"
+            }
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Unwrap to native token",
+              "fields": [
+                { "label": "Minimum to Unwrap", "value": "0.00989691764387314 ETH" },
+                { "label": "Recipient", "value": "0xe0a6E3b32484A64e30C09c366a862C3E9dA14E90" }
+              ],
+              "interpolatedIntent": "Unwrap the wrapped native token held by this contract, at least 0.00989691764387314 ETH, and send it to 0xe0a6E3b32484A64e30C09c366a862C3E9dA14E90",
+              "owner": "Uniswap Labs"
+            }
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Sweep leftover tokens",
+              "fields": [
+                { "label": "Minimum to Sweep", "value": "23.797628 USDC" },
+                { "label": "Recipient", "value": "0xe0a6E3b32484A64e30C09c366a862C3E9dA14E90" }
+              ],
+              "interpolatedIntent": "Send the whole token balance held by this contract, at least 23.797628 USDC, to 0xe0a6E3b32484A64e30C09c366a862C3E9dA14E90",
+              "owner": "Uniswap Labs"
+            }
+          }
+        ]
+      }
     }
   ]
 }
