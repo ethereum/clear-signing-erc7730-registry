@@ -12,6 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  checks: write
   contents: write
   pull-requests: write
 
@@ -70,7 +71,14 @@ jobs:
             echo "EOF_FILES"
           } >> "$GITHUB_OUTPUT"
 
+      - name: Find the descriptors that the changes affect
+        id: lint
+        if: ${{ !cancelled() && steps.changes.outputs.changes == 'true' }}
+        timeout-minutes: 10
+        run: bash .github/scripts/bot-pr-lint-check.sh affected
+
       - name: Open pull request
+        id: cpr
         if: ${{ !cancelled() && steps.changes.outputs.changes == 'true' }}
         timeout-minutes: 10
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
@@ -91,3 +99,14 @@ jobs:
             ${{ steps.changes.outputs.updated_files }}
           draft: false
           signoff: false
+
+      # GitHub starts no pull_request_target run for a pull request that
+      # GITHUB_TOKEN opens, so the linter check never reports. When no
+      # descriptor is affected, there is nothing to lint.
+      - name: Report the linter check
+        if: ${{ !cancelled() && steps.lint.outputs.affected == 'false' && (steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated') }}
+        timeout-minutes: 5
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ steps.cpr.outputs.pull-request-head-sha }}
+        run: bash .github/scripts/bot-pr-lint-check.sh report "$HEAD_SHA"

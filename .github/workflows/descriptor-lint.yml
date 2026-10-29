@@ -57,6 +57,24 @@ jobs:
             registry/**/sigs/**
             registry/**/*.tests.json
 
+      # The affected descriptors script compares each changed file with this
+      # copy, so a file with only a new layout is not linted.
+      - name: Keep the registry files of the base
+        timeout-minutes: 5
+        if: steps.changed-descriptor-files.outputs.any_changed == 'true'
+        env:
+          BASE_SHA: ${{ github.event.merge_group.base_sha }}
+        run: |
+          # On pull_request_target the checkout is the base. On merge_group
+          # it is the merge, so fetch the base commit.
+          REF=HEAD
+          if [ -n "$BASE_SHA" ]; then
+            git fetch --no-tags --depth=1 origin "$BASE_SHA"
+            REF=FETCH_HEAD
+          fi
+          mkdir base-tree
+          git archive "$REF" registry ercs | tar -x -C base-tree
+
       - name: Use the registry files of the pull request
         timeout-minutes: 5
         if: github.event_name == 'pull_request_target'
@@ -84,6 +102,7 @@ jobs:
         env:
           CHANGED_FILES: ${{ steps.changed-descriptor-files.outputs.all_changed_files }}
           DELETED_FILES: ${{ steps.changed-descriptor-files.outputs.deleted_files }}
+          BASE_ROOT: base-tree
         run: |
           # A changed shared file (ercs/*.json or an entity-local common file)
           # affects every descriptor whose "includes" chain contains it, so
