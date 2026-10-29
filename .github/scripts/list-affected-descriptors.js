@@ -122,6 +122,19 @@ function includeClosure(absFile) {
   return closure;
 }
 
+/**
+ * JSON text without the whitespace between tokens, and with each string in
+ * one escape form ("→" and "→" are the same). Key order, duplicate keys
+ * and number text stay as they are: JSON.parse would drop or round them.
+ * Throws when the text is not JSON.
+ */
+function normalizeJson(text) {
+  JSON.parse(text);
+  return text.replace(/"(?:[^"\\]|\\.)*"|\s+/g, (token) =>
+    token[0] === '"' ? JSON.stringify(JSON.parse(token)) : ''
+  );
+}
+
 /** The paths of a whitespace-separated environment variable. */
 function envFiles(name) {
   return (process.env[name] || '')
@@ -137,7 +150,7 @@ function main() {
   ]);
 
   if (process.env.BASE_ROOT) {
-    const json = (root, file) => JSON.stringify(JSON.parse(fs.readFileSync(path.join(root, file), 'utf8')));
+    const json = (root, file) => normalizeJson(fs.readFileSync(path.join(root, file), 'utf8'));
     for (const file of changed) {
       try {
         if (json(repoRoot, file) === json(process.env.BASE_ROOT, file)) changed.delete(file);
