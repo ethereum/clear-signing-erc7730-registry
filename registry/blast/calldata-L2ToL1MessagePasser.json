@@ -1,0 +1,25 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 81457, "address": "0x4200000000000000000000000000000000000016" }] } },
+  "metadata": { "owner": "Blast", "contractName": "L2ToL1MessagePasser", "info": { "url": "https://blast.io" } },
+  "display": {
+    "formats": {
+      "burn()": { "intent": "Burn withdrawn ETH", "fields": [], "interpolatedIntent": "Burn ETH left by withdrawals" },
+      "initiateWithdrawal(address _target,uint256 _gasLimit,bytes _data)": {
+        "intent": "Withdraw ETH to Ethereum",
+        "fields": [
+          { "path": "@.value", "label": "ETH to Withdraw", "format": "amount" },
+          { "path": "_target", "label": "L1 Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_gasLimit", "label": "Min L1 Gas", "format": "unit", "params": { "base": "gas" } },
+          {
+            "path": "_data",
+            "label": "L1 Call",
+            "format": "calldata",
+            "params": { "calleePath": "_target", "chainId": 1, "amountPath": "@.value", "spender": "0x0Ec68c5B10F21EFFb74f2A5C61DFe6b08C0Db6Cb" }
+          }
+        ],
+        "interpolatedIntent": "Withdraw {@.value} to {_target} on Ethereum; the L1 payout can be lower"
+      }
+    }
+  }
+}
