@@ -1,0 +1,167 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-L1StandardBridge.json",
+  "dataProvider": {
+    "tokens": {
+      "0x2112b92a4f6496b7b2f10850857ffa270464d054": { "name": "SuperBoring", "symbol": "BORING", "decimals": 18 },
+      "0x54330d28ca3357f294334bdc454a032e7f353416": { "name": "Autonolas", "symbol": "OLAS", "decimals": 18 },
+      "0x2ae3f1ec7f1f5012cfeab0185bfc7aa3cf0dec22": { "name": "Coinbase Wrapped Staked ETH", "symbol": "cbETH", "decimals": 18 },
+      "0xc3de830ea07524a0761646a6a4e4be0e114a3c83": { "name": "Uniswap", "symbol": "UNI", "decimals": 18 },
+      "0x0bc4df77353ae96f31bc82bc2536bb23b2009919": { "name": "SuperBoring", "symbol": "BORING", "decimals": 18 },
+      "0x0001a500a6b18995b03f44bb040a5ffc28e45cb0": { "name": "Autonolas", "symbol": "OLAS", "decimals": 18 },
+      "0xbe9895146f7af43049ca1c1ae358b0541ea49704": { "name": "Coinbase Wrapped Staked ETH", "symbol": "cbETH", "decimals": 18 },
+      "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984": { "name": "Uniswap", "symbol": "UNI", "decimals": 18 },
+      "0xa2cd3d43c775978a96bdbf12d733d5a1ed94fb18": { "name": "Chain", "symbol": "XCN", "decimals": 18 }
+    },
+    "addressNames": {}
+  },
+  "tests": [
+    {
+      "description": "bridgeERC20 - chain 1",
+      "rawTx": "0x02f8e501808080830f4240943154cf16ccdb4c6d922629664174b904d80f2c3580b8c4870876230000000000000000000000000bc4df77353ae96f31bc82bc2536bb23b20099190000000000000000000000002112b92a4f6496b7b2f10850857ffa270464d0540000000000000000000000000000000000000000000002115970722abe9a25120000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0xF1b4C6b5D77e9AD7fc740B6811ee9D200fdF0465",
+      "txHash": "0x685a409f5ffea57ca98dfcbdd9d08d942d110854c10e274e8b3baf85f3c49cd6",
+      "expected": {
+        "intent": "Bridge token to Base",
+        "interpolatedIntent": "Bridge 9764.77239158703195061 BORING to your address on Base",
+        "owner": "Base",
+        "fields": [
+          { "label": "Amount", "value": "9764.77239158703195061 BORING" },
+          { "label": "Token on Base", "value": "BORING" }
+        ]
+      }
+    },
+    {
+      "description": "bridgeERC20To - chain 1",
+      "rawTx": "0x02f9010501808080830f4240943154cf16ccdb4c6d922629664174b904d80f2c3580b8e4540abf730000000000000000000000000001a500a6b18995b03f44bb040a5ffc28e45cb000000000000000000000000054330d28ca3357f294334bdc454a032e7f353416000000000000000000000000a5f47eb2ca7043e491bf63ef883ae7fe13b17f5800000000000000000000000000000000000000000000000aac931bb9a22f54a70000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0xa5f47eb2Ca7043E491BF63eF883aE7fe13b17F58",
+      "txHash": "0xbf80e89da7fa3b8aadd52fa6646190c9745941748b0991b430105d82366e0999",
+      "expected": {
+        "intent": "Bridge token to Base",
+        "interpolatedIntent": "Bridge 196.902754217299498151 OLAS to 0xa5f47eb2Ca7043E491BF63eF883aE7fe13b17F58 on Base",
+        "owner": "Base",
+        "fields": [
+          { "label": "Amount", "value": "196.902754217299498151 OLAS" },
+          { "label": "L2 Recipient", "value": "0xa5f47eb2Ca7043E491BF63eF883aE7fe13b17F58" },
+          { "label": "Token on Base", "value": "OLAS" }
+        ]
+      }
+    },
+    {
+      "description": "bridgeETH - chain 1",
+      "rawTx": "0x02f88e01808080830f4240943154cf16ccdb4c6d922629664174b904d80f2c358903154d651d65684d27b86409fc88430000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0xdeDB0E722e69d7794CbaE19bAc32DA650849490a",
+      "txHash": "0x18f2e41ac7910a4d38b9892f7668f9d650127ff04364864a7cd4ba76d5c97c51",
+      "expected": {
+        "intent": "Bridge ETH to Base",
+        "interpolatedIntent": "Bridge 56.875226446061653287 ETH to your address on Base",
+        "owner": "Base",
+        "fields": [{ "label": "ETH to Bridge", "value": "56.875226446061653287 ETH" }]
+      }
+    },
+    {
+      "description": "bridgeETHTo - chain 1",
+      "rawTx": "0x02f8cc01808080830f4240943154cf16ccdb4c6d922629664174b904d80f2c3587038d7ea4c68000b8a4e11013dd000000000000000000000000f2a82535ba5bcad32ee21be21a6a73f418d406a30000000000000000000000000000000000000000000000000000000000030d400000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000e7375706572627269646765313034000000000000000000000000000000000000c0",
+      "from": "0xF2A82535Ba5bCaD32ee21be21a6a73f418d406a3",
+      "txHash": "0x9290982acdfdf3012aec0c7844b2778bf4d7b24044737744ec0e7b70342a9981",
+      "expected": {
+        "intent": "Bridge ETH to Base",
+        "interpolatedIntent": "Bridge 0.001 ETH to 0xF2A82535Ba5bCaD32ee21be21a6a73f418d406a3 on Base",
+        "owner": "Base",
+        "fields": [
+          { "label": "ETH to Bridge", "value": "0.001 ETH" },
+          { "label": "L2 Recipient", "value": "0xF2A82535Ba5bCaD32ee21be21a6a73f418d406a3" }
+        ]
+      }
+    },
+    {
+      "description": "depositERC20 - chain 1",
+      "rawTx": "0x02f8e501808080830f4240943154cf16ccdb4c6d922629664174b904d80f2c3580b8c458a997f6000000000000000000000000be9895146f7af43049ca1c1ae358b0541ea497040000000000000000000000002ae3f1ec7f1f5012cfeab0185bfc7aa3cf0dec220000000000000000000000000000000000000000000000067cab02be87df49b30000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x8312a4FA8f5304604454f2eB1313F5a8583D7a78",
+      "txHash": "0xfa5c0c5a4218f1805ad96f514e396dd044bdae81c35d3d0675984a5d3974fd1b",
+      "expected": {
+        "intent": "Deposit token to Base",
+        "interpolatedIntent": "Deposit 119.663741341324495283 cbETH to your address on Base",
+        "owner": "Base",
+        "fields": [
+          { "label": "Amount", "value": "119.663741341324495283 cbETH" },
+          { "label": "Token on Base", "value": "cbETH" }
+        ]
+      }
+    },
+    {
+      "description": "depositERC20To - chain 1",
+      "rawTx": "0x02f9010501808080830f4240943154cf16ccdb4c6d922629664174b904d80f2c3580b8e4838b25200000000000000000000000001f9840a85d5af5bf1d1762f925bdaddc4201f984000000000000000000000000c3de830ea07524a0761646a6a4e4be0e114a3c830000000000000000000000000a334dd651d81912bee2d05a997a4b1e70596f8700000000000000000000000000000000000000000000006bec04cb4e02980e7c0000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x0A334dD651d81912BeE2d05a997A4B1E70596f87",
+      "txHash": "0x48cf8dde4c7ca035e35674b43155540b636111b36fe01d6fe047c872c1a3e083",
+      "expected": {
+        "intent": "Deposit token to Base",
+        "interpolatedIntent": "Deposit 1990.80855751569126566 UNI to 0x0A334dD651d81912BeE2d05a997A4B1E70596f87 on Base",
+        "owner": "Base",
+        "fields": [
+          { "label": "Amount", "value": "1990.80855751569126566 UNI" },
+          { "label": "L2 Recipient", "value": "0x0A334dD651d81912BeE2d05a997A4B1E70596f87" },
+          { "label": "Token on Base", "value": "UNI" }
+        ]
+      }
+    },
+    {
+      "description": "depositETH - chain 1",
+      "rawTx": "0x02f88e01808080830f4240943154cf16ccdb4c6d922629664174b904d80f2c35890522a240bfc729c345b864b1a1a8820000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0xD296c222A477f5F13f16b9dd6Dedc966A9c8ccC4",
+      "txHash": "0x077ec7bb640b35d50a2527841dc467cd6b0cc1b52fe69cb221cff54222f6b4f4",
+      "expected": {
+        "intent": "Deposit ETH to Base",
+        "interpolatedIntent": "Deposit 94.729348704488768325 ETH to your address on Base",
+        "owner": "Base",
+        "fields": [{ "label": "ETH to Bridge", "value": "94.729348704488768325 ETH" }]
+      }
+    },
+    {
+      "description": "depositETHTo - chain 1",
+      "rawTx": "0x02f8ac01808080830f4240943154cf16ccdb4c6d922629664174b904d80f2c35872386f26fc10000b8849a2ac6d500000000000000000000000076c1f30a6db3826707bf87674b71d980456f60710000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x44bC3068634aa3947CCB991F81E25F5a1D6d5AF7",
+      "txHash": "0xe8433036c5afe6335ae2d74bd3400a136dad4214f6ea3abacd8c0819c860c284",
+      "expected": {
+        "intent": "Deposit ETH to Base",
+        "interpolatedIntent": "Deposit 0.01 ETH to 0x76C1F30a6Db3826707bf87674B71D980456F6071 on Base",
+        "owner": "Base",
+        "fields": [
+          { "label": "ETH to Bridge", "value": "0.01 ETH" },
+          { "label": "L2 Recipient", "value": "0x76C1F30a6Db3826707bf87674B71D980456F6071" }
+        ]
+      }
+    },
+    {
+      "description": "finalizeBridgeERC20 - chain 1 (encoded; same calldata as the call the messenger made in portal tx 0xd823f4f0426f64698217a908be92f1b0251db28c5eb06b6070567fd75bfe5880)",
+      "rawTx": "0x02f9010501808080830f4240943154cf16ccdb4c6d922629664174b904d80f2c3580b8e40166a07a000000000000000000000000a2cd3d43c775978a96bdbf12d733d5a1ed94fb180000000000000000000000009c632e6aaa3ea73f91554f8a3cb2ed2f29605e0c000000000000000000000000975b547e4d2cd8001a2469ffdbf5b5e04328ce04000000000000000000000000975b547e4d2cd8001a2469ffdbf5b5e04328ce040000000000000000000000000000000000000000000019568db621a3a600000000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x866E82a600A1414e583f7F13623F1aC5d58b0Afa",
+      "expected": {
+        "intent": "Release token from Base bridge",
+        "interpolatedIntent": "Pay 119655.793448272009363456 XCN withdrawn by 0x975B547E4D2cd8001a2469ffdbF5B5e04328cE04 on Base to 0x975B547E4D2cd8001a2469ffdbF5B5e04328cE04",
+        "owner": "Base",
+        "fields": [
+          { "label": "Amount", "value": "119655.793448272009363456 XCN" },
+          { "label": "L1 Recipient", "value": "0x975B547E4D2cd8001a2469ffdbF5B5e04328cE04" },
+          { "label": "L2 Sender", "value": "0x975B547E4D2cd8001a2469ffdbF5B5e04328cE04" }
+        ]
+      }
+    },
+    {
+      "description": "finalizeBridgeETH - chain 1 (encoded; same calldata as the call the messenger made in portal tx 0x9cb27abb93496e7236b533f358c14214ada63ba8b2f04395f9bb34cebb402ea2)",
+      "rawTx": "0x02f8ce01808080830f4240943154cf16ccdb4c6d922629664174b904d80f2c35890cd6303987a6a38ae6b8a41635f5fd00000000000000000000000009c7bad99688a55a2e83644bfaed09e62bdcccba00000000000000000000000023b597f33f6f2621f77da117523dffd634cdf4ea00000000000000000000000000000000000000000000000cd6303987a6a38ae600000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x866E82a600A1414e583f7F13623F1aC5d58b0Afa",
+      "expected": {
+        "intent": "Release ETH from Base bridge",
+        "interpolatedIntent": "Pay 236.794828062292413158 ETH withdrawn by 0x09C7bAD99688a55a2e83644BFAed09e62bDcCcBA on Base to 0x23B597f33f6f2621F77DA117523Dffd634cDf4ea",
+        "owner": "Base",
+        "fields": [
+          { "label": "ETH Amount", "value": "236.794828062292413158 ETH" },
+          { "label": "L1 Recipient", "value": "0x23B597f33f6f2621F77DA117523Dffd634cDf4ea" },
+          { "label": "L2 Sender", "value": "0x09C7bAD99688a55a2e83644BFAed09e62bDcCcBA" },
+          { "label": "ETH from Caller", "value": "236.794828062292413158 ETH" }
+        ]
+      }
+    }
+  ]
+}

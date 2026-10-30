@@ -1,0 +1,144 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x697402166Fbf2F22E970df8a6486Ef171dbfc524" }] } },
+  "metadata": {
+    "owner": "Blast",
+    "contractName": "L1StandardBridge",
+    "constants": { "OTHER_BRIDGE": "0x4200000000000000000000000000000000000010" },
+    "info": { "url": "https://blast.io" }
+  },
+  "display": {
+    "formats": {
+      "bridgeERC20(address _localToken,address _remoteToken,uint256 _amount,uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Bridge token to Blast",
+        "fields": [
+          { "path": "_amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "_localToken" } },
+          { "path": "_remoteToken", "label": "Token on Blast", "format": "tokenTicker", "params": { "chainId": 81457 } },
+          { "path": "_localToken", "label": "Local Token", "visible": "never" },
+          { "path": "_minGasLimit", "label": "Min Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Bridge {_amount} as {_remoteToken} to your address on Blast"
+      },
+      "bridgeERC20To(address _localToken,address _remoteToken,address _to,uint256 _amount,uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Bridge token to Blast",
+        "fields": [
+          { "path": "_amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "_localToken" } },
+          { "path": "_to", "label": "Blast Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_remoteToken", "label": "Token on Blast", "format": "tokenTicker", "params": { "chainId": 81457 } },
+          { "path": "_localToken", "label": "Local Token", "visible": "never" },
+          { "path": "_minGasLimit", "label": "Min Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Bridge {_amount} as {_remoteToken} to {_to} on Blast"
+      },
+      "bridgeETH(uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Bridge ETH to Blast",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount" },
+          { "path": "_minGasLimit", "label": "Min Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Bridge {@.value} to your address on Blast"
+      },
+      "bridgeETHTo(address _to,uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Bridge ETH to Blast",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount" },
+          { "path": "_to", "label": "Blast Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_minGasLimit", "label": "Min Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Bridge {@.value} to {_to} on Blast"
+      },
+      "depositERC20(address _l1Token,address _l2Token,uint256 _amount,uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Bridge token to Blast",
+        "fields": [
+          { "path": "_amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "_l1Token" } },
+          { "path": "_l2Token", "label": "Token on Blast", "format": "tokenTicker", "params": { "chainId": 81457 } },
+          { "path": "_l1Token", "label": "L1 Token", "visible": "never" },
+          { "path": "_minGasLimit", "label": "Min Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Bridge {_amount} as {_l2Token} to your address on Blast"
+      },
+      "depositERC20To(address _l1Token,address _l2Token,address _to,uint256 _amount,uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Bridge token to Blast",
+        "fields": [
+          { "path": "_amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "_l1Token" } },
+          { "path": "_to", "label": "Blast Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_l2Token", "label": "Token on Blast", "format": "tokenTicker", "params": { "chainId": 81457 } },
+          { "path": "_l1Token", "label": "L1 Token", "visible": "never" },
+          { "path": "_minGasLimit", "label": "Min Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Bridge {_amount} as {_l2Token} to {_to} on Blast"
+      },
+      "depositETH(uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Bridge ETH to Blast",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount" },
+          { "path": "_minGasLimit", "label": "Min Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Bridge {@.value} to your address on Blast"
+      },
+      "depositETHTo(address _to,uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Bridge ETH to Blast",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount" },
+          { "path": "_to", "label": "Blast Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_minGasLimit", "label": "Min Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Bridge {@.value} to {_to} on Blast"
+      },
+      "finalizeBridgeERC20(address _localToken,address _remoteToken,address _from,address _to,uint256 _amount,bytes _extraData)": {
+        "intent": "Pay out Blast token withdrawal",
+        "fields": [
+          { "path": "_amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "_localToken" } },
+          { "path": "_to", "label": "Paid To", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_from", "label": "Withdrawn By", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_localToken", "label": "Local Token", "visible": "never" },
+          { "path": "_remoteToken", "label": "Remote Token", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Pay {_amount} withdrawn by {_from} to {_to}"
+      },
+      "finalizeBridgeETH(address _from,address _to,uint256 _amount,bytes _extraData)": {
+        "intent": "Pay out Blast ETH withdrawal",
+        "fields": [
+          { "path": "_amount", "label": "Maximum Amount", "format": "amount" },
+          { "path": "_to", "label": "Paid To", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_from", "label": "Withdrawn By", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" },
+          { "path": "@.value", "label": "Max ETH Attached", "format": "amount" }
+        ],
+        "interpolatedIntent": "Pay up to {_amount} withdrawn by {_from} to {_to}"
+      },
+      "finalizeERC20Withdrawal(address _l1Token,address _l2Token,address _from,address _to,uint256 _amount,bytes _extraData)": {
+        "intent": "Pay out Blast token withdrawal",
+        "fields": [
+          { "path": "_amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "_l1Token" } },
+          { "path": "_to", "label": "Paid To", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_from", "label": "Withdrawn By", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_l1Token", "label": "L1 Token", "visible": "never" },
+          { "path": "_l2Token", "label": "L2 Token", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Pay {_amount} withdrawn by {_from} to {_to}"
+      },
+      "finalizeETHWithdrawal(address _from,address _to,uint256 _amount,bytes _extraData)": {
+        "intent": "Pay out Blast ETH withdrawal",
+        "fields": [
+          { "path": "_amount", "label": "Maximum Amount", "format": "amount" },
+          { "path": "_to", "label": "Paid To", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_from", "label": "Withdrawn By", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" },
+          { "path": "@.value", "label": "Max ETH Attached", "format": "amount" }
+        ],
+        "interpolatedIntent": "Pay up to {_amount} withdrawn by {_from} to {_to}"
+      }
+    }
+  }
+}
