@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-armitage_by_wintermute-armUSDCp-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0x5dc53a23adc9f2bed98de6f59f7f309a7c71ff2b": { "decimals": 18, "name": "Wintermute USDC Prime", "symbol": "armUSDCp" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d01028401313c08841d62d00383093fd6945dc53a23adc9f2bed98de6f59f7f309a7c71ff2b80b8446e553f65000000000000000000000000000000000000000000000000000000174876e80000000000000000000000000001fb76759bce80da38e29947b071a0e832b1c384c0",
+      "txHash": "0xacd05a4962207879c07232789c354d27d4809707014c6e5ba7e62768e10f1650",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "100000 USDC" },
+          { "label": "Share ticker", "value": "armUSDCp" },
+          { "label": "Send shares to", "value": "0x01fB76759bCE80dA38E29947B071a0e832B1C384" }
+        ],
+        "interpolatedIntent": "Deposit 100000 USDC for 0x01fB76759bCE80dA38E29947B071a0e832B1C384",
+        "owner": "Armitage by Wintermute"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f86e01138485b176c08502769dfd00830391b2945dc53a23adc9f2bed98de6f59f7f309a7c71ff2b80b84494bf804d0000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0xe369e978ad1fe6541c056c9e1b3d50d6747a3d1dc7347d1e8ec294b070873c9c",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "USDC" },
+          { "label": "Minted shares", "value": "1 armUSDCp" },
+          { "label": "Mint shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Mint 1 armUSDCp for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Armitage by Wintermute"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8950181f9830ad611840624f0b28307391e945dc53a23adc9f2bed98de6f59f7f309a7c71ff2b80b86cb460af940000000000000000000000000000000000000000000000000000000002faf080000000000000000000000000f1a6d3273ab0ba8c18cb887bf2e215e458d1cb91000000000000000000000000f1a6d3273ab0ba8c18cb887bf2e215e458d1cb916a4258642222da44c0",
+      "txHash": "0x427f7886011e5d77043d678c6bece7618e004e5719526db9860d17407e62a615",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "50 USDC" },
+          { "label": "To", "value": "0xF1a6d3273aB0ba8c18CB887BF2E215E458D1cb91" },
+          { "label": "Owner", "value": "0xF1a6d3273aB0ba8c18CB887BF2E215E458D1cb91" }
+        ],
+        "interpolatedIntent": "Withdraw 50 USDC to 0xF1a6d3273aB0ba8c18CB887BF2E215E458D1cb91",
+        "owner": "Armitage by Wintermute"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88f01820147841dcd65008489914900830687d4945dc53a23adc9f2bed98de6f59f7f309a7c71ff2b80b864ba08765200000000000000000000000000000000000000000000045a9773cf6450291ae70000000000000000000000002be7fbb170954e7aac40634c437369cc27a39c560000000000000000000000002be7fbb170954e7aac40634c437369cc27a39c56c0",
+      "txHash": "0xa94afd81308b08943c403817af35f159c30b11cc83070ef6a9f4e498e8741bc8",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "20560.586192464237894375 armUSDCp" },
+          { "label": "To", "value": "0x2BE7Fbb170954E7aAC40634C437369cc27A39C56" },
+          { "label": "Owner", "value": "0x2BE7Fbb170954E7aAC40634C437369cc27A39C56" }
+        ],
+        "interpolatedIntent": "Redeem 20560.586192464237894375 armUSDCp to 0x2BE7Fbb170954E7aAC40634C437369cc27A39C56",
+        "owner": "Armitage by Wintermute"
+      }
+    }
+  ]
+}

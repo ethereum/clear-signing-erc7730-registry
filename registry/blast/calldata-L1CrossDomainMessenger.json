@@ -1,0 +1,42 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x5D4472f31Bd9385709ec61305AFc749F0fA8e9d0" }] } },
+  "metadata": { "owner": "Blast", "contractName": "L1CrossDomainMessenger", "info": { "url": "https://blast.io" } },
+  "display": {
+    "formats": {
+      "relayMessage(uint256 _nonce,address _sender,address _target,uint256 _value,uint256 _minGasLimit,bytes _message)": {
+        "intent": "Relay Blast message to L1",
+        "fields": [
+          { "path": "_value", "label": "Maximum Amount", "format": "amount" },
+          { "path": "_target", "label": "L1 Target", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_sender", "label": "Blast Sender", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          {
+            "path": "_message",
+            "label": "L1 Call",
+            "format": "calldata",
+            "params": { "calleePath": "_target", "amountPath": "_value", "spenderPath": "@.to" }
+          },
+          { "path": "_nonce", "label": "Nonce", "visible": "never" },
+          { "path": "_minGasLimit", "label": "Min Gas Limit", "visible": "never" },
+          { "path": "@.value", "label": "Max ETH Attached", "format": "amount" }
+        ],
+        "interpolatedIntent": "Relay up to {_value} from {_sender} on Blast to {_target}"
+      },
+      "sendMessage(address _target,bytes _message,uint32 _minGasLimit)": {
+        "intent": "Send message to Blast",
+        "fields": [
+          { "path": "@.value", "label": "ETH to Send", "format": "amount" },
+          { "path": "_target", "label": "Blast Target", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          {
+            "path": "_message",
+            "label": "L2 Call",
+            "format": "calldata",
+            "params": { "calleePath": "_target", "chainId": 81457, "amountPath": "@.value", "spender": "0x4200000000000000000000000000000000000007" }
+          },
+          { "path": "_minGasLimit", "label": "Min Gas Limit", "visible": "never" }
+        ],
+        "interpolatedIntent": "Send {@.value} and a message to {_target} on Blast"
+      }
+    }
+  }
+}

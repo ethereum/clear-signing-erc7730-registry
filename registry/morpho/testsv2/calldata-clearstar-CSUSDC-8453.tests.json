@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-clearstar-CSUSDC-8453.json",
+  "dataProvider": {
+    "tokens": {
+      "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0x1d3b1cd0a0f242d598834b3f2d126dc6bd774657": { "decimals": 18, "name": "Clearstar USDC Reactor", "symbol": "CSUSDC" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f822105822c73830f424083c96a80830a66ee941d3b1cd0a0f242d598834b3f2d126dc6bd77465780b8446e553f650000000000000000000000000000000000000000000000000000000003522c32000000000000000000000000afc707462dce838d4396a2e97b590790a01f7d84c0",
+      "txHash": "0x3d87f5482465c58b2bbc155b0f1c0a71d6650aead556530528c5ed8f763c4f4a",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "55.716914 USDC" },
+          { "label": "Share ticker", "value": "CSUSDC" },
+          { "label": "Send shares to", "value": "0xAfc707462Dce838D4396A2e97b590790A01f7d84" }
+        ],
+        "owner": "Clearstar"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86c820192831d774e830aae60941d3b1cd0a0f242d598834b3f2d126dc6bd77465780b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000dead8221058080",
+      "txHash": "0xae2921e52394586cb5131bc5513f8b558f7a265bc00b168f2fea185feeb00493",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "USDC" },
+          { "label": "Minted shares", "value": "0.000000001 CSUSDC" },
+          { "label": "Mint shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "owner": "Clearstar"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f89582210508830f6950837c8300830e0de1941d3b1cd0a0f242d598834b3f2d126dc6bd77465780b86cb460af94000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000ca8eb3010536809178c054d6fc3572f601f48548000000000000000000000000ca8eb3010536809178c054d6fc3572f601f485486aa8ebd82222da44c0",
+      "txHash": "0x310b046b2fb4b08142c7cc303f084d22c50e670922ae1ed3ebac1ce5602c8bcb",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "1000 USDC" },
+          { "label": "To", "value": "0xca8EB3010536809178C054d6fC3572F601f48548" },
+          { "label": "Owner", "value": "0xca8EB3010536809178C054d6fC3572F601f48548" }
+        ],
+        "owner": "Clearstar"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88f82210582149c830f424083c96a80830a864e941d3b1cd0a0f242d598834b3f2d126dc6bd77465780b864ba0876520000000000000000000000000000000000000000000000008064fa88cdbc300000000000000000000000000050ee45e641c493dbac9822a03755f5d3131d044200000000000000000000000050ee45e641c493dbac9822a03755f5d3131d0442c0",
+      "txHash": "0x9ecf3eed27021d57ab14ba6a2af0d9b7ca39c888227b683de63e5fab7da66a58",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "9.251795 CSUSDC" },
+          { "label": "To", "value": "0x50eE45e641C493dBAc9822A03755F5D3131D0442" },
+          { "label": "Owner", "value": "0x50eE45e641C493dBAc9822A03755F5D3131D0442" }
+        ],
+        "owner": "Clearstar"
+      }
+    }
+  ]
+}

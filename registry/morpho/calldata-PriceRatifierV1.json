@@ -1,0 +1,76 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x5A7CbC4458344fd11E1ED81D7834082a1138f975"
+        },
+        {
+          "chainId": 8453,
+          "address": "0x08a0e69772315652165921D722B3caAea4C326e6"
+        },
+        {
+          "chainId": 5042,
+          "address": "0x55163660Ff35955712339d465dc6D9D583dA8ac2"
+        },
+        {
+          "chainId": 4663,
+          "address": "0xF65E0be166AAF2F8993e617189beFB452bf38DB1"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Morpho DAO",
+    "contractName": "PriceRatifierV1",
+    "info": {
+      "url": "https://morpho.org"
+    },
+    "enums": {
+      "ratificationStatus": {
+        "false": "No",
+        "true": "Yes"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "setIsRootRatified(address maker,bytes32 root,bool newIsRootRatified)": {
+        "intent": "Update order approval",
+        "interpolatedIntent": "Set order approval of {#.maker} to {#.newIsRootRatified}",
+        "fields": [
+          {
+            "path": "#.maker",
+            "label": "Maker",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.root",
+            "label": "Root",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.newIsRootRatified",
+            "label": "Ratified",
+            "format": "enum",
+            "visible": "always",
+            "params": {
+              "$ref": "$.metadata.enums.ratificationStatus"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

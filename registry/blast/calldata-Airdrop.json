@@ -1,0 +1,36 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 81457, "address": "0x78709467b6799092ce5eeCDfB8bc52Af74b45699" }] } },
+  "metadata": { "owner": "Blast", "contractName": "Blast Airdrop", "info": { "url": "https://blast.io" } },
+  "display": {
+    "formats": {
+      "claim(uint256 amount,bytes32[] proof)": {
+        "intent": "Claim BLAST airdrop",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Allocation",
+            "format": "tokenAmount",
+            "params": { "token": "0xb1a5700fA2358173Fe465e6eA4Ff52E36e88E2ad" }
+          },
+          { "path": "proof.[]", "label": "Airdrop proof", "visible": "never" }
+        ],
+        "interpolatedIntent": "Claim {amount} airdrop to your address; the part above 1M BLAST vests"
+      },
+      "delegateAndClaim(address delegatedRecipient,uint256 amount,bytes32[] proof)": {
+        "intent": "Claim BLAST airdrop",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Allocation",
+            "format": "tokenAmount",
+            "params": { "token": "0xb1a5700fA2358173Fe465e6eA4Ff52E36e88E2ad" }
+          },
+          { "path": "delegatedRecipient", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] } },
+          { "path": "proof.[]", "label": "Airdrop proof", "visible": "never" }
+        ],
+        "interpolatedIntent": "Claim {amount} airdrop to {delegatedRecipient}; the part above 1M BLAST vests"
+      }
+    }
+  }
+}

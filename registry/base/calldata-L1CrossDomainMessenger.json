@@ -1,0 +1,42 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x866E82a600A1414e583f7F13623F1aC5d58b0Afa" }] } },
+  "metadata": { "owner": "Base", "contractName": "Base L1CrossDomainMessenger", "info": { "url": "https://base.org" } },
+  "display": {
+    "formats": {
+      "relayMessage(uint256 _nonce,address _sender,address _target,uint256 _value,uint256 _minGasLimit,bytes _message)": {
+        "intent": "Relay message from Base",
+        "fields": [
+          { "path": "_value", "label": "ETH Amount", "format": "amount" },
+          { "path": "_target", "label": "L1 Target", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_sender", "label": "L2 Sender", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          {
+            "path": "_message",
+            "label": "L1 Call",
+            "format": "calldata",
+            "params": { "calleePath": "_target", "amountPath": "_value", "spenderPath": "@.to" }
+          },
+          { "path": "@.value", "label": "ETH from Caller", "format": "amount" },
+          { "path": "_nonce", "label": "Message Nonce", "visible": "never" },
+          { "path": "_minGasLimit", "label": "Min Gas for Target", "visible": "never" }
+        ],
+        "interpolatedIntent": "Pay {_value} sent by {_sender} on Base to {_target}"
+      },
+      "sendMessage(address _target,bytes _message,uint32 _minGasLimit)": {
+        "intent": "Send message to Base",
+        "fields": [
+          { "path": "@.value", "label": "ETH to Bridge", "format": "amount" },
+          { "path": "_target", "label": "L2 Target", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          {
+            "path": "_message",
+            "label": "L2 Call",
+            "format": "calldata",
+            "params": { "calleePath": "_target", "chainId": 8453, "amountPath": "@.value", "spender": "0x4200000000000000000000000000000000000007" }
+          },
+          { "path": "_minGasLimit", "label": "Min L2 Gas Limit", "visible": "never" }
+        ],
+        "interpolatedIntent": "Send {@.value} and a call to {_target} on Base"
+      }
+    }
+  }
+}

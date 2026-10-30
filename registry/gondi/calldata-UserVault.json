@@ -1,0 +1,90 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "includes": "common-gondi.json",
+  "context": {
+    "$id": "GONDI UserVault",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x823dE2c44369e94CAc3DA789Ad4b6493e27e4Bfe" },
+        { "chainId": 999, "address": "0x3F26ff30061D5a6777A01d7843B5F2b81f60a7Ee" },
+        { "chainId": 4663, "address": "0xcf0DF26aE14D132084E95EE8a9426d53eb027cb7" }
+      ]
+    }
+  },
+  "metadata": { "contractName": "UserVault" },
+  "display": {
+    "formats": {
+      "mint()": { "intent": "Create NFT vault", "interpolatedIntent": "Create a new NFT vault", "fields": [] },
+      "depositERC721s(uint256 _vaultId, address _collection, uint256[] _tokenIds)": {
+        "intent": "Deposit NFTs into vault",
+        "interpolatedIntent": "Deposit {_tokenIds.[]} into {_vaultId}",
+        "fields": [
+          { "path": "_vaultId", "label": "Vault", "format": "nftName", "params": { "collectionPath": "@.to" }, "visible": "always" },
+          {
+            "path": "_tokenIds.[]",
+            "label": "NFT",
+            "format": "nftName",
+            "params": { "collectionPath": "_collection" },
+            "visible": "always"
+          },
+          { "path": "_collection", "label": "Collection", "visible": "never" }
+        ]
+      },
+      "depositERC1155s(uint256 _vaultId, address _collection, uint256[] _tokenIds, uint256[] _amounts)": {
+        "intent": "Deposit ERC-1155 into vault",
+        "interpolatedIntent": "Deposit ERC-1155s into {_vaultId}",
+        "fields": [
+          { "path": "_vaultId", "label": "Vault", "format": "nftName", "params": { "collectionPath": "@.to" }, "visible": "always" },
+          {
+            "path": "_collection",
+            "label": "Collection",
+            "format": "addressName",
+            "params": { "types": ["collection"], "sources": ["local"] },
+            "visible": "always"
+          },
+          { "path": "_tokenIds.[]", "label": "Token ID", "format": "raw", "visible": "always" },
+          { "path": "_amounts.[]", "label": "Quantity", "format": "raw", "visible": "always" }
+        ]
+      },
+      "depositERC20(uint256 _vaultId, address _token, uint256 _amount)": {
+        "intent": "Deposit tokens into vault",
+        "interpolatedIntent": "Deposit {_amount} into {_vaultId}",
+        "fields": [
+          { "path": "_vaultId", "label": "Vault", "format": "nftName", "params": { "collectionPath": "@.to" }, "visible": "always" },
+          { "path": "_amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "_token" }, "visible": "always" },
+          { "path": "_token", "label": "Token", "visible": "never" }
+        ]
+      },
+      "burnAndWithdraw(uint256 _vaultId, address[] _collections, uint256[] _tokenIds, address[] _tokens, address[] _erc1155Tokens, uint256[] _erc1155TokensIds)": {
+        "intent": "Burn vault and withdraw",
+        "interpolatedIntent": "Burn {_vaultId} and withdraw",
+        "fields": [
+          { "path": "_vaultId", "label": "Vault", "format": "nftName", "params": { "collectionPath": "@.to" }, "visible": "always" },
+          {
+            "path": "_tokenIds.[]",
+            "label": "NFT",
+            "format": "nftName",
+            "params": { "collectionPath": "_collections.[]" },
+            "visible": "always"
+          },
+          {
+            "path": "_tokens.[]",
+            "label": "Token",
+            "format": "addressName",
+            "params": { "types": ["token"], "sources": ["local"] },
+            "visible": "always"
+          },
+          {
+            "path": "_erc1155Tokens.[]",
+            "label": "ERC-1155 collection",
+            "format": "addressName",
+            "params": { "types": ["collection"], "sources": ["local"] },
+            "visible": "always"
+          },
+          { "path": "_erc1155TokensIds.[]", "label": "ERC-1155 token ID", "format": "raw", "visible": "always" },
+          { "path": "_collections.[]", "label": "Collection", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
