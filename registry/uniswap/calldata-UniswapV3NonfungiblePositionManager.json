@@ -1,0 +1,337 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88" }] } },
+  "metadata": {
+    "owner": "Uniswap Labs",
+    "contractName": "Uniswap V3 Positions NFT-V1",
+    "constants": { "factory": "0x1F98431c8aD98523631AE4a59f267346ea31F984", "WETH9": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" },
+    "info": { "url": "https://uniswap.org/" },
+    "enums": { "operatorAccess": { "true": "Grant", "false": "Revoke" } }
+  },
+  "display": {
+    "formats": {
+      "approve(address to,uint256 tokenId)": {
+        "intent": "Approve position operator",
+        "fields": [
+          {
+            "path": "to",
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "tokenId", "label": "Position", "format": "nftName", "params": { "collectionPath": "@.to" } }
+        ],
+        "interpolatedIntent": "Allow {to} to withdraw and transfer position NFT {tokenId}"
+      },
+      "burn(uint256 tokenId)": {
+        "intent": "Burn empty position NFT",
+        "fields": [
+          { "path": "tokenId", "label": "Position", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+        ],
+        "interpolatedIntent": "Burn empty position NFT {tokenId}"
+      },
+      "collect((uint256 tokenId,address recipient,uint128 amount0Max,uint128 amount1Max) params)": {
+        "intent": "Collect from position",
+        "fields": [
+          { "path": "params.tokenId", "label": "Position", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          { "path": "params.amount0Max", "label": "Max Token0 (raw)", "format": "raw" },
+          { "path": "params.amount1Max", "label": "Max Token1 (raw)", "format": "raw" },
+          {
+            "path": "params.recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+        ],
+        "interpolatedIntent": "Collect up to {params.amount0Max} token0 and up to {params.amount1Max} token1 (raw units) owed to position {params.tokenId}, sent to {params.recipient}. The zero address keeps them in this contract, where any caller can sweep them"
+      },
+      "createAndInitializePoolIfNecessary(address token0,address token1,uint24 fee,uint160 sqrtPriceX96)": {
+        "intent": "Create pool if needed",
+        "fields": [
+          { "path": "token0", "label": "Token 0", "format": "addressName", "params": { "types": ["token"] } },
+          { "path": "token1", "label": "Token 1", "format": "addressName", "params": { "types": ["token"] } },
+          { "path": "fee", "label": "Pool Fee", "format": "unit", "params": { "decimals": 4, "base": "%", "prefix": false } },
+          { "path": "sqrtPriceX96", "label": "Sqrt Price (Q64.96)", "format": "raw" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+        ],
+        "interpolatedIntent": "Create the {token0}/{token1} pool with a {fee} fee if it does not exist, starting at sqrt price {sqrtPriceX96} (Q64.96)"
+      },
+      "decreaseLiquidity((uint256 tokenId,uint128 liquidity,uint256 amount0Min,uint256 amount1Min,uint256 deadline) params)": {
+        "intent": "Decrease liquidity",
+        "fields": [
+          { "path": "params.tokenId", "label": "Position", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          { "path": "params.liquidity", "label": "Liquidity to Remove", "format": "raw" },
+          { "path": "params.amount0Min", "label": "Min Token0 Due (raw)", "format": "raw" },
+          { "path": "params.amount1Min", "label": "Min Token1 Due (raw)", "format": "raw" },
+          { "path": "params.deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+        ],
+        "interpolatedIntent": "Remove {params.liquidity} liquidity from position {params.tokenId}: at least {params.amount0Min} token0 and {params.amount1Min} token1 (raw units) become owed to the position; nothing is transferred until collect"
+      },
+      "increaseLiquidity((uint256 tokenId,uint256 amount0Desired,uint256 amount1Desired,uint256 amount0Min,uint256 amount1Min,uint256 deadline) params)": {
+        "intent": "Add to liquidity position",
+        "fields": [
+          { "path": "params.tokenId", "label": "Position", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          { "path": "params.amount0Desired", "label": "Max Token0 (raw)", "format": "raw" },
+          { "path": "params.amount1Desired", "label": "Max Token1 (raw)", "format": "raw" },
+          { "path": "params.amount0Min", "label": "Min Token0 (raw)", "format": "raw" },
+          { "path": "params.amount1Min", "label": "Min Token1 (raw)", "format": "raw" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } },
+          { "path": "params.deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
+        ],
+        "interpolatedIntent": "Add up to {params.amount0Desired} token0 and up to {params.amount1Desired} token1 (raw units) to position {params.tokenId}"
+      },
+      "mint((address token0,address token1,uint24 fee,int24 tickLower,int24 tickUpper,uint256 amount0Desired,uint256 amount1Desired,uint256 amount0Min,uint256 amount1Min,address recipient,uint256 deadline) params)": {
+        "intent": "Open liquidity position",
+        "fields": [
+          {
+            "path": "params.amount0Desired",
+            "label": "Maximum to Add",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.token0" }
+          },
+          {
+            "path": "params.amount1Desired",
+            "label": "Maximum to Add",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.token1" }
+          },
+          {
+            "path": "params.amount0Min",
+            "label": "Minimum to Add",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.token0" }
+          },
+          {
+            "path": "params.amount1Min",
+            "label": "Minimum to Add",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.token1" }
+          },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } },
+          { "path": "params.fee", "label": "Pool Fee", "format": "unit", "params": { "decimals": 4, "base": "%", "prefix": false } },
+          {
+            "path": "params.recipient",
+            "label": "Position Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          { "path": "params.deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "params.tickLower", "label": "Lower Tick", "format": "raw" },
+          { "path": "params.tickUpper", "label": "Upper Tick", "format": "raw" },
+          { "path": "params.token0", "label": "Token 0", "visible": "never" },
+          { "path": "params.token1", "label": "Token 1", "visible": "never" }
+        ],
+        "interpolatedIntent": "Add up to {params.amount0Desired} and up to {params.amount1Desired} to a new position for {params.recipient}"
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Batch position actions",
+        "fields": [
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
+          { "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to", "amountPath": "@.value" } }
+        ],
+        "interpolatedIntent": "Send {@.value} and run every action below in one transaction; if one action fails, the whole transaction reverts"
+      },
+      "permit(address spender,uint256 tokenId,uint256 deadline,uint8 v,bytes32 r,bytes32 s)": {
+        "intent": "Approve operator by permit",
+        "fields": [
+          {
+            "path": "spender",
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "tokenId", "label": "Position", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          { "path": "deadline", "label": "Deadline", "visible": "never" },
+          { "path": "v", "label": "V", "visible": "never" },
+          { "path": "r", "label": "R", "visible": "never" },
+          { "path": "s", "label": "S", "visible": "never" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+        ],
+        "interpolatedIntent": "Allow {spender} to withdraw and transfer position NFT {tokenId}, as authorized by the owner's signature"
+      },
+      "refundETH()": {
+        "intent": "Refund leftover ETH",
+        "fields": [{ "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }],
+        "interpolatedIntent": "Send the ETH held by this contract to you"
+      },
+      "safeTransferFrom(address from,address to,uint256 tokenId,bytes _data)": {
+        "intent": "Transfer position NFT",
+        "fields": [
+          { "path": "tokenId", "label": "Position", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          { "path": "_data", "label": "Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Transfer position NFT {tokenId} from {from} to {to}"
+      },
+      "safeTransferFrom(address from,address to,uint256 tokenId)": {
+        "intent": "Transfer position NFT",
+        "fields": [
+          { "path": "tokenId", "label": "Position", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          }
+        ],
+        "interpolatedIntent": "Transfer position NFT {tokenId} from {from} to {to}"
+      },
+      "selfPermit(address token,uint256 value,uint256 deadline,uint8 v,bytes32 r,bytes32 s)": {
+        "intent": "Approve token by permit",
+        "fields": [
+          {
+            "path": "value",
+            "label": "Approved Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "token",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            }
+          },
+          { "path": "token", "label": "Token", "visible": "never" },
+          { "path": "deadline", "label": "Deadline", "visible": "never" },
+          { "path": "v", "label": "V", "visible": "never" },
+          { "path": "r", "label": "R", "visible": "never" },
+          { "path": "s", "label": "S", "visible": "never" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+        ],
+        "interpolatedIntent": "Allow this contract to spend {value} using your permit signature"
+      },
+      "selfPermitAllowed(address token,uint256 nonce,uint256 expiry,uint8 v,bytes32 r,bytes32 s)": {
+        "intent": "Approve unlimited by permit",
+        "fields": [
+          { "path": "token", "label": "Token", "format": "addressName", "params": { "types": ["token"] } },
+          { "path": "nonce", "label": "Nonce", "visible": "never" },
+          { "path": "expiry", "label": "Expiry", "visible": "never" },
+          { "path": "v", "label": "V", "visible": "never" },
+          { "path": "r", "label": "R", "visible": "never" },
+          { "path": "s", "label": "S", "visible": "never" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+        ],
+        "interpolatedIntent": "Allow this contract to spend unlimited {token} using your permit signature"
+      },
+      "selfPermitAllowedIfNecessary(address token,uint256 nonce,uint256 expiry,uint8 v,bytes32 r,bytes32 s)": {
+        "intent": "Unlimited permit if needed",
+        "fields": [
+          { "path": "token", "label": "Token", "format": "addressName", "params": { "types": ["token"] } },
+          { "path": "nonce", "label": "Nonce", "visible": "never" },
+          { "path": "expiry", "label": "Expiry", "visible": "never" },
+          { "path": "v", "label": "V", "visible": "never" },
+          { "path": "r", "label": "R", "visible": "never" },
+          { "path": "s", "label": "S", "visible": "never" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+        ],
+        "interpolatedIntent": "Allow this contract to spend unlimited {token} using your permit signature, unless its allowance is already unlimited"
+      },
+      "selfPermitIfNecessary(address token,uint256 value,uint256 deadline,uint8 v,bytes32 r,bytes32 s)": {
+        "intent": "Approve by permit if needed",
+        "fields": [
+          {
+            "path": "value",
+            "label": "Approved Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "token",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            }
+          },
+          { "path": "token", "label": "Token", "visible": "never" },
+          { "path": "deadline", "label": "Deadline", "visible": "never" },
+          { "path": "v", "label": "V", "visible": "never" },
+          { "path": "r", "label": "R", "visible": "never" },
+          { "path": "s", "label": "S", "visible": "never" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+        ],
+        "interpolatedIntent": "Allow this contract to spend {value} using your permit signature, unless its allowance is already that high"
+      },
+      "setApprovalForAll(address operator,bool approved)": {
+        "intent": "Set operator for all NFTs",
+        "fields": [
+          { "path": "approved", "label": "Access", "format": "enum", "params": { "$ref": "$.metadata.enums.operatorAccess" } },
+          {
+            "path": "operator",
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          }
+        ],
+        "interpolatedIntent": "{approved} {operator} access to withdraw and transfer all your position NFTs"
+      },
+      "sweepToken(address token,uint256 amountMinimum,address recipient)": {
+        "intent": "Sweep leftover tokens",
+        "fields": [
+          { "path": "amountMinimum", "label": "Minimum to Sweep", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          { "path": "token", "label": "Token", "visible": "never" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+        ],
+        "interpolatedIntent": "Send the whole token balance held by this contract, at least {amountMinimum}, to {recipient}"
+      },
+      "transferFrom(address from,address to,uint256 tokenId)": {
+        "intent": "Transfer position NFT",
+        "fields": [
+          { "path": "tokenId", "label": "Position", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          }
+        ],
+        "interpolatedIntent": "Transfer position NFT {tokenId} from {from} to {to}"
+      },
+      "unwrapWETH9(uint256 amountMinimum,address recipient)": {
+        "intent": "Unwrap WETH to ETH",
+        "fields": [
+          {
+            "path": "amountMinimum",
+            "label": "Minimum to Unwrap",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.WETH9" }
+          },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } }
+        ],
+        "interpolatedIntent": "Unwrap the WETH held by this contract, at least {amountMinimum}, and send the ETH to {recipient}"
+      }
+    }
+  }
+}
