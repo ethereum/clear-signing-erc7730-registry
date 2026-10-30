@@ -1,0 +1,312 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D" }] } },
+  "metadata": {
+    "owner": "Uniswap Labs",
+    "contractName": "Uniswap v2 Router 2",
+    "constants": { "factory": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f", "WETH": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" },
+    "info": { "url": "https://uniswap.org/" },
+    "enums": { "lpApproval": { "true": "Unlimited to router", "false": "This removal only" } }
+  },
+  "display": {
+    "formats": {
+      "addLiquidity(address tokenA,address tokenB,uint256 amountADesired,uint256 amountBDesired,uint256 amountAMin,uint256 amountBMin,address to,uint256 deadline)": {
+        "intent": "Add Liquidity",
+        "fields": [
+          { "path": "amountADesired", "label": "Maximum to Add", "format": "tokenAmount", "params": { "tokenPath": "tokenA" } },
+          { "path": "amountBDesired", "label": "Maximum to Add", "format": "tokenAmount", "params": { "tokenPath": "tokenB" } },
+          { "path": "amountAMin", "label": "Minimum to Add", "format": "tokenAmount", "params": { "tokenPath": "tokenA" } },
+          { "path": "amountBMin", "label": "Minimum to Add", "format": "tokenAmount", "params": { "tokenPath": "tokenB" } },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "tokenA", "label": "Token A", "visible": "never" },
+          { "path": "tokenB", "label": "Token B", "visible": "never" }
+        ],
+        "interpolatedIntent": "Add up to {amountADesired} and up to {amountBDesired} as liquidity"
+      },
+      "addLiquidityETH(address token,uint256 amountTokenDesired,uint256 amountTokenMin,uint256 amountETHMin,address to,uint256 deadline)": {
+        "intent": "Add Liquidity",
+        "fields": [
+          { "path": "amountTokenDesired", "label": "Maximum to Add", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "@.value", "label": "Maximum ETH to Add", "format": "amount" },
+          { "path": "amountTokenMin", "label": "Minimum to Add", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "amountETHMin", "label": "Minimum ETH to Add", "format": "amount" },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "token", "label": "Token", "visible": "never" }
+        ],
+        "interpolatedIntent": "Add up to {amountTokenDesired} and up to {@.value} as liquidity"
+      },
+      "removeLiquidity(address tokenA,address tokenB,uint256 liquidity,uint256 amountAMin,uint256 amountBMin,address to,uint256 deadline)": {
+        "intent": "Remove Liquidity",
+        "fields": [
+          { "path": "liquidity", "label": "LP Tokens (UNI-V2)", "format": "unit", "params": { "base": "", "decimals": 18 } },
+          { "path": "amountAMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "tokenA" } },
+          { "path": "amountBMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "tokenB" } },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "tokenA", "label": "Token A", "visible": "never" },
+          { "path": "tokenB", "label": "Token B", "visible": "never" }
+        ],
+        "interpolatedIntent": "Remove {liquidity} UNI-V2 for at least {amountAMin} and {amountBMin}"
+      },
+      "removeLiquidityETH(address token,uint256 liquidity,uint256 amountTokenMin,uint256 amountETHMin,address to,uint256 deadline)": {
+        "intent": "Remove Liquidity",
+        "fields": [
+          { "path": "liquidity", "label": "LP Tokens (UNI-V2)", "format": "unit", "params": { "base": "", "decimals": 18 } },
+          { "path": "amountTokenMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "amountETHMin", "label": "Minimum to Receive", "format": "amount" },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "token", "label": "Token", "visible": "never" }
+        ],
+        "interpolatedIntent": "Remove {liquidity} UNI-V2 for at least {amountTokenMin} and {amountETHMin}"
+      },
+      "removeLiquidityETHSupportingFeeOnTransferTokens(address token,uint256 liquidity,uint256 amountTokenMin,uint256 amountETHMin,address to,uint256 deadline)": {
+        "intent": "Remove Liquidity",
+        "fields": [
+          { "path": "liquidity", "label": "LP Tokens (UNI-V2)", "format": "unit", "params": { "base": "", "decimals": 18 } },
+          { "path": "amountTokenMin", "label": "Minimum Before Fees", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "amountETHMin", "label": "Minimum to Receive", "format": "amount" },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "token", "label": "Token", "visible": "never" }
+        ],
+        "interpolatedIntent": "Remove {liquidity} UNI-V2 for at least {amountETHMin} and {amountTokenMin} before token fees"
+      },
+      "removeLiquidityETHWithPermit(address token,uint256 liquidity,uint256 amountTokenMin,uint256 amountETHMin,address to,uint256 deadline,bool approveMax,uint8 v,bytes32 r,bytes32 s)": {
+        "intent": "Remove Liquidity",
+        "fields": [
+          { "path": "liquidity", "label": "LP Tokens (UNI-V2)", "format": "unit", "params": { "base": "", "decimals": 18 } },
+          { "path": "amountTokenMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "amountETHMin", "label": "Minimum to Receive", "format": "amount" },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "token", "label": "Token", "visible": "never" },
+          { "path": "approveMax", "label": "LP Token Approval", "format": "enum", "params": { "$ref": "$.metadata.enums.lpApproval" } },
+          { "path": "v", "label": "V", "visible": "never" },
+          { "path": "r", "label": "R", "visible": "never" },
+          { "path": "s", "label": "S", "visible": "never" }
+        ],
+        "interpolatedIntent": "Remove {liquidity} UNI-V2 for at least {amountTokenMin} and {amountETHMin}"
+      },
+      "removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(address token,uint256 liquidity,uint256 amountTokenMin,uint256 amountETHMin,address to,uint256 deadline,bool approveMax,uint8 v,bytes32 r,bytes32 s)": {
+        "intent": "Remove Liquidity",
+        "fields": [
+          { "path": "liquidity", "label": "LP Tokens (UNI-V2)", "format": "unit", "params": { "base": "", "decimals": 18 } },
+          { "path": "amountTokenMin", "label": "Minimum Before Fees", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "amountETHMin", "label": "Minimum to Receive", "format": "amount" },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "token", "label": "Token", "visible": "never" },
+          { "path": "approveMax", "label": "LP Token Approval", "format": "enum", "params": { "$ref": "$.metadata.enums.lpApproval" } },
+          { "path": "v", "label": "V", "visible": "never" },
+          { "path": "r", "label": "R", "visible": "never" },
+          { "path": "s", "label": "S", "visible": "never" }
+        ],
+        "interpolatedIntent": "Remove {liquidity} UNI-V2 for at least {amountETHMin} and {amountTokenMin} before token fees"
+      },
+      "removeLiquidityWithPermit(address tokenA,address tokenB,uint256 liquidity,uint256 amountAMin,uint256 amountBMin,address to,uint256 deadline,bool approveMax,uint8 v,bytes32 r,bytes32 s)": {
+        "intent": "Remove Liquidity",
+        "fields": [
+          { "path": "liquidity", "label": "LP Tokens (UNI-V2)", "format": "unit", "params": { "base": "", "decimals": 18 } },
+          { "path": "amountAMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "tokenA" } },
+          { "path": "amountBMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "tokenB" } },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "tokenA", "label": "Token A", "visible": "never" },
+          { "path": "tokenB", "label": "Token B", "visible": "never" },
+          { "path": "approveMax", "label": "LP Token Approval", "format": "enum", "params": { "$ref": "$.metadata.enums.lpApproval" } },
+          { "path": "v", "label": "V", "visible": "never" },
+          { "path": "r", "label": "R", "visible": "never" },
+          { "path": "s", "label": "S", "visible": "never" }
+        ],
+        "interpolatedIntent": "Remove {liquidity} UNI-V2 for at least {amountAMin} and {amountBMin}"
+      },
+      "swapETHForExactTokens(uint256 amountOut,address[] path,address to,uint256 deadline)": {
+        "intent": "Swap",
+        "fields": [
+          { "path": "amountOut", "label": "Amount to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
+          { "path": "@.value", "label": "Maximum to Send", "format": "amount" },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "path.[]", "label": "Path", "visible": "never" }
+        ],
+        "interpolatedIntent": "Swap at most {@.value} for {amountOut}"
+      },
+      "swapExactETHForTokens(uint256 amountOutMin,address[] path,address to,uint256 deadline)": {
+        "intent": "Swap",
+        "fields": [
+          { "path": "@.value", "label": "Amount to Send", "format": "amount" },
+          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "path.[]", "label": "Path", "visible": "never" }
+        ],
+        "interpolatedIntent": "Swap {@.value} for at least {amountOutMin}"
+      },
+      "swapExactETHForTokensSupportingFeeOnTransferTokens(uint256 amountOutMin,address[] path,address to,uint256 deadline)": {
+        "intent": "Swap",
+        "fields": [
+          { "path": "@.value", "label": "Amount to Send", "format": "amount" },
+          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "path.[]", "label": "Path", "visible": "never" }
+        ],
+        "interpolatedIntent": "Swap {@.value} for at least {amountOutMin}"
+      },
+      "swapExactTokensForETH(uint256 amountIn,uint256 amountOutMin,address[] path,address to,uint256 deadline)": {
+        "intent": "Swap",
+        "fields": [
+          { "path": "amountIn", "label": "Amount to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
+          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "amount" },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "path.[]", "label": "Path", "visible": "never" }
+        ],
+        "interpolatedIntent": "Swap {amountIn} for at least {amountOutMin}"
+      },
+      "swapExactTokensForETHSupportingFeeOnTransferTokens(uint256 amountIn,uint256 amountOutMin,address[] path,address to,uint256 deadline)": {
+        "intent": "Swap",
+        "fields": [
+          { "path": "amountIn", "label": "Amount to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
+          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "amount" },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "path.[]", "label": "Path", "visible": "never" }
+        ],
+        "interpolatedIntent": "Swap {amountIn} for at least {amountOutMin}"
+      },
+      "swapExactTokensForTokens(uint256 amountIn,uint256 amountOutMin,address[] path,address to,uint256 deadline)": {
+        "intent": "Swap",
+        "fields": [
+          { "path": "amountIn", "label": "Amount to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
+          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "path.[]", "label": "Path", "visible": "never" }
+        ],
+        "interpolatedIntent": "Swap {amountIn} for at least {amountOutMin}"
+      },
+      "swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256 amountIn,uint256 amountOutMin,address[] path,address to,uint256 deadline)": {
+        "intent": "Swap",
+        "fields": [
+          { "path": "amountIn", "label": "Amount to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
+          { "path": "amountOutMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "path.[]", "label": "Path", "visible": "never" }
+        ],
+        "interpolatedIntent": "Swap {amountIn} for at least {amountOutMin}"
+      },
+      "swapTokensForExactETH(uint256 amountOut,uint256 amountInMax,address[] path,address to,uint256 deadline)": {
+        "intent": "Swap",
+        "fields": [
+          { "path": "amountOut", "label": "Amount to Receive", "format": "amount" },
+          { "path": "amountInMax", "label": "Maximum to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "path.[]", "label": "Path", "visible": "never" }
+        ],
+        "interpolatedIntent": "Swap at most {amountInMax} for {amountOut}"
+      },
+      "swapTokensForExactTokens(uint256 amountOut,uint256 amountInMax,address[] path,address to,uint256 deadline)": {
+        "intent": "Swap",
+        "fields": [
+          { "path": "amountOut", "label": "Amount to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
+          { "path": "amountInMax", "label": "Maximum to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "path.[]", "label": "Path", "visible": "never" }
+        ],
+        "interpolatedIntent": "Swap at most {amountInMax} for {amountOut}"
+      }
+    }
+  }
+}

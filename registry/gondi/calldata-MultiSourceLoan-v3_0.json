@@ -1,0 +1,589 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "includes": "common-gondi.json",
+  "context": {
+    "$id": "GONDI MultiSourceLoan v3.0",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xf65B99CE6DC5F6c556172BCC0Ff27D3665a7d9A8" }] }
+  },
+  "metadata": { "contractName": "MultiSourceLoan v3.0" },
+  "display": {
+    "formats": {
+      "repayLoan(((uint256 loanId, bytes callbackData, bool shouldDelegate) data, (address borrower, uint256 nftCollateralTokenId, address nftCollateralAddress, address principalAddress, uint256 principalAmount, uint256 startTime, uint256 duration, (uint256 loanId, uint256 floor, uint256 principalAmount, address lender, uint256 accruedInterest, uint256 startTime, uint256 aprBps)[] tranche, uint256 protocolFee) loan, bytes borrowerSignature) _repaymentData)": {
+        "intent": "Repay loan",
+        "fields": [
+          { "path": "_repaymentData.data.loanId", "label": "Loan ID", "format": "raw", "visible": "always" },
+          {
+            "path": "_repaymentData.loan.nftCollateralTokenId",
+            "label": "Collateral",
+            "format": "nftName",
+            "params": { "collectionPath": "_repaymentData.loan.nftCollateralAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_repaymentData.loan.principalAmount",
+            "label": "Loan principal",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_repaymentData.loan.principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_repaymentData.loan.borrower",
+            "label": "Borrower",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "_repaymentData.loan.tranche.[].lender",
+            "label": "Lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "_repaymentData.loan.nftCollateralAddress", "label": "Collection", "visible": "never" },
+          { "path": "_repaymentData.loan.principalAddress", "label": "Principal token", "visible": "never" },
+          { "path": "_repaymentData.loan.startTime", "label": "Loan start", "visible": "never" },
+          { "path": "_repaymentData.loan.duration", "label": "Loan duration", "visible": "never" },
+          { "path": "_repaymentData.loan.protocolFee", "label": "Protocol fee", "visible": "never" },
+          { "path": "_repaymentData.loan.tranche.[].loanId", "label": "Tranche loan ID", "visible": "never" },
+          { "path": "_repaymentData.loan.tranche.[].floor", "label": "Tranche floor", "visible": "never" },
+          { "path": "_repaymentData.loan.tranche.[].principalAmount", "label": "Tranche principal", "visible": "never" },
+          { "path": "_repaymentData.loan.tranche.[].accruedInterest", "label": "Accrued interest", "visible": "never" },
+          { "path": "_repaymentData.loan.tranche.[].startTime", "label": "Tranche start", "visible": "never" },
+          { "path": "_repaymentData.loan.tranche.[].aprBps", "label": "Tranche APR", "visible": "never" },
+          { "path": "_repaymentData.data.shouldDelegate", "label": "Delegate to borrower", "format": "raw", "visible": "always" },
+          { "path": "_repaymentData.data.callbackData", "label": "Callback data", "format": "raw", "visible": "always" },
+          { "path": "_repaymentData.borrowerSignature", "label": "Borrower signature", "visible": "never" }
+        ]
+      },
+      "refinanceFull((uint256 renegotiationId, uint256 loanId, address lender, uint256 fee, uint256[] trancheIndex, uint256 principalAmount, uint256 aprBps, uint256 expirationTime, uint256 duration) _renegotiationOffer, (address borrower, uint256 nftCollateralTokenId, address nftCollateralAddress, address principalAddress, uint256 principalAmount, uint256 startTime, uint256 duration, (uint256 loanId, uint256 floor, uint256 principalAmount, address lender, uint256 accruedInterest, uint256 startTime, uint256 aprBps)[] tranche, uint256 protocolFee) _loan, bytes _renegotiationOfferSignature)": {
+        "intent": "Refinance loan",
+        "fields": [
+          { "path": "_renegotiationOffer.loanId", "label": "Loan ID", "format": "raw", "visible": "always" },
+          {
+            "path": "_renegotiationOffer.lender",
+            "label": "New lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "_renegotiationOffer.principalAmount",
+            "label": "New principal",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_loan.principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_renegotiationOffer.aprBps",
+            "label": "New APR",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 2 },
+            "visible": "always"
+          },
+          { "path": "_renegotiationOffer.duration", "label": "New duration", "format": "duration", "visible": "always" },
+          {
+            "path": "_renegotiationOffer.fee",
+            "label": "Lender fee",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_loan.principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_renegotiationOffer.expirationTime",
+            "label": "Offer expires",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "_renegotiationOffer.trancheIndex.[]", "label": "Tranche index", "format": "raw", "visible": "always" },
+          { "path": "_renegotiationOffer.renegotiationId", "label": "Renegotiation ID", "visible": "never" },
+          {
+            "path": "_loan.nftCollateralTokenId",
+            "label": "Collateral",
+            "format": "nftName",
+            "params": { "collectionPath": "_loan.nftCollateralAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.principalAmount",
+            "label": "Loan principal",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_loan.principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.borrower",
+            "label": "Borrower",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.tranche.[].lender",
+            "label": "Current lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "_loan.nftCollateralAddress", "label": "Collection", "visible": "never" },
+          { "path": "_loan.principalAddress", "label": "Principal token", "visible": "never" },
+          { "path": "_loan.startTime", "label": "Loan start", "visible": "never" },
+          { "path": "_loan.duration", "label": "Loan duration", "visible": "never" },
+          { "path": "_loan.protocolFee", "label": "Protocol fee", "visible": "never" },
+          { "path": "_loan.tranche.[].loanId", "label": "Tranche loan ID", "visible": "never" },
+          { "path": "_loan.tranche.[].floor", "label": "Tranche floor", "visible": "never" },
+          { "path": "_loan.tranche.[].principalAmount", "label": "Tranche principal", "visible": "never" },
+          { "path": "_loan.tranche.[].accruedInterest", "label": "Accrued interest", "visible": "never" },
+          { "path": "_loan.tranche.[].startTime", "label": "Tranche start", "visible": "never" },
+          { "path": "_loan.tranche.[].aprBps", "label": "Tranche APR", "visible": "never" },
+          { "path": "_renegotiationOfferSignature", "label": "Offer signature", "visible": "never" }
+        ]
+      },
+      "refinancePartial((uint256 renegotiationId, uint256 loanId, address lender, uint256 fee, uint256[] trancheIndex, uint256 principalAmount, uint256 aprBps, uint256 expirationTime, uint256 duration) _renegotiationOffer, (address borrower, uint256 nftCollateralTokenId, address nftCollateralAddress, address principalAddress, uint256 principalAmount, uint256 startTime, uint256 duration, (uint256 loanId, uint256 floor, uint256 principalAmount, address lender, uint256 accruedInterest, uint256 startTime, uint256 aprBps)[] tranche, uint256 protocolFee) _loan)": {
+        "intent": "Refinance loan tranches",
+        "fields": [
+          { "path": "_renegotiationOffer.loanId", "label": "Loan ID", "format": "raw", "visible": "always" },
+          {
+            "path": "_renegotiationOffer.lender",
+            "label": "New lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "_renegotiationOffer.principalAmount",
+            "label": "New principal",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_loan.principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_renegotiationOffer.aprBps",
+            "label": "New APR",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 2 },
+            "visible": "always"
+          },
+          { "path": "_renegotiationOffer.duration", "label": "Offer duration", "visible": "never" },
+          { "path": "_renegotiationOffer.fee", "label": "Offer fee", "visible": "never" },
+          {
+            "path": "_renegotiationOffer.expirationTime",
+            "label": "Offer expires",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "_renegotiationOffer.trancheIndex.[]", "label": "Tranche index", "format": "raw", "visible": "always" },
+          { "path": "_renegotiationOffer.renegotiationId", "label": "Renegotiation ID", "visible": "never" },
+          {
+            "path": "_loan.nftCollateralTokenId",
+            "label": "Collateral",
+            "format": "nftName",
+            "params": { "collectionPath": "_loan.nftCollateralAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.principalAmount",
+            "label": "Loan principal",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_loan.principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.borrower",
+            "label": "Borrower",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.tranche.[].lender",
+            "label": "Current lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "_loan.nftCollateralAddress", "label": "Collection", "visible": "never" },
+          { "path": "_loan.principalAddress", "label": "Principal token", "visible": "never" },
+          { "path": "_loan.startTime", "label": "Loan start", "visible": "never" },
+          { "path": "_loan.duration", "label": "Loan duration", "visible": "never" },
+          { "path": "_loan.protocolFee", "label": "Protocol fee", "visible": "never" },
+          { "path": "_loan.tranche.[].loanId", "label": "Tranche loan ID", "visible": "never" },
+          { "path": "_loan.tranche.[].floor", "label": "Tranche floor", "visible": "never" },
+          { "path": "_loan.tranche.[].principalAmount", "label": "Tranche principal", "visible": "never" },
+          { "path": "_loan.tranche.[].accruedInterest", "label": "Accrued interest", "visible": "never" },
+          { "path": "_loan.tranche.[].startTime", "label": "Tranche start", "visible": "never" },
+          { "path": "_loan.tranche.[].aprBps", "label": "Tranche APR", "visible": "never" }
+        ]
+      },
+      "addNewTranche((uint256 renegotiationId, uint256 loanId, address lender, uint256 fee, uint256[] trancheIndex, uint256 principalAmount, uint256 aprBps, uint256 expirationTime, uint256 duration) _renegotiationOffer, (address borrower, uint256 nftCollateralTokenId, address nftCollateralAddress, address principalAddress, uint256 principalAmount, uint256 startTime, uint256 duration, (uint256 loanId, uint256 floor, uint256 principalAmount, address lender, uint256 accruedInterest, uint256 startTime, uint256 aprBps)[] tranche, uint256 protocolFee) _loan, bytes _renegotiationOfferSignature)": {
+        "intent": "Add loan tranche",
+        "fields": [
+          { "path": "_renegotiationOffer.loanId", "label": "Loan ID", "format": "raw", "visible": "always" },
+          {
+            "path": "_renegotiationOffer.lender",
+            "label": "New lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "_renegotiationOffer.principalAmount",
+            "label": "New principal",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_loan.principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_renegotiationOffer.aprBps",
+            "label": "New APR",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 2 },
+            "visible": "always"
+          },
+          { "path": "_renegotiationOffer.duration", "label": "Offer duration", "visible": "never" },
+          {
+            "path": "_renegotiationOffer.fee",
+            "label": "Lender fee",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_loan.principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_renegotiationOffer.expirationTime",
+            "label": "Offer expires",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "_renegotiationOffer.trancheIndex.[]", "label": "Tranche index", "format": "raw", "visible": "always" },
+          { "path": "_renegotiationOffer.renegotiationId", "label": "Renegotiation ID", "visible": "never" },
+          {
+            "path": "_loan.nftCollateralTokenId",
+            "label": "Collateral",
+            "format": "nftName",
+            "params": { "collectionPath": "_loan.nftCollateralAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.principalAmount",
+            "label": "Loan principal",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_loan.principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.borrower",
+            "label": "Borrower",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.tranche.[].lender",
+            "label": "Current lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "_loan.nftCollateralAddress", "label": "Collection", "visible": "never" },
+          { "path": "_loan.principalAddress", "label": "Principal token", "visible": "never" },
+          { "path": "_loan.startTime", "label": "Loan start", "visible": "never" },
+          { "path": "_loan.duration", "label": "Loan duration", "visible": "never" },
+          { "path": "_loan.protocolFee", "label": "Protocol fee", "visible": "never" },
+          { "path": "_loan.tranche.[].loanId", "label": "Tranche loan ID", "visible": "never" },
+          { "path": "_loan.tranche.[].floor", "label": "Tranche floor", "visible": "never" },
+          { "path": "_loan.tranche.[].principalAmount", "label": "Tranche principal", "visible": "never" },
+          { "path": "_loan.tranche.[].accruedInterest", "label": "Accrued interest", "visible": "never" },
+          { "path": "_loan.tranche.[].startTime", "label": "Tranche start", "visible": "never" },
+          { "path": "_loan.tranche.[].aprBps", "label": "Tranche APR", "visible": "never" },
+          { "path": "_renegotiationOfferSignature", "label": "Offer signature", "visible": "never" }
+        ]
+      },
+      "refinanceFromLoanExecutionData(uint256 _loanId, (address borrower, uint256 nftCollateralTokenId, address nftCollateralAddress, address principalAddress, uint256 principalAmount, uint256 startTime, uint256 duration, (uint256 loanId, uint256 floor, uint256 principalAmount, address lender, uint256 accruedInterest, uint256 startTime, uint256 aprBps)[] tranche, uint256 protocolFee) _loan, ((((uint256 offerId, address lender, uint256 fee, uint256 capacity, address nftCollateralAddress, uint256 nftCollateralTokenId, address principalAddress, uint256 principalAmount, uint256 aprBps, uint256 expirationTime, uint256 duration, uint256 maxSeniorRepayment, (address validator, bytes arguments)[] validators) offer, uint256 amount, bytes lenderOfferSignature)[] offerExecution, uint256 tokenId, uint256 duration, uint256 expirationTime, address principalReceiver, bytes callbackData) executionData, address borrower, bytes borrowerOfferSignature) _loanExecutionData)": {
+        "intent": "Refinance loan with offers",
+        "fields": [
+          { "path": "_loanId", "label": "Loan ID", "format": "raw", "visible": "always" },
+          {
+            "path": "_loan.nftCollateralTokenId",
+            "label": "Collateral",
+            "format": "nftName",
+            "params": { "collectionPath": "_loan.nftCollateralAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.principalAmount",
+            "label": "Loan principal",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_loan.principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.borrower",
+            "label": "Borrower",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.tranche.[].lender",
+            "label": "Current lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "_loan.nftCollateralAddress", "label": "Collection", "visible": "never" },
+          { "path": "_loan.principalAddress", "label": "Principal token", "visible": "never" },
+          { "path": "_loan.startTime", "label": "Loan start", "visible": "never" },
+          { "path": "_loan.duration", "label": "Loan duration", "visible": "never" },
+          { "path": "_loan.protocolFee", "label": "Protocol fee", "visible": "never" },
+          { "path": "_loan.tranche.[].loanId", "label": "Tranche loan ID", "visible": "never" },
+          { "path": "_loan.tranche.[].floor", "label": "Tranche floor", "visible": "never" },
+          { "path": "_loan.tranche.[].principalAmount", "label": "Tranche principal", "visible": "never" },
+          { "path": "_loan.tranche.[].accruedInterest", "label": "Accrued interest", "visible": "never" },
+          { "path": "_loan.tranche.[].startTime", "label": "Tranche start", "visible": "never" },
+          { "path": "_loan.tranche.[].aprBps", "label": "Tranche APR", "visible": "never" },
+          { "path": "_loanExecutionData.executionData.tokenId", "label": "Collateral token ID", "visible": "never" },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].offer.lender",
+            "label": "Lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_loanExecutionData.executionData.offerExecution.[0].offer.principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].offer.aprBps",
+            "label": "APR",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 2 },
+            "visible": "always"
+          },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].offer.fee",
+            "label": "Lender fee (max)",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_loanExecutionData.executionData.offerExecution.[0].offer.principalAddress" },
+            "visible": "always"
+          },
+          { "path": "_loanExecutionData.executionData.offerExecution.[].offer.offerId", "label": "Offer ID", "visible": "never" },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].offer.capacity",
+            "label": "Offer capacity",
+            "visible": "never"
+          },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].offer.nftCollateralAddress",
+            "label": "Offer collection",
+            "visible": "never"
+          },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].offer.nftCollateralTokenId",
+            "label": "Offer token ID",
+            "visible": "never"
+          },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].offer.principalAddress",
+            "label": "Offer currency",
+            "visible": "never"
+          },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].offer.principalAmount",
+            "label": "Offer max amount",
+            "visible": "never"
+          },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].offer.expirationTime",
+            "label": "Offer expiry",
+            "visible": "never"
+          },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].offer.duration",
+            "label": "Offer max duration",
+            "visible": "never"
+          },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].offer.maxSeniorRepayment",
+            "label": "Max senior debt",
+            "visible": "never"
+          },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].offer.validators.[].validator",
+            "label": "Validator",
+            "visible": "never"
+          },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].offer.validators.[].arguments",
+            "label": "Validator args",
+            "visible": "never"
+          },
+          {
+            "path": "_loanExecutionData.executionData.offerExecution.[].lenderOfferSignature",
+            "label": "Lender signature",
+            "visible": "never"
+          },
+          { "path": "_loanExecutionData.executionData.duration", "label": "Duration", "format": "duration", "visible": "always" },
+          {
+            "path": "_loanExecutionData.executionData.principalReceiver",
+            "label": "Principal receiver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "_loanExecutionData.executionData.expirationTime",
+            "label": "Valid until",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "_loanExecutionData.executionData.callbackData", "label": "Callback data", "format": "raw", "visible": "always" },
+          {
+            "path": "_loanExecutionData.borrower",
+            "label": "Borrower",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "_loanExecutionData.borrowerOfferSignature", "label": "Borrower signature", "visible": "never" }
+        ]
+      },
+      "cancelOffer(uint256 _offerId)": {
+        "intent": "Cancel loan offer",
+        "fields": [{ "path": "_offerId", "label": "Offer ID", "format": "raw", "visible": "always" }]
+      },
+      "cancelRenegotiationOffer(uint256 _renegotiationId)": {
+        "intent": "Cancel renegotiation offer",
+        "fields": [{ "path": "_renegotiationId", "label": "Renegotiation ID", "format": "raw", "visible": "always" }]
+      },
+      "liquidateLoan(uint256 _loanId, (address borrower, uint256 nftCollateralTokenId, address nftCollateralAddress, address principalAddress, uint256 principalAmount, uint256 startTime, uint256 duration, (uint256 loanId, uint256 floor, uint256 principalAmount, address lender, uint256 accruedInterest, uint256 startTime, uint256 aprBps)[] tranche, uint256 protocolFee) _loan)": {
+        "intent": "Liquidate loan",
+        "fields": [
+          { "path": "_loanId", "label": "Loan ID", "format": "raw", "visible": "always" },
+          {
+            "path": "_loan.nftCollateralTokenId",
+            "label": "Collateral",
+            "format": "nftName",
+            "params": { "collectionPath": "_loan.nftCollateralAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.principalAmount",
+            "label": "Loan principal",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_loan.principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.borrower",
+            "label": "Borrower",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.tranche.[].lender",
+            "label": "Lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "_loan.nftCollateralAddress", "label": "Collection", "visible": "never" },
+          { "path": "_loan.principalAddress", "label": "Principal token", "visible": "never" },
+          { "path": "_loan.startTime", "label": "Loan start", "visible": "never" },
+          { "path": "_loan.duration", "label": "Loan duration", "visible": "never" },
+          { "path": "_loan.protocolFee", "label": "Protocol fee", "visible": "never" },
+          { "path": "_loan.tranche.[].loanId", "label": "Tranche loan ID", "visible": "never" },
+          { "path": "_loan.tranche.[].floor", "label": "Tranche floor", "visible": "never" },
+          { "path": "_loan.tranche.[].principalAmount", "label": "Tranche principal", "visible": "never" },
+          { "path": "_loan.tranche.[].accruedInterest", "label": "Accrued interest", "visible": "never" },
+          { "path": "_loan.tranche.[].startTime", "label": "Tranche start", "visible": "never" },
+          { "path": "_loan.tranche.[].aprBps", "label": "Tranche APR", "visible": "never" }
+        ]
+      },
+      "delegate(uint256 _loanId, (address borrower, uint256 nftCollateralTokenId, address nftCollateralAddress, address principalAddress, uint256 principalAmount, uint256 startTime, uint256 duration, (uint256 loanId, uint256 floor, uint256 principalAmount, address lender, uint256 accruedInterest, uint256 startTime, uint256 aprBps)[] tranche, uint256 protocolFee) loan, address _delegate, bytes32 _rights, bool _value)": {
+        "intent": "Set collateral delegation",
+        "fields": [
+          { "path": "_loanId", "label": "Loan ID", "format": "raw", "visible": "always" },
+          {
+            "path": "_delegate",
+            "label": "Delegate",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "_value", "label": "Enable delegation", "format": "raw", "visible": "always" },
+          { "path": "_rights", "label": "Rights", "format": "raw", "visible": "always" },
+          {
+            "path": "loan.nftCollateralTokenId",
+            "label": "Collateral",
+            "format": "nftName",
+            "params": { "collectionPath": "loan.nftCollateralAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "loan.borrower",
+            "label": "Borrower",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "loan.tranche.[].lender",
+            "label": "Lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "loan.nftCollateralAddress", "label": "Collection", "visible": "never" },
+          { "path": "loan.principalAddress", "label": "Principal token", "visible": "never" },
+          { "path": "loan.startTime", "label": "Loan start", "visible": "never" },
+          { "path": "loan.duration", "label": "Loan duration", "visible": "never" },
+          { "path": "loan.protocolFee", "label": "Protocol fee", "visible": "never" },
+          { "path": "loan.tranche.[].loanId", "label": "Tranche loan ID", "visible": "never" },
+          { "path": "loan.tranche.[].floor", "label": "Tranche floor", "visible": "never" },
+          { "path": "loan.tranche.[].principalAmount", "label": "Tranche principal", "visible": "never" },
+          { "path": "loan.tranche.[].accruedInterest", "label": "Accrued interest", "visible": "never" },
+          { "path": "loan.tranche.[].startTime", "label": "Tranche start", "visible": "never" },
+          { "path": "loan.tranche.[].aprBps", "label": "Tranche APR", "visible": "never" },
+          { "path": "loan.principalAmount", "label": "Loan principal", "visible": "never" }
+        ]
+      },
+      "revokeDelegate(address _delegate, address _collection, uint256 _tokenId, bytes32 _rights)": {
+        "intent": "Revoke NFT delegation",
+        "fields": [
+          {
+            "path": "_delegate",
+            "label": "Delegate",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "_tokenId",
+            "label": "NFT",
+            "format": "nftName",
+            "params": { "collectionPath": "_collection" },
+            "visible": "always"
+          },
+          { "path": "_rights", "label": "Rights", "format": "raw", "visible": "always" },
+          { "path": "_collection", "label": "Collection", "visible": "never" }
+        ]
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Batch loan actions",
+        "fields": [
+          { "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to" }, "visible": "always" },
+          { "path": "@.value", "label": "Value sent", "format": "amount", "visible": "always" }
+        ]
+      }
+    }
+  }
+}

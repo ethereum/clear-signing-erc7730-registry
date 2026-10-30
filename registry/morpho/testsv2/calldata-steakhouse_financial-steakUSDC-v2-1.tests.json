@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-steakUSDC-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0xbeef088055857739c12cd3765f20b7679def0f51": { "decimals": 18, "name": "Steakhouse Prime USDC", "symbol": "steakUSDC" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e01822ce683154c2384121f71d9830b0cab94beef088055857739c12cd3765f20b7679def0f5180b8446e553f650000000000000000000000000000000000000000000000000000000000002710000000000000000000000000feed46c11f57b7126a773eec6ae9ca7ae1c03c9ac0",
+      "txHash": "0xad5c7f95e28c5384b4333dd4d5f4054d727491690b57c85a686ee2b160a803eb",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.01 USDC" },
+          { "label": "Share ticker", "value": "steakUSDC" },
+          { "label": "Send shares to", "value": "0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a" }
+        ],
+        "interpolatedIntent": "Deposit 0.01 USDC for 0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b8203af843019fdd88316e36094beef088055857739c12cd3765f20b7679def0f5180b84494bf804d0000000000000000000000000000000000000000000000000de0b6b36bc93600000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0xbabe85f45c179c8d09b6b22a4ea2af17bd2f7ff6a5d23a7763cf7a7e0a33abb5",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "USDC" },
+          { "label": "Minted shares", "value": "0.999999999 steakUSDC" },
+          { "label": "Mint shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Mint 0.999999999 steakUSDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f895010984054e0840842ff1bdcb830aa4e494beef088055857739c12cd3765f20b7679def0f5180b86cb460af94000000000000000000000000000000000000000000000000000000028fa6ae000000000000000000000000009d34e1a2991b9d6d78c321a6cd7d16d4e9f1b5f30000000000000000000000009d34e1a2991b9d6d78c321a6cd7d16d4e9f1b5f369259f412222da44c0",
+      "txHash": "0xcf72b1a22a427969248630d228e1fb2a50365944379399456ed60c3b1f971d1c",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "11000 USDC" },
+          { "label": "To", "value": "0x9d34E1a2991b9D6D78c321A6CD7d16d4E9f1B5F3" },
+          { "label": "Owner", "value": "0x9d34E1a2991b9D6D78c321A6CD7d16d4E9f1B5F3" }
+        ],
+        "interpolatedIntent": "Withdraw 11000 USDC to 0x9d34E1a2991b9D6D78c321A6CD7d16d4E9f1B5F3",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f895010d846553f10084772651c0830c1a3794beef088055857739c12cd3765f20b7679def0f5180b86cba0876520000000000000000000000000000000000000000000005ec3722937645a983040000000000000000000000006efebfdf50d2f35dbb384a12a26ad19d7984668f0000000000000000000000006efebfdf50d2f35dbb384a12a26ad19d7984668f690f354c2222da44c0",
+      "txHash": "0xc2457c3af1453e325feb58200b54b5b114a01747ad2ba2efc33f1d0cde9ca471",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "27969.236915701158609668 steakUSDC" },
+          { "label": "To", "value": "0x6EFEBfDF50D2f35dBB384a12a26ad19d7984668f" },
+          { "label": "Owner", "value": "0x6EFEBfDF50D2f35dBB384a12a26ad19d7984668f" }
+        ],
+        "interpolatedIntent": "Redeem 27969.236915701158609668 steakUSDC to 0x6EFEBfDF50D2f35dBB384a12a26ad19d7984668f",
+        "owner": "Steakhouse Financial"
+      }
+    }
+  ]
+}

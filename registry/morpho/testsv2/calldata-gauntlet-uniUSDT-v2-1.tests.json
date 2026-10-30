@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-uniUSDT-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xdac17f958d2ee523a2206206994597c13d831ec7": { "decimals": 6, "name": "USDT", "symbol": "USDT" },
+      "0xb8274efadb953fe9ae052d481a3fc5b6a3ced703": { "decimals": 18, "name": "Uniswap USDT", "symbol": "uniUSDT" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86c012b830249f0841827b488830a393c94b8274efadb953fe9ae052d481a3fc5b6a3ced70380b8446e553f6500000000000000000000000000000000000000000000000000000000000f4240000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x71a8fbe4697e4db2dc1f2db022958414af76eb01cf1c81c3b037fe5f60c7e9f9",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "1 USDT" },
+          { "label": "Share ticker", "value": "uniUSDT" },
+          { "label": "Send shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Deposit 1 USDT for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88e0181f0840181d243840a68941f8304d39b94b8274efadb953fe9ae052d481a3fc5b6a3ced70380b864b460af940000000000000000000000000000000000000000000000000000000000262ad000000000000000000000000023f989ae5121c3ccd72416ca66386bb06ba2f50a00000000000000000000000023f989ae5121c3ccd72416ca66386bb06ba2f50ac0",
+      "txHash": "0x64e1f4adab23d9bc90d42f0172eede7cb4e72afe8c20a640fb4c63a89f1a2c5b",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "2.501328 USDT" },
+          { "label": "To", "value": "0x23f989AE5121c3cCD72416Ca66386Bb06Ba2f50A" },
+          { "label": "Owner", "value": "0x23f989AE5121c3cCD72416Ca66386Bb06Ba2f50A" }
+        ],
+        "interpolatedIntent": "Withdraw 2.501328 USDT to 0x23f989AE5121c3cCD72416Ca66386Bb06Ba2f50A",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f89501028477359400848441aa0d8304746e94b8274efadb953fe9ae052d481a3fc5b6a3ced70380b86cba087652000000000000000000000000000000000000000000000d7e6b4b0b1816cc7d3b0000000000000000000000008d2918a815ce987e675b050eb1a1c86130dbbd3e0000000000000000000000008d2918a815ce987e675b050eb1a1c86130dbbd3e6a368c252222da44c0",
+      "txHash": "0xc9f3e3f836752b01cf628abb8eae6d3855307c37558700f6aaf80593e55181c3",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "63722.785315976192490811 uniUSDT" },
+          { "label": "To", "value": "0x8D2918a815CE987E675b050eB1A1C86130dbBd3E" },
+          { "label": "Owner", "value": "0x8D2918a815CE987E675b050eB1A1C86130dbBd3E" }
+        ],
+        "interpolatedIntent": "Redeem 63722.785315976192490811 uniUSDT to 0x8D2918a815CE987E675b050eB1A1C86130dbBd3E",
+        "owner": "Gauntlet"
+      }
+    }
+  ]
+}

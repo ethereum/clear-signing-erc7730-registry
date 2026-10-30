@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-waterline-m1USDC-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0xab5955eb671d150527f8e61a42b703832f86616c": { "decimals": 18, "name": "M1 USDC", "symbol": "m1USDC" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e01828d6d8301311984090ac1fb8303226594ab5955eb671d150527f8e61a42b703832f86616c80b8446e553f65000000000000000000000000000000000000000000000000000000000016e360000000000000000000000000feed46c11f57b7126a773eec6ae9ca7ae1c03c9ac0",
+      "txHash": "0x1fa7938316ef16eba2921c3f61d0095f616669b62a9f0553bdc6247944b7b708",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "1.5 USDC" },
+          { "label": "Share ticker", "value": "m1USDC" },
+          { "label": "Send shares to", "value": "0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a" }
+        ],
+        "interpolatedIntent": "Deposit 1.5 USDC for 0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a",
+        "owner": "Waterline"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88d0134843b9aca00844986fdeb830dbba094ab5955eb671d150527f8e61a42b703832f86616c80b864b460af9400000000000000000000000000000000000000000000000000000000597a0c9b000000000000000000000000bbbe3504f569ed973f500d2e4f9925680c98c019000000000000000000000000bbbe3504f569ed973f500d2e4f9925680c98c019c0",
+      "txHash": "0xe759431e49d0512153bc3cb9624534b756ee6e7a67cf4ff80fa25d650940ae20",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "1501.170843 USDC" },
+          { "label": "To", "value": "0xBBBe3504f569ED973F500D2E4f9925680C98c019" },
+          { "label": "Owner", "value": "0xBBBe3504f569ED973F500D2E4f9925680C98c019" }
+        ],
+        "interpolatedIntent": "Withdraw 1501.170843 USDC to 0xBBBe3504f569ED973F500D2E4f9925680C98c019",
+        "owner": "Waterline"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88d010e843b9aca00845411b14a830dbba094ab5955eb671d150527f8e61a42b703832f86616c80b864ba08765200000000000000000000000000000000000000000000007b0e713f59e25a37c90000000000000000000000005ac675eb475117fee399c6dbff9518d2d0492fc80000000000000000000000005ac675eb475117fee399c6dbff9518d2d0492fc8c0",
+      "txHash": "0x2c1410c526081d15570bfa5fe384385ab1f1c411f7822f6fa13c15721d7fefe5",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "2269.990203710456346569 m1USDC" },
+          { "label": "To", "value": "0x5Ac675eb475117FEE399c6dBfF9518d2D0492fc8" },
+          { "label": "Owner", "value": "0x5Ac675eb475117FEE399c6dBfF9518d2D0492fc8" }
+        ],
+        "interpolatedIntent": "Redeem 2269.990203710456346569 m1USDC to 0x5Ac675eb475117FEE399c6dBfF9518d2D0492fc8",
+        "owner": "Waterline"
+      }
+    }
+  ]
+}

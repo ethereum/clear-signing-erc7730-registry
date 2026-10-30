@@ -1,0 +1,149 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "includes": "common-gondi.json",
+  "context": {
+    "$id": "GONDI PurchaseBundler v3.2",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x2B5E66c44B223b9D3B192e697F58795febCd6C10" }] }
+  },
+  "metadata": { "contractName": "PurchaseBundler v3.2" },
+  "display": {
+    "formats": {
+      "buy(bytes[] executionData)": {
+        "intent": "Buy NFT with a loan",
+        "interpolatedIntent": "Buy NFT with a loan",
+        "fields": [
+          { "path": "@.value", "label": "Value sent", "format": "amount", "visible": "always" },
+          {
+            "path": "executionData.[]",
+            "label": "Loan",
+            "format": "calldata",
+            "params": { "callee": "0xE365fF3cad44d19cb7aBa81df8ffd6818A66Ac0a" },
+            "visible": "always"
+          }
+        ]
+      },
+      "sell(bytes[] executionData, bytes[] swapData)": {
+        "intent": "Sell collateral and repay",
+        "interpolatedIntent": "Sell collateral and repay loan",
+        "fields": [
+          {
+            "path": "executionData.[]",
+            "label": "Loan repayment",
+            "format": "calldata",
+            "params": { "callee": "0xE365fF3cad44d19cb7aBa81df8ffd6818A66Ac0a" },
+            "visible": "always"
+          },
+          { "path": "swapData.[]", "label": "Swap data", "format": "raw", "visible": "always" }
+        ]
+      },
+      "executeSell(address[] currencies, uint256[] currencyAmounts, address[] collections, uint256[] tokenIds, address marketPlace, bytes[] executionData, bytes[] swapData)": {
+        "intent": "Buy NFT and repay its loan",
+        "interpolatedIntent": "Buy {tokenIds.[]}",
+        "fields": [
+          {
+            "path": "tokenIds.[]",
+            "label": "NFT",
+            "format": "nftName",
+            "params": { "collectionPath": "collections.[0]" },
+            "visible": "always"
+          },
+          {
+            "path": "currencyAmounts.[]",
+            "label": "Payment",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "currencies.[]", "nativeCurrencyAddress": "$.metadata.constants.nativeCurrency" },
+            "visible": "always"
+          },
+          {
+            "path": "marketPlace",
+            "label": "Marketplace",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "visible": "always"
+          },
+          {
+            "path": "executionData.[]",
+            "label": "Loan repayment",
+            "format": "calldata",
+            "params": { "callee": "0xE365fF3cad44d19cb7aBa81df8ffd6818A66Ac0a" },
+            "visible": "always"
+          },
+          { "path": "swapData.[]", "label": "Swap data", "format": "raw", "visible": "always" },
+          { "path": "collections.[]", "label": "Collection", "visible": "never" },
+          { "path": "currencies.[]", "label": "Currency", "visible": "never" },
+          { "path": "@.value", "label": "Value sent", "format": "amount", "visible": "always" }
+        ]
+      },
+      "executeSellWithLoan(((address pool, address[] assets, uint256[] amounts) borrowArgs, (address[] currencies, uint256[] currencyAmounts, address[] collections, uint256[] tokenIds, address marketPlace, bytes[] executionData, bytes[] swapData) executeSellArgs, bytes[] loanExecutionData, address[] swapCurrencies, uint160[] swapAmounts, bytes[] swapData, bool unwrap) args)": {
+        "intent": "Buy loaned NFT with new loan",
+        "interpolatedIntent": "Buy {args.executeSellArgs.tokenIds.[]} with a loan",
+        "fields": [
+          {
+            "path": "args.executeSellArgs.tokenIds.[]",
+            "label": "NFT",
+            "format": "nftName",
+            "params": { "collectionPath": "args.executeSellArgs.collections.[0]" },
+            "visible": "always"
+          },
+          {
+            "path": "args.executeSellArgs.currencyAmounts.[]",
+            "label": "Payment",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "args.executeSellArgs.currencies.[]", "nativeCurrencyAddress": "$.metadata.constants.nativeCurrency" },
+            "visible": "always"
+          },
+          {
+            "path": "args.executeSellArgs.marketPlace",
+            "label": "Marketplace",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "visible": "always"
+          },
+          {
+            "path": "args.executeSellArgs.executionData.[]",
+            "label": "Loan repayment",
+            "format": "calldata",
+            "params": { "callee": "0xE365fF3cad44d19cb7aBa81df8ffd6818A66Ac0a" },
+            "visible": "always"
+          },
+          { "path": "args.executeSellArgs.swapData.[]", "label": "Swap data", "format": "raw", "visible": "always" },
+          { "path": "args.executeSellArgs.collections.[]", "label": "Collection", "visible": "never" },
+          { "path": "args.executeSellArgs.currencies.[]", "label": "Currency", "visible": "never" },
+          {
+            "path": "args.loanExecutionData.[]",
+            "label": "New loan",
+            "format": "calldata",
+            "params": { "callee": "0xE365fF3cad44d19cb7aBa81df8ffd6818A66Ac0a" },
+            "visible": "always"
+          },
+          {
+            "path": "args.swapAmounts.[]",
+            "label": "You pay",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "args.swapCurrencies.[]", "nativeCurrencyAddress": "$.metadata.constants.nativeCurrency" },
+            "visible": "always"
+          },
+          {
+            "path": "args.borrowArgs.pool",
+            "label": "Flash loan pool",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "visible": "always"
+          },
+          {
+            "path": "args.borrowArgs.amounts.[]",
+            "label": "Flash loan",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "args.borrowArgs.assets.[]" },
+            "visible": "always"
+          },
+          { "path": "args.unwrap", "label": "Unwrap WETH", "format": "raw", "visible": "always" },
+          { "path": "args.swapData.[]", "label": "Swap data", "format": "raw", "visible": "always" },
+          { "path": "args.swapCurrencies.[]", "label": "Swap currency", "visible": "never" },
+          { "path": "args.borrowArgs.assets.[]", "label": "Flash loan asset", "visible": "never" },
+          { "path": "@.value", "label": "Value sent", "format": "amount", "visible": "always" }
+        ]
+      }
+    }
+  }
+}
