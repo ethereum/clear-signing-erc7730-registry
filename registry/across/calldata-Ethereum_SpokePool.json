@@ -79,7 +79,7 @@
           { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
           { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
         ],
-        "interpolatedIntent": "Bridge {inputAmount} to {recipient}, who gets {outputAmount}; depositor {depositor}"
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; the relayer must send {outputAmount}; depositor {depositor}"
       },
       "depositNow(bytes32 depositor,bytes32 recipient,bytes32 inputToken,bytes32 outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,bytes32 exclusiveRelayer,uint32 fillDeadlineOffset,uint32 exclusivityParameter,bytes message)": {
         "intent": "Bridge tokens",
@@ -129,7 +129,7 @@
           { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
           { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
         ],
-        "interpolatedIntent": "Bridge {inputAmount} to {recipient}, who gets {outputAmount}; depositor {depositor}"
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; the relayer must send {outputAmount}; depositor {depositor}"
       },
       "depositV3(address depositor,address recipient,address inputToken,address outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,address exclusiveRelayer,uint32 quoteTimestamp,uint32 fillDeadline,uint32 exclusivityParameter,bytes message)": {
         "intent": "Bridge tokens",
@@ -180,7 +180,7 @@
           { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
           { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
         ],
-        "interpolatedIntent": "Bridge {inputAmount} to {recipient}, who gets {outputAmount}; depositor {depositor}"
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; the relayer must send {outputAmount}; depositor {depositor}"
       },
       "depositV3Now(address depositor,address recipient,address inputToken,address outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,address exclusiveRelayer,uint32 fillDeadlineOffset,uint32 exclusivityParameter,bytes message)": {
         "intent": "Bridge tokens",
@@ -230,7 +230,7 @@
           { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
           { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
         ],
-        "interpolatedIntent": "Bridge {inputAmount} to {recipient}, who gets {outputAmount}; depositor {depositor}"
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; the relayer must send {outputAmount}; depositor {depositor}"
       },
       "multicall(bytes[] data)": {
         "intent": "Batch SpokePool actions",
@@ -238,7 +238,7 @@
         "interpolatedIntent": "Run every action below in one transaction; if one action fails, the whole transaction reverts"
       },
       "speedUpDeposit(bytes32 depositor,uint256 depositId,uint256 updatedOutputAmount,bytes32 updatedRecipient,bytes updatedMessage,bytes depositorSignature)": {
-        "intent": "Update bridge deposit",
+        "intent": "Request bridge deposit update",
         "fields": [
           { "path": "depositId", "label": "Deposit ID", "format": "raw" },
           { "path": "updatedOutputAmount", "label": "New Output (raw)", "format": "raw" },
@@ -252,10 +252,10 @@
           { "path": "updatedMessage", "label": "New Message", "format": "raw", "visible": { "mustMatch": ["0x"] } },
           { "path": "depositorSignature", "label": "Depositor Signature", "visible": "never" }
         ],
-        "interpolatedIntent": "Update deposit {depositId} of {depositor}: {updatedOutputAmount} raw units to {updatedRecipient}"
+        "interpolatedIntent": "Request update of deposit {depositId} of {depositor}: {updatedOutputAmount} raw units to {updatedRecipient}"
       },
       "speedUpV3Deposit(address depositor,uint256 depositId,uint256 updatedOutputAmount,address updatedRecipient,bytes updatedMessage,bytes depositorSignature)": {
-        "intent": "Update bridge deposit",
+        "intent": "Request bridge deposit update",
         "fields": [
           { "path": "depositId", "label": "Deposit ID", "format": "raw" },
           { "path": "updatedOutputAmount", "label": "New Output (raw)", "format": "raw" },
@@ -274,7 +274,7 @@
           { "path": "updatedMessage", "label": "New Message", "format": "raw", "visible": { "mustMatch": ["0x"] } },
           { "path": "depositorSignature", "label": "Depositor Signature", "visible": "never" }
         ],
-        "interpolatedIntent": "Update deposit {depositId} of {depositor}: {updatedOutputAmount} raw units to {updatedRecipient}"
+        "interpolatedIntent": "Request update of deposit {depositId} of {depositor}: {updatedOutputAmount} raw units to {updatedRecipient}"
       },
       "tryMulticall(bytes[] data)": {
         "intent": "Batch, skip failed actions",
@@ -331,7 +331,7 @@
           { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
           { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
         ],
-        "interpolatedIntent": "Bridge {inputAmount} to {recipient}, who gets {outputAmount}; depositor {depositor}; deposit nonce {depositNonce}"
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; the relayer must send {outputAmount}; depositor {depositor}; deposit nonce {depositNonce}"
       }
     }
   }
