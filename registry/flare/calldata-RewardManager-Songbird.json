@@ -2,33 +2,15 @@
   "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "RewardManager-Songbird",
-    "contract": {
-      "deployments": [
-        {
-          "chainId": 19,
-          "address": "0xE26AD68b17224951b5740F33926Cc438764eB9a7"
-        }
-      ]
-    }
+    "contract": { "deployments": [{ "chainId": 19, "address": "0xE26AD68b17224951b5740F33926Cc438764eB9a7" }] }
   },
   "metadata": {
     "owner": "Flare Foundation",
-    "info": {
-      "url": "https://flare.network/"
-    },
+    "info": { "url": "https://flare.network/" },
     "contractName": "RewardManager-Songbird",
     "enums": {
-      "claimType": {
-        "0": "Direct",
-        "1": "Provider fee",
-        "2": "WSGB delegation",
-        "3": "Mirrored stake",
-        "4": "C-chain stake"
-      },
-      "wrap": {
-        "true": "WSGB",
-        "false": "SGB"
-      }
+      "claimType": { "0": "Direct", "1": "Provider fee", "2": "WSGB delegation", "3": "Mirrored stake", "4": "C-chain stake" },
+      "wrap": { "true": "WSGB", "false": "SGB" }
     }
   },
   "display": {
@@ -40,84 +22,42 @@
           {
             "label": "Reward Owner",
             "format": "addressName",
-            "params": {
-              "types": [
-                "eoa",
-                "wallet"
-              ]
-            },
+            "params": { "types": ["eoa", "wallet"] },
             "path": "#._rewardOwner",
             "visible": "always"
           },
           {
             "label": "Recipient",
             "format": "addressName",
-            "params": {
-              "types": [
-                "eoa",
-                "wallet",
-                "contract"
-              ]
-            },
+            "params": { "types": ["eoa", "wallet", "contract"] },
             "path": "#._recipient",
             "visible": "always"
           },
-          {
-            "label": "Stake rewards up to epoch",
-            "format": "raw",
-            "path": "#._rewardEpochId",
-            "visible": "always"
-          },
+          { "label": "Stake rewards up to epoch", "format": "raw", "path": "#._rewardEpochId", "visible": "always" },
           {
             "label": "Receive as",
             "format": "enum",
             "path": "#._wrap",
             "visible": "always",
-            "params": {
-              "$ref": "$.metadata.enums.wrap"
-            }
+            "params": { "$ref": "$.metadata.enums.wrap" }
           },
           {
             "label": "Proof beneficiary",
             "format": "addressName",
-            "params": {
-              "types": [
-                "eoa",
-                "contract"
-              ],
-              "sources": [
-                "local",
-                "ens"
-              ]
-            },
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
             "path": "#._proofs.[].body.beneficiary.[-20:]",
             "visible": "always"
           },
-          {
-            "label": "Proof amount",
-            "format": "amount",
-            "path": "#._proofs.[].body.amount",
-            "visible": "always"
-          },
+          { "label": "Proof amount", "format": "amount", "path": "#._proofs.[].body.amount", "visible": "always" },
           {
             "label": "Claim Type",
             "format": "enum",
-            "params": {
-              "$ref": "$.metadata.enums.claimType"
-            },
+            "params": { "$ref": "$.metadata.enums.claimType" },
             "path": "#._proofs.[].body.claimType",
             "visible": "always"
           },
-          {
-            "label": "Proofs Merkle Proof",
-            "path": "#._proofs.[].merkleProof.[]",
-            "visible": "never"
-          },
-          {
-            "label": "Proofs Body Epoch Id",
-            "path": "#._proofs.[].body.rewardEpochId",
-            "visible": "never"
-          }
+          { "label": "Proofs Merkle Proof", "path": "#._proofs.[].merkleProof.[]", "visible": "never" },
+          { "label": "Proofs Body Epoch Id", "path": "#._proofs.[].body.rewardEpochId", "visible": "never" }
         ]
       },
       "claimProxy(address _msgSender, address _rewardOwner, address _recipient, uint24 _rewardEpochId, bool _wrap, (bytes32[] merkleProof, (uint24 rewardEpochId, bytes20 beneficiary, uint120 amount, uint8 claimType) body)[] _proofs)": {
@@ -127,97 +67,49 @@
           {
             "label": "Caller",
             "format": "addressName",
-            "params": {
-              "types": [
-                "eoa",
-                "wallet",
-                "contract"
-              ]
-            },
+            "params": { "types": ["eoa", "wallet", "contract"] },
             "path": "#._msgSender",
             "visible": "always"
           },
           {
             "label": "Reward Owner",
             "format": "addressName",
-            "params": {
-              "types": [
-                "eoa",
-                "wallet"
-              ]
-            },
+            "params": { "types": ["eoa", "wallet"] },
             "path": "#._rewardOwner",
             "visible": "always"
           },
           {
             "label": "Recipient",
             "format": "addressName",
-            "params": {
-              "types": [
-                "eoa",
-                "wallet",
-                "contract"
-              ]
-            },
+            "params": { "types": ["eoa", "wallet", "contract"] },
             "path": "#._recipient",
             "visible": "always"
           },
-          {
-            "label": "Stake rewards up to epoch",
-            "format": "raw",
-            "path": "#._rewardEpochId",
-            "visible": "always"
-          },
+          { "label": "Stake rewards up to epoch", "format": "raw", "path": "#._rewardEpochId", "visible": "always" },
           {
             "label": "Receive as",
             "format": "enum",
             "path": "#._wrap",
             "visible": "always",
-            "params": {
-              "$ref": "$.metadata.enums.wrap"
-            }
+            "params": { "$ref": "$.metadata.enums.wrap" }
           },
           {
             "label": "Proof beneficiary",
             "format": "addressName",
-            "params": {
-              "types": [
-                "eoa",
-                "contract"
-              ],
-              "sources": [
-                "local",
-                "ens"
-              ]
-            },
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
             "path": "#._proofs.[].body.beneficiary.[-20:]",
             "visible": "always"
           },
-          {
-            "label": "Proof amount",
-            "format": "amount",
-            "path": "#._proofs.[].body.amount",
-            "visible": "always"
-          },
+          { "label": "Proof amount", "format": "amount", "path": "#._proofs.[].body.amount", "visible": "always" },
           {
             "label": "Claim Type",
             "format": "enum",
-            "params": {
-              "$ref": "$.metadata.enums.claimType"
-            },
+            "params": { "$ref": "$.metadata.enums.claimType" },
             "path": "#._proofs.[].body.claimType",
             "visible": "always"
           },
-          {
-            "label": "Proofs Merkle Proof",
-            "path": "#._proofs.[].merkleProof.[]",
-            "visible": "never"
-          },
-          {
-            "label": "Proofs Body Epoch Id",
-            "path": "#._proofs.[].body.rewardEpochId",
-            "visible": "never"
-          }
+          { "label": "Proofs Merkle Proof", "path": "#._proofs.[].merkleProof.[]", "visible": "never" },
+          { "label": "Proofs Body Epoch Id", "path": "#._proofs.[].body.rewardEpochId", "visible": "never" }
         ]
       },
       "initialiseWeightBasedClaims((bytes32[] merkleProof, (uint24 rewardEpochId, bytes20 beneficiary, uint120 amount, uint8 claimType) body)[] _proofs)": {
@@ -227,43 +119,20 @@
           {
             "label": "Beneficiary",
             "format": "addressName",
-            "params": {
-              "types": [
-                "eoa"
-              ],
-              "sources": [
-                "local",
-                "ens"
-              ]
-            },
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
             "path": "#._proofs.[].body.beneficiary.[-20:]",
             "visible": "always"
           },
-          {
-            "label": "Proof amount",
-            "format": "amount",
-            "path": "#._proofs.[].body.amount",
-            "visible": "always"
-          },
+          { "label": "Proof amount", "format": "amount", "path": "#._proofs.[].body.amount", "visible": "always" },
           {
             "label": "Claim Type",
             "format": "enum",
-            "params": {
-              "$ref": "$.metadata.enums.claimType"
-            },
+            "params": { "$ref": "$.metadata.enums.claimType" },
             "path": "#._proofs.[].body.claimType",
             "visible": "always"
           },
-          {
-            "label": "Proofs Merkle Proof",
-            "path": "#._proofs.[].merkleProof.[]",
-            "visible": "never"
-          },
-          {
-            "label": "Proofs Body Reward Epoch Id",
-            "path": "#._proofs.[].body.rewardEpochId",
-            "visible": "never"
-          }
+          { "label": "Proofs Merkle Proof", "path": "#._proofs.[].merkleProof.[]", "visible": "never" },
+          { "label": "Proofs Body Reward Epoch Id", "path": "#._proofs.[].body.rewardEpochId", "visible": "never" }
         ]
       },
       "autoClaim(address[] _rewardOwners, uint24 _rewardEpochId, (bytes32[] merkleProof, (uint24 rewardEpochId, bytes20 beneficiary, uint120 amount, uint8 claimType) body)[] _proofs)": {
@@ -273,62 +142,28 @@
           {
             "label": "Reward Owner",
             "format": "addressName",
-            "params": {
-              "types": [
-                "eoa",
-                "wallet"
-              ]
-            },
+            "params": { "types": ["eoa", "wallet"] },
             "path": "#._rewardOwners.[]",
             "visible": "always"
           },
-          {
-            "label": "Stake rewards up to epoch",
-            "format": "raw",
-            "path": "#._rewardEpochId",
-            "visible": "always"
-          },
+          { "label": "Stake rewards up to epoch", "format": "raw", "path": "#._rewardEpochId", "visible": "always" },
           {
             "label": "Proof beneficiary",
             "format": "addressName",
-            "params": {
-              "types": [
-                "eoa",
-                "contract"
-              ],
-              "sources": [
-                "local",
-                "ens"
-              ]
-            },
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
             "path": "#._proofs.[].body.beneficiary.[-20:]",
             "visible": "always"
           },
-          {
-            "label": "Proof amount",
-            "format": "amount",
-            "path": "#._proofs.[].body.amount",
-            "visible": "always"
-          },
+          { "label": "Proof amount", "format": "amount", "path": "#._proofs.[].body.amount", "visible": "always" },
           {
             "label": "Claim Type",
             "format": "enum",
-            "params": {
-              "$ref": "$.metadata.enums.claimType"
-            },
+            "params": { "$ref": "$.metadata.enums.claimType" },
             "path": "#._proofs.[].body.claimType",
             "visible": "always"
           },
-          {
-            "label": "Proofs Merkle Proof",
-            "path": "#._proofs.[].merkleProof.[]",
-            "visible": "never"
-          },
-          {
-            "label": "Proofs Body Reward Epoch Id",
-            "path": "#._proofs.[].body.rewardEpochId",
-            "visible": "never"
-          }
+          { "label": "Proofs Merkle Proof", "path": "#._proofs.[].merkleProof.[]", "visible": "never" },
+          { "label": "Proofs Body Reward Epoch Id", "path": "#._proofs.[].body.rewardEpochId", "visible": "never" }
         ]
       }
     }
