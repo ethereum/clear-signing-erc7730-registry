@@ -68,7 +68,7 @@
           },
           {
             "path": "depositor",
-            "label": "Depositor",
+            "label": "Depositor (gets refund, can change recipient and amount)",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
           },
@@ -79,7 +79,7 @@
           { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
           { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
         ],
-        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; depositor {depositor}"
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient}, who gets {outputAmount}; depositor {depositor}"
       },
       "depositNow(bytes32 depositor,bytes32 recipient,bytes32 inputToken,bytes32 outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,bytes32 exclusiveRelayer,uint32 fillDeadlineOffset,uint32 exclusivityParameter,bytes message)": {
         "intent": "Bridge tokens",
@@ -119,7 +119,7 @@
           },
           {
             "path": "depositor",
-            "label": "Depositor",
+            "label": "Depositor (gets refund, can change recipient and amount)",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
           },
@@ -129,7 +129,7 @@
           { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
           { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
         ],
-        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; depositor {depositor}"
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient}, who gets {outputAmount}; depositor {depositor}"
       },
       "depositV3(address depositor,address recipient,address inputToken,address outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,address exclusiveRelayer,uint32 quoteTimestamp,uint32 fillDeadline,uint32 exclusivityParameter,bytes message)": {
         "intent": "Bridge tokens",
@@ -169,7 +169,7 @@
           },
           {
             "path": "depositor",
-            "label": "Depositor",
+            "label": "Depositor (gets refund, can change recipient and amount)",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
           },
@@ -180,7 +180,7 @@
           { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
           { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
         ],
-        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; depositor {depositor}"
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient}, who gets {outputAmount}; depositor {depositor}"
       },
       "depositV3Now(address depositor,address recipient,address inputToken,address outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,address exclusiveRelayer,uint32 fillDeadlineOffset,uint32 exclusivityParameter,bytes message)": {
         "intent": "Bridge tokens",
@@ -220,7 +220,7 @@
           },
           {
             "path": "depositor",
-            "label": "Depositor",
+            "label": "Depositor (gets refund, can change recipient and amount)",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
           },
@@ -230,7 +230,7 @@
           { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
           { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
         ],
-        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; depositor {depositor}"
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient}, who gets {outputAmount}; depositor {depositor}"
       },
       "multicall(bytes[] data)": {
         "intent": "Batch SpokePool actions",
@@ -282,7 +282,7 @@
         "interpolatedIntent": "Run every action below in one transaction; an action that fails is skipped and the others still run"
       },
       "unsafeDeposit(bytes32 depositor,bytes32 recipient,bytes32 inputToken,bytes32 outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,bytes32 exclusiveRelayer,uint256 depositNonce,uint32 quoteTimestamp,uint32 fillDeadline,uint32 exclusivityParameter,bytes message)": {
-        "intent": "Bridge tokens",
+        "intent": "Bridge tokens with a chosen deposit nonce",
         "fields": [
           {
             "path": "inputAmount",
@@ -319,19 +319,19 @@
           },
           {
             "path": "depositor",
-            "label": "Depositor",
+            "label": "Depositor (gets refund, can change recipient and amount)",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
           },
           { "path": "fillDeadline", "label": "Fill Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "depositNonce", "label": "Deposit Nonce", "format": "raw" },
           { "path": "inputToken", "label": "Input Token", "visible": "never" },
           { "path": "quoteTimestamp", "label": "Quote Timestamp", "visible": "never" },
           { "path": "exclusiveRelayer", "label": "Exclusive Relayer", "visible": "never" },
           { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
-          { "path": "depositNonce", "label": "Deposit Nonce", "visible": "never" },
           { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
         ],
-        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; depositor {depositor}"
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient}, who gets {outputAmount}; depositor {depositor}; deposit nonce {depositNonce}"
       }
     }
   }
