@@ -7,7 +7,11 @@
       "depositTransaction(address _to,uint256 _value,uint64 _gasLimit,bool _isCreation,bytes _data)": {
         "intent": "Deposit ETH to Base",
         "fields": [
-          { "label": "Note", "value": "From a contract wallet, the ETH is credited to its aliased address on Base.", "format": "raw" },
+          {
+            "label": "Note",
+            "value": "From a contract wallet, the deposit runs from its aliased address on Base. The L2 Call and the ETH not sent to the L2 Recipient use that address.",
+            "format": "raw"
+          },
           { "path": "@.value", "label": "ETH to Bridge", "format": "amount" },
           { "path": "_value", "label": "ETH Sent on L2", "format": "amount" },
           { "path": "_to", "label": "L2 Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
@@ -72,7 +76,7 @@
           { "path": "_tx.gasLimit", "label": "Min Gas on L1", "visible": "never" },
           {
             "path": "_tx.data",
-            "label": "L1 Call",
+            "label": "L1 Call at Finalization",
             "format": "calldata",
             "params": { "calleePath": "_tx.target", "amountPath": "_tx.value", "spenderPath": "@.to" }
           },

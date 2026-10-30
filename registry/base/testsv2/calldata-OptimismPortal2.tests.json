@@ -12,7 +12,8 @@
       "0x866e82a600a1414e583f7f13623f1ac5d58b0afa": "Base L1CrossDomainMessenger",
       "0x4200000000000000000000000000000000000007": "L2CrossDomainMessenger",
       "0x3154cf16ccdb4c6d922629664174b904d80f2c35": "Base L1StandardBridge",
-      "0x4200000000000000000000000000000000000010": "L2StandardBridge"
+      "0x4200000000000000000000000000000000000010": "L2StandardBridge",
+      "0x4200000000000000000000000000000000000016": "L2ToL1MessagePasser"
     }
   },
   "tests": [
@@ -26,7 +27,10 @@
         "interpolatedIntent": "Bridge 0.00017 ETH to Base, send 0.00004 ETH to 0xa8372fF01701270450D79dD6d8F84F171554c50E",
         "owner": "Base",
         "fields": [
-          { "label": "Note", "value": "From a contract wallet, the ETH is credited to its aliased address on Base." },
+          {
+            "label": "Note",
+            "value": "From a contract wallet, the deposit runs from its aliased address on Base. The L2 Call and the ETH not sent to the L2 Recipient use that address."
+          },
           { "label": "ETH to Bridge", "value": "0.00017 ETH" },
           { "label": "ETH Sent on L2", "value": "0.00004 ETH" },
           { "label": "L2 Recipient", "value": "0xa8372fF01701270450D79dD6d8F84F171554c50E" },
@@ -45,7 +49,10 @@
         "interpolatedIntent": "Bridge 0.001971572991364448 ETH to Base, send 0.001971572991364448 ETH to 0x64eB63904Cf9688AC5B3087A72AcF9C31a273169",
         "owner": "Base",
         "fields": [
-          { "label": "Note", "value": "From a contract wallet, the ETH is credited to its aliased address on Base." },
+          {
+            "label": "Note",
+            "value": "From a contract wallet, the deposit runs from its aliased address on Base. The L2 Call and the ETH not sent to the L2 Recipient use that address."
+          },
           { "label": "ETH to Bridge", "value": "0.001971572991364448 ETH" },
           { "label": "ETH Sent on L2", "value": "0.001971572991364448 ETH" },
           { "label": "L2 Recipient", "value": "0x64eB63904Cf9688AC5B3087A72AcF9C31a273169" },
@@ -96,7 +103,7 @@
           { "label": "ETH Amount", "value": "11.889528 ETH" },
           { "label": "L1 Recipient", "value": "0xd6a75B427b73A7afa65cADe2445185b44fB7BE98" },
           { "label": "L2 Sender", "value": "0xd6a75B427b73A7afa65cADe2445185b44fB7BE98" },
-          { "label": "L1 Call", "value": "0x01" }
+          { "label": "L1 Call at Finalization", "value": "0x01" }
         ]
       }
     },
@@ -305,7 +312,7 @@
           { "label": "L1 Recipient", "value": "Base L1CrossDomainMessenger" },
           { "label": "L2 Sender", "value": "L2CrossDomainMessenger" },
           {
-            "label": "L1 Call",
+            "label": "L1 Call at Finalization",
             "value": {
               "intent": "Relay message from Base",
               "fields": [
@@ -349,7 +356,7 @@
           { "label": "L1 Recipient", "value": "Base L1CrossDomainMessenger" },
           { "label": "L2 Sender", "value": "L2CrossDomainMessenger" },
           {
-            "label": "L1 Call",
+            "label": "L1 Call at Finalization",
             "value": {
               "intent": "Relay message from Base",
               "fields": [
@@ -392,7 +399,7 @@
           { "label": "L1 Recipient", "value": "Base L1CrossDomainMessenger" },
           { "label": "L2 Sender", "value": "L2CrossDomainMessenger" },
           {
-            "label": "L1 Call",
+            "label": "L1 Call at Finalization",
             "value": {
               "intent": "Relay message from Base",
               "fields": [
@@ -403,6 +410,40 @@
                 { "label": "ETH from Caller", "value": "0.0001 ETH" }
               ],
               "interpolatedIntent": "Pay 0.0001 ETH sent by 0xF4AbFD8d2bCc5ebc6E9E65c3a8FfdA2C28487ADa on Base to 0xF4AbFD8d2bCc5ebc6E9E65c3a8FfdA2C28487ADa",
+              "owner": "Base"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "depositTransaction-l2-call-to-message-passer - chain 1 (encoded; the deposit of 0x33ee24f93ce20c818eeff2b7e77e93e8950de00a71bda607acdb3fa5fb036afd with a call to L2ToL1MessagePasser.initiateWithdrawal on Base as the L2 call)",
+      "rawTx": "0x02f9018d01808080830f42409449048044d57e1c92a77f79988d21fa8faf74e97e870701229bcc8d60b90164e9e05c420000000000000000000000004200000000000000000000000000000000000016000000000000000000000000000000000000000000000000000701229bcc8d600000000000000000000000000000000000000000000000000000000000030d40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000084c2b3e5ac00000000000000000000000064eb63904cf9688ac5b3087a72acf9c31a27316900000000000000000000000000000000000000000000000000000000000186a00000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x64eB63904Cf9688AC5B3087A72AcF9C31a273169",
+      "expected": {
+        "intent": "Deposit ETH to Base",
+        "interpolatedIntent": "Bridge 0.001971572991364448 ETH to Base, send 0.001971572991364448 ETH to L2ToL1MessagePasser",
+        "owner": "Base",
+        "fields": [
+          {
+            "label": "Note",
+            "value": "From a contract wallet, the deposit runs from its aliased address on Base. The L2 Call and the ETH not sent to the L2 Recipient use that address."
+          },
+          { "label": "ETH to Bridge", "value": "0.001971572991364448 ETH" },
+          { "label": "ETH Sent on L2", "value": "0.001971572991364448 ETH" },
+          { "label": "L2 Recipient", "value": "L2ToL1MessagePasser" },
+          { "label": "L2 Gas Limit", "value": "200000gas" },
+          {
+            "label": "L2 Call",
+            "value": {
+              "intent": "Start ETH withdrawal to Ethereum",
+              "fields": [
+                { "label": "ETH to Withdraw", "value": "0.001971572991364448 ETH" },
+                { "label": "L1 Recipient", "value": "0x64eB63904Cf9688AC5B3087A72AcF9C31a273169" },
+                { "label": "Min L1 Gas", "value": "100000gas" },
+                { "label": "L1 Call", "value": "0x" }
+              ],
+              "interpolatedIntent": "Start withdrawal of 0.001971572991364448 ETH to 0x64eB63904Cf9688AC5B3087A72AcF9C31a273169 on Ethereum",
               "owner": "Base"
             }
           }
