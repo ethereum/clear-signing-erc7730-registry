@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-august_digital-augustUSDCv2-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0x7ceb0f01cb7187a2ebed5661ecc4d5701d8f2350": { "decimals": 18, "name": "August USDC V2", "symbol": "augustUSDCv2" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86c0113831efa478409c49fb7830cda44947ceb0f01cb7187a2ebed5661ecc4d5701d8f235080b8446e553f650000000000000000000000000000000000000000000000000000000000989680000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0xa1f749114ca04eac7b3fe843477001f9f21a5bc6760ac5749d99f7a08e475514",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "10 USDC" },
+          { "label": "Share ticker", "value": "augustUSDCv2" },
+          { "label": "Send shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Deposit 10 USDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "August Digital"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8940115830f4240841309a84083179672947ceb0f01cb7187a2ebed5661ecc4d5701d8f235080b86cb460af94000000000000000000000000000000000000000000000000000000009502f900000000000000000000000000c74b184d4cd9a2c6ee94138bf9a474a0d3f61a72000000000000000000000000c74b184d4cd9a2c6ee94138bf9a474a0d3f61a72698068a12222da44c0",
+      "txHash": "0x7d3a8342abcdcce532720b63f9b4d67b0148e41ffc5dde518ccc9b5f7b648f15",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "2500 USDC" },
+          { "label": "To", "value": "0xC74B184D4cD9A2C6ee94138BF9a474a0D3F61a72" },
+          { "label": "Owner", "value": "0xC74B184D4cD9A2C6ee94138BF9a474a0D3F61a72" }
+        ],
+        "interpolatedIntent": "Withdraw 2500 USDC to 0xC74B184D4cD9A2C6ee94138BF9a474a0D3F61a72",
+        "owner": "August Digital"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f89701820165840141df838424a4e8188311938c947ceb0f01cb7187a2ebed5661ecc4d5701d8f235080b86cba087652000000000000000000000000000000000000000000006b6279826c80485416c900000000000000000000000091e9a7920d71d74c860c8fb1fa7182b30de1374800000000000000000000000091e9a7920d71d74c860c8fb1fa7182b30de137486969126b2222da44c0",
+      "txHash": "0x76241ca9b643a5d4b5bb84541545ac28b5fbee3204a182873feac067f38e7d96",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "507109.750266199360673481 augustUSDCv2" },
+          { "label": "To", "value": "0x91E9A7920D71d74c860C8fB1fA7182B30de13748" },
+          { "label": "Owner", "value": "0x91E9A7920D71d74c860C8fB1fA7182B30de13748" }
+        ],
+        "interpolatedIntent": "Redeem 507109.750266199360673481 augustUSDCv2 to 0x91E9A7920D71d74c860C8fB1fA7182B30de13748",
+        "owner": "August Digital"
+      }
+    }
+  ]
+}

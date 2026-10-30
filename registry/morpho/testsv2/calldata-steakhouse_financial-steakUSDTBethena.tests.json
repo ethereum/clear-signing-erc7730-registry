@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-steakUSDTBethena.json",
+  "dataProvider": {
+    "tokens": {
+      "0xc139190f447e929f090edeb554d95abb8b18ac1c": { "decimals": 18, "name": "USDtb", "symbol": "USDtb" },
+      "0xbeefc1cdafc5b4a649b54d07afc6bf0f75c6f4e2": { "decimals": 18, "name": "Steakhouse Ethena USDtb", "symbol": "steakUSDTBethena" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d010b8405f5e1008434dcecb68309417d94beefc1cdafc5b4a649b54d07afc6bf0f75c6f4e280b8446e553f65000000000000000000000000000000000000000000000000c249fdd327780000000000000000000000000000579165e49a48dd0ea407492bc1555558692feceac0",
+      "txHash": "0x3b1b374def46b2aa21f5836f8410228c39628b544ed546a0c62360ab0ff14396",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "14 USDtb" },
+          { "label": "Share ticker", "value": "steakUSDTBethena" },
+          { "label": "Send shares to", "value": "0x579165e49a48dD0ea407492bc1555558692fEceA" }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b8202be8402994c678316e36094beefc1cdafc5b4a649b54d07afc6bf0f75c6f4e280b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca000000000000000000000000000000000000000000000000000000000000000001018080",
+      "txHash": "0xd6a1c44d0f14b13d18d319fbf8296faa2ec41f03a46f4059f43f8f58756e1954",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "USDtb" },
+          { "label": "Minted shares", "value": "0.000000001 steakUSDTBethena" },
+          { "label": "Mint shares to", "value": "0x0000000000000000000000000000000000000001" }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88d01098405f5e100844b8500a3830aba8394beefc1cdafc5b4a649b54d07afc6bf0f75c6f4e280b864b460af940000000000000000000000000000000000000000000000008ac7230489e80000000000000000000000000000579165e49a48dd0ea407492bc1555558692fecea000000000000000000000000579165e49a48dd0ea407492bc1555558692feceac0",
+      "txHash": "0x98cf36bb15d502b20f5d0648f97cd2a64e9f51b6359a9720933926ee47e4aa29",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "10 USDtb" },
+          { "label": "To", "value": "0x579165e49a48dD0ea407492bc1555558692fEceA" },
+          { "label": "Owner", "value": "0x579165e49a48dD0ea407492bc1555558692fEceA" }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88e01820382830186a0840b71b000830a3ed494beefc1cdafc5b4a649b54d07afc6bf0f75c6f4e280b864ba0876520000000000000000000000000000000000000000000003c8ceb7085a708289a8000000000000000000000000a038bb7358d30229ae0b6897f521cc3301b85d10000000000000000000000000a038bb7358d30229ae0b6897f521cc3301b85d10c0",
+      "txHash": "0x21ad000f96509dc483bfb4c6bfb531f221d418defb299af7e4c131752447fc92",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "17871.343646827924851112 steakUSDTBethena" },
+          { "label": "To", "value": "0xA038BB7358D30229Ae0B6897f521Cc3301B85D10" },
+          { "label": "Owner", "value": "0xA038BB7358D30229Ae0B6897f521Cc3301B85D10" }
+        ],
+        "owner": "Steakhouse Financial"
+      }
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x59E16fcCd424Cc24e280Be16E11Bcd56fb0CE547" }] } },
+  "metadata": {
+    "owner": "ENS",
+    "contractName": "ETHRegistrarController",
+    "constants": {
+      "defaultReverseRegistrar": "0x283F227c4Bd38ecE252C4Ae7ECE650B0e913f1f9",
+      "ens": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+      "prices": "0x7542565191d074cE84fBfA92cAE13AcB84788CA9",
+      "reverseRegistrar": "0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb"
+    },
+    "info": { "url": "https://ens.domains" },
+    "enums": { "primaryName": { "0": "Not set", "1": "Ethereum", "2": "Default (all chains)", "3": "Ethereum + default" } }
+  },
+  "display": {
+    "formats": {
+      "commit(bytes32 commitment)": { "intent": "Commit to register a name", "fields": [{ "path": "commitment", "label": "Commitment", "format": "raw" }] },
+      "recoverFunds(address _token,address _to,uint256 _amount)": {
+        "intent": "Recover tokens",
+        "fields": [
+          { "path": "_token", "label": "Token", "visible": "never" },
+          {
+            "path": "_to",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "_amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "_token" } }
+        ],
+        "interpolatedIntent": "Recover {_amount} to {_to}"
+      },
+      "register((string label,address owner,uint256 duration,bytes32 secret,address resolver,bytes[] data,uint8 reverseRecord,bytes32 referrer) registration)": {
+        "intent": "Register ENS name",
+        "fields": [
+          { "path": "registration.label", "label": "Name (.eth)", "format": "raw" },
+          {
+            "path": "registration.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "registration.duration", "label": "Duration (h:mm:ss)", "format": "duration" },
+          { "path": "@.value", "label": "Maximum Payment", "format": "amount" },
+          {
+            "path": "registration.resolver",
+            "label": "Resolver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "registration.reverseRecord",
+            "label": "Your Primary Name",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.primaryName" }
+          },
+          { "path": "registration.secret", "label": "Secret", "visible": "never" },
+          { "path": "registration.data.[]", "label": "Data", "visible": "never" },
+          { "path": "registration.referrer", "label": "Referrer", "visible": "never" }
+        ],
+        "interpolatedIntent": "Register {registration.label}.eth for {registration.owner}"
+      },
+      "renew(string label,uint256 duration,bytes32 referrer)": {
+        "intent": "Renew ENS name",
+        "fields": [
+          { "path": "label", "label": "Name (.eth)", "format": "raw" },
+          { "path": "duration", "label": "Extend By (h:mm:ss)", "format": "duration" },
+          { "path": "referrer", "label": "Referrer", "visible": "never" },
+          { "path": "@.value", "label": "Maximum Payment", "format": "amount" }
+        ],
+        "interpolatedIntent": "Renew {label}.eth"
+      },
+      "renounceOwnership()": { "intent": "Renounce ownership", "fields": [] },
+      "transferOwnership(address newOwner)": {
+        "intent": "Transfer ownership",
+        "fields": [
+          {
+            "path": "newOwner",
+            "label": "New Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ],
+        "interpolatedIntent": "Make {newOwner} the owner"
+      },
+      "withdraw()": { "intent": "Send fees to ENS owner", "fields": [] }
+    }
+  }
+}

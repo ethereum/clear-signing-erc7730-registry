@@ -1,0 +1,76 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x0Ec68c5B10F21EFFb74f2A5C61DFe6b08C0Db6Cb" }] } },
+  "metadata": {
+    "owner": "Blast",
+    "contractName": "OptimismPortal",
+    "info": { "url": "https://blast.io" }
+  },
+  "display": {
+    "formats": {
+      "depositTransaction(address _to,uint256 _value,uint64 _gasLimit,bool _isCreation,bytes _data)": {
+        "intent": "Deposit ETH to Blast",
+        "fields": [
+          {
+            "label": "Note",
+            "value": "From a contract wallet, the deposit runs from its aliased address on Blast. The L2 Call and the ETH not sent to the L2 Recipient use that address.",
+            "format": "raw"
+          },
+          { "path": "@.value", "label": "Deposit Amount", "format": "amount" },
+          { "path": "_to", "label": "L2 Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_value", "label": "ETH to Send on L2", "format": "amount" },
+          { "path": "_gasLimit", "label": "L2 Gas Limit", "format": "unit", "params": { "base": "gas" } },
+          { "path": "_isCreation", "label": "Contract Creation", "format": "raw", "visible": { "mustMatch": [false] } },
+          {
+            "path": "_data",
+            "label": "L2 Call",
+            "format": "calldata",
+            "params": { "calleePath": "_to", "chainId": 81457, "amountPath": "_value", "spenderPath": "@.from" }
+          }
+        ],
+        "interpolatedIntent": "Deposit {@.value} to Blast and send {_value} on L2 to {_to}"
+      },
+      "finalizeWithdrawalTransaction(uint256 hintId,(uint256 nonce,address sender,address target,uint256 value,uint256 gasLimit,bytes data) _tx)": {
+        "intent": "Finalize Blast withdrawal",
+        "fields": [
+          { "path": "_tx.value", "label": "Maximum Amount", "format": "amount" },
+          { "path": "_tx.target", "label": "L1 Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_tx.sender", "label": "L2 Sender", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "hintId", "label": "Checkpoint Hint", "visible": "never" },
+          { "path": "_tx.nonce", "label": "Nonce", "visible": "never" },
+          { "path": "_tx.gasLimit", "label": "Minimum L1 Gas", "visible": "never" },
+          {
+            "path": "_tx.data",
+            "label": "L1 Call",
+            "format": "calldata",
+            "params": { "calleePath": "_tx.target", "amountPath": "_tx.value", "spenderPath": "@.to" }
+          }
+        ],
+        "interpolatedIntent": "Finalize withdrawal of up to {_tx.value} from {_tx.sender} to {_tx.target}"
+      },
+      "proveWithdrawalTransaction((uint256 nonce,address sender,address target,uint256 value,uint256 gasLimit,bytes data) _tx,uint256 _l2OutputIndex,(bytes32 version,bytes32 stateRoot,bytes32 messagePasserStorageRoot,bytes32 latestBlockhash) _outputRootProof,bytes[] _withdrawalProof)": {
+        "intent": "Prove Blast withdrawal",
+        "fields": [
+          { "path": "_tx.value", "label": "Requested Amount", "format": "amount" },
+          { "path": "_tx.target", "label": "L1 Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_tx.sender", "label": "L2 Sender", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_tx.nonce", "label": "Nonce", "visible": "never" },
+          { "path": "_tx.gasLimit", "label": "Minimum L1 Gas", "visible": "never" },
+          {
+            "path": "_tx.data",
+            "label": "Call at Finalization",
+            "format": "calldata",
+            "params": { "calleePath": "_tx.target", "amountPath": "_tx.value", "spenderPath": "@.to" }
+          },
+          { "path": "_l2OutputIndex", "label": "L2 Output Index", "visible": "never" },
+          { "path": "_outputRootProof.version", "label": "Proof Version", "visible": "never" },
+          { "path": "_outputRootProof.stateRoot", "label": "State Root", "visible": "never" },
+          { "path": "_outputRootProof.messagePasserStorageRoot", "label": "Storage Root", "visible": "never" },
+          { "path": "_outputRootProof.latestBlockhash", "label": "Latest Blockhash", "visible": "never" },
+          { "path": "_withdrawalProof.[]", "label": "Withdrawal Proof", "visible": "never" }
+        ],
+        "interpolatedIntent": "Prove withdrawal of {_tx.value} from {_tx.sender} to {_tx.target}"
+      }
+    }
+  }
+}

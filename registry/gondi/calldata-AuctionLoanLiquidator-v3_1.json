@@ -1,0 +1,131 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "includes": "common-gondi.json",
+  "context": {
+    "$id": "GONDI Liquidator v3.1",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x2995AE7233fA89b314b5a707465B57a582F440F0" },
+        { "chainId": 999, "address": "0xB166Ec953FEf89C6ee2E39E60Fbd49b19Cf4c6ad" },
+        { "chainId": 4663, "address": "0xF4b2c5735247c74F40D7505EF2B5bA368651A5C8" }
+      ]
+    }
+  },
+  "metadata": { "contractName": "AuctionLoanLiquidator v3.1" },
+  "display": {
+    "formats": {
+      "placeBid(address _nftAddress, uint256 _tokenId, (address loanAddress, uint256 loanId, uint256 highestBid, uint256 triggerFee, uint256 minBid, address highestBidder, uint96 duration, address asset, uint96 startTime, address originator, uint96 lastBidTime) _auction, uint256 _bid)": {
+        "intent": "Bid on liquidation auction",
+        "interpolatedIntent": "Bid {_bid} for {_tokenId}",
+        "fields": [
+          {
+            "path": "_tokenId",
+            "label": "NFT",
+            "format": "nftName",
+            "params": { "collectionPath": "_nftAddress" },
+            "visible": "always"
+          },
+          { "path": "_bid", "label": "Bid", "format": "tokenAmount", "params": { "tokenPath": "_auction.asset" }, "visible": "always" },
+          {
+            "path": "_auction.loanAddress",
+            "label": "Loan contract",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "visible": "always"
+          },
+          { "path": "_auction.loanId", "label": "Loan ID", "format": "raw", "visible": "always" },
+          {
+            "path": "_auction.highestBid",
+            "label": "Current top bid",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_auction.asset" },
+            "visible": "always"
+          },
+          { "path": "_auction.highestBidder", "label": "Top bidder", "visible": "never" },
+          { "path": "_auction.asset", "label": "Currency", "visible": "never" },
+          { "path": "_auction.triggerFee", "label": "Trigger fee", "visible": "never" },
+          { "path": "_auction.minBid", "label": "Minimum bid", "visible": "never" },
+          { "path": "_auction.duration", "label": "Auction duration", "visible": "never" },
+          { "path": "_auction.startTime", "label": "Auction start", "visible": "never" },
+          { "path": "_auction.originator", "label": "Originator", "visible": "never" },
+          { "path": "_auction.lastBidTime", "label": "Last bid time", "visible": "never" },
+          { "path": "_nftAddress", "label": "Collection", "visible": "never" }
+        ]
+      },
+      "settleAuction((address loanAddress, uint256 loanId, uint256 highestBid, uint256 triggerFee, uint256 minBid, address highestBidder, uint96 duration, address asset, uint96 startTime, address originator, uint96 lastBidTime) _auction, (address borrower, uint256 nftCollateralTokenId, address nftCollateralAddress, address principalAddress, uint256 principalAmount, uint256 startTime, uint256 duration, (uint256 loanId, uint256 floor, uint256 principalAmount, address lender, uint256 accruedInterest, uint256 startTime, uint256 aprBps)[] tranche, uint256 protocolFee) _loan)": {
+        "intent": "Settle liquidation auction",
+        "interpolatedIntent": "Settle auction of {_loan.nftCollateralTokenId}",
+        "fields": [
+          {
+            "path": "_auction.loanAddress",
+            "label": "Loan contract",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "visible": "always"
+          },
+          { "path": "_auction.loanId", "label": "Loan ID", "format": "raw", "visible": "always" },
+          {
+            "path": "_auction.highestBid",
+            "label": "Winning bid",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_auction.asset" },
+            "visible": "always"
+          },
+          {
+            "path": "_auction.highestBidder",
+            "label": "Winner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "_auction.asset", "label": "Currency", "visible": "never" },
+          { "path": "_auction.triggerFee", "label": "Trigger fee", "visible": "never" },
+          { "path": "_auction.minBid", "label": "Minimum bid", "visible": "never" },
+          { "path": "_auction.duration", "label": "Auction duration", "visible": "never" },
+          { "path": "_auction.startTime", "label": "Auction start", "visible": "never" },
+          { "path": "_auction.originator", "label": "Originator", "visible": "never" },
+          { "path": "_auction.lastBidTime", "label": "Last bid time", "visible": "never" },
+          {
+            "path": "_loan.nftCollateralTokenId",
+            "label": "Collateral",
+            "format": "nftName",
+            "params": { "collectionPath": "_loan.nftCollateralAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.principalAmount",
+            "label": "Loan principal",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_loan.principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.borrower",
+            "label": "Borrower",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "_loan.tranche.[].lender",
+            "label": "Lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "_loan.nftCollateralAddress", "label": "Collection", "visible": "never" },
+          { "path": "_loan.principalAddress", "label": "Principal token", "visible": "never" },
+          { "path": "_loan.startTime", "label": "Loan start", "visible": "never" },
+          { "path": "_loan.duration", "label": "Loan duration", "visible": "never" },
+          { "path": "_loan.protocolFee", "label": "Protocol fee", "visible": "never" },
+          { "path": "_loan.tranche.[].loanId", "label": "Tranche loan ID", "visible": "never" },
+          { "path": "_loan.tranche.[].floor", "label": "Tranche floor", "visible": "never" },
+          { "path": "_loan.tranche.[].principalAmount", "label": "Tranche principal", "visible": "never" },
+          { "path": "_loan.tranche.[].accruedInterest", "label": "Accrued interest", "visible": "never" },
+          { "path": "_loan.tranche.[].startTime", "label": "Tranche start", "visible": "never" },
+          { "path": "_loan.tranche.[].aprBps", "label": "Tranche APR", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

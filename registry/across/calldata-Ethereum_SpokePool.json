@@ -1,0 +1,334 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5" }] } },
+  "metadata": {
+    "owner": "Across Protocol",
+    "contractName": "Ethereum SpokePool",
+    "info": { "url": "https://across.to/" },
+    "enums": {
+      "destinationChainOverride": {
+        "130": "Unichain",
+        "143": "Monad",
+        "480": "World Chain",
+        "999": "HyperEVM",
+        "1868": "Soneium",
+        "4217": "Tempo Mainnet Presto",
+        "4326": "MegaETH Mainnet",
+        "4663": "Robinhood Chain",
+        "5042": "Arc",
+        "9745": "Plasma Mainnet",
+        "57073": "Ink",
+        "81457": "Blast",
+        "728126428": "Tron Mainnet",
+        "34268394551451": "Solana"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "deposit(bytes32 depositor,bytes32 recipient,bytes32 inputToken,bytes32 outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,bytes32 exclusiveRelayer,uint32 quoteTimestamp,uint32 fillDeadline,uint32 exclusivityParameter,bytes message)": {
+        "intent": "Bridge tokens",
+        "fields": [
+          {
+            "path": "inputAmount",
+            "label": "Amount to Bridge",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "inputToken.[12:32]" }
+          },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "chainId",
+            "visible": { "ifNotIn": [130, 143, 480, 999, 1868, 4217, 4326, 4663, 5042, 9745, 57073, 81457, 728126428, 34268394551451] }
+          },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.destinationChainOverride" },
+            "visible": { "ifNotIn": [1, 10, 56, 137, 324, 8453, 42161, 43114, 59144] }
+          },
+          { "path": "recipient", "label": "Recipient", "format": "raw" },
+          {
+            "path": "outputAmount",
+            "label": "Relayer Must Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "outputToken.[12:32]", "chainIdPath": "#.destinationChainId" }
+          },
+          {
+            "path": "outputToken",
+            "label": "Output Token (dest.)",
+            "format": "tokenTicker",
+            "params": { "chainIdPath": "#.destinationChainId" }
+          },
+          {
+            "path": "depositor",
+            "label": "Depositor (gets refund, can change recipient and amount)",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "fillDeadline", "label": "Fill Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "inputToken", "label": "Input Token", "visible": "never" },
+          { "path": "quoteTimestamp", "label": "Quote Timestamp", "visible": "never" },
+          { "path": "exclusiveRelayer", "label": "Exclusive Relayer", "visible": "never" },
+          { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
+          { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ],
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; the relayer must send {outputAmount}; depositor {depositor}"
+      },
+      "depositNow(bytes32 depositor,bytes32 recipient,bytes32 inputToken,bytes32 outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,bytes32 exclusiveRelayer,uint32 fillDeadlineOffset,uint32 exclusivityParameter,bytes message)": {
+        "intent": "Bridge tokens",
+        "fields": [
+          {
+            "path": "inputAmount",
+            "label": "Amount to Bridge",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "inputToken.[12:32]" }
+          },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "chainId",
+            "visible": { "ifNotIn": [130, 143, 480, 999, 1868, 4217, 4326, 4663, 5042, 9745, 57073, 81457, 728126428, 34268394551451] }
+          },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.destinationChainOverride" },
+            "visible": { "ifNotIn": [1, 10, 56, 137, 324, 8453, 42161, 43114, 59144] }
+          },
+          { "path": "recipient", "label": "Recipient", "format": "raw" },
+          {
+            "path": "outputAmount",
+            "label": "Relayer Must Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "outputToken.[12:32]", "chainIdPath": "#.destinationChainId" }
+          },
+          {
+            "path": "outputToken",
+            "label": "Output Token (dest.)",
+            "format": "tokenTicker",
+            "params": { "chainIdPath": "#.destinationChainId" }
+          },
+          {
+            "path": "depositor",
+            "label": "Depositor (gets refund, can change recipient and amount)",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "fillDeadlineOffset", "label": "Fill Window", "format": "duration" },
+          { "path": "inputToken", "label": "Input Token", "visible": "never" },
+          { "path": "exclusiveRelayer", "label": "Exclusive Relayer", "visible": "never" },
+          { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
+          { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ],
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; the relayer must send {outputAmount}; depositor {depositor}"
+      },
+      "depositV3(address depositor,address recipient,address inputToken,address outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,address exclusiveRelayer,uint32 quoteTimestamp,uint32 fillDeadline,uint32 exclusivityParameter,bytes message)": {
+        "intent": "Bridge tokens",
+        "fields": [
+          { "path": "inputAmount", "label": "Amount to Bridge", "format": "tokenAmount", "params": { "tokenPath": "inputToken" } },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "chainId",
+            "visible": { "ifNotIn": [130, 143, 480, 999, 1868, 4217, 4326, 4663, 5042, 9745, 57073, 81457, 728126428, 34268394551451] }
+          },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.destinationChainOverride" },
+            "visible": { "ifNotIn": [1, 10, 56, 137, 324, 8453, 42161, 43114, 59144] }
+          },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "outputAmount",
+            "label": "Relayer Must Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "outputToken", "chainIdPath": "#.destinationChainId" }
+          },
+          {
+            "path": "outputToken",
+            "label": "Output Token (dest.)",
+            "format": "tokenTicker",
+            "params": { "chainIdPath": "#.destinationChainId" }
+          },
+          {
+            "path": "depositor",
+            "label": "Depositor (gets refund, can change recipient and amount)",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "fillDeadline", "label": "Fill Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "inputToken", "label": "Input Token", "visible": "never" },
+          { "path": "quoteTimestamp", "label": "Quote Timestamp", "visible": "never" },
+          { "path": "exclusiveRelayer", "label": "Exclusive Relayer", "visible": "never" },
+          { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
+          { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ],
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; the relayer must send {outputAmount}; depositor {depositor}"
+      },
+      "depositV3Now(address depositor,address recipient,address inputToken,address outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,address exclusiveRelayer,uint32 fillDeadlineOffset,uint32 exclusivityParameter,bytes message)": {
+        "intent": "Bridge tokens",
+        "fields": [
+          { "path": "inputAmount", "label": "Amount to Bridge", "format": "tokenAmount", "params": { "tokenPath": "inputToken" } },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "chainId",
+            "visible": { "ifNotIn": [130, 143, 480, 999, 1868, 4217, 4326, 4663, 5042, 9745, 57073, 81457, 728126428, 34268394551451] }
+          },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.destinationChainOverride" },
+            "visible": { "ifNotIn": [1, 10, 56, 137, 324, 8453, 42161, 43114, 59144] }
+          },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "outputAmount",
+            "label": "Relayer Must Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "outputToken", "chainIdPath": "#.destinationChainId" }
+          },
+          {
+            "path": "outputToken",
+            "label": "Output Token (dest.)",
+            "format": "tokenTicker",
+            "params": { "chainIdPath": "#.destinationChainId" }
+          },
+          {
+            "path": "depositor",
+            "label": "Depositor (gets refund, can change recipient and amount)",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "fillDeadlineOffset", "label": "Fill Window", "format": "duration" },
+          { "path": "inputToken", "label": "Input Token", "visible": "never" },
+          { "path": "exclusiveRelayer", "label": "Exclusive Relayer", "visible": "never" },
+          { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
+          { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ],
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; the relayer must send {outputAmount}; depositor {depositor}"
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Batch SpokePool actions",
+        "fields": [{ "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to", "amountPath": "@.value" } }],
+        "interpolatedIntent": "Run every action below in one transaction; if one action fails, the whole transaction reverts"
+      },
+      "speedUpDeposit(bytes32 depositor,uint256 depositId,uint256 updatedOutputAmount,bytes32 updatedRecipient,bytes updatedMessage,bytes depositorSignature)": {
+        "intent": "Request bridge deposit update",
+        "fields": [
+          { "path": "depositId", "label": "Deposit ID", "format": "raw" },
+          { "path": "updatedOutputAmount", "label": "New Output (raw)", "format": "raw" },
+          { "path": "updatedRecipient", "label": "New Recipient", "format": "raw" },
+          {
+            "path": "depositor",
+            "label": "Depositor",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "updatedMessage", "label": "New Message", "format": "raw", "visible": { "mustMatch": ["0x"] } },
+          { "path": "depositorSignature", "label": "Depositor Signature", "visible": "never" }
+        ],
+        "interpolatedIntent": "Request update of deposit {depositId} of {depositor}: {updatedOutputAmount} raw units to {updatedRecipient}"
+      },
+      "speedUpV3Deposit(address depositor,uint256 depositId,uint256 updatedOutputAmount,address updatedRecipient,bytes updatedMessage,bytes depositorSignature)": {
+        "intent": "Request bridge deposit update",
+        "fields": [
+          { "path": "depositId", "label": "Deposit ID", "format": "raw" },
+          { "path": "updatedOutputAmount", "label": "New Output (raw)", "format": "raw" },
+          {
+            "path": "updatedRecipient",
+            "label": "New Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "depositor",
+            "label": "Depositor",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "updatedMessage", "label": "New Message", "format": "raw", "visible": { "mustMatch": ["0x"] } },
+          { "path": "depositorSignature", "label": "Depositor Signature", "visible": "never" }
+        ],
+        "interpolatedIntent": "Request update of deposit {depositId} of {depositor}: {updatedOutputAmount} raw units to {updatedRecipient}"
+      },
+      "tryMulticall(bytes[] data)": {
+        "intent": "Batch, skip failed actions",
+        "fields": [{ "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to", "amountPath": "@.value" } }],
+        "interpolatedIntent": "Run every action below in one transaction; an action that fails is skipped and the others still run"
+      },
+      "unsafeDeposit(bytes32 depositor,bytes32 recipient,bytes32 inputToken,bytes32 outputToken,uint256 inputAmount,uint256 outputAmount,uint256 destinationChainId,bytes32 exclusiveRelayer,uint256 depositNonce,uint32 quoteTimestamp,uint32 fillDeadline,uint32 exclusivityParameter,bytes message)": {
+        "intent": "Bridge tokens with a chosen deposit nonce",
+        "fields": [
+          {
+            "path": "inputAmount",
+            "label": "Amount to Bridge",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "inputToken.[12:32]" }
+          },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "chainId",
+            "visible": { "ifNotIn": [130, 143, 480, 999, 1868, 4217, 4326, 4663, 5042, 9745, 57073, 81457, 728126428, 34268394551451] }
+          },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.destinationChainOverride" },
+            "visible": { "ifNotIn": [1, 10, 56, 137, 324, 8453, 42161, 43114, 59144] }
+          },
+          { "path": "recipient", "label": "Recipient", "format": "raw" },
+          {
+            "path": "outputAmount",
+            "label": "Relayer Must Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "outputToken.[12:32]", "chainIdPath": "#.destinationChainId" }
+          },
+          {
+            "path": "outputToken",
+            "label": "Output Token (dest.)",
+            "format": "tokenTicker",
+            "params": { "chainIdPath": "#.destinationChainId" }
+          },
+          {
+            "path": "depositor",
+            "label": "Depositor (gets refund, can change recipient and amount)",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "fillDeadline", "label": "Fill Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "depositNonce", "label": "Deposit Nonce", "format": "raw" },
+          { "path": "inputToken", "label": "Input Token", "visible": "never" },
+          { "path": "quoteTimestamp", "label": "Quote Timestamp", "visible": "never" },
+          { "path": "exclusiveRelayer", "label": "Exclusive Relayer", "visible": "never" },
+          { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
+          { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ],
+        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; the relayer must send {outputAmount}; depositor {depositor}; deposit nonce {depositNonce}"
+      }
+    }
+  }
+}

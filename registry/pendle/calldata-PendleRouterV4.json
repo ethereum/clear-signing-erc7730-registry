@@ -1,0 +1,1560 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x888888888889758F76e7103c6CbF23ABbF58F946" }] } },
+  "metadata": { "owner": "Pendle", "contractName": "Pendle Router V4", "info": { "url": "https://pendle.finance" } },
+  "display": {
+    "formats": {
+      "addLiquidityDualSyAndPt(address receiver,address market,uint256 netSyDesired,uint256 netPtDesired,uint256 minLpOut)": {
+        "intent": "Add SY and PT liquidity",
+        "fields": [
+          { "path": "netSyDesired", "label": "Maximum SY (raw)", "format": "raw" },
+          { "path": "netPtDesired", "label": "Maximum PT (raw)", "format": "raw" },
+          { "path": "minLpOut", "label": "Minimum LP Out", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } }
+        ],
+        "interpolatedIntent": "Add up to {netSyDesired} SY (raw) and up to {netPtDesired} PT (raw) to {market} for at least {minLpOut} to {receiver}"
+      },
+      "addLiquidityDualTokenAndPt(address receiver,address market,(address tokenIn,uint256 netTokenIn,address tokenMintSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) input,uint256 netPtDesired,uint256 minLpOut)": {
+        "intent": "Add token and PT liquidity",
+        "fields": [
+          {
+            "path": "input.netTokenIn",
+            "label": "Amount to Pay",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "input.tokenIn", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "input.tokenIn", "label": "Token In", "visible": "never" },
+          { "path": "input.tokenMintSy", "label": "Token Mint SY", "visible": "never" },
+          { "path": "input.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "input.swapData.swapType", "label": "Swap Type", "visible": "never" },
+          { "path": "input.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          {
+            "path": "input.swapData.extCalldata",
+            "label": "Aggregator Route",
+            "format": "calldata",
+            "params": { "calleePath": "input.swapData.extRouter", "spenderPath": "input.pendleSwap" },
+            "visible": "never"
+          },
+          { "path": "input.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          { "path": "netPtDesired", "label": "Maximum PT (raw)", "format": "raw" },
+          { "path": "minLpOut", "label": "Minimum LP Out", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Add {input.netTokenIn} and up to {netPtDesired} PT (raw) to {market} for at least {minLpOut} to {receiver}"
+      },
+      "addLiquiditySinglePt(address receiver,address market,uint256 netPtIn,uint256 minLpOut,(uint256 guessMin,uint256 guessMax,uint256 guessOffchain,uint256 maxIteration,uint256 eps) guessPtSwapToSy,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Add liquidity with PT",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "netPtIn", "label": "PT to Add (raw)", "format": "raw" },
+          { "path": "minLpOut", "label": "Minimum LP Out", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          { "path": "guessPtSwapToSy.guessMin", "label": "GuessMin", "visible": "never" },
+          { "path": "guessPtSwapToSy.guessMax", "label": "GuessMax", "visible": "never" },
+          { "path": "guessPtSwapToSy.guessOffchain", "label": "GuessOffchain", "visible": "never" },
+          { "path": "guessPtSwapToSy.maxIteration", "label": "MaxIteration", "visible": "never" },
+          { "path": "guessPtSwapToSy.eps", "label": "Eps", "visible": "never" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Add {netPtIn} PT (raw) to {market} for at least {minLpOut} to {receiver}"
+      },
+      "addLiquiditySingleSy(address receiver,address market,uint256 netSyIn,uint256 minLpOut,(uint256 guessMin,uint256 guessMax,uint256 guessOffchain,uint256 maxIteration,uint256 eps) guessPtReceivedFromSy,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Add liquidity with SY",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "netSyIn", "label": "SY to Add (raw)", "format": "raw" },
+          { "path": "minLpOut", "label": "Minimum LP Out", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          { "path": "guessPtReceivedFromSy.guessMin", "label": "GuessMin", "visible": "never" },
+          { "path": "guessPtReceivedFromSy.guessMax", "label": "GuessMax", "visible": "never" },
+          { "path": "guessPtReceivedFromSy.guessOffchain", "label": "GuessOffchain", "visible": "never" },
+          { "path": "guessPtReceivedFromSy.maxIteration", "label": "MaxIteration", "visible": "never" },
+          { "path": "guessPtReceivedFromSy.eps", "label": "Eps", "visible": "never" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Add {netSyIn} SY (raw) to {market} for at least {minLpOut} to {receiver}"
+      },
+      "addLiquiditySingleSyKeepYt(address receiver,address market,uint256 netSyIn,uint256 minLpOut,uint256 minYtOut)": {
+        "intent": "Add SY liquidity, keep YT",
+        "fields": [
+          { "path": "netSyIn", "label": "SY to Add (raw)", "format": "raw" },
+          { "path": "minLpOut", "label": "Minimum LP Out", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          { "path": "minYtOut", "label": "Minimum YT Out (raw)", "format": "raw" },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } }
+        ],
+        "interpolatedIntent": "Add {netSyIn} SY (raw) to {market} for at least {minLpOut} and {minYtOut} YT (raw) to {receiver}"
+      },
+      "addLiquiditySingleToken(address receiver,address market,uint256 minLpOut,(uint256 guessMin,uint256 guessMax,uint256 guessOffchain,uint256 maxIteration,uint256 eps) guessPtReceivedFromSy,(address tokenIn,uint256 netTokenIn,address tokenMintSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) input,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Add liquidity",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "minLpOut", "label": "Minimum LP Out", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          { "path": "guessPtReceivedFromSy.guessMin", "label": "GuessMin", "visible": "never" },
+          { "path": "guessPtReceivedFromSy.guessMax", "label": "GuessMax", "visible": "never" },
+          { "path": "guessPtReceivedFromSy.guessOffchain", "label": "GuessOffchain", "visible": "never" },
+          { "path": "guessPtReceivedFromSy.maxIteration", "label": "MaxIteration", "visible": "never" },
+          { "path": "guessPtReceivedFromSy.eps", "label": "Eps", "visible": "never" },
+          { "path": "input.tokenIn", "label": "Token In", "visible": "never" },
+          {
+            "path": "input.netTokenIn",
+            "label": "Amount to Pay",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "input.tokenIn", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "input.tokenMintSy", "label": "Token Mint SY", "visible": "never" },
+          { "path": "input.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "input.swapData.swapType", "label": "Swap Type", "visible": "never" },
+          { "path": "input.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          {
+            "path": "input.swapData.extCalldata",
+            "label": "Aggregator Route",
+            "format": "calldata",
+            "params": { "calleePath": "input.swapData.extRouter", "spenderPath": "input.pendleSwap" },
+            "visible": "never"
+          },
+          { "path": "input.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Add {input.netTokenIn} to {market} for at least {minLpOut} to {receiver}"
+      },
+      "addLiquiditySingleTokenKeepYt(address receiver,address market,uint256 minLpOut,uint256 minYtOut,(address tokenIn,uint256 netTokenIn,address tokenMintSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) input)": {
+        "intent": "Add liquidity, keep YT",
+        "fields": [
+          {
+            "path": "input.netTokenIn",
+            "label": "Amount to Pay",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "input.tokenIn", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "input.tokenIn", "label": "Token In", "visible": "never" },
+          { "path": "input.tokenMintSy", "label": "Token Mint SY", "visible": "never" },
+          { "path": "input.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "input.swapData.swapType", "label": "Swap Type", "visible": "never" },
+          { "path": "input.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          {
+            "path": "input.swapData.extCalldata",
+            "label": "Aggregator Route",
+            "format": "calldata",
+            "params": { "calleePath": "input.swapData.extRouter", "spenderPath": "input.pendleSwap" },
+            "visible": "never"
+          },
+          { "path": "input.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          { "path": "minLpOut", "label": "Minimum LP Out", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          { "path": "minYtOut", "label": "Minimum YT Out (raw)", "format": "raw" },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Add {input.netTokenIn} to {market} for at least {minLpOut} and {minYtOut} YT (raw) to {receiver}"
+      },
+      "boostMarkets(address[] markets)": {
+        "intent": "Refresh gauge boost",
+        "fields": [
+          {
+            "path": "markets.[]",
+            "label": "Market",
+            "format": "addressName",
+            "separator": "Markets {index}",
+            "params": { "types": ["contract"], "sources": ["local"] }
+          }
+        ],
+        "interpolatedIntent": "Refresh the gauge boost on {markets.[]}"
+      },
+      "exitPostExpToSy(address receiver,address market,uint256 netPtIn,uint256 netLpIn,uint256 minSyOut)": {
+        "intent": "Exit expired position to SY",
+        "fields": [
+          { "path": "netPtIn", "label": "PT to Exit (raw)", "format": "raw" },
+          { "path": "netLpIn", "label": "LP to Exit", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          { "path": "minSyOut", "label": "Minimum SY Out (raw)", "format": "raw" },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } }
+        ],
+        "interpolatedIntent": "Exit {netPtIn} PT (raw) and {netLpIn} of {market} for at least {minSyOut} SY (raw) to {receiver}"
+      },
+      "exitPostExpToToken(address receiver,address market,uint256 netPtIn,uint256 netLpIn,(address tokenOut,uint256 minTokenOut,address tokenRedeemSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) output)": {
+        "intent": "Exit expired position",
+        "fields": [
+          { "path": "netPtIn", "label": "PT to Exit (raw)", "format": "raw" },
+          { "path": "netLpIn", "label": "LP to Exit", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          {
+            "path": "output.minTokenOut",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "output.tokenRedeemSy", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "output.tokenRedeemSy", "label": "Token Redeem SY", "visible": "never" },
+          { "path": "output.tokenOut", "label": "Token Out", "visible": "never" },
+          { "path": "output.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "output.swapData.swapType", "label": "Swap Type", "format": "raw", "visible": { "mustMatch": [0] } },
+          { "path": "output.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          { "path": "output.swapData.extCalldata", "label": "Ext Calldata", "visible": "never" },
+          { "path": "output.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } }
+        ],
+        "interpolatedIntent": "Exit {netPtIn} PT (raw) and {netLpIn} of {market} for at least {output.minTokenOut} to {receiver}"
+      },
+      "exitPreExpToSy(address receiver,address market,uint256 netPtIn,uint256 netYtIn,uint256 netLpIn,uint256 minSyOut,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Exit position to SY",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "netPtIn", "label": "PT to Exit (raw)", "format": "raw" },
+          { "path": "netYtIn", "label": "YT to Exit (raw)", "format": "raw" },
+          { "path": "netLpIn", "label": "LP to Exit", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          { "path": "minSyOut", "label": "Minimum SY Out (raw)", "format": "raw" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Exit {netPtIn} PT (raw), {netYtIn} YT (raw) and {netLpIn} of {market} for at least {minSyOut} SY (raw) to {receiver}"
+      },
+      "exitPreExpToToken(address receiver,address market,uint256 netPtIn,uint256 netYtIn,uint256 netLpIn,(address tokenOut,uint256 minTokenOut,address tokenRedeemSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) output,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Exit position to token",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "netPtIn", "label": "PT to Exit (raw)", "format": "raw" },
+          { "path": "netYtIn", "label": "YT to Exit (raw)", "format": "raw" },
+          { "path": "netLpIn", "label": "LP to Exit", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          { "path": "output.tokenOut", "label": "Token Out", "visible": "never" },
+          {
+            "path": "output.minTokenOut",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "output.tokenRedeemSy", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "output.tokenRedeemSy", "label": "Token Redeem SY", "visible": "never" },
+          { "path": "output.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "output.swapData.swapType", "label": "Swap Type", "format": "raw", "visible": { "mustMatch": [0] } },
+          { "path": "output.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          { "path": "output.swapData.extCalldata", "label": "Ext Calldata", "visible": "never" },
+          { "path": "output.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Exit {netPtIn} PT (raw), {netYtIn} YT (raw) and {netLpIn} of {market} for at least {output.minTokenOut} to {receiver}"
+      },
+      "mintPyFromSy(address receiver,address YT,uint256 netSyIn,uint256 minPyOut)": {
+        "intent": "Mint PT and YT from SY",
+        "fields": [
+          { "path": "netSyIn", "label": "SY to Pay (raw)", "format": "raw" },
+          { "path": "minPyOut", "label": "Minimum PT and YT", "format": "tokenAmount", "params": { "tokenPath": "YT" } },
+          { "path": "YT", "label": "YT", "visible": "never" },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } }
+        ],
+        "interpolatedIntent": "Mint at least {minPyOut} each of PT and YT with {netSyIn} SY (raw) to {receiver}"
+      },
+      "mintPyFromToken(address receiver,address YT,uint256 minPyOut,(address tokenIn,uint256 netTokenIn,address tokenMintSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) input)": {
+        "intent": "Mint PT and YT",
+        "fields": [
+          {
+            "path": "input.netTokenIn",
+            "label": "Amount to Pay",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "input.tokenIn", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "input.tokenIn", "label": "Token In", "visible": "never" },
+          { "path": "input.tokenMintSy", "label": "Token Mint SY", "visible": "never" },
+          { "path": "input.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "input.swapData.swapType", "label": "Swap Type", "visible": "never" },
+          { "path": "input.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          {
+            "path": "input.swapData.extCalldata",
+            "label": "Aggregator Route",
+            "format": "calldata",
+            "params": { "calleePath": "input.swapData.extRouter", "spenderPath": "input.pendleSwap" },
+            "visible": "never"
+          },
+          { "path": "input.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          { "path": "minPyOut", "label": "Minimum PT and YT", "format": "tokenAmount", "params": { "tokenPath": "YT" } },
+          { "path": "YT", "label": "YT", "visible": "never" },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Mint at least {minPyOut} each of PT and YT with {input.netTokenIn} to {receiver}"
+      },
+      "mintSyFromToken(address receiver,address SY,uint256 minSyOut,(address tokenIn,uint256 netTokenIn,address tokenMintSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) input)": {
+        "intent": "Mint SY",
+        "fields": [
+          {
+            "path": "input.netTokenIn",
+            "label": "Amount to Pay",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "input.tokenIn", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "input.tokenIn", "label": "Token In", "visible": "never" },
+          { "path": "input.tokenMintSy", "label": "Token Mint SY", "visible": "never" },
+          { "path": "input.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "input.swapData.swapType", "label": "Swap Type", "visible": "never" },
+          { "path": "input.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          {
+            "path": "input.swapData.extCalldata",
+            "label": "Aggregator Route",
+            "format": "calldata",
+            "params": { "calleePath": "input.swapData.extRouter", "spenderPath": "input.pendleSwap" },
+            "visible": "never"
+          },
+          { "path": "input.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          { "path": "minSyOut", "label": "Minimum SY Out", "format": "tokenAmount", "params": { "tokenPath": "SY" } },
+          { "path": "SY", "label": "SY", "visible": "never" },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Mint at least {minSyOut} with {input.netTokenIn} to {receiver}"
+      },
+      "redeemDueInterestAndRewards(address user,address[] sys,address[] yts,address[] markets)": {
+        "intent": "Claim interest and rewards",
+        "fields": [
+          { "path": "user", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "sys.[]", "label": "SY Rewards", "format": "tokenTicker" },
+          { "path": "yts.[]", "label": "YT Claims", "format": "tokenTicker" },
+          { "path": "markets.[]", "label": "LP Rewards", "format": "tokenTicker" }
+        ],
+        "interpolatedIntent": "Claim interest and rewards for {user}"
+      },
+      "redeemPyToSy(address receiver,address YT,uint256 netPyIn,uint256 minSyOut)": {
+        "intent": "Redeem PT and YT to SY",
+        "fields": [
+          { "path": "netPyIn", "label": "PT/YT to Redeem", "format": "tokenAmount", "params": { "tokenPath": "YT" } },
+          { "path": "minSyOut", "label": "Minimum SY Out (raw)", "format": "raw" },
+          { "path": "YT", "label": "YT", "visible": "never" },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } }
+        ],
+        "interpolatedIntent": "Redeem {netPyIn} of PT, and of YT before expiry, for at least {minSyOut} SY (raw) to {receiver}"
+      },
+      "redeemPyToToken(address receiver,address YT,uint256 netPyIn,(address tokenOut,uint256 minTokenOut,address tokenRedeemSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) output)": {
+        "intent": "Redeem PT and YT",
+        "fields": [
+          { "path": "netPyIn", "label": "PT/YT to Redeem", "format": "tokenAmount", "params": { "tokenPath": "YT" } },
+          {
+            "path": "output.minTokenOut",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "output.tokenRedeemSy", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "output.tokenRedeemSy", "label": "Token Redeem SY", "visible": "never" },
+          { "path": "output.tokenOut", "label": "Token Out", "visible": "never" },
+          { "path": "output.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "output.swapData.swapType", "label": "Swap Type", "format": "raw", "visible": { "mustMatch": [0] } },
+          { "path": "output.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          { "path": "output.swapData.extCalldata", "label": "Ext Calldata", "visible": "never" },
+          { "path": "output.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          { "path": "YT", "label": "YT", "visible": "never" },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } }
+        ],
+        "interpolatedIntent": "Redeem {netPyIn} of PT, and of YT before expiry, for at least {output.minTokenOut} to {receiver}"
+      },
+      "redeemSyToToken(address receiver,address SY,uint256 netSyIn,(address tokenOut,uint256 minTokenOut,address tokenRedeemSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) output)": {
+        "intent": "Redeem SY",
+        "fields": [
+          { "path": "netSyIn", "label": "SY to Redeem", "format": "tokenAmount", "params": { "tokenPath": "SY" } },
+          {
+            "path": "output.minTokenOut",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "output.tokenRedeemSy", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "output.tokenRedeemSy", "label": "Token Redeem SY", "visible": "never" },
+          { "path": "output.tokenOut", "label": "Token Out", "visible": "never" },
+          { "path": "output.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "output.swapData.swapType", "label": "Swap Type", "format": "raw", "visible": { "mustMatch": [0] } },
+          { "path": "output.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          { "path": "output.swapData.extCalldata", "label": "Ext Calldata", "visible": "never" },
+          { "path": "output.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          { "path": "SY", "label": "SY", "visible": "never" },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } }
+        ],
+        "interpolatedIntent": "Redeem {netSyIn} for at least {output.minTokenOut} to {receiver}"
+      },
+      "removeLiquidityDualSyAndPt(address receiver,address market,uint256 netLpToRemove,uint256 minSyOut,uint256 minPtOut)": {
+        "intent": "Remove liquidity to SY and PT",
+        "fields": [
+          { "path": "netLpToRemove", "label": "LP to Remove", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          { "path": "minSyOut", "label": "Minimum SY Out (raw)", "format": "raw" },
+          { "path": "minPtOut", "label": "Minimum PT Out (raw)", "format": "raw" },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } }
+        ],
+        "interpolatedIntent": "Remove {netLpToRemove} for at least {minSyOut} SY (raw) and {minPtOut} PT (raw) to {receiver}"
+      },
+      "removeLiquidityDualTokenAndPt(address receiver,address market,uint256 netLpToRemove,(address tokenOut,uint256 minTokenOut,address tokenRedeemSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) output,uint256 minPtOut)": {
+        "intent": "Remove liquidity",
+        "fields": [
+          { "path": "netLpToRemove", "label": "LP to Remove", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          {
+            "path": "output.minTokenOut",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "output.tokenRedeemSy", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "output.tokenRedeemSy", "label": "Token Redeem SY", "visible": "never" },
+          { "path": "output.tokenOut", "label": "Token Out", "visible": "never" },
+          { "path": "output.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "output.swapData.swapType", "label": "Swap Type", "format": "raw", "visible": { "mustMatch": [0] } },
+          { "path": "output.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          { "path": "output.swapData.extCalldata", "label": "Ext Calldata", "visible": "never" },
+          { "path": "output.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          { "path": "minPtOut", "label": "Minimum PT Out (raw)", "format": "raw" },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } }
+        ],
+        "interpolatedIntent": "Remove {netLpToRemove} for at least {output.minTokenOut} and {minPtOut} PT (raw) to {receiver}"
+      },
+      "removeLiquiditySinglePt(address receiver,address market,uint256 netLpToRemove,uint256 minPtOut,(uint256 guessMin,uint256 guessMax,uint256 guessOffchain,uint256 maxIteration,uint256 eps) guessPtReceivedFromSy,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Remove liquidity to PT",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "netLpToRemove", "label": "LP to Remove", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          { "path": "minPtOut", "label": "Minimum PT Out (raw)", "format": "raw" },
+          { "path": "guessPtReceivedFromSy.guessMin", "label": "GuessMin", "visible": "never" },
+          { "path": "guessPtReceivedFromSy.guessMax", "label": "GuessMax", "visible": "never" },
+          { "path": "guessPtReceivedFromSy.guessOffchain", "label": "GuessOffchain", "visible": "never" },
+          { "path": "guessPtReceivedFromSy.maxIteration", "label": "MaxIteration", "visible": "never" },
+          { "path": "guessPtReceivedFromSy.eps", "label": "Eps", "visible": "never" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Remove {netLpToRemove} for at least {minPtOut} PT (raw) to {receiver}"
+      },
+      "removeLiquiditySingleSy(address receiver,address market,uint256 netLpToRemove,uint256 minSyOut,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Remove liquidity to SY",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "netLpToRemove", "label": "LP to Remove", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          { "path": "minSyOut", "label": "Minimum SY Out (raw)", "format": "raw" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Remove {netLpToRemove} for at least {minSyOut} SY (raw) to {receiver}"
+      },
+      "removeLiquiditySingleToken(address receiver,address market,uint256 netLpToRemove,(address tokenOut,uint256 minTokenOut,address tokenRedeemSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) output,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Remove liquidity to token",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "netLpToRemove", "label": "LP to Remove", "format": "tokenAmount", "params": { "tokenPath": "market" } },
+          { "path": "output.tokenOut", "label": "Token Out", "visible": "never" },
+          {
+            "path": "output.minTokenOut",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "output.tokenRedeemSy", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "output.tokenRedeemSy", "label": "Token Redeem SY", "visible": "never" },
+          { "path": "output.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "output.swapData.swapType", "label": "Swap Type", "format": "raw", "visible": { "mustMatch": [0] } },
+          { "path": "output.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          { "path": "output.swapData.extCalldata", "label": "Ext Calldata", "visible": "never" },
+          { "path": "output.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Remove {netLpToRemove} for at least {output.minTokenOut} to {receiver}"
+      },
+      "requestBurnQuota(address token,uint256 amount,bytes optData)": {
+        "intent": "Request burn quota",
+        "fields": [
+          { "path": "amount", "label": "Requested Amount", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "token", "label": "Token", "visible": "never" },
+          { "path": "optData", "label": "Opt Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Request a burn quota of {amount}"
+      },
+      "swapExactPtForSy(address receiver,address market,uint256 exactPtIn,uint256 minSyOut,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Sell PT for SY",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "exactPtIn", "label": "PT to Sell (raw)", "format": "raw" },
+          { "path": "minSyOut", "label": "Minimum SY Out (raw)", "format": "raw" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Sell {exactPtIn} PT (raw) of {market} for at least {minSyOut} SY (raw) to {receiver}"
+      },
+      "swapExactPtForToken(address receiver,address market,uint256 exactPtIn,(address tokenOut,uint256 minTokenOut,address tokenRedeemSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) output,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Sell PT for token",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "exactPtIn", "label": "PT to Sell (raw)", "format": "raw" },
+          { "path": "output.tokenOut", "label": "Token Out", "visible": "never" },
+          {
+            "path": "output.minTokenOut",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "output.tokenRedeemSy", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "output.tokenRedeemSy", "label": "Token Redeem SY", "visible": "never" },
+          { "path": "output.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "output.swapData.swapType", "label": "Swap Type", "format": "raw", "visible": { "mustMatch": [0] } },
+          { "path": "output.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          { "path": "output.swapData.extCalldata", "label": "Ext Calldata", "visible": "never" },
+          { "path": "output.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Sell {exactPtIn} PT (raw) of {market} for at least {output.minTokenOut} to {receiver}"
+      },
+      "swapExactSyForPt(address receiver,address market,uint256 exactSyIn,uint256 minPtOut,(uint256 guessMin,uint256 guessMax,uint256 guessOffchain,uint256 maxIteration,uint256 eps) guessPtOut,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Swap SY for PT",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "exactSyIn", "label": "SY to Pay (raw)", "format": "raw" },
+          { "path": "minPtOut", "label": "Minimum PT Out (raw)", "format": "raw" },
+          { "path": "guessPtOut.guessMin", "label": "GuessMin", "visible": "never" },
+          { "path": "guessPtOut.guessMax", "label": "GuessMax", "visible": "never" },
+          { "path": "guessPtOut.guessOffchain", "label": "GuessOffchain", "visible": "never" },
+          { "path": "guessPtOut.maxIteration", "label": "MaxIteration", "visible": "never" },
+          { "path": "guessPtOut.eps", "label": "Eps", "visible": "never" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Swap {exactSyIn} SY (raw) for at least {minPtOut} PT (raw) of {market} to {receiver}"
+      },
+      "swapExactSyForYt(address receiver,address market,uint256 exactSyIn,uint256 minYtOut,(uint256 guessMin,uint256 guessMax,uint256 guessOffchain,uint256 maxIteration,uint256 eps) guessYtOut,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Swap SY for YT",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "exactSyIn", "label": "SY to Pay (raw)", "format": "raw" },
+          { "path": "minYtOut", "label": "Minimum YT Out (raw)", "format": "raw" },
+          { "path": "guessYtOut.guessMin", "label": "GuessMin", "visible": "never" },
+          { "path": "guessYtOut.guessMax", "label": "GuessMax", "visible": "never" },
+          { "path": "guessYtOut.guessOffchain", "label": "GuessOffchain", "visible": "never" },
+          { "path": "guessYtOut.maxIteration", "label": "MaxIteration", "visible": "never" },
+          { "path": "guessYtOut.eps", "label": "Eps", "visible": "never" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Swap {exactSyIn} SY (raw) for at least {minYtOut} YT (raw) of {market} to {receiver}"
+      },
+      "swapExactTokenForPt(address receiver,address market,uint256 minPtOut,(uint256 guessMin,uint256 guessMax,uint256 guessOffchain,uint256 maxIteration,uint256 eps) guessPtOut,(address tokenIn,uint256 netTokenIn,address tokenMintSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) input,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Swap token for PT",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "minPtOut", "label": "Minimum PT Out (raw)", "format": "raw" },
+          { "path": "guessPtOut.guessMin", "label": "GuessMin", "visible": "never" },
+          { "path": "guessPtOut.guessMax", "label": "GuessMax", "visible": "never" },
+          { "path": "guessPtOut.guessOffchain", "label": "GuessOffchain", "visible": "never" },
+          { "path": "guessPtOut.maxIteration", "label": "MaxIteration", "visible": "never" },
+          { "path": "guessPtOut.eps", "label": "Eps", "visible": "never" },
+          { "path": "input.tokenIn", "label": "Token In", "visible": "never" },
+          {
+            "path": "input.netTokenIn",
+            "label": "Amount to Pay",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "input.tokenIn", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "input.tokenMintSy", "label": "Token Mint SY", "visible": "never" },
+          { "path": "input.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "input.swapData.swapType", "label": "Swap Type", "visible": "never" },
+          { "path": "input.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          {
+            "path": "input.swapData.extCalldata",
+            "label": "Aggregator Route",
+            "format": "calldata",
+            "params": { "calleePath": "input.swapData.extRouter", "spenderPath": "input.pendleSwap" },
+            "visible": "never"
+          },
+          { "path": "input.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Swap {input.netTokenIn} for at least {minPtOut} PT (raw) of {market} to {receiver}"
+      },
+      "swapExactTokenForYt(address receiver,address market,uint256 minYtOut,(uint256 guessMin,uint256 guessMax,uint256 guessOffchain,uint256 maxIteration,uint256 eps) guessYtOut,(address tokenIn,uint256 netTokenIn,address tokenMintSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) input,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Swap token for YT",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "minYtOut", "label": "Minimum YT Out (raw)", "format": "raw" },
+          { "path": "guessYtOut.guessMin", "label": "GuessMin", "visible": "never" },
+          { "path": "guessYtOut.guessMax", "label": "GuessMax", "visible": "never" },
+          { "path": "guessYtOut.guessOffchain", "label": "GuessOffchain", "visible": "never" },
+          { "path": "guessYtOut.maxIteration", "label": "MaxIteration", "visible": "never" },
+          { "path": "guessYtOut.eps", "label": "Eps", "visible": "never" },
+          { "path": "input.tokenIn", "label": "Token In", "visible": "never" },
+          {
+            "path": "input.netTokenIn",
+            "label": "Amount to Pay",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "input.tokenIn", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "input.tokenMintSy", "label": "Token Mint SY", "visible": "never" },
+          { "path": "input.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "input.swapData.swapType", "label": "Swap Type", "visible": "never" },
+          { "path": "input.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          {
+            "path": "input.swapData.extCalldata",
+            "label": "Aggregator Route",
+            "format": "calldata",
+            "params": { "calleePath": "input.swapData.extRouter", "spenderPath": "input.pendleSwap" },
+            "visible": "never"
+          },
+          { "path": "input.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Swap {input.netTokenIn} for at least {minYtOut} YT (raw) of {market} to {receiver}"
+      },
+      "swapExactYtForSy(address receiver,address market,uint256 exactYtIn,uint256 minSyOut,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Sell YT for SY",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "exactYtIn", "label": "YT to Sell (raw)", "format": "raw" },
+          { "path": "minSyOut", "label": "Minimum SY Out (raw)", "format": "raw" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Sell {exactYtIn} YT (raw) of {market} for at least {minSyOut} SY (raw) to {receiver}"
+      },
+      "swapExactYtForToken(address receiver,address market,uint256 exactYtIn,(address tokenOut,uint256 minTokenOut,address tokenRedeemSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) output,(address limitRouter,uint256 epsSkipMarket,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] normalFills,((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order,bytes signature,uint256 makingAmount)[] flashFills,bytes optData) limit)": {
+        "intent": "Sell YT for token",
+        "fields": [
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "market", "label": "Market", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "exactYtIn", "label": "YT to Sell (raw)", "format": "raw" },
+          { "path": "output.tokenOut", "label": "Token Out", "visible": "never" },
+          {
+            "path": "output.minTokenOut",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "output.tokenRedeemSy", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "output.tokenRedeemSy", "label": "Token Redeem SY", "visible": "never" },
+          { "path": "output.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "output.swapData.swapType", "label": "Swap Type", "format": "raw", "visible": { "mustMatch": [0] } },
+          { "path": "output.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          { "path": "output.swapData.extCalldata", "label": "Ext Calldata", "visible": "never" },
+          { "path": "output.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          {
+            "path": "limit.limitRouter",
+            "label": "Limit Router",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x0000000000000000000000000000000000000000", "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321"] }
+          },
+          { "path": "limit.epsSkipMarket", "label": "Eps Skip Market", "visible": "never" },
+          {
+            "path": "limit.normalFills.[]",
+            "label": "Normal Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          {
+            "path": "limit.flashFills.[]",
+            "label": "Flash Fills",
+            "iteration": "sequential",
+            "fields": [
+              { "path": "order.salt", "label": "Salt", "visible": "never" },
+              { "path": "order.expiry", "label": "Expiry", "visible": "never" },
+              { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+              { "path": "order.orderType", "label": "OrderType", "visible": "never" },
+              { "path": "order.token", "label": "Token", "visible": "never" },
+              { "path": "order.YT", "label": "YT", "visible": "never" },
+              { "path": "order.maker", "label": "Maker", "visible": "never" },
+              { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+              { "path": "order.makingAmount", "label": "MakingAmount", "visible": "never" },
+              { "path": "order.lnImpliedRate", "label": "LnImpliedRate", "visible": "never" },
+              { "path": "order.failSafeRate", "label": "FailSafeRate", "visible": "never" },
+              { "path": "order.permit", "label": "Permit", "visible": "never" },
+              { "path": "signature", "label": "Signature", "visible": "never" },
+              { "path": "makingAmount", "label": "Making Amount", "visible": "never" }
+            ]
+          },
+          { "path": "limit.optData", "label": "Opt Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Sell {exactYtIn} YT (raw) of {market} for at least {output.minTokenOut} to {receiver}"
+      },
+      "swapTokenToTokenViaSy(address receiver,address SY,(address tokenIn,uint256 netTokenIn,address tokenMintSy,address pendleSwap,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData) input,address tokenRedeemSy,uint256 minTokenOut)": {
+        "intent": "Swap token via SY",
+        "fields": [
+          {
+            "path": "input.netTokenIn",
+            "label": "Amount to Pay",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "input.tokenIn", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "input.tokenIn", "label": "Token In", "visible": "never" },
+          { "path": "input.tokenMintSy", "label": "Token Mint SY", "visible": "never" },
+          { "path": "input.pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "input.swapData.swapType", "label": "Swap Type", "visible": "never" },
+          { "path": "input.swapData.extRouter", "label": "Ext Router", "visible": "never" },
+          {
+            "path": "input.swapData.extCalldata",
+            "label": "Aggregator Route",
+            "format": "calldata",
+            "params": { "calleePath": "input.swapData.extRouter", "spenderPath": "input.pendleSwap" },
+            "visible": "never"
+          },
+          { "path": "input.swapData.needScale", "label": "Need Scale", "visible": "never" },
+          {
+            "path": "minTokenOut",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenRedeemSy", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "tokenRedeemSy", "label": "Token Redeem SY", "visible": "never" },
+          { "path": "SY", "label": "SY Contract", "format": "addressName", "params": { "types": ["contract"], "sources": ["local"] } },
+          { "path": "receiver", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Swap {input.netTokenIn} via {SY} for at least {minTokenOut} to {receiver}"
+      },
+      "multicall((bool allowFailure,bytes callData)[] calls)": {
+        "intent": "Batch router actions",
+        "interpolatedIntent": "Run a batch of Pendle router actions",
+        "fields": [
+          {
+            "path": "calls.[].callData",
+            "label": "Action",
+            "format": "calldata",
+            "params": { "calleePath": "@.to", "amountPath": "@.value", "spenderPath": "@.from" }
+          },
+          { "path": "calls.[].allowFailure", "label": "Allow Failure", "format": "raw", "visible": { "mustMatch": [false] } },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" }
+        ]
+      },
+      "swapTokensToTokens(address pendleSwap,(address tokenIn,address tokenOut,uint256 minOut,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData)[] swaps,uint256[] netSwaps)": {
+        "intent": "Swap tokens",
+        "fields": [
+          {
+            "label": "Swaps",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "netSwaps.[]",
+                "label": "Amount to Pay",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "swaps.[].tokenIn", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+              },
+              {
+                "path": "swaps.[].minOut",
+                "label": "Minimum to Receive",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "swaps.[].tokenOut", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+              },
+              { "path": "swaps.[].tokenIn", "label": "Token In", "visible": "never" },
+              { "path": "swaps.[].tokenOut", "label": "Token Out", "visible": "never" },
+              { "path": "swaps.[].swapData.swapType", "label": "Swap Type", "visible": "never" },
+              { "path": "swaps.[].swapData.extRouter", "label": "Ext Router", "visible": "never" },
+              {
+                "path": "swaps.[].swapData.extCalldata",
+                "label": "Aggregator Route",
+                "format": "calldata",
+                "params": { "calleePath": "swaps.[].swapData.extRouter", "spenderPath": "pendleSwap" },
+                "visible": "never"
+              },
+              { "path": "swaps.[].swapData.needScale", "label": "Need Scale", "visible": "never" }
+            ]
+          },
+          { "path": "pendleSwap", "label": "Pendle Swap", "visible": "never" },
+          { "path": "@.from", "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Swap tokens and send the output to {@.from}"
+      },
+      "redeemDueInterestAndRewardsV2(address[] SYs,(address yt,bool doRedeemInterest,bool doRedeemRewards,address tokenRedeemSy,uint256 minTokenRedeemOut)[] YTs,address[] markets,address pendleSwap,(address tokenIn,address tokenOut,uint256 minOut,(uint8 swapType,address extRouter,bytes extCalldata,bool needScale) swapData)[] swaps)": {
+        "intent": "Claim interest and rewards",
+        "fields": [
+          { "path": "@.from", "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] } },
+          { "path": "SYs.[]", "label": "SY Rewards", "format": "tokenTicker" },
+          {
+            "label": "YT Claims",
+            "iteration": "bundled",
+            "fields": [
+              { "path": "YTs.[].yt", "label": "YT", "format": "tokenTicker" },
+              { "path": "YTs.[].doRedeemInterest", "label": "Claim Interest", "format": "raw" },
+              { "path": "YTs.[].doRedeemRewards", "label": "Claim Rewards", "format": "raw" },
+              {
+                "path": "YTs.[].minTokenRedeemOut",
+                "label": "Minimum Interest",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "YTs.[].tokenRedeemSy", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+              },
+              { "path": "YTs.[].tokenRedeemSy", "label": "Token Redeem SY", "visible": "never" }
+            ]
+          },
+          { "path": "markets.[]", "label": "LP Rewards", "format": "tokenTicker" },
+          {
+            "label": "Reward Swaps",
+            "iteration": "bundled",
+            "fields": [
+              { "path": "swaps.[].tokenIn", "label": "Swap Claimed", "format": "tokenTicker" },
+              {
+                "path": "swaps.[].minOut",
+                "label": "Minimum to Receive",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "swaps.[].tokenOut", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+              },
+              { "path": "swaps.[].tokenOut", "label": "Token Out", "visible": "never" },
+              { "path": "swaps.[].swapData.swapType", "label": "Swap Type", "visible": "never" },
+              { "path": "swaps.[].swapData.extRouter", "label": "Ext Router", "visible": "never" },
+              {
+                "path": "swaps.[].swapData.extCalldata",
+                "label": "Aggregator Route",
+                "format": "calldata",
+                "params": { "calleePath": "swaps.[].swapData.extRouter", "spenderPath": "pendleSwap" },
+                "visible": "never"
+              },
+              { "path": "swaps.[].swapData.needScale", "label": "Need Scale", "visible": "never" }
+            ]
+          },
+          { "path": "pendleSwap", "label": "Pendle Swap", "visible": "never" }
+        ],
+        "interpolatedIntent": "Claim interest and rewards for {@.from}"
+      }
+    }
+  }
+}

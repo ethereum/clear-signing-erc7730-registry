@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-grove-bbqAUSD-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0x00000000efe302beaa2b3e6e1b18d08d69a9012a": { "decimals": 6, "name": "AUSD", "symbol": "AUSD" },
+      "0xbeeff0d672ab7f5018dfb614c93981045d4aa98a": { "decimals": 18, "name": "Grove x Steakhouse AUSD", "symbol": "grove-bbqAUSD" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e0182350383033b12840f9ed5f6830f9a0994beeff0d672ab7f5018dfb614c93981045d4aa98a80b8446e553f650000000000000000000000000000000000000000000000000000000000002710000000000000000000000000feed46c11f57b7126a773eec6ae9ca7ae1c03c9ac0",
+      "txHash": "0x993dc61961d9a23d9ed8ea708b341446aaec3eb035b22a03722ec8e3a166ad70",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.01 AUSD" },
+          { "label": "Share ticker", "value": "grove-bbqAUSD" },
+          { "label": "Send shares to", "value": "0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a" }
+        ],
+        "interpolatedIntent": "Deposit 0.01 AUSD for 0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b820401842b098d6a831e848094beeff0d672ab7f5018dfb614c93981045d4aa98a80b84494bf804d0000000000000000000000000000000000000000000000000de0b6b36bc93600000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x5c40c5331a0a1f0e046d2208de948c6e8865db6c45f23c972ee6cb914793ec11",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "AUSD" },
+          { "label": "Minted shares", "value": "0.999999999 grove-bbqAUSD" },
+          { "label": "Mint shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Mint 0.999999999 grove-bbqAUSD for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0xf8938222e58408d24d00830a416094beeff0d672ab7f5018dfb614c93981045d4aa98a80b86cb460af940000000000000000000000000000000000000000000000000000004119386300000000000000000000000000c6dd9976066f3364b4d6a72cd4f1fa0468327aa7000000000000000000000000c6dd9976066f3364b4d6a72cd4f1fa0468327aa769fe54df2222da44018080",
+      "txHash": "0xc31107c73bbc9e65a3fee41e4f44052b496639ff6b9bafa06f7e5c56fc2385de",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "279596 AUSD" },
+          { "label": "To", "value": "0xc6dD9976066F3364b4D6A72cD4F1fA0468327Aa7" },
+          { "label": "Owner", "value": "0xc6dD9976066F3364b4D6A72cD4F1fA0468327Aa7" }
+        ],
+        "interpolatedIntent": "Withdraw 279596 AUSD to 0xc6dD9976066F3364b4D6A72cD4F1fA0468327Aa7",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f897018205df8405f5e1008459682f008316cc8994beeff0d672ab7f5018dfb614c93981045d4aa98a80b86cba08765200000000000000000000000000000000000000000000075e086c159a9fdf3d100000000000000000000000008449f934dbfbfa050f5e7738bf2e73a8110229040000000000000000000000008449f934dbfbfa050f5e7738bf2e73a81102290469e448742222da44c0",
+      "txHash": "0xf9a957fea0e7024ad5654ca7a756a39880a9c63af0b00604226b013ee8fd64db",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "34791.166206819853876496 grove-bbqAUSD" },
+          { "label": "To", "value": "0x8449f934dbFbFA050f5E7738bf2E73a811022904" },
+          { "label": "Owner", "value": "0x8449f934dbFbFA050f5E7738bf2E73a811022904" }
+        ],
+        "interpolatedIntent": "Redeem 34791.166206819853876496 grove-bbqAUSD to 0x8449f934dbFbFA050f5E7738bf2E73a811022904",
+        "owner": "Steakhouse Financial"
+      }
+    }
+  ]
+}

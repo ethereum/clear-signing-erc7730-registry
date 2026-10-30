@@ -1,0 +1,887 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x471686c42792F93528B000beF54bC10E3aa2045f"
+        },
+        {
+          "chainId": 8453,
+          "address": "0xAdedD8ab6dE832766Fedf0FaC4992E5C4D3EA18A"
+        },
+        {
+          "chainId": 5042,
+          "address": "0x208786922BE56fDE2D1Fa60e6b9eC5D723e8d7b0"
+        },
+        {
+          "chainId": 4663,
+          "address": "0x6120765Ba5336150BbdDdD0Cd9108B5bFD369632"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Morpho DAO",
+    "contractName": "Midnight",
+    "info": {
+      "url": "https://morpho.org"
+    },
+    "enums": {
+      "authorizationAction": {
+        "false": "Revoke",
+        "true": "Grant"
+      },
+      "consumedUnits": {
+        "340282366920938463463374607431768211455": "Cancel all offers"
+      },
+      "takerSide": {
+        "true": "Sell (borrow or exit)",
+        "false": "Buy (lend or repay)"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "take(((uint256 chainId,address midnight,address loanToken,(address token,uint256 lltv,uint256 liquidationCursor,address oracle)[] collateralParams,uint256 maturity,uint256 rcfThreshold,address enterGate,address liquidatorGate) market,bool buy,address maker,uint256 start,uint256 expiry,uint256 tick,bytes32 group,address callback,bytes callbackData,address receiverIfMakerIsSeller,address ratifier,bool reduceOnly,uint128 maxUnits,uint128 maxAssets,uint256 continuousFeeCap) offer,bytes ratifierData,uint256 units,address taker,address receiverIfTakerIsSeller,address takerCallback,bytes takerCallbackData)": {
+        "intent": "Take offer (amount at maturity)",
+        "interpolatedIntent": "Fill {#.units} at maturity of offer by {#.offer.maker} for {#.taker}",
+        "fields": [
+          {
+            "label": "Loan token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.offer.market.loanToken"
+          },
+          {
+            "label": "Maturity",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.offer.market.maturity"
+          },
+          {
+            "path": "#.offer.market.collateralParams.[]",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "label": "Collateral token",
+                "format": "addressName",
+                "params": { "types": ["token"] },
+                "path": "token",
+                "visible": "always"
+              },
+              {
+                "label": "LLTV",
+                "format": "unit",
+                "params": { "base": "%", "decimals": 16 },
+                "path": "lltv",
+                "visible": "always"
+              },
+              {
+                "label": "Oracle",
+                "format": "addressName",
+                "params": { "types": ["contract"] },
+                "path": "oracle",
+                "visible": "always"
+              },
+              {
+                "label": "Liquidation cursor",
+                "format": "raw",
+                "path": "liquidationCursor",
+                "visible": "never"
+              }
+            ]
+          },
+          {
+            "path": "#.offer.market.chainId",
+            "label": "Chain ID",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offer.market.midnight",
+            "label": "Midnight",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offer.market.rcfThreshold",
+            "label": "RCF threshold",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offer.market.enterGate",
+            "label": "Enter gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.offer.market.liquidatorGate",
+            "label": "Liquidator gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "label": "Taker side",
+            "format": "enum",
+            "params": {"$ref": "$.metadata.enums.takerSide"},
+            "path": "#.offer.buy",
+            "visible": "always"
+          },
+          {
+            "path": "#.offer.maker",
+            "label": "Maker",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offer.start",
+            "label": "Offer start",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offer.expiry",
+            "label": "Offer expiry",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offer.tick",
+            "label": "Offer tick",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offer.group",
+            "label": "Group",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offer.callback",
+            "label": "Offer callback",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offer.callbackData",
+            "label": "Callback data",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.offer.receiverIfMakerIsSeller",
+            "label": "Maker receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offer.ratifier",
+            "label": "Ratifier",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offer.reduceOnly",
+            "label": "Reduce only",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.offer.maxUnits",
+            "label": "Max amount",
+            "format": "tokenAmount",
+            "visible": "always",
+            "params": {
+              "tokenPath": "#.offer.market.loanToken"
+            }
+          },
+          {
+            "path": "#.offer.maxAssets",
+            "label": "Max assets",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "#.offer.market.loanToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.offer.continuousFeeCap",
+            "label": "Continuous fee cap (per second, max = no cap)",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.ratifierData",
+            "label": "Ratifier data",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.units",
+            "label": "Amount at maturity (face value)",
+            "format": "tokenAmount",
+            "visible": "always",
+            "params": {
+              "tokenPath": "#.offer.market.loanToken"
+            }
+          },
+          {
+            "path": "#.taker",
+            "label": "Taker",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.receiverIfTakerIsSeller",
+            "label": "Taker receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.takerCallback",
+            "label": "Taker callback",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.takerCallbackData",
+            "label": "Taker data",
+            "format": "raw",
+            "visible": "never"
+          }
+        ]
+      },
+      "withdraw((uint256 chainId,address midnight,address loanToken,(address token,uint256 lltv,uint256 liquidationCursor,address oracle)[] collateralParams,uint256 maturity,uint256 rcfThreshold,address enterGate,address liquidatorGate) market,uint256 units,address onBehalf,address receiver)": {
+        "intent": "Withdraw loan",
+        "interpolatedIntent": "Withdraw {#.units} of {#.onBehalf} to {#.receiver}",
+        "fields": [
+          {
+            "label": "Loan token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.market.loanToken"
+          },
+          {
+            "label": "Maturity",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.market.maturity"
+          },
+          {
+            "path": "#.market.collateralParams.[]",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "label": "Collateral token",
+                "format": "addressName",
+                "params": { "types": ["token"] },
+                "path": "token",
+                "visible": "always"
+              },
+              {
+                "label": "LLTV",
+                "format": "unit",
+                "params": { "base": "%", "decimals": 16 },
+                "path": "lltv",
+                "visible": "always"
+              },
+              {
+                "label": "Oracle",
+                "format": "addressName",
+                "params": { "types": ["contract"] },
+                "path": "oracle",
+                "visible": "always"
+              },
+              {
+                "label": "Liquidation cursor",
+                "format": "raw",
+                "path": "liquidationCursor",
+                "visible": "never"
+              }
+            ]
+          },
+          {
+            "path": "#.market.chainId",
+            "label": "Chain ID",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.midnight",
+            "label": "Midnight",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.rcfThreshold",
+            "label": "RCF threshold",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.enterGate",
+            "label": "Enter gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.liquidatorGate",
+            "label": "Liquidator gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.units",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "visible": "always",
+            "params": {
+              "tokenPath": "#.market.loanToken"
+            }
+          },
+          {
+            "path": "#.onBehalf",
+            "label": "On behalf",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "repay((uint256 chainId,address midnight,address loanToken,(address token,uint256 lltv,uint256 liquidationCursor,address oracle)[] collateralParams,uint256 maturity,uint256 rcfThreshold,address enterGate,address liquidatorGate) market,uint256 units,address onBehalf,address callback,bytes data)": {
+        "intent": "Repay loan",
+        "interpolatedIntent": "Repay {#.units} for {#.onBehalf}",
+        "fields": [
+          {
+            "label": "Loan token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.market.loanToken"
+          },
+          {
+            "label": "Maturity",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.market.maturity"
+          },
+          {
+            "path": "#.market.collateralParams.[]",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "label": "Collateral token",
+                "format": "addressName",
+                "params": { "types": ["token"] },
+                "path": "token",
+                "visible": "always"
+              },
+              {
+                "label": "LLTV",
+                "format": "unit",
+                "params": { "base": "%", "decimals": 16 },
+                "path": "lltv",
+                "visible": "always"
+              },
+              {
+                "label": "Oracle",
+                "format": "addressName",
+                "params": { "types": ["contract"] },
+                "path": "oracle",
+                "visible": "always"
+              },
+              {
+                "label": "Liquidation cursor",
+                "format": "raw",
+                "path": "liquidationCursor",
+                "visible": "never"
+              }
+            ]
+          },
+          {
+            "path": "#.market.chainId",
+            "label": "Chain ID",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.midnight",
+            "label": "Midnight",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.rcfThreshold",
+            "label": "RCF threshold",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.enterGate",
+            "label": "Enter gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.liquidatorGate",
+            "label": "Liquidator gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.units",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "visible": "always",
+            "params": {
+              "tokenPath": "#.market.loanToken"
+            }
+          },
+          {
+            "path": "#.onBehalf",
+            "label": "On behalf",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.callback",
+            "label": "Callback",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.data",
+            "label": "Callback data",
+            "format": "raw",
+            "visible": "never"
+          }
+        ]
+      },
+      "supplyCollateral((uint256 chainId,address midnight,address loanToken,(address token,uint256 lltv,uint256 liquidationCursor,address oracle)[] collateralParams,uint256 maturity,uint256 rcfThreshold,address enterGate,address liquidatorGate) market,uint256 collateralIndex,uint256 assets,address onBehalf)": {
+        "intent": "Supply collateral",
+        "interpolatedIntent": "Supply {#.assets} of collateral {#.collateralIndex} for {#.onBehalf}",
+        "fields": [
+          {
+            "label": "Loan token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.market.loanToken"
+          },
+          {
+            "label": "Maturity",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.market.maturity"
+          },
+          {
+            "path": "#.market.collateralParams.[]",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "label": "Collateral token",
+                "format": "addressName",
+                "params": { "types": ["token"] },
+                "path": "token",
+                "visible": "always"
+              },
+              {
+                "label": "LLTV",
+                "format": "unit",
+                "params": { "base": "%", "decimals": 16 },
+                "path": "lltv",
+                "visible": "always"
+              },
+              {
+                "label": "Oracle",
+                "format": "addressName",
+                "params": { "types": ["contract"] },
+                "path": "oracle",
+                "visible": "always"
+              },
+              {
+                "label": "Liquidation cursor",
+                "format": "raw",
+                "path": "liquidationCursor",
+                "visible": "never"
+              }
+            ]
+          },
+          {
+            "path": "#.market.chainId",
+            "label": "Chain ID",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.midnight",
+            "label": "Midnight",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.rcfThreshold",
+            "label": "RCF threshold",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.enterGate",
+            "label": "Enter gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.liquidatorGate",
+            "label": "Liquidator gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.collateralIndex",
+            "label": "Collateral index",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.assets",
+            "label": "Collateral amount (base units of the token at the index)",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.onBehalf",
+            "label": "On behalf",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdrawCollateral((uint256 chainId,address midnight,address loanToken,(address token,uint256 lltv,uint256 liquidationCursor,address oracle)[] collateralParams,uint256 maturity,uint256 rcfThreshold,address enterGate,address liquidatorGate) market,uint256 collateralIndex,uint256 assets,address onBehalf,address receiver)": {
+        "intent": "Withdraw collateral",
+        "interpolatedIntent": "Withdraw {#.assets} of collateral {#.collateralIndex} to {#.receiver}",
+        "fields": [
+          {
+            "label": "Loan token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.market.loanToken"
+          },
+          {
+            "label": "Maturity",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "path": "#.market.maturity"
+          },
+          {
+            "path": "#.market.collateralParams.[]",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "label": "Collateral token",
+                "format": "addressName",
+                "params": { "types": ["token"] },
+                "path": "token",
+                "visible": "always"
+              },
+              {
+                "label": "LLTV",
+                "format": "unit",
+                "params": { "base": "%", "decimals": 16 },
+                "path": "lltv",
+                "visible": "always"
+              },
+              {
+                "label": "Oracle",
+                "format": "addressName",
+                "params": { "types": ["contract"] },
+                "path": "oracle",
+                "visible": "always"
+              },
+              {
+                "label": "Liquidation cursor",
+                "format": "raw",
+                "path": "liquidationCursor",
+                "visible": "never"
+              }
+            ]
+          },
+          {
+            "path": "#.market.chainId",
+            "label": "Chain ID",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.midnight",
+            "label": "Midnight",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.rcfThreshold",
+            "label": "RCF threshold",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.enterGate",
+            "label": "Enter gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.market.liquidatorGate",
+            "label": "Liquidator gate",
+            "visible": "never",
+            "format": "raw"
+          },
+          {
+            "path": "#.collateralIndex",
+            "label": "Collateral index",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.assets",
+            "label": "Collateral amount (base units of the token at the index)",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.onBehalf",
+            "label": "On behalf",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setConsumed(bytes32 group,uint128 amount,address onBehalf)": {
+        "intent": "Cancel or reduce offers",
+        "interpolatedIntent": "Update offer group {#.group} for {#.onBehalf}",
+        "fields": [
+          {
+            "path": "#.group",
+            "label": "Group",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.amount",
+            "label": "Amount marked as used",
+            "format": "enum",
+            "visible": "always",
+            "params": {
+              "$ref": "$.metadata.enums.consumedUnits"
+            }
+          },
+          {
+            "path": "#.onBehalf",
+            "label": "On behalf",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setIsAuthorized(address authorized,bool newIsAuthorized,address onBehalf)": {
+        "intent": "Set Midnight account operator",
+        "interpolatedIntent": "{#.newIsAuthorized} full account access to {#.authorized} for {#.onBehalf}",
+        "fields": [
+          {
+            "path": "#.authorized",
+            "label": "Authorized",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract",
+                "eoa",
+                "wallet"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.newIsAuthorized",
+            "label": "Allowed",
+            "format": "enum",
+            "visible": "always",
+            "params": {
+              "$ref": "$.metadata.enums.authorizationAction"
+            }
+          },
+          {
+            "path": "#.onBehalf",
+            "label": "On Behalf",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

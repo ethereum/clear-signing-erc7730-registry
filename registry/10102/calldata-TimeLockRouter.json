@@ -1,0 +1,253 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "TimeLockRouter",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x2B947E3c348c81409f8e8fc5ef8F65d9dFf76A42" }] }
+  },
+  "metadata": { "owner": "10102", "info": { "url": "https://10102.io" }, "contractName": "TimeLockRouter" },
+  "display": {
+    "formats": {
+      "createTimelock(((address storageToken, uint256 amountOutMin, uint256 deadline) timelockETHSwap, (address tokenAddress, uint256 amount)[] timelockERC20, (address tokenAddress, uint256 id)[] timelockERC721, (address tokenAddress, uint256 id, uint256 amount)[] timelockERC1155, uint256 duration, string name) timelockRegular)": {
+        "$id": "createTimelock",
+        "intent": "Create timelock",
+        "fields": [
+          { "path": "@.value", "label": "ETH sent to lock", "format": "amount", "visible": { "ifNotIn": [0] } },
+          {
+            "path": "timelockRegular.timelockETHSwap.storageToken",
+            "label": "ETH held as",
+            "format": "addressName",
+            "params": { "types": ["token"], "sources": ["local"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "path": "timelockRegular.timelockETHSwap.amountOutMin",
+            "label": "Swap min (not WETH)",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "timelockRegular.timelockETHSwap.storageToken" },
+            "visible": { "ifNotIn": [0] }
+          },
+          {
+            "path": "timelockRegular.timelockETHSwap.deadline",
+            "label": "Swap deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": { "ifNotIn": [0] }
+          },
+          {
+            "path": "timelockRegular.timelockERC20.[].amount",
+            "label": "Token sent to lock",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "timelockRegular.timelockERC20.[].tokenAddress" }
+          },
+          {
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "timelockRegular.timelockERC721.[].tokenAddress",
+                "label": "NFT collection",
+                "format": "addressName",
+                "params": { "types": ["collection"], "sources": ["local"] }
+              },
+              {
+                "path": "timelockRegular.timelockERC721.[].id",
+                "label": "NFT locked",
+                "format": "nftName",
+                "params": { "collectionPath": "timelockRegular.timelockERC721.[].tokenAddress" }
+              }
+            ]
+          },
+          {
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "timelockRegular.timelockERC1155.[].tokenAddress",
+                "label": "Item collection",
+                "format": "addressName",
+                "params": { "types": ["collection"], "sources": ["local"] }
+              },
+              {
+                "path": "timelockRegular.timelockERC1155.[].id",
+                "label": "Item locked",
+                "format": "nftName",
+                "params": { "collectionPath": "timelockRegular.timelockERC1155.[].tokenAddress" }
+              },
+              { "path": "timelockRegular.timelockERC1155.[].amount", "label": "Item quantity", "format": "raw" }
+            ]
+          },
+          { "path": "timelockRegular.duration", "label": "Locked for", "format": "duration" },
+          { "path": "timelockRegular.timelockERC20.[].tokenAddress", "label": "Token address", "visible": "never" },
+          { "path": "timelockRegular.timelockERC20.[]", "label": "Tokens", "visible": "never" },
+          { "path": "timelockRegular.timelockERC721.[]", "label": "NFTs", "visible": "never" },
+          { "path": "timelockRegular.timelockERC1155.[]", "label": "Items", "visible": "never" },
+          { "path": "timelockRegular.name", "label": "Name", "visible": "never" }
+        ]
+      },
+      "createSoftTimelock(((address storageToken, uint256 amountOutMin, uint256 deadline) timelockETHSwap, (address tokenAddress, uint256 amount)[] timelockERC20, (address tokenAddress, uint256 id)[] timelockERC721, (address tokenAddress, uint256 id, uint256 amount)[] timelockERC1155, uint256 bufferTime, string name) timelockSoft)": {
+        "$id": "createSoftTimelock",
+        "intent": "Create soft timelock",
+        "fields": [
+          { "path": "@.value", "label": "ETH sent to lock", "format": "amount", "visible": { "ifNotIn": [0] } },
+          {
+            "path": "timelockSoft.timelockETHSwap.storageToken",
+            "label": "ETH held as",
+            "format": "addressName",
+            "params": { "types": ["token"], "sources": ["local"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "path": "timelockSoft.timelockETHSwap.amountOutMin",
+            "label": "Swap min (not WETH)",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "timelockSoft.timelockETHSwap.storageToken" },
+            "visible": { "ifNotIn": [0] }
+          },
+          {
+            "path": "timelockSoft.timelockETHSwap.deadline",
+            "label": "Swap deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": { "ifNotIn": [0] }
+          },
+          {
+            "path": "timelockSoft.timelockERC20.[].amount",
+            "label": "Token sent to lock",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "timelockSoft.timelockERC20.[].tokenAddress" }
+          },
+          {
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "timelockSoft.timelockERC721.[].tokenAddress",
+                "label": "NFT collection",
+                "format": "addressName",
+                "params": { "types": ["collection"], "sources": ["local"] }
+              },
+              {
+                "path": "timelockSoft.timelockERC721.[].id",
+                "label": "NFT locked",
+                "format": "nftName",
+                "params": { "collectionPath": "timelockSoft.timelockERC721.[].tokenAddress" }
+              }
+            ]
+          },
+          {
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "timelockSoft.timelockERC1155.[].tokenAddress",
+                "label": "Item collection",
+                "format": "addressName",
+                "params": { "types": ["collection"], "sources": ["local"] }
+              },
+              {
+                "path": "timelockSoft.timelockERC1155.[].id",
+                "label": "Item locked",
+                "format": "nftName",
+                "params": { "collectionPath": "timelockSoft.timelockERC1155.[].tokenAddress" }
+              },
+              { "path": "timelockSoft.timelockERC1155.[].amount", "label": "Item quantity", "format": "raw" }
+            ]
+          },
+          { "path": "timelockSoft.bufferTime", "label": "Unlock delay", "format": "duration" },
+          { "path": "timelockSoft.timelockERC20.[].tokenAddress", "label": "Token address", "visible": "never" },
+          { "path": "timelockSoft.timelockERC20.[]", "label": "Tokens", "visible": "never" },
+          { "path": "timelockSoft.timelockERC721.[]", "label": "NFTs", "visible": "never" },
+          { "path": "timelockSoft.timelockERC1155.[]", "label": "Items", "visible": "never" },
+          { "path": "timelockSoft.name", "label": "Name", "visible": "never" }
+        ]
+      },
+      "createTimelockedGift(((address storageToken, uint256 amountOutMin, uint256 deadline) timelockETHSwap, (address tokenAddress, uint256 amount)[] timelockERC20, (address tokenAddress, uint256 id)[] timelockERC721, (address tokenAddress, uint256 id, uint256 amount)[] timelockERC1155, uint256 duration, address recipient, string name, string giftName) timelockGift)": {
+        "$id": "createTimelockedGift",
+        "intent": "Seal gift and accept terms",
+        "fields": [
+          { "path": "@.value", "label": "ETH sent to lock", "format": "amount", "visible": { "ifNotIn": [0] } },
+          {
+            "path": "timelockGift.timelockETHSwap.storageToken",
+            "label": "ETH held as",
+            "format": "addressName",
+            "params": { "types": ["token"], "sources": ["local"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "path": "timelockGift.timelockETHSwap.amountOutMin",
+            "label": "Swap min (not WETH)",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "timelockGift.timelockETHSwap.storageToken" },
+            "visible": { "ifNotIn": [0] }
+          },
+          {
+            "path": "timelockGift.timelockETHSwap.deadline",
+            "label": "Swap deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": { "ifNotIn": [0] }
+          },
+          {
+            "path": "timelockGift.timelockERC20.[].amount",
+            "label": "Token sent to lock",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "timelockGift.timelockERC20.[].tokenAddress" }
+          },
+          {
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "timelockGift.timelockERC721.[].tokenAddress",
+                "label": "NFT collection",
+                "format": "addressName",
+                "params": { "types": ["collection"], "sources": ["local"] }
+              },
+              {
+                "path": "timelockGift.timelockERC721.[].id",
+                "label": "NFT locked",
+                "format": "nftName",
+                "params": { "collectionPath": "timelockGift.timelockERC721.[].tokenAddress" }
+              }
+            ]
+          },
+          {
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "timelockGift.timelockERC1155.[].tokenAddress",
+                "label": "Item collection",
+                "format": "addressName",
+                "params": { "types": ["collection"], "sources": ["local"] }
+              },
+              {
+                "path": "timelockGift.timelockERC1155.[].id",
+                "label": "Item locked",
+                "format": "nftName",
+                "params": { "collectionPath": "timelockGift.timelockERC1155.[].tokenAddress" }
+              },
+              { "path": "timelockGift.timelockERC1155.[].amount", "label": "Item quantity", "format": "raw" }
+            ]
+          },
+          { "path": "timelockGift.duration", "label": "Opens after", "format": "duration" },
+          { "path": "timelockGift.recipient", "label": "Recipient", "format": "addressName", "params": { "sources": ["local", "ens"] } },
+          { "path": "timelockGift.timelockERC20.[].tokenAddress", "label": "Token address", "visible": "never" },
+          { "path": "timelockGift.timelockERC20.[]", "label": "Tokens", "visible": "never" },
+          { "path": "timelockGift.timelockERC721.[]", "label": "NFTs", "visible": "never" },
+          { "path": "timelockGift.timelockERC1155.[]", "label": "Items", "visible": "never" },
+          { "path": "timelockGift.name", "label": "Name", "visible": "never" },
+          { "path": "timelockGift.giftName", "label": "Gift name", "visible": "never" }
+        ]
+      },
+      "unlockSoftTimelock(uint256 id)": {
+        "$id": "unlockSoftTimelock",
+        "intent": "Start soft timelock countdown",
+        "fields": [{ "path": "id", "label": "Timelock", "format": "raw" }]
+      },
+      "withdraw(uint256 id)": { "$id": "withdraw", "intent": "Withdraw from timelock", "fields": [{ "path": "id", "label": "Timelock", "format": "raw" }] },
+      "withdraw(uint256 id, bool skipSwap)": {
+        "$id": "withdraw",
+        "intent": "Withdraw from timelock",
+        "fields": [
+          { "path": "id", "label": "Timelock", "format": "raw" },
+          { "path": "skipSwap", "label": "Skip ETH conversion", "format": "raw" }
+        ]
+      }
+    }
+  }
+}

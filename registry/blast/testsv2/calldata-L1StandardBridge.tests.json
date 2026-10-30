@@ -1,0 +1,203 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-L1StandardBridge.json",
+  "dataProvider": {
+    "tokens": {
+      "0xb1a5700fa2358173fe465e6ea4ff52e36e88e2ad": { "name": "Blast", "symbol": "BLAST", "decimals": 18 },
+      "0x73c369f61c90f03eb0dd172e95c90208a28dc5bc": { "name": "OLE token powering both DistrictOne and OpenLeverage", "symbol": "OLE", "decimals": 18 },
+      "0xb9dfcd4cf589bb8090569cb52fac1b88dbe4981f": { "name": "Bag", "symbol": "BAG", "decimals": 18 },
+      "0x71b9e0fd392713a14fcab92d9af7a21f47e3b1fa": { "name": "Blast", "symbol": "BLAST", "decimals": 18 },
+      "0x1b6e9c73bee68102d9dd4a2627f97bff4183ab0a": { "name": "OpenLeverage Token V2", "symbol": "OLE", "decimals": 18 },
+      "0x808688c820ab080a6ff1019f03e5ec227d9b522b": { "name": "Bag", "symbol": "BAG", "decimals": 18 }
+    },
+    "addressNames": {
+      "0x5d4472f31bd9385709ec61305afc749f0fa8e9d0": "L1CrossDomainMessenger",
+      "0x697402166fbf2f22e970df8a6486ef171dbfc524": "L1StandardBridge",
+      "0x3a05e5d33d7ab3864d53aaec93c8301c1fa49115": "L1BlastBridge",
+      "0x4200000000000000000000000000000000000007": "L2CrossDomainMessenger",
+      "0x4200000000000000000000000000000000000010": "L2StandardBridge",
+      "0x4300000000000000000000000000000000000005": "L2BlastBridge",
+      "0x0ec68c5b10f21effb74f2a5c61dfe6b08c0db6cb": "OptimismPortal"
+    }
+  },
+  "tests": [
+    {
+      "description": "bridgeERC20 - chain 1",
+      "rawTx": "0x02f8e501808080830f424094697402166fbf2f22e970df8a6486ef171dbfc52480b8c48708762300000000000000000000000071b9e0fd392713a14fcab92d9af7a21f47e3b1fa000000000000000000000000b1a5700fa2358173fe465e6ea4ff52e36e88e2ad00000000000000000000000000000000000000000009b404b299eabcb81400000000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x1AafACc008099845d6C35df8C5925c8E659C4400",
+      "txHash": "0x8298b02ff19b1c6f0b8471f27c9afbb36c7d38724484d64e25d7c2cb855d5d49",
+      "expected": {
+        "intent": "Bridge token to Blast",
+        "interpolatedIntent": "Bridge 11730445 BLAST as BLAST to your address on Blast",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Amount", "value": "11730445 BLAST" },
+          { "label": "Token on Blast", "value": "BLAST" }
+        ]
+      }
+    },
+    {
+      "description": "bridgeERC20To - chain 1",
+      "rawTx": "0x02f9010501808080830f424094697402166fbf2f22e970df8a6486ef171dbfc52480b8e4540abf730000000000000000000000001b6e9c73bee68102d9dd4a2627f97bff4183ab0a00000000000000000000000073c369f61c90f03eb0dd172e95c90208a28dc5bc00000000000000000000000041ddb6fa6af16d7c4992204aa9a265b1d47af396000000000000000000000000000000000000000000000000058d15e1762800000000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x41DdB6fa6AF16D7c4992204Aa9A265B1D47af396",
+      "txHash": "0x960b688a74eca7b07a92cc5e9bbc032219e55cd4c32f3975dde934b6a1557d26",
+      "expected": {
+        "intent": "Bridge token to Blast",
+        "interpolatedIntent": "Bridge 0.4 OLE as OLE to 0x41DdB6fa6AF16D7c4992204Aa9A265B1D47af396 on Blast",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Amount", "value": "0.4 OLE" },
+          { "label": "Blast Recipient", "value": "0x41DdB6fa6AF16D7c4992204Aa9A265B1D47af396" },
+          { "label": "Token on Blast", "value": "OLE" }
+        ]
+      }
+    },
+    {
+      "description": "bridgeETH - chain 1",
+      "rawTx": "0x02f88c01808080830f424094697402166fbf2f22e970df8a6486ef171dbfc52487ffcb9e57d40000b86409fc8843000000000000000000000000000000000000000000000000000000000007a12000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0xaD73b7Ef900EDbc134C80d3F4B068d2Cb0Da1708",
+      "txHash": "0x829b24bbc2f7e4d7aae7b41a6db4ff7ab89666092a1e655defe3e51747c05796",
+      "expected": {
+        "intent": "Bridge ETH to Blast",
+        "interpolatedIntent": "Bridge 0.072 ETH to your address on Blast",
+        "owner": "Blast",
+        "fields": [{ "label": "Amount", "value": "0.072 ETH" }]
+      }
+    },
+    {
+      "description": "bridgeETHTo - chain 1",
+      "rawTx": "0x02f8ab01808080830f424094697402166fbf2f22e970df8a6486ef171dbfc52486b5e620f48000b884e11013dd0000000000000000000000000eb09675c5d974da01d7447ba486058221e055890000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x0eb09675C5D974DA01D7447Ba486058221e05589",
+      "txHash": "0x95093e81d6c7e1a106b23edba329aa550bbc8423bb6d42dae27ce0e6c9295a06",
+      "expected": {
+        "intent": "Bridge ETH to Blast",
+        "interpolatedIntent": "Bridge 0.0002 ETH to 0x0eb09675C5D974DA01D7447Ba486058221e05589 on Blast",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Amount", "value": "0.0002 ETH" },
+          { "label": "Blast Recipient", "value": "0x0eb09675C5D974DA01D7447Ba486058221e05589" }
+        ]
+      }
+    },
+    {
+      "description": "depositERC20 - chain 1",
+      "rawTx": "0x02f9010501808080830f424094697402166fbf2f22e970df8a6486ef171dbfc52480b8e458a997f6000000000000000000000000808688c820ab080a6ff1019f03e5ec227d9b522b000000000000000000000000b9dfcd4cf589bb8090569cb52fac1b88dbe4981f000000000000000000000000000000000000000000007f922c804158cfa6cd7e00000000000000000000000000000000000000000000000000000000000186a000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x65A8F07Bd9A8598E1b5B6C0a88F4779DBC077675",
+      "txHash": "0xc98bb889f303e88ce5848a80907f5ad6e8b334cb3e5954f5aba5ad3ed591ac45",
+      "expected": {
+        "intent": "Bridge token to Blast",
+        "interpolatedIntent": "Bridge 602436.974593990921211262 BAG as BAG to your address on Blast",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Amount", "value": "602436.974593990921211262 BAG" },
+          { "label": "Token on Blast", "value": "BAG" }
+        ]
+      }
+    },
+    {
+      "description": "depositERC20To - chain 1",
+      "rawTx": "0x02f9012601808080830f424094697402166fbf2f22e970df8a6486ef171dbfc52480b90104838b25200000000000000000000000001b6e9c73bee68102d9dd4a2627f97bff4183ab0a00000000000000000000000073c369f61c90f03eb0dd172e95c90208a28dc5bc000000000000000000000000a7b1e6230a62d8a9ae5d54cbf1ddc2edbe6a586e00000000000000000000000000000000000000000000b9e922ec49ff9aa4426e0000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0xa7B1e6230A62D8A9ae5D54CBf1DDc2eDBE6a586e",
+      "txHash": "0x7b784016a653ccea0341d50d692c0daef614ca3d7e2007fe9a9fcbc7c1836132",
+      "expected": {
+        "intent": "Bridge token to Blast",
+        "interpolatedIntent": "Bridge 877938.40716771264326923 OLE as OLE to 0xa7B1e6230A62D8A9ae5D54CBf1DDc2eDBE6a586e on Blast",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Amount", "value": "877938.40716771264326923 OLE" },
+          { "label": "Blast Recipient", "value": "0xa7B1e6230A62D8A9ae5D54CBf1DDc2eDBE6a586e" },
+          { "label": "Token on Blast", "value": "OLE" }
+        ]
+      }
+    },
+    {
+      "description": "depositETH - chain 1",
+      "rawTx": "0x02f88b01808080830f424094697402166fbf2f22e970df8a6486ef171dbfc5248687ce828ea840b864b1a1a8820000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x1DCE7a9a9cfd83a66ACc8a2B4955C0271061D2F8",
+      "txHash": "0x6a45c328d59be09f426099e7379e2b16301132ba8de8a0fe8387662accbc2ef3",
+      "expected": {
+        "intent": "Bridge ETH to Blast",
+        "interpolatedIntent": "Bridge 0.0001493210234 ETH to your address on Blast",
+        "owner": "Blast",
+        "fields": [{ "label": "Amount", "value": "0.0001493210234 ETH" }]
+      }
+    },
+    {
+      "description": "depositETHTo - chain 1",
+      "rawTx": "0x02f8ac01808080830f424094697402166fbf2f22e970df8a6486ef171dbfc524879bfab9c925284bb8849a2ac6d5000000000000000000000000527fac39a8fffe4cdd71e57d22fa7b8b3de8d6ae0000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x527FAC39A8fFFe4CdD71e57D22fA7B8b3De8d6ae",
+      "txHash": "0xce47627b8092f69f020ec33ad9b3862b58901d11b0f60434deb9c1bb6b14d9fb",
+      "expected": {
+        "intent": "Bridge ETH to Blast",
+        "interpolatedIntent": "Bridge 0.043904297240701003 ETH to 0x527FAC39A8fFFe4CdD71e57D22fA7B8b3De8d6ae on Blast",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Amount", "value": "0.043904297240701003 ETH" },
+          { "label": "Blast Recipient", "value": "0x527FAC39A8fFFe4CdD71e57D22fA7B8b3De8d6ae" }
+        ]
+      }
+    },
+    {
+      "description": "finalizeBridgeERC20 - chain 1",
+      "rawTx": "0x02f9010501808080830f424094697402166fbf2f22e970df8a6486ef171dbfc52480b8e40166a07a00000000000000000000000071b9e0fd392713a14fcab92d9af7a21f47e3b1fa000000000000000000000000b1a5700fa2358173fe465e6ea4ff52e36e88e2ad0000000000000000000000006b69c56577b1215e418a2b5c61b4a7c9ab27efba0000000000000000000000006b69c56577b1215e418a2b5c61b4a7c9ab27efba00000000000000000000000000000000000000000000174b1ca8ab05a8c0000000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x5D4472f31Bd9385709ec61305AFc749F0fA8e9d0",
+      "expected": {
+        "intent": "Pay out Blast token withdrawal",
+        "interpolatedIntent": "Pay 110000 BLAST withdrawn by 0x6B69c56577B1215E418a2b5c61b4A7c9AB27eFba to 0x6B69c56577B1215E418a2b5c61b4A7c9AB27eFba",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Amount", "value": "110000 BLAST" },
+          { "label": "Paid To", "value": "0x6B69c56577B1215E418a2b5c61b4A7c9AB27eFba" },
+          { "label": "Withdrawn By", "value": "0x6B69c56577B1215E418a2b5c61b4A7c9AB27eFba" }
+        ]
+      }
+    },
+    {
+      "description": "finalizeBridgeETH - chain 1",
+      "rawTx": "0x02f8cd01808080830f424094697402166fbf2f22e970df8a6486ef171dbfc524880f195a3c4ba00000b8a41635f5fd000000000000000000000000957832f90d40df76197ce6599740339142dd22db000000000000000000000000957832f90d40df76197ce6599740339142dd22db0000000000000000000000000000000000000000000000000f195a3c4ba0000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x5D4472f31Bd9385709ec61305AFc749F0fA8e9d0",
+      "expected": {
+        "intent": "Pay out Blast ETH withdrawal",
+        "interpolatedIntent": "Pay up to 1.088 ETH withdrawn by 0x957832F90D40df76197CE6599740339142dD22dB to 0x957832F90D40df76197CE6599740339142dD22dB",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Maximum Amount", "value": "1.088 ETH" },
+          { "label": "Paid To", "value": "0x957832F90D40df76197CE6599740339142dD22dB" },
+          { "label": "Withdrawn By", "value": "0x957832F90D40df76197CE6599740339142dD22dB" },
+          { "label": "Max ETH Attached", "value": "1.088 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "finalizeERC20Withdrawal - chain 1",
+      "rawTx": "0x02f9010501808080830f424094697402166fbf2f22e970df8a6486ef171dbfc52480b8e4a9f9e67500000000000000000000000071b9e0fd392713a14fcab92d9af7a21f47e3b1fa000000000000000000000000b1a5700fa2358173fe465e6ea4ff52e36e88e2ad0000000000000000000000006b69c56577b1215e418a2b5c61b4a7c9ab27efba0000000000000000000000006b69c56577b1215e418a2b5c61b4a7c9ab27efba00000000000000000000000000000000000000000000174b1ca8ab05a8c0000000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x5D4472f31Bd9385709ec61305AFc749F0fA8e9d0",
+      "expected": {
+        "intent": "Pay out Blast token withdrawal",
+        "interpolatedIntent": "Pay 110000 BLAST withdrawn by 0x6B69c56577B1215E418a2b5c61b4A7c9AB27eFba to 0x6B69c56577B1215E418a2b5c61b4A7c9AB27eFba",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Amount", "value": "110000 BLAST" },
+          { "label": "Paid To", "value": "0x6B69c56577B1215E418a2b5c61b4A7c9AB27eFba" },
+          { "label": "Withdrawn By", "value": "0x6B69c56577B1215E418a2b5c61b4A7c9AB27eFba" }
+        ]
+      }
+    },
+    {
+      "description": "finalizeETHWithdrawal - chain 1",
+      "rawTx": "0x02f8cd01808080830f424094697402166fbf2f22e970df8a6486ef171dbfc524880f195a3c4ba00000b8a41532ec34000000000000000000000000957832f90d40df76197ce6599740339142dd22db000000000000000000000000957832f90d40df76197ce6599740339142dd22db0000000000000000000000000000000000000000000000000f195a3c4ba0000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x5D4472f31Bd9385709ec61305AFc749F0fA8e9d0",
+      "expected": {
+        "intent": "Pay out Blast ETH withdrawal",
+        "interpolatedIntent": "Pay up to 1.088 ETH withdrawn by 0x957832F90D40df76197CE6599740339142dD22dB to 0x957832F90D40df76197CE6599740339142dD22dB",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Maximum Amount", "value": "1.088 ETH" },
+          { "label": "Paid To", "value": "0x957832F90D40df76197CE6599740339142dD22dB" },
+          { "label": "Withdrawn By", "value": "0x957832F90D40df76197CE6599740339142dD22dB" },
+          { "label": "Max ETH Attached", "value": "1.088 ETH" }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-waterline-reservoirUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0xbeef346d7099865208ff331e4f648f4154ddaa05": { "decimals": 18, "name": "Waterline Reservoir USDC", "symbol": "reservoirUSDC" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d015b843b9aca0184594a581e8305d97f94beef346d7099865208ff331e4f648f4154ddaa0580b8446e553f6500000000000000000000000000000000000000000000000000000000009896800000000000000000000000003acd63bc5f2a2e4623ae8cc8ce33a766c86290bbc0",
+      "txHash": "0xb2344c3be6fdf79c153c0989de522bfdc4247a56be7c322e80a1ed04d2917bec",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "10 USDC" },
+          { "label": "Share ticker", "value": "reservoirUSDC" },
+          { "label": "Send shares to", "value": "0x3AcD63bC5F2a2E4623Ae8CC8Ce33a766c86290BB" }
+        ],
+        "owner": "Waterline"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88d010d847d2b75018487d0f84383068d2d94beef346d7099865208ff331e4f648f4154ddaa0580b864b460af940000000000000000000000000000000000000000000000000000000002a2cb4f000000000000000000000000db0b109eef50fc43b2995f8555c363ac8c87cef8000000000000000000000000db0b109eef50fc43b2995f8555c363ac8c87cef8c0",
+      "txHash": "0x8ccc411b9ff3fac9ed7c563f297f2c35807b3e5f4909ac9cfd47ddc95d266af4",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "44.223311 USDC" },
+          { "label": "To", "value": "0xdb0B109EeF50fc43B2995F8555c363ac8C87cEf8" },
+          { "label": "Owner", "value": "0xdb0B109EeF50fc43B2995F8555c363ac8C87cEf8" }
+        ],
+        "owner": "Waterline"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88f018202148402f090408406b00940830c7c4794beef346d7099865208ff331e4f648f4154ddaa0580b864ba0876520000000000000000000000000000000000000000000000002b25209bebc8b9c6000000000000000000000000887f0f5c50e80718d7c61e06b272900fd2c7d86d000000000000000000000000887f0f5c50e80718d7c61e06b272900fd2c7d86dc0",
+      "txHash": "0xf5e0ca52f92010aec5589a8b277b099a41ba379be5aea4ca11743da5d19e5dd0",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "3.10892697181701575 reservoirUSDC" },
+          { "label": "To", "value": "0x887f0F5C50E80718d7C61E06b272900fD2C7D86d" },
+          { "label": "Owner", "value": "0x887f0F5C50E80718d7C61E06b272900fD2C7D86d" }
+        ],
+        "owner": "Waterline"
+      }
+    }
+  ]
+}

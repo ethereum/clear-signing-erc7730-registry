@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-rockawayx-roxNUVA-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0x93e0f9d502eefce8d34924ab3478c7ea0cbc5a2e": { "decimals": 18, "name": "RockawayX NUVA Ecosystem", "symbol": "roxNUVA" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e0181938408a20f998419db6ed28305ed9c9493e0f9d502eefce8d34924ab3478c7ea0cbc5a2e80b8446e553f650000000000000000000000000000000000000000000000000000000ba43b7400000000000000000000000000cec205d411a7c9d481c1a6c4baadeb2b8da11a1ac0",
+      "txHash": "0xb3e920202882e7e5c21e2816048500e36fca530d0c2d6bbc35a7a14c712dd286",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "50000 USDC" },
+          { "label": "Share ticker", "value": "roxNUVA" },
+          { "label": "Send shares to", "value": "0xcec205d411A7C9d481C1a6c4baADeb2b8da11A1a" }
+        ],
+        "interpolatedIntent": "Deposit 50000 USDC for 0xcec205d411A7C9d481C1a6c4baADeb2b8da11A1a",
+        "owner": "RockawayX"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f897018201628423c346008426fe4cc083072c629493e0f9d502eefce8d34924ab3478c7ea0cbc5a2e80b86cb460af94000000000000000000000000000000000000000000000000000000174876e800000000000000000000000000399214e0238e66467fa08c33a8432d7e7ec266b3000000000000000000000000399214e0238e66467fa08c33a8432d7e7ec266b36a973f252222da44c0",
+      "txHash": "0x71820b531f48c7eb6f478f1fac0b12a664344ba14108a18566057d5dd61f5049",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "100000 USDC" },
+          { "label": "To", "value": "0x399214e0238e66467Fa08c33A8432D7e7ec266B3" },
+          { "label": "Owner", "value": "0x399214e0238e66467Fa08c33A8432D7e7ec266B3" }
+        ],
+        "interpolatedIntent": "Withdraw 100000 USDC to 0x399214e0238e66467Fa08c33A8432D7e7ec266B3",
+        "owner": "RockawayX"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8940145830f4240841522c2f88306c3559493e0f9d502eefce8d34924ab3478c7ea0cbc5a2e80b86cba08765200000000000000000000000000000000000000000000003616e3b72934d9b41a00000000000000000000000028c5937c7df4e16941a494acd04f905c47e45e2500000000000000000000000028c5937c7df4e16941a494acd04f905c47e45e256a90d92f2222da44c0",
+      "txHash": "0x23bc012c27c81f1c509de09c8cf170b9a368bac5cf95e4cdd7d0b75a1b3bc218",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "997.773543256471745562 roxNUVA" },
+          { "label": "To", "value": "0x28c5937C7DF4E16941a494ACd04f905c47E45E25" },
+          { "label": "Owner", "value": "0x28c5937C7DF4E16941a494ACd04f905c47E45E25" }
+        ],
+        "interpolatedIntent": "Redeem 997.773543256471745562 roxNUVA to 0x28c5937C7DF4E16941a494ACd04f905c47E45E25",
+        "owner": "RockawayX"
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-k3_capital-K3USDC-v2-999.json",
+  "dataProvider": {
+    "tokens": {
+      "0xb88339cb7199b77e23db6e890353e22632ba630f": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0x589a57196c16d0cfab3ed229fcfa959f65ca00bf": { "decimals": 18, "name": "K3 USDC", "symbol": "K3USDC" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f8e18203e721840aba950084141943808306c0da94589a57196c16d0cfab3ed229fcfa959f65ca00bf80b8b66e553f650000000000000000000000000000000000000000000000000000000000002710000000000000000000000000e9312419edc29e7784ac2f5aa2fd2ac0f38ff2afa36161684d704f6756446e636172a16161a26163410161615419ad40bc0d0fde19e9f9199e709ebfcc051ee0c8616da168616374696f6e4964782462636437316461382d303063362d343037342d393037612d333366343735316161346538005f0280218021802180218021802180218021c0",
+      "txHash": "0x25956a15d23302011822ac80faa25e009f1f63cba4b7a594888f21c5150d39e8",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.01 USDC" },
+          { "label": "Share ticker", "value": "K3USDC" },
+          { "label": "Send shares to", "value": "0xe9312419edc29E7784AC2F5AA2Fd2ac0f38fF2Af" }
+        ],
+        "interpolatedIntent": "Deposit 0.01 USDC for 0xe9312419edc29E7784AC2F5AA2Fd2ac0f38fF2Af",
+        "owner": "K3 Capital"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0xf8958201568405f5e1008304ff3694589a57196c16d0cfab3ed229fcfa959f65ca00bf80b86cb460af9400000000000000000000000000000000000000000000000000000005d21dba000000000000000000000000001af68b9a13200553d4c48e0c8da9c376ecccc4540000000000000000000000001af68b9a13200553d4c48e0c8da9c376ecccc4546aa3f2942222da448203e78080",
+      "txHash": "0x672e77f89ea933dc18608292799024b21000cc190e17b96a9915fb3f20522d12",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "25000 USDC" },
+          { "label": "To", "value": "0x1AF68B9a13200553d4C48e0c8DA9C376EcccC454" },
+          { "label": "Owner", "value": "0x1AF68B9a13200553d4C48e0c8DA9C376EcccC454" }
+        ],
+        "interpolatedIntent": "Withdraw 25000 USDC to 0x1AF68B9a13200553d4C48e0c8DA9C376EcccC454",
+        "owner": "K3 Capital"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8fd8203e72280840bebc20083020ac494589a57196c16d0cfab3ed229fcfa959f65ca00bf80b8d6ba0876520000000000000000000000000000000000000000000000000023853cbadbc0dd000000000000000000000000e9312419edc29e7784ac2f5aa2fd2ac0f38ff2af000000000000000000000000e9312419edc29e7784ac2f5aa2fd2ac0f38ff2afa36161684d704f6756446e636172a16161a26163410161615419ad40bc0d0fde19e9f9199e709ebfcc051ee0c8616da168616374696f6e4964782464643066616430622d383064382d343330322d393066372d333031303536313338303230005f0280218021802180218021802180218021c0",
+      "txHash": "0x34f0d8e4fc78e2dd8ea772de039b8b3d7e4affc90e3979bcfcc474bcffa113fb",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "0.009998120064368861 K3USDC" },
+          { "label": "To", "value": "0xe9312419edc29E7784AC2F5AA2Fd2ac0f38fF2Af" },
+          { "label": "Owner", "value": "0xe9312419edc29E7784AC2F5AA2Fd2ac0f38fF2Af" }
+        ],
+        "interpolatedIntent": "Redeem 0.009998120064368861 K3USDC to 0xe9312419edc29E7784AC2F5AA2Fd2ac0f38fF2Af",
+        "owner": "K3 Capital"
+      }
+    }
+  ]
+}
