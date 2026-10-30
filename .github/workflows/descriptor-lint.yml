@@ -57,6 +57,15 @@ jobs:
             registry/**/sigs/**
             registry/**/*.tests.json
 
+      - name: Keep the registry files of the base
+        timeout-minutes: 5
+        if: steps.changed-descriptor-files.outputs.any_changed == 'true'
+        env:
+          BASE_SHA: ${{ github.event.merge_group.base_sha || github.sha }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE_SHA"
+          mkdir base-tree && git archive FETCH_HEAD registry ercs | tar -x -C base-tree
+
       - name: Use the registry files of the pull request
         timeout-minutes: 5
         if: github.event_name == 'pull_request_target'
@@ -84,6 +93,7 @@ jobs:
         env:
           CHANGED_FILES: ${{ steps.changed-descriptor-files.outputs.all_changed_files }}
           DELETED_FILES: ${{ steps.changed-descriptor-files.outputs.deleted_files }}
+          BASE_ROOT: base-tree
         run: |
           # A changed shared file (ercs/*.json or an entity-local common file)
           # affects every descriptor whose "includes" chain contains it, so
