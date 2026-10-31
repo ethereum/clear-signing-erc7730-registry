@@ -23,6 +23,7 @@
         "$id": "exactInput",
         "intent": "Swap",
         "fields": [
+          { "path": "@.value", "label": "Amount sent", "format": "amount", "visible": { "ifNotIn": ["0"] } },
           {
             "path": "params.amountIn",
             "label": "Amount to Send",
@@ -50,6 +51,7 @@
         "$id": "exactInputSingle",
         "intent": "swap",
         "fields": [
+          { "path": "@.value", "label": "Amount sent", "format": "amount", "visible": { "ifNotIn": ["0"] } },
           {
             "path": "params.amountIn",
             "label": "Send",
@@ -84,6 +86,7 @@
         "$id": "exactOutput",
         "intent": "Swap",
         "fields": [
+          { "path": "@.value", "label": "Amount sent", "format": "amount", "visible": { "ifNotIn": ["0"] } },
           {
             "path": "params.amountInMaximum",
             "label": "Maximum Amount In",
@@ -115,6 +118,7 @@
         "$id": "exactOutputSingle",
         "intent": "Swap",
         "fields": [
+          { "path": "@.value", "label": "Amount sent", "format": "amount", "visible": { "ifNotIn": ["0"] } },
           {
             "path": "params.amountInMaximum",
             "label": "Maximum Amount In",
@@ -144,6 +148,7 @@
         "$id": "swapExactTokensForTokens",
         "intent": "Swap",
         "fields": [
+          { "path": "@.value", "label": "Amount sent", "format": "amount", "visible": { "ifNotIn": ["0"] } },
           { "path": "amountIn", "label": "Amount to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
           { "path": "amountOutMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
           {
@@ -158,6 +163,7 @@
         "$id": "swapTokensForExactTokens",
         "intent": "Swap",
         "fields": [
+          { "path": "@.value", "label": "Amount sent", "format": "amount", "visible": { "ifNotIn": ["0"] } },
           { "path": "amountOut", "label": "Amount to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
           {
             "path": "amountInMax",
@@ -186,7 +192,7 @@
         "intent": "Multicall",
         "fields": [
           { "path": "@.value", "label": "Amount sent", "format": "amount" },
-          { "path": "data.[]", "label": "Call", "format": "calldata", "params": { "calleePath": "@.to" } },
+          { "path": "data.[]", "label": "Call", "format": "calldata", "params": { "calleePath": "@.to", "amountPath": "@.value" } },
           { "path": "deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
         ]
       },
@@ -195,7 +201,7 @@
         "intent": "Multicall",
         "fields": [
           { "path": "@.value", "label": "Amount sent", "format": "amount" },
-          { "path": "data.[]", "label": "Call", "format": "calldata", "params": { "calleePath": "@.to" } }
+          { "path": "data.[]", "label": "Call", "format": "calldata", "params": { "calleePath": "@.to", "amountPath": "@.value" } }
         ]
       },
       "multicall(bytes[] data)": {
@@ -203,7 +209,7 @@
         "intent": "Multicall",
         "fields": [
           { "path": "@.value", "label": "Amount sent", "format": "amount" },
-          { "path": "data.[]", "label": "Call", "format": "calldata", "params": { "calleePath": "@.to" } }
+          { "path": "data.[]", "label": "Call", "format": "calldata", "params": { "calleePath": "@.to", "amountPath": "@.value" } }
         ]
       },
       "unwrapWETH9(uint256 amountMinimum, address recipient)": {
