@@ -1,0 +1,62 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "cUSDCv3",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0xc3d688B66703497DAA19211EEdff47f25384cdc3"
+        },
+        {
+          "chainId": 8453,
+          "address": "0xb125E6687d4313864e53df431d5425969c15Eb2F"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Compound",
+    "contractName": "cUSDCv3",
+    "info": {
+      "url": "https://compound.finance"
+    },
+    "constants": {
+      "max": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE"
+    }
+  },
+  "display": {
+    "formats": {
+      "supply(address asset, uint256 amount)": {
+        "intent": "Supply",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to supply",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "asset"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdraw(address asset, uint256 amount)": {
+        "intent": "Withdraw or borrow",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount (borrows what you don't have)",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "asset",
+              "threshold": "$.metadata.constants.max",
+              "message": "Max"
+            },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
