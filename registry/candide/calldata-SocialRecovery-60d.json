@@ -1,0 +1,339 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Candide social recovery, 60 days",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x6aa9A8ad0582dB61A97A6E30eBa22Ba143D1E960"
+        },
+        {
+          "chainId": 10,
+          "address": "0x6aa9A8ad0582dB61A97A6E30eBa22Ba143D1E960"
+        },
+        {
+          "chainId": 100,
+          "address": "0x6aa9A8ad0582dB61A97A6E30eBa22Ba143D1E960"
+        },
+        {
+          "chainId": 8453,
+          "address": "0x6aa9A8ad0582dB61A97A6E30eBa22Ba143D1E960"
+        },
+        {
+          "chainId": 42161,
+          "address": "0x6aa9A8ad0582dB61A97A6E30eBa22Ba143D1E960"
+        },
+        {
+          "chainId": 42220,
+          "address": "0x6aa9A8ad0582dB61A97A6E30eBa22Ba143D1E960"
+        },
+        {
+          "chainId": 43114,
+          "address": "0x6aa9A8ad0582dB61A97A6E30eBa22Ba143D1E960"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Candide",
+    "contractName": "Recovery (60 days)",
+    "info": {
+      "url": "https://candide.dev"
+    },
+    "enums": {
+      "startWait": {
+        "true": "Yes",
+        "false": "No"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "addGuardianWithThreshold(address _guardian,uint256 _threshold)": {
+        "intent": "Add recovery guardian",
+        "fields": [
+          {
+            "path": "_guardian",
+            "label": "Guardian",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "_threshold",
+            "label": "Guardians needed",
+            "format": "raw"
+          },
+          {
+            "value": "60 days",
+            "label": "Wait before takeover",
+            "format": "raw"
+          }
+        ],
+        "interpolatedIntent": "Add {_guardian} as a recovery guardian. Guardians needed to replace this Safe's owners: {_threshold}"
+      },
+      "revokeGuardianWithThreshold(address _prevGuardian,address _guardian,uint256 _threshold)": {
+        "intent": "Remove recovery guardian",
+        "fields": [
+          {
+            "path": "_guardian",
+            "label": "Guardian",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "_threshold",
+            "label": "Guardians needed",
+            "format": "raw"
+          },
+          {
+            "path": "_prevGuardian",
+            "visible": "never",
+            "label": "Previous guardian"
+          }
+        ],
+        "interpolatedIntent": "Remove {_guardian} as a recovery guardian. Guardians needed after this: {_threshold}"
+      },
+      "changeThreshold(uint256 _threshold)": {
+        "intent": "Change guardians needed",
+        "fields": [
+          {
+            "path": "_threshold",
+            "label": "Guardians needed",
+            "format": "raw"
+          }
+        ],
+        "interpolatedIntent": "Guardians needed to replace this Safe's owners: {_threshold}"
+      },
+      "cancelRecovery()": {
+        "intent": "Cancel recovery",
+        "fields": [],
+        "interpolatedIntent": "Stop the recovery waiting on this Safe"
+      },
+      "invalidateNonce()": {
+        "intent": "Void guardian votes",
+        "fields": [],
+        "interpolatedIntent": "Void the recovery votes not used yet. A recovery already waiting keeps going"
+      },
+      "confirmRecovery(address _wallet,address[] _newOwners,uint256 _newThreshold,bool _execute)": {
+        "intent": "Vote to recover Safe",
+        "fields": [
+          {
+            "path": "_wallet",
+            "label": "Safe",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "_newOwners.[]",
+            "label": "New owners",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "_newThreshold",
+            "label": "Owner sigs needed",
+            "format": "raw"
+          },
+          {
+            "path": "_execute",
+            "label": "Start the wait",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.startWait"
+            }
+          },
+          {
+            "value": "60 days",
+            "label": "Wait before takeover",
+            "format": "raw"
+          }
+        ],
+        "interpolatedIntent": "Vote to make {_newOwners} the only owners of {_wallet}"
+      },
+      "multiConfirmRecovery(address _wallet,address[] _newOwners,uint256 _newThreshold,(address signer,bytes signature)[] _signatures,bool _execute)": {
+        "intent": "Submit recovery votes",
+        "fields": [
+          {
+            "path": "_wallet",
+            "label": "Safe",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "_newOwners.[]",
+            "label": "New owners",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "_newThreshold",
+            "label": "Owner sigs needed",
+            "format": "raw"
+          },
+          {
+            "path": "_signatures.[].signer",
+            "label": "Guardian voting",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "_signatures.[].signature",
+            "visible": "never",
+            "label": "Signature"
+          },
+          {
+            "path": "_execute",
+            "label": "Start the wait",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.startWait"
+            }
+          },
+          {
+            "value": "60 days",
+            "label": "Wait before takeover",
+            "format": "raw"
+          }
+        ],
+        "interpolatedIntent": "Submit guardian votes to make {_newOwners} the only owners of {_wallet}"
+      },
+      "executeRecovery(address _wallet,address[] _newOwners,uint256 _newThreshold)": {
+        "intent": "Start recovery wait",
+        "fields": [
+          {
+            "path": "_wallet",
+            "label": "Safe",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "_newOwners.[]",
+            "label": "New owners",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "_newThreshold",
+            "label": "Owner sigs needed",
+            "format": "raw"
+          },
+          {
+            "value": "60 days",
+            "label": "Wait before takeover",
+            "format": "raw"
+          }
+        ],
+        "interpolatedIntent": "Start the wait to make {_newOwners} the only owners of {_wallet}"
+      },
+      "finalizeRecovery(address _wallet)": {
+        "intent": "Finish recovery",
+        "fields": [
+          {
+            "path": "_wallet",
+            "label": "Safe",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          }
+        ],
+        "interpolatedIntent": "Remove every owner of {_wallet} and add the owners the guardians voted for"
+      }
+    }
+  }
+}

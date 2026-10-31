@@ -1,0 +1,44 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-SocialRecovery-7d.json",
+  "tests": [
+    {
+      "description": "Guardian vote, signed by 0xf3a53C0666c5356600802A7422CA9344B9869FD6 (submitted in tx 0xb7af8ecd) - chain 1",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "ExecuteRecovery": [
+            { "name": "wallet", "type": "address" },
+            { "name": "newOwners", "type": "address[]" },
+            { "name": "newThreshold", "type": "uint256" },
+            { "name": "nonce", "type": "uint256" }
+          ]
+        },
+        "primaryType": "ExecuteRecovery",
+        "domain": { "name": "Social Recovery Module", "version": "0.0.1", "chainId": 1, "verifyingContract": "0x088f6cfD8BB1dDb1BB069CCb3fc1A98927D233f2" },
+        "message": {
+          "wallet": "0xff33cd67F880d02A051e8944D5B9b733457C2010",
+          "newOwners": ["0x7e51332e1c96eC3088c1a300cBb402c894D313f0"],
+          "newThreshold": "1",
+          "nonce": "0"
+        }
+      },
+      "expected": {
+        "intent": "Vote to recover Safe",
+        "interpolatedIntent": "Vote to make 0x7e51332e1c96eC3088c1a300cBb402c894D313f0 the only owners of 0xff33cd67F880d02A051e8944D5B9b733457C2010",
+        "owner": "Candide",
+        "fields": [
+          { "label": "Safe", "value": "0xff33cd67F880d02A051e8944D5B9b733457C2010" },
+          { "label": "New owners", "value": "0x7e51332e1c96eC3088c1a300cBb402c894D313f0" },
+          { "label": "Owner sigs needed", "value": "1" },
+          { "label": "Wait before takeover", "value": "7 days" }
+        ]
+      }
+    }
+  ]
+}
