@@ -1,0 +1,285 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Roles",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" },
+        { "chainId": 10, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" },
+        { "chainId": 56, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" },
+        { "chainId": 97, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" },
+        { "chainId": 100, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" },
+        { "chainId": 137, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" },
+        { "chainId": 747, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" },
+        { "chainId": 1301, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" },
+        { "chainId": 8453, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" },
+        { "chainId": 42161, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" },
+        { "chainId": 59144, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" },
+        { "chainId": 80002, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" },
+        { "chainId": 81457, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" },
+        { "chainId": 421614, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" },
+        { "chainId": 11155111, "address": "0x9646fDAD06d3e24444381f44362a3B0eB343D337" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Zodiac Labs",
+    "contractName": "Roles",
+    "info": { "url": "https://zodiac.eco" },
+    "enums": {
+      "operation": {
+        "0": "Call",
+        "1": "Delegate call"
+      },
+      "executionOptions": {
+        "0": "Call only",
+        "1": "Send value",
+        "2": "Delegate call",
+        "3": "Send + delegate call"
+      },
+      "parameterType": {
+        "0": "None",
+        "1": "Static",
+        "2": "Dynamic",
+        "3": "Tuple",
+        "4": "Array",
+        "5": "Calldata",
+        "6": "ABI encoded"
+      },
+      "conditionOperator": {
+        "0": "Pass",
+        "1": "And",
+        "2": "Or",
+        "3": "Nor",
+        "5": "Matches",
+        "6": "Array some",
+        "7": "Array every",
+        "8": "Array subset",
+        "15": "Equal to avatar",
+        "16": "Equal to",
+        "17": "Greater than",
+        "18": "Less than",
+        "19": "Signed greater than",
+        "20": "Signed less than",
+        "21": "Bitmask",
+        "22": "Custom",
+        "28": "Within allowance",
+        "29": "ETH within allowance",
+        "30": "Call count allowance"
+      }
+    }
+  },
+  "display": {
+    "definitions": {
+      "role": { "label": "Role", "format": "raw" },
+      "target": { "label": "Target", "format": "addressName", "params": { "types": ["contract", "eoa", "wallet"] } },
+      "selector": { "label": "Function selector", "format": "raw" },
+      "executionOptions": { "label": "Execution options", "format": "enum", "params": { "$ref": "$.metadata.enums.executionOptions" } },
+      "module": { "label": "Module", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] } },
+      "callTo": { "label": "To", "format": "addressName", "params": { "types": ["contract", "eoa", "wallet"] } },
+      "callValue": { "label": "Value", "format": "amount" },
+      "transaction": { "label": "Transaction", "format": "calldata", "params": { "calleePath": "to", "amountPath": "value" } },
+      "operation": { "label": "Operation type", "format": "enum", "params": { "$ref": "$.metadata.enums.operation" } }
+    },
+    "formats": {
+      "allowTarget(bytes32 roleKey,address targetAddress,uint8 options)": {
+        "intent": "Allow all calls to target",
+        "interpolatedIntent": "Allow all calls to {targetAddress} ({options})",
+        "fields": [
+          { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
+          { "path": "targetAddress", "$ref": "$.display.definitions.target", "visible": "always" },
+          { "path": "options", "$ref": "$.display.definitions.executionOptions", "visible": "always" }
+        ]
+      },
+      "scopeTarget(bytes32 roleKey,address targetAddress)": {
+        "intent": "Scope target",
+        "interpolatedIntent": "Scope {targetAddress}",
+        "fields": [
+          { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
+          { "path": "targetAddress", "$ref": "$.display.definitions.target", "visible": "always" }
+        ]
+      },
+      "revokeTarget(bytes32 roleKey,address targetAddress)": {
+        "intent": "Revoke target",
+        "interpolatedIntent": "Revoke {targetAddress}",
+        "fields": [
+          { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
+          { "path": "targetAddress", "$ref": "$.display.definitions.target", "visible": "always" }
+        ]
+      },
+      "allowFunction(bytes32 roleKey,address targetAddress,bytes4 selector,uint8 options)": {
+        "intent": "Allow function",
+        "interpolatedIntent": "Allow {selector} on {targetAddress} ({options})",
+        "fields": [
+          { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
+          { "path": "targetAddress", "$ref": "$.display.definitions.target", "visible": "always" },
+          { "path": "selector", "$ref": "$.display.definitions.selector", "visible": "always" },
+          { "path": "options", "$ref": "$.display.definitions.executionOptions", "visible": "always" }
+        ]
+      },
+      "scopeFunction(bytes32 roleKey,address targetAddress,bytes4 selector,(uint8 parent,uint8 paramType,uint8 operator,bytes compValue)[] conditions,uint8 options)": {
+        "intent": "Scope function",
+        "fields": [
+          { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
+          { "path": "targetAddress", "$ref": "$.display.definitions.target", "visible": "always" },
+          { "path": "selector", "$ref": "$.display.definitions.selector", "visible": "always" },
+          { "path": "conditions.[].parent", "label": "Condition parent", "format": "raw", "visible": "always" },
+          {
+            "path": "conditions.[].paramType",
+            "label": "Parameter type",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.parameterType" },
+            "visible": "always"
+          },
+          {
+            "path": "conditions.[].operator",
+            "label": "Condition",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.conditionOperator" },
+            "visible": "always"
+          },
+          { "path": "conditions.[].compValue", "label": "Compared value", "format": "raw", "visible": "always" },
+          { "path": "options", "$ref": "$.display.definitions.executionOptions", "visible": "always" }
+        ]
+      },
+      "revokeFunction(bytes32 roleKey,address targetAddress,bytes4 selector)": {
+        "intent": "Revoke function",
+        "interpolatedIntent": "Revoke {selector} on {targetAddress}",
+        "fields": [
+          { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
+          { "path": "targetAddress", "$ref": "$.display.definitions.target", "visible": "always" },
+          { "path": "selector", "$ref": "$.display.definitions.selector", "visible": "always" }
+        ]
+      },
+      "assignRoles(address module,bytes32[] roleKeys,bool[] memberOf)": {
+        "intent": "Assign roles and enable member",
+        "interpolatedIntent": "Assign roles to {module} and enable it as module",
+        "fields": [
+          { "path": "module", "label": "Member", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] }, "visible": "always" },
+          {
+            "iteration": "bundled",
+            "fields": [
+              { "path": "roleKeys.[]", "$ref": "$.display.definitions.role", "visible": "always" },
+              { "path": "memberOf.[]", "label": "Is member", "format": "raw", "visible": "always" }
+            ]
+          }
+        ]
+      },
+      "setDefaultRole(address module,bytes32 roleKey)": {
+        "intent": "Set default role",
+        "interpolatedIntent": "Set default role of {module}",
+        "fields": [
+          { "path": "module", "label": "Member", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] }, "visible": "always" },
+          { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" }
+        ]
+      },
+      "setAllowance(bytes32 key,uint128 balance,uint128 maxRefill,uint128 refill,uint64 period,uint64 timestamp)": {
+        "intent": "Set allowance",
+        "interpolatedIntent": "Set allowance to {balance}, refill {refill} every {period}",
+        "fields": [
+          { "path": "key", "label": "Allowance", "format": "raw", "visible": "always" },
+          { "path": "balance", "label": "Balance", "format": "raw", "visible": "always" },
+          { "path": "refill", "label": "Refill amount", "format": "raw", "visible": "always" },
+          { "path": "maxRefill", "label": "Refill cap", "format": "raw", "visible": { "ifNotIn": [0, "0"] } },
+          { "path": "period", "label": "Refill period", "format": "duration", "visible": "always" },
+          { "path": "timestamp", "label": "Last refill", "format": "date", "params": { "encoding": "timestamp" }, "visible": { "ifNotIn": [0, "0"] } }
+        ]
+      },
+      "setTransactionUnwrapper(address to,bytes4 selector,address adapter)": {
+        "intent": "Set transaction unwrapper",
+        "interpolatedIntent": "Unwrap {selector} on {to} with {adapter}",
+        "fields": [
+          { "path": "to", "$ref": "$.display.definitions.target", "visible": "always" },
+          { "path": "selector", "$ref": "$.display.definitions.selector", "visible": "always" },
+          { "path": "adapter", "label": "Unwrapper", "format": "addressName", "params": { "types": ["contract"] }, "visible": "always" }
+        ]
+      },
+      "execTransactionWithRole(address to,uint256 value,bytes data,uint8 operation,bytes32 roleKey,bool shouldRevert)": {
+        "intent": "Execute with role",
+        "interpolatedIntent": "{operation} to {to} with role",
+        "fields": [
+          { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
+          { "path": "to", "$ref": "$.display.definitions.callTo", "visible": "always" },
+          { "path": "value", "$ref": "$.display.definitions.callValue", "visible": "always" },
+          { "path": "operation", "$ref": "$.display.definitions.operation", "visible": "always" },
+          { "path": "data", "$ref": "$.display.definitions.transaction", "visible": "always" },
+          { "path": "shouldRevert", "label": "Revert on failure", "format": "raw" }
+        ]
+      },
+      "execTransactionWithRoleReturnData(address to,uint256 value,bytes data,uint8 operation,bytes32 roleKey,bool shouldRevert)": {
+        "intent": "Execute with role",
+        "interpolatedIntent": "{operation} to {to} with role",
+        "fields": [
+          { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
+          { "path": "to", "$ref": "$.display.definitions.callTo", "visible": "always" },
+          { "path": "value", "$ref": "$.display.definitions.callValue", "visible": "always" },
+          { "path": "operation", "$ref": "$.display.definitions.operation", "visible": "always" },
+          { "path": "data", "$ref": "$.display.definitions.transaction", "visible": "always" },
+          { "path": "shouldRevert", "label": "Revert on failure", "format": "raw" }
+        ]
+      },
+      "execTransactionFromModule(address to,uint256 value,bytes data,uint8 operation)": {
+        "intent": "Execute with default role",
+        "interpolatedIntent": "{operation} to {to} with default role",
+        "fields": [
+          { "path": "to", "$ref": "$.display.definitions.callTo", "visible": "always" },
+          { "path": "value", "$ref": "$.display.definitions.callValue", "visible": "always" },
+          { "path": "operation", "$ref": "$.display.definitions.operation", "visible": "always" },
+          { "path": "data", "$ref": "$.display.definitions.transaction", "visible": "always" }
+        ]
+      },
+      "execTransactionFromModuleReturnData(address to,uint256 value,bytes data,uint8 operation)": {
+        "intent": "Execute with default role",
+        "interpolatedIntent": "{operation} to {to} with default role",
+        "fields": [
+          { "path": "to", "$ref": "$.display.definitions.callTo", "visible": "always" },
+          { "path": "value", "$ref": "$.display.definitions.callValue", "visible": "always" },
+          { "path": "operation", "$ref": "$.display.definitions.operation", "visible": "always" },
+          { "path": "data", "$ref": "$.display.definitions.transaction", "visible": "always" }
+        ]
+      },
+      "invalidate(bytes32 hash)": {
+        "intent": "Invalidate signed transaction",
+        "fields": [{ "path": "hash", "label": "Transaction hash", "format": "raw", "visible": "always" }]
+      },
+      "enableModule(address module)": {
+        "intent": "Enable module",
+        "interpolatedIntent": "Enable module {module}",
+        "fields": [{ "path": "module", "$ref": "$.display.definitions.module", "visible": "always" }]
+      },
+      "disableModule(address prevModule,address module)": {
+        "intent": "Disable module",
+        "interpolatedIntent": "Disable module {module}",
+        "fields": [
+          { "path": "module", "$ref": "$.display.definitions.module", "visible": "always" },
+          { "path": "prevModule", "label": "Previous module", "visible": "never" }
+        ]
+      },
+      "setAvatar(address _avatar)": {
+        "intent": "Change avatar",
+        "interpolatedIntent": "Change avatar to {_avatar}",
+        "fields": [
+          { "path": "_avatar", "label": "New avatar", "format": "addressName", "params": { "types": ["wallet", "contract"] }, "visible": "always" }
+        ]
+      },
+      "setTarget(address _target)": {
+        "intent": "Change execution target",
+        "interpolatedIntent": "Change execution target to {_target}",
+        "fields": [
+          { "path": "_target", "label": "New target", "format": "addressName", "params": { "types": ["wallet", "contract"] }, "visible": "always" }
+        ]
+      },
+      "transferOwnership(address newOwner)": {
+        "intent": "Transfer ownership",
+        "interpolatedIntent": "Transfer ownership to {newOwner}",
+        "fields": [
+          { "path": "newOwner", "label": "New owner", "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"] }, "visible": "always" }
+        ]
+      },
+      "renounceOwnership()": {
+        "intent": "Renounce ownership",
+        "fields": []
+      }
+    }
+  }
+}
