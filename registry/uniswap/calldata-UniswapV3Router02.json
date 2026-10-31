@@ -29,7 +29,7 @@
             "label": "Amount to Send",
             "format": "tokenAmount",
             "params": { "tokenPath": "params.path.[0:20]" },
-            "visible": "always"
+            "visible": { "ifNotIn": ["0"] }
           },
           {
             "path": "params.amountOutMinimum",
@@ -42,7 +42,7 @@
             "path": "params.recipient",
             "label": "Beneficiary",
             "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"], "senderAddress": ["0x0000000000000000000000000000000000000001"] },
             "visible": "always"
           }
         ]
@@ -57,7 +57,7 @@
             "label": "Send",
             "format": "tokenAmount",
             "params": { "tokenPath": "params.tokenIn" },
-            "visible": "always"
+            "visible": { "ifNotIn": ["0"] }
           },
           {
             "path": "params.amountOutMinimum",
@@ -73,11 +73,12 @@
             "params": { "decimals": 4, "base": "%", "prefix": false },
             "visible": "always"
           },
+          { "path": "params.sqrtPriceLimitX96", "label": "Price limit (may fill only part)", "format": "raw", "visible": { "ifNotIn": ["0"] } },
           {
             "path": "params.recipient",
             "label": "Beneficiary",
             "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"], "senderAddress": ["0x0000000000000000000000000000000000000001"] },
             "visible": "always"
           }
         ]
@@ -109,7 +110,7 @@
             "path": "params.recipient",
             "label": "Beneficiary",
             "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"], "senderAddress": ["0x0000000000000000000000000000000000000001"] },
             "visible": "always"
           }
         ]
@@ -136,11 +137,12 @@
             "params": { "tokenPath": "params.tokenOut" }
           },
           { "path": "params.fee", "label": "Uniswap fee", "format": "unit", "params": { "decimals": 4, "base": "%", "prefix": false } },
+          { "path": "params.sqrtPriceLimitX96", "label": "Price limit (may fill only part)", "format": "raw", "visible": { "ifNotIn": ["0"] } },
           {
             "path": "params.recipient",
             "label": "Beneficiary",
             "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"], "senderAddress": ["0x0000000000000000000000000000000000000001"] }
           }
         ]
       },
@@ -149,13 +151,19 @@
         "intent": "Swap",
         "fields": [
           { "path": "@.value", "label": "Amount sent", "format": "amount", "visible": { "ifNotIn": ["0"] } },
-          { "path": "amountIn", "label": "Amount to Send", "format": "tokenAmount", "params": { "tokenPath": "path.[0]" } },
+          {
+            "path": "amountIn",
+            "label": "Amount to Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "path.[0]" },
+            "visible": { "ifNotIn": ["0"] }
+          },
           { "path": "amountOutMin", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "path.[-1]" } },
           {
             "path": "to",
             "label": "Recipient",
             "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"], "senderAddress": ["0x0000000000000000000000000000000000000001"] }
           }
         ]
       },
