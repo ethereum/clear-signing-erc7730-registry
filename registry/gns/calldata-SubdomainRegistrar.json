@@ -1,0 +1,86 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0xc1D5245bfd98dDB7E73B33209B346b4FC0E03f3c" }] } },
+  "metadata": {
+    "owner": "Gwei Name Service",
+    "contractName": "SubdomainRegistrar",
+    "info": { "url": "https://gwei.domains" },
+    "enums": { "sales": { "true": "Open", "false": "Closed" } }
+  },
+  "display": {
+    "definitions": {
+      "name": { "label": "Name", "format": "nftName", "params": { "collection": "0x9D51D507BC7264d4fE8Ad1cf7Fe191933A0a81d6" } },
+      "address": { "format": "addressName", "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] } },
+      "recipient": {
+        "format": "addressName",
+        "params": {
+          "types": ["eoa", "wallet", "contract"],
+          "sources": ["local", "ens"],
+          "senderAddress": "0x0000000000000000000000000000000000000000"
+        }
+      }
+    },
+    "formats": {
+      "register(uint256 parentId,string label)": {
+        "intent": "Register subname",
+        "interpolatedIntent": "Register subname {label}",
+        "fields": [
+          { "path": "label", "label": "Subname", "format": "raw" },
+          { "path": "parentId", "$ref": "$.display.definitions.name", "label": "Parent name" },
+          { "path": "@.value", "label": "Maximum ETH payment", "format": "amount" }
+        ]
+      },
+      "registerFor(uint256 parentId,string label,address to)": {
+        "intent": "Register subname",
+        "interpolatedIntent": "Register subname {label} for {to}",
+        "fields": [
+          { "path": "label", "label": "Subname", "format": "raw" },
+          { "path": "parentId", "$ref": "$.display.definitions.name", "label": "Parent name" },
+          { "path": "to", "$ref": "$.display.definitions.address", "label": "Owner" },
+          { "path": "@.value", "label": "Maximum ETH payment", "format": "amount" }
+        ]
+      },
+      "configure(uint256 parentId,address payout,address feeToken,uint256 price,bool enabled,address gateToken,uint256 minGateBalance)": {
+        "intent": "Set subname sale terms",
+        "fields": [
+          { "path": "parentId", "$ref": "$.display.definitions.name", "label": "Parent name" },
+          { "path": "enabled", "label": "Sales", "format": "enum", "params": { "$ref": "$.metadata.enums.sales" } },
+          {
+            "path": "price",
+            "label": "Price",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "feeToken", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" }
+          },
+          { "path": "payout", "$ref": "$.display.definitions.recipient", "label": "Payout to" },
+          {
+            "path": "gateToken",
+            "label": "Buyers must hold",
+            "format": "addressName",
+            "params": { "types": ["token", "collection", "contract"], "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "minGateBalance", "label": "Minimum balance", "format": "raw", "visible": { "ifNotIn": ["0"] } }
+        ]
+      },
+      "disable(uint256 parentId)": {
+        "intent": "Stop subname sales",
+        "fields": [{ "path": "parentId", "$ref": "$.display.definitions.name", "label": "Parent name" }]
+      },
+      "deposit(uint256 parentId)": { "intent": "Escrow name for subname sales", "fields": [{ "path": "parentId", "$ref": "$.display.definitions.name" }] },
+      "withdrawParent(uint256 parentId,address to)": {
+        "intent": "Take name back from escrow",
+        "interpolatedIntent": "Send escrowed name to {to}",
+        "fields": [
+          { "path": "parentId", "$ref": "$.display.definitions.name" },
+          { "path": "to", "$ref": "$.display.definitions.recipient", "label": "To" }
+        ]
+      },
+      "withdrawETH(address to)": {
+        "intent": "Withdraw subname sale earnings",
+        "interpolatedIntent": "Withdraw subname sale earnings to {to}",
+        "fields": [{ "path": "to", "$ref": "$.display.definitions.recipient", "label": "To" }]
+      },
+      "clearStaleEscrow(uint256 parentId)": { "intent": "Clear stale escrow", "fields": [{ "path": "parentId", "$ref": "$.display.definitions.name" }] }
+    }
+  }
+}

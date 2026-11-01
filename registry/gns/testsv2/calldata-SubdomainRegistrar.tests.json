@@ -1,0 +1,155 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-SubdomainRegistrar.json",
+  "dataProvider": {
+    "tokens": { "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "name": "USD Coin", "symbol": "USDC", "decimals": 6 } },
+    "nftCollectionNames": { "0x9d51d507bc7264d4fe8ad1cf7fe191933a0a81d6": "Gwei Name Service" }
+  },
+  "tests": [
+    {
+      "description": "register - free subname",
+      "rawTx": "0x02f8a501808080830f424094c1d5245bfd98ddb7e73b33209b346b4fc0e03f3c80b884a00fd3c8d0114c1efae2ef63294773e0199dfa7ff3a18b5ee34d7938391b21eac8e12ba7000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000036465760000000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0xd7deb659ba59ab03c2cf0e70d1a60edd0a7d88ffbf0cfa70ae90ea3e27182abd",
+      "expected": {
+        "intent": "Register subname",
+        "interpolatedIntent": "Register subname dev",
+        "owner": "Gwei Name Service",
+        "fields": [
+          { "label": "Subname", "value": "dev" },
+          {
+            "label": "Parent name",
+            "value": "Gwei Name Service #94111634273362826017887135654247486303163713512505381700197789298466381441959"
+          },
+          { "label": "Maximum ETH payment", "value": "0 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "registerFor - paid in ETH",
+      "rawTx": "0x02f8cc01808080830f424094c1d5245bfd98ddb7e73b33209b346b4fc0e03f3c87038d7ea4c68000b8a4b5aee591d0114c1efae2ef63294773e0199dfa7ff3a18b5ee34d7938391b21eac8e12ba7000000000000000000000000000000000000000000000000000000000000006000000000000000000000000097b90fbc8904f861f76cb06bfa0a465b72c5e6620000000000000000000000000000000000000000000000000000000000000003626f620000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Register subname",
+        "interpolatedIntent": "Register subname bob for 0x97b90FBc8904F861F76CB06BFa0A465b72C5E662",
+        "owner": "Gwei Name Service",
+        "fields": [
+          { "label": "Subname", "value": "bob" },
+          {
+            "label": "Parent name",
+            "value": "Gwei Name Service #94111634273362826017887135654247486303163713512505381700197789298466381441959"
+          },
+          { "label": "Owner", "value": "0x97b90FBc8904F861F76CB06BFa0A465b72C5E662" },
+          { "label": "Maximum ETH payment", "value": "0.001 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "configure - free, open, no gate",
+      "rawTx": "0x02f9010501808080830f424094c1d5245bfd98ddb7e73b33209b346b4fc0e03f3c80b8e46a39fe02fda265f18faf762b913d1a8c866a967cc3ae0c3cabdd5dd9c5ec6fccd3ad8801000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0xEfA8D282426f33D31D2e8d510480E26c7EF9A9bF",
+      "txHash": "0x738d409efded88b342300fc7daea3c673d43ca3c9dcbc31178a48f4082ad79bf",
+      "expected": {
+        "intent": "Set subname sale terms",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Parent name",
+            "value": "Gwei Name Service #114722083504920505575242548020147692246007350278836380571715487263501325273089"
+          },
+          { "label": "Sales", "value": "Open" },
+          { "label": "Price", "value": "0 ETH" },
+          { "label": "Payout to", "value": "Sender" }
+        ]
+      }
+    },
+    {
+      "description": "configure - 5 USDC, gated on holding a .gwei name",
+      "rawTx": "0x02f9010501808080830f424094c1d5245bfd98ddb7e73b33209b346b4fc0e03f3c80b8e46a39fe02d0114c1efae2ef63294773e0199dfa7ff3a18b5ee34d7938391b21eac8e12ba700000000000000000000000097b90fbc8904f861f76cb06bfa0a465b72c5e662000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000004c4b4000000000000000000000000000000000000000000000000000000000000000010000000000000000000000009d51d507bc7264d4fe8ad1cf7fe191933a0a81d60000000000000000000000000000000000000000000000000000000000000001c0",
+      "from": "0x6F0244F4647bBAc130A2aAd00c776eAE7FBBb4Ac",
+      "expected": {
+        "intent": "Set subname sale terms",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Parent name",
+            "value": "Gwei Name Service #94111634273362826017887135654247486303163713512505381700197789298466381441959"
+          },
+          { "label": "Sales", "value": "Open" },
+          { "label": "Price", "value": "5 USDC" },
+          { "label": "Payout to", "value": "0x97b90FBc8904F861F76CB06BFa0A465b72C5E662" },
+          { "label": "Buyers must hold", "value": "0x9D51D507BC7264d4fE8Ad1cf7Fe191933A0a81d6" },
+          { "label": "Minimum balance", "value": "1" }
+        ]
+      }
+    },
+    {
+      "description": "disable",
+      "rawTx": "0x02f84401808080830f424094c1d5245bfd98ddb7e73b33209b346b4fc0e03f3c80a49946b9a5d0114c1efae2ef63294773e0199dfa7ff3a18b5ee34d7938391b21eac8e12ba7c0",
+      "expected": {
+        "intent": "Stop subname sales",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Parent name",
+            "value": "Gwei Name Service #94111634273362826017887135654247486303163713512505381700197789298466381441959"
+          }
+        ]
+      }
+    },
+    {
+      "description": "deposit",
+      "rawTx": "0x02f84401808080830f424094c1d5245bfd98ddb7e73b33209b346b4fc0e03f3c80a4b6b55f25d0114c1efae2ef63294773e0199dfa7ff3a18b5ee34d7938391b21eac8e12ba7c0",
+      "expected": {
+        "intent": "Escrow name for subname sales",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #94111634273362826017887135654247486303163713512505381700197789298466381441959"
+          }
+        ]
+      }
+    },
+    {
+      "description": "withdrawParent - to sender",
+      "rawTx": "0x02f86501808080830f424094c1d5245bfd98ddb7e73b33209b346b4fc0e03f3c80b8441de34d09d0114c1efae2ef63294773e0199dfa7ff3a18b5ee34d7938391b21eac8e12ba70000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x6F0244F4647bBAc130A2aAd00c776eAE7FBBb4Ac",
+      "expected": {
+        "intent": "Take name back from escrow",
+        "interpolatedIntent": "Send escrowed name to Sender",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #94111634273362826017887135654247486303163713512505381700197789298466381441959"
+          },
+          { "label": "To", "value": "Sender" }
+        ]
+      }
+    },
+    {
+      "description": "withdrawETH",
+      "rawTx": "0x02f84401808080830f424094c1d5245bfd98ddb7e73b33209b346b4fc0e03f3c80a4690d832000000000000000000000000097b90fbc8904f861f76cb06bfa0a465b72c5e662c0",
+      "from": "0x6F0244F4647bBAc130A2aAd00c776eAE7FBBb4Ac",
+      "expected": {
+        "intent": "Withdraw subname sale earnings",
+        "interpolatedIntent": "Withdraw subname sale earnings to 0x97b90FBc8904F861F76CB06BFa0A465b72C5E662",
+        "owner": "Gwei Name Service",
+        "fields": [{ "label": "To", "value": "0x97b90FBc8904F861F76CB06BFa0A465b72C5E662" }]
+      }
+    },
+    {
+      "description": "clearStaleEscrow",
+      "rawTx": "0x02f84401808080830f424094c1d5245bfd98ddb7e73b33209b346b4fc0e03f3c80a45e0b527bd0114c1efae2ef63294773e0199dfa7ff3a18b5ee34d7938391b21eac8e12ba7c0",
+      "expected": {
+        "intent": "Clear stale escrow",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #94111634273362826017887135654247486303163713512505381700197789298466381441959"
+          }
+        ]
+      }
+    }
+  ]
+}

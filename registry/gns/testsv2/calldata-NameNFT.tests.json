@@ -1,0 +1,251 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-NameNFT.json",
+  "dataProvider": {
+    "tokens": { "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "name": "USD Coin", "symbol": "USDC", "decimals": 6 } },
+    "nftCollectionNames": { "0x9d51d507bc7264d4fe8ad1cf7fe191933a0a81d6": "Gwei Name Service" }
+  },
+  "tests": [
+    {
+      "description": "commit",
+      "rawTx": "0x02f84401808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d680a4f14fcbc815ca020d9a0163bbaf9c51625176f8579763e2d84c233aa8b6786299a20aa34cc0",
+      "txHash": "0xf1b35c65411e8d2d6feadf2daa1d25a5e0ff7b7d060dfbd0e98abc8bce3bbdf5",
+      "expected": {
+        "intent": "Commit to register a name",
+        "owner": "Gwei Name Service",
+        "fields": [{ "label": "Commitment", "value": "0x15ca020d9a0163bbaf9c51625176f8579763e2d84c233aa8b6786299a20aa34c" }]
+      }
+    },
+    {
+      "description": "reveal",
+      "rawTx": "0x02f8ac01808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d68701c6bf52634000b884ea9384fa00000000000000000000000000000000000000000000000000000000000000408ca1506a441dc04e4f7f28d571f740a3de616474e064c60afcb2f346494149c000000000000000000000000000000000000000000000000000000000000000073132333435363700000000000000000000000000000000000000000000000000c0",
+      "txHash": "0xb32ecdf3b84c90e8b67d14b3939470b48b864d57e5201c2915f74316a84e5bfa",
+      "expected": {
+        "intent": "Register .gwei name",
+        "interpolatedIntent": "Register 1234567.gwei",
+        "owner": "Gwei Name Service",
+        "fields": [{ "label": "Name (.gwei)", "value": "1234567" }, { "label": "Maximum payment", "value": "0.0005 ETH" }]
+      }
+    },
+    {
+      "description": "renew",
+      "rawTx": "0x02f84b01808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d68701c6bf52634000a45baa75093fdffeed8852cb74b53b2a53a0af78f3c9b6c32b10de66931ac6c6314ab5323bc0",
+      "txHash": "0x3f3e18f985a2ca74edab27dda9acf9512ff263e1253220c3e37ec7b9967a9a89",
+      "expected": {
+        "intent": "Renew .gwei name for a year",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #28891475803627338542279559193323136166367200332137616724117785116781650981435"
+          },
+          { "label": "Maximum payment", "value": "0.0005 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "registerSubdomain",
+      "rawTx": "0x02f8a501808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d680b8848f449b850000000000000000000000000000000000000000000000000000000000000040b4e0e4a4d98a6ff4457efb035b68456cf0f37eaeffacde8b8965b5c61cf6c8e400000000000000000000000000000000000000000000000000000000000000056f6f6d616e000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0x2916d84366d4e5429e86508b54aa68a450f991ca30b30ed942c84ca7c97aa353",
+      "expected": {
+        "intent": "Create subname",
+        "owner": "Gwei Name Service",
+        "fields": [
+          { "label": "Subname", "value": "ooman" },
+          {
+            "label": "Parent name",
+            "value": "Gwei Name Service #81813664530006346761017733622956239274119913696007791756169900671514153765092"
+          }
+        ]
+      }
+    },
+    {
+      "description": "registerSubdomainFor",
+      "rawTx": "0x02f8c501808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d680b8a4df456c9000000000000000000000000000000000000000000000000000000000000000603fdffeed8852cb74b53b2a53a0af78f3c9b6c32b10de66931ac6c6314ab5323b00000000000000000000000097b90fbc8904f861f76cb06bfa0a465b72c5e6620000000000000000000000000000000000000000000000000000000000000004626c6f6700000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Create subname",
+        "interpolatedIntent": "Create subname blog for 0x97b90FBc8904F861F76CB06BFa0A465b72C5E662",
+        "owner": "Gwei Name Service",
+        "fields": [
+          { "label": "Subname", "value": "blog" },
+          {
+            "label": "Parent name",
+            "value": "Gwei Name Service #28891475803627338542279559193323136166367200332137616724117785116781650981435"
+          },
+          { "label": "Owner", "value": "0x97b90FBc8904F861F76CB06BFa0A465b72C5E662" }
+        ]
+      }
+    },
+    {
+      "description": "setAddr",
+      "rawTx": "0x02f86501808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d680b844eba36dbd3fdffeed8852cb74b53b2a53a0af78f3c9b6c32b10de66931ac6c6314ab5323b000000000000000000000000cb00f88e638eadc50b8f631656a97f4d94b888ffc0",
+      "txHash": "0x67873af8d0999767fea9310b0d6f17c8cb7c7e8a029889ec376c8454cf80581b",
+      "expected": {
+        "intent": "Set the address of a name",
+        "interpolatedIntent": "Point name to 0xCB00f88E638EAdc50b8F631656A97F4D94b888fF",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #28891475803627338542279559193323136166367200332137616724117785116781650981435"
+          },
+          { "label": "Address", "value": "0xCB00f88E638EAdc50b8F631656A97F4D94b888fF" }
+        ]
+      }
+    },
+    {
+      "description": "setAddrForCoin - Optimism address",
+      "rawTx": "0x02f8c501808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d680b8a4a435a0463fdffeed8852cb74b53b2a53a0af78f3c9b6c32b10de66931ac6c6314ab5323b000000000000000000000000000000000000000000000000000000008000000a0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000001497b90fbc8904f861f76cb06bfa0a465b72c5e662000000000000000000000000c0",
+      "expected": {
+        "intent": "Set an address of a name",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #28891475803627338542279559193323136166367200332137616724117785116781650981435"
+          },
+          { "label": "Coin type", "value": "2147483658" },
+          { "label": "Address", "value": "0x97b90fbc8904f861f76cb06bfa0a465b72c5e662" }
+        ]
+      }
+    },
+    {
+      "description": "setContenthash - IPFS website",
+      "rawTx": "0x02f8c501808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d680b8a488f97a6740cc86acd4a9b12e4182fc5efd6d6f43e40af993cbbb7f035da4116b8bd2ff8d00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000026e30101701220dde3d76d58954de198ac15bc631e4ee8607f286a90007357df7e6a53088c47920000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0xa38d25514b98e744ee6d8064bf54e918ed7ef581556ed0ca0c64d1d34f8bfe3f",
+      "expected": {
+        "intent": "Set the website of a name",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #29309388604061149064253099398633084108762869919113478566996231174412714573709"
+          },
+          { "label": "Content hash", "value": "0xe30101701220dde3d76d58954de198ac15bc631e4ee8607f286a90007357df7e6a53088c4792" }
+        ]
+      }
+    },
+    {
+      "description": "setText",
+      "rawTx": "0x02f9010501808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d680b8e43fb24782761e33684dd058b836b50dfbea3fea830cfba432bb60d5a245743379c7984509000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000009677765692d70616765000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000137b22636f6c6f72223a2223666666303031227d00000000000000000000000000c0",
+      "txHash": "0xeaa52ae9d63b3029091f45027f383ab603433336c0b2662dc1a0e319777b61e9",
+      "expected": {
+        "intent": "Set a text record",
+        "interpolatedIntent": "Set the gwei-page record",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #53426276345861680322695085572774032592338884738334366676750214273367792960777"
+          },
+          { "label": "Record", "value": "gwei-page" },
+          { "label": "Value", "value": "{\"color\":\"#fff001\"}" }
+        ]
+      }
+    },
+    {
+      "description": "setPrimaryName",
+      "rawTx": "0x02f84401808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d680a4a4f69657c0571068c3a7c129e30d656fe927ac2311928c04fc041fc53a07115e3e047c9fc0",
+      "txHash": "0xcb5cdd0a1d9cd65a4f65bdeba8782877ce6bf9df34483795888118f61bb2982b",
+      "expected": {
+        "intent": "Set primary name",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #86997895875003775129646955044070964574639128510228946826304206081052429810847"
+          }
+        ]
+      }
+    },
+    {
+      "description": "transferFrom",
+      "rawTx": "0x02f88501808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d680b86423b872dd000000000000000000000000f13a99222b7e613855cdbc9a667973af7aa202fe0000000000000000000000002dc9d420e6d04305f6d528df7df3a328964bed45b8a18f7b907108f21f28a46a3cbfe4ab31fd62131dcf97afb21de80a8812bc4ac0",
+      "txHash": "0xd3eda942d46a3407eda459ca9a324eabe44bfdb8cfd5c6ec57abf945e31aeddb",
+      "expected": {
+        "intent": "Send .gwei name",
+        "interpolatedIntent": "Send name to 0x2Dc9d420E6d04305F6d528DF7df3a328964bED45",
+        "owner": "Gwei Name Service",
+        "fields": [
+          { "label": "From", "value": "0xF13a99222b7E613855CDBc9a667973AF7aa202fE" },
+          { "label": "To", "value": "0x2Dc9d420E6d04305F6d528DF7df3a328964bED45" },
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #83511016797762836327248397819507607680487604206529808551437908637597020896330"
+          }
+        ]
+      }
+    },
+    {
+      "description": "safeTransferFrom",
+      "rawTx": "0x02f88501808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d680b86442842e0e00000000000000000000000072185924ff9c68f1e02f7b7ec16a898c02d545100000000000000000000000009f452cdea6ebf7ff6313177af18328a2765cadffa7267c2e8f9db285f4bd78d0a07b2245e2a47ddad636cfb372cd125617050022c0",
+      "txHash": "0x884e65abd9c6d594cb49b2fbc326539b012981ba0c7e07e8d5ded0d452cd5f0a",
+      "expected": {
+        "intent": "Send .gwei name",
+        "interpolatedIntent": "Send name to 0x9f452CdEa6Ebf7ff6313177af18328A2765cadfF",
+        "owner": "Gwei Name Service",
+        "fields": [
+          { "label": "From", "value": "0x72185924FF9c68f1E02F7b7Ec16A898c02d54510" },
+          { "label": "To", "value": "0x9f452CdEa6Ebf7ff6313177af18328A2765cadfF" },
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #75604242973696144820014326860209280490835325890720185947346337901110138044450"
+          }
+        ]
+      }
+    },
+    {
+      "description": "safeTransferFrom with data",
+      "rawTx": "0x02f8c501808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d680b8a4b88d4fde000000000000000000000000c48b1d6ef9ac4e6d46445aebdbeb556cfef1ee99000000000000000000000000000000000000000000000000000000000000dead8f7a6710b699be9eaf515aab8a74bf28d76cadca6f42a70bf1504da5c8a8b1d800000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0x9881ad34e259854d6e2dfeaf69b1ce4ccd83dfb47f5fe379f9ef8c3fe03656da",
+      "expected": {
+        "intent": "Send .gwei name",
+        "interpolatedIntent": "Send name to 0x000000000000000000000000000000000000dEaD",
+        "owner": "Gwei Name Service",
+        "fields": [
+          { "label": "From", "value": "0xC48B1D6EF9AC4E6d46445aEbdbEB556CFeF1ee99" },
+          { "label": "To", "value": "0x000000000000000000000000000000000000dEaD" },
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #64897004019773006475379066902999945999289708396517767336675933818207569752536"
+          }
+        ]
+      }
+    },
+    {
+      "description": "approve - SubdomainRegistrar",
+      "rawTx": "0x02f86501808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d680b844095ea7b3000000000000000000000000c1d5245bfd98ddb7e73b33209b346b4fc0e03f3c3fdffeed8852cb74b53b2a53a0af78f3c9b6c32b10de66931ac6c6314ab5323bc0",
+      "expected": {
+        "intent": "Approve operator for a name",
+        "interpolatedIntent": "Let 0xc1D5245bfd98dDB7E73B33209B346b4FC0E03f3c move a name",
+        "owner": "Gwei Name Service",
+        "fields": [
+          { "label": "Operator", "value": "0xc1D5245bfd98dDB7E73B33209B346b4FC0E03f3c" },
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #28891475803627338542279559193323136166367200332137616724117785116781650981435"
+          }
+        ]
+      }
+    },
+    {
+      "description": "setApprovalForAll - grant SubdomainRegistrar",
+      "rawTx": "0x02f86501808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d680b844a22cb465000000000000000000000000c1d5245bfd98ddb7e73b33209b346b4fc0e03f3c0000000000000000000000000000000000000000000000000000000000000001c0",
+      "expected": {
+        "intent": "Manage operator for all names",
+        "owner": "Gwei Name Service",
+        "fields": [{ "label": "Operator", "value": "0xc1D5245bfd98dDB7E73B33209B346b4FC0E03f3c" }, { "label": "Access", "value": "Grant all" }]
+      }
+    },
+    {
+      "description": "setApprovalForAll - revoke",
+      "rawTx": "0x02f86501808080830f4240949d51d507bc7264d4fe8ad1cf7fe191933a0a81d680b844a22cb4650000000000000000000000001e0049783f008a0085193e00003d00cd54003c710000000000000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0x6ecb6c8ca2d967a23a2a3055365f91ec5324cc4c0f4c0f7b1abcb0414108a555",
+      "expected": {
+        "intent": "Manage operator for all names",
+        "owner": "Gwei Name Service",
+        "fields": [{ "label": "Operator", "value": "0x1E0049783F008A0085193E00003D00cd54003c71" }, { "label": "Access", "value": "Revoke all" }]
+      }
+    }
+  ]
+}

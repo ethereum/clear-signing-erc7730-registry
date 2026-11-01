@@ -1,0 +1,48 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x73849f6f2785BA7fd2f41b5B4573B75554417981" }] } },
+  "metadata": { "owner": "Gwei Name Service", "contractName": "GnsPosts", "info": { "url": "https://gwei.domains" } },
+  "display": {
+    "definitions": {
+      "name": { "label": "Name", "format": "nftName", "params": { "collection": "0x9D51D507BC7264d4fE8Ad1cf7Fe191933A0a81d6" } },
+      "publisher": {
+        "label": "Publisher",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      }
+    },
+    "formats": {
+      "authorize(uint256 tokenId,bytes32 postHash,bytes32 blobHash,address publisher)": {
+        "intent": "Authorize post",
+        "interpolatedIntent": "Authorize post with a {@.value} fee",
+        "fields": [
+          { "path": "tokenId", "$ref": "$.display.definitions.name" },
+          { "path": "postHash", "label": "Post hash", "format": "raw" },
+          { "path": "blobHash", "label": "Blob hash", "format": "raw" },
+          { "path": "publisher", "$ref": "$.display.definitions.publisher" },
+          { "path": "@.value", "label": "Publishing fee", "format": "amount" }
+        ]
+      },
+      "post(uint256 tokenId,bytes32 postHash,uint256 blobIndex)": {
+        "intent": "Publish post",
+        "fields": [
+          { "path": "tokenId", "$ref": "$.display.definitions.name" },
+          { "path": "postHash", "label": "Post hash", "format": "raw" },
+          { "path": "blobIndex", "label": "Blob index", "visible": "never" }
+        ]
+      },
+      "publish()": { "intent": "Publish posts, collect fees", "fields": [] },
+      "refund(bytes32 blobHash,address publisher)": {
+        "intent": "Refund unpublished post fee",
+        "fields": [
+          { "path": "blobHash", "label": "Blob hash", "format": "raw" },
+          { "path": "publisher", "$ref": "$.display.definitions.publisher" }
+        ]
+      },
+      "remove(uint256 tokenId,bytes32 postHash)": {
+        "intent": "Remove post",
+        "fields": [{ "path": "tokenId", "$ref": "$.display.definitions.name" }, { "path": "postHash", "label": "Post hash", "format": "raw" }]
+      }
+    }
+  }
+}
