@@ -16,7 +16,7 @@
       "commit(bytes32 commitment)": { "intent": "Commit to register a name", "fields": [{ "path": "commitment", "label": "Commitment", "format": "raw" }] },
       "reveal(string label,bytes32 secret)": {
         "intent": "Register .gwei name",
-        "interpolatedIntent": "Register {label}.gwei",
+        "interpolatedIntent": "Register {label}.gwei, paying up to {@.value}",
         "fields": [
           { "path": "label", "label": "Name (.gwei)", "format": "raw" },
           { "path": "@.value", "label": "Maximum payment", "format": "amount" },
@@ -39,7 +39,7 @@
       },
       "registerSubdomainFor(string label,uint256 parentId,address to)": {
         "intent": "Create subname",
-        "interpolatedIntent": "Create subname {label} for {to}",
+        "interpolatedIntent": "Create subname {label} under {parentId} for {to}",
         "fields": [
           { "path": "label", "label": "Subname", "format": "raw" },
           { "path": "parentId", "$ref": "$.display.definitions.name", "label": "Parent name" },
@@ -48,7 +48,7 @@
       },
       "setAddr(uint256 tokenId,address addr)": {
         "intent": "Set the address of a name",
-        "interpolatedIntent": "Point name to {addr}",
+        "interpolatedIntent": "Point {tokenId} to {addr}",
         "fields": [
           { "path": "tokenId", "$ref": "$.display.definitions.name" },
           { "path": "addr", "$ref": "$.display.definitions.address", "label": "Address" }
@@ -68,7 +68,7 @@
       },
       "setText(uint256 tokenId,string key,string value)": {
         "intent": "Set a text record",
-        "interpolatedIntent": "Set the {key} record",
+        "interpolatedIntent": "Set {key} of {tokenId} to {value}",
         "fields": [
           { "path": "tokenId", "$ref": "$.display.definitions.name" },
           { "path": "key", "label": "Record", "format": "raw" },
@@ -78,7 +78,7 @@
       "setPrimaryName(uint256 tokenId)": { "intent": "Set primary name", "fields": [{ "path": "tokenId", "$ref": "$.display.definitions.name" }] },
       "transferFrom(address from,address to,uint256 id)": {
         "intent": "Send .gwei name",
-        "interpolatedIntent": "Send name to {to}",
+        "interpolatedIntent": "Send {id} from {from} to {to}",
         "fields": [
           { "path": "from", "$ref": "$.display.definitions.address", "label": "From" },
           { "path": "to", "$ref": "$.display.definitions.address", "label": "To" },
@@ -87,7 +87,7 @@
       },
       "safeTransferFrom(address from,address to,uint256 id)": {
         "intent": "Send .gwei name",
-        "interpolatedIntent": "Send name to {to}",
+        "interpolatedIntent": "Send {id} from {from} to {to}",
         "fields": [
           { "path": "from", "$ref": "$.display.definitions.address", "label": "From" },
           { "path": "to", "$ref": "$.display.definitions.address", "label": "To" },
@@ -96,7 +96,7 @@
       },
       "safeTransferFrom(address from,address to,uint256 id,bytes data)": {
         "intent": "Send .gwei name",
-        "interpolatedIntent": "Send name to {to}",
+        "interpolatedIntent": "Send {id} from {from} to {to}",
         "fields": [
           { "path": "from", "$ref": "$.display.definitions.address", "label": "From" },
           { "path": "to", "$ref": "$.display.definitions.address", "label": "To" },
@@ -106,7 +106,7 @@
       },
       "approve(address account,uint256 id)": {
         "intent": "Approve operator for a name",
-        "interpolatedIntent": "Let {account} move a name",
+        "interpolatedIntent": "Let {account} move {id}",
         "fields": [
           { "path": "account", "$ref": "$.display.definitions.address", "label": "Operator" },
           { "path": "id", "$ref": "$.display.definitions.name" }
