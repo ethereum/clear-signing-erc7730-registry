@@ -17,16 +17,7 @@
     "owner": "Wormhole",
     "contractName": "CircleIntegration",
     "info": { "url": "https://portalbridge.com/" },
-    "enums": {
-      "wormholeChain": {
-        "2": "Ethereum",
-        "5": "Polygon",
-        "6": "Avalanche",
-        "23": "Arbitrum",
-        "24": "Optimism",
-        "30": "Base"
-      }
-    }
+    "enums": { "wormholeChain": { "2": "Ethereum", "5": "Polygon", "6": "Avalanche", "23": "Arbitrum", "24": "Optimism", "30": "Base" } }
   },
   "display": {
     "formats": {
@@ -34,42 +25,43 @@
         "intent": "Bridge native USDC via CCTP",
         "fields": [
           { "path": "@.value", "label": "Wormhole fee", "format": "amount" },
-          { "path": "#.transferParams.token", "label": "Token", "format": "addressName", "params": { "types": ["token", "contract"], "sources": ["local"] } },
-          { "path": "#.transferParams.amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "#.transferParams.token" } },
-          { "path": "#.transferParams.targetChain", "label": "Destination chain", "format": "enum", "params": { "$ref": "$.metadata.enums.wormholeChain" } },
+          {
+            "path": "#.transferParams.token",
+            "label": "Token",
+            "format": "addressName",
+            "params": { "types": ["token", "contract"], "sources": ["local"] }
+          },
+          {
+            "path": "#.transferParams.amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.transferParams.token" }
+          },
+          {
+            "path": "#.transferParams.targetChain",
+            "label": "Destination chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.wormholeChain" }
+          },
           { "path": "#.transferParams.mintRecipient", "label": "Mint recipient (bytes32)", "format": "raw" },
           { "path": "#.payload", "label": "Payload", "format": "raw" },
           { "path": "#.batchId", "label": "Batch ID", "visible": "never" }
         ]
       },
-      "redeemTokensWithPayload((bytes encodedWormholeMessage,bytes circleBridgeMessage,bytes circleAttestation) params)": {
-        "intent": "Redeem USDC via Wormhole CCTP",
-        "fields": [
-          { "path": "#.params", "label": "Attestation", "visible": "never" }
-        ]
-      },
+      "redeemTokensWithPayload((bytes encodedWormholeMessage,bytes circleBridgeMessage,bytes circleAttestation) params)": { "intent": "Redeem USDC via Wormhole CCTP", "fields": [{ "path": "#.params", "label": "Attestation", "visible": "never" }] },
       "upgradeContract(bytes encodedMessage)": {
         "intent": "Upgrade Circle Integration",
-        "fields": [
-          { "path": "#.encodedMessage", "label": "Governance message", "visible": "never" }
-        ]
+        "fields": [{ "path": "#.encodedMessage", "label": "Governance message", "visible": "never" }]
       },
       "updateWormholeFinality(bytes encodedMessage)": {
         "intent": "Update Wormhole finality",
-        "fields": [
-          { "path": "#.encodedMessage", "label": "Governance message", "visible": "never" }
-        ]
+        "fields": [{ "path": "#.encodedMessage", "label": "Governance message", "visible": "never" }]
       },
       "registerEmitterAndDomain(bytes encodedMessage)": {
         "intent": "Register emitter and domain",
-        "fields": [
-          { "path": "#.encodedMessage", "label": "Governance message", "visible": "never" }
-        ]
+        "fields": [{ "path": "#.encodedMessage", "label": "Governance message", "visible": "never" }]
       },
-      "initialize()": {
-        "intent": "Initialize Circle Integration",
-        "fields": []
-      }
+      "initialize()": { "intent": "Initialize Circle Integration", "fields": [] }
     }
   }
 }
