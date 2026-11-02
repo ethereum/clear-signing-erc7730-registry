@@ -36,9 +36,19 @@
         "intent": "Bridge tokens",
         "fields": [
           { "path": "@.value", "label": "Wormhole fee", "format": "amount" },
-          { "path": "#.token", "label": "Token", "format": "addressName", "params": { "types": ["token", "contract"], "sources": ["local"] } },
+          {
+            "path": "#.token",
+            "label": "Token",
+            "format": "addressName",
+            "params": { "types": ["token", "contract"], "sources": ["local"] }
+          },
           { "path": "#.amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "#.token" } },
-          { "path": "#.recipientChain", "label": "Destination chain", "format": "enum", "params": { "$ref": "$.metadata.enums.wormholeChain" } },
+          {
+            "path": "#.recipientChain",
+            "label": "Destination chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.wormholeChain" }
+          },
           { "path": "#.recipient", "label": "Recipient", "format": "raw" },
           { "path": "#.arbiterFee", "label": "Relayer fee", "format": "tokenAmount", "params": { "tokenPath": "#.token" } },
           { "path": "#.nonce", "label": "Nonce", "visible": "never" }
@@ -48,9 +58,19 @@
         "intent": "Bridge tokens with payload",
         "fields": [
           { "path": "@.value", "label": "Wormhole fee", "format": "amount" },
-          { "path": "#.token", "label": "Token", "format": "addressName", "params": { "types": ["token", "contract"], "sources": ["local"] } },
+          {
+            "path": "#.token",
+            "label": "Token",
+            "format": "addressName",
+            "params": { "types": ["token", "contract"], "sources": ["local"] }
+          },
           { "path": "#.amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "#.token" } },
-          { "path": "#.recipientChain", "label": "Destination chain", "format": "enum", "params": { "$ref": "$.metadata.enums.wormholeChain" } },
+          {
+            "path": "#.recipientChain",
+            "label": "Destination chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.wormholeChain" }
+          },
           { "path": "#.recipient", "label": "Recipient", "format": "raw" },
           { "path": "#.payload", "label": "Payload", "format": "raw" },
           { "path": "#.nonce", "label": "Nonce", "visible": "never" }
@@ -60,7 +80,12 @@
         "intent": "Wrap native coin and bridge",
         "fields": [
           { "path": "@.value", "label": "Total sent (Wormhole fee included)", "format": "amount" },
-          { "path": "#.recipientChain", "label": "Destination chain", "format": "enum", "params": { "$ref": "$.metadata.enums.wormholeChain" } },
+          {
+            "path": "#.recipientChain",
+            "label": "Destination chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.wormholeChain" }
+          },
           { "path": "#.recipient", "label": "Recipient", "format": "raw" },
           { "path": "#.arbiterFee", "label": "Relayer fee", "format": "amount" },
           { "path": "#.nonce", "label": "Nonce", "visible": "never" }
@@ -70,7 +95,12 @@
         "intent": "Wrap native coin + bridge payload",
         "fields": [
           { "path": "@.value", "label": "Total sent (Wormhole fee included)", "format": "amount" },
-          { "path": "#.recipientChain", "label": "Destination chain", "format": "enum", "params": { "$ref": "$.metadata.enums.wormholeChain" } },
+          {
+            "path": "#.recipientChain",
+            "label": "Destination chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.wormholeChain" }
+          },
           { "path": "#.recipient", "label": "Recipient", "format": "raw" },
           { "path": "#.payload", "label": "Payload", "format": "raw" },
           { "path": "#.nonce", "label": "Nonce", "visible": "never" }
@@ -80,68 +110,37 @@
         "intent": "Attest token for bridging",
         "fields": [
           { "path": "@.value", "label": "Wormhole fee", "format": "amount" },
-          { "path": "#.tokenAddress", "label": "Token", "format": "addressName", "params": { "types": ["token", "contract"], "sources": ["local"] } },
+          {
+            "path": "#.tokenAddress",
+            "label": "Token",
+            "format": "addressName",
+            "params": { "types": ["token", "contract"], "sources": ["local"] }
+          },
           { "path": "#.nonce", "label": "Nonce", "visible": "never" }
         ]
       },
       "completeTransfer(bytes encodedVm)": {
         "intent": "Complete token bridge transfer",
-        "fields": [
-          { "path": "#.encodedVm", "label": "Attestation", "visible": "never" }
-        ]
+        "fields": [{ "path": "#.encodedVm", "label": "Attestation", "visible": "never" }]
       },
       "completeTransferWithPayload(bytes encodedVm)": {
         "intent": "Complete transfer with payload",
-        "fields": [
-          { "path": "#.encodedVm", "label": "Attestation", "visible": "never" }
-        ]
+        "fields": [{ "path": "#.encodedVm", "label": "Attestation", "visible": "never" }]
       },
       "completeTransferAndUnwrapETH(bytes encodedVm)": {
         "intent": "Complete transfer, unwrap native coin",
-        "fields": [
-          { "path": "#.encodedVm", "label": "Attestation", "visible": "never" }
-        ]
+        "fields": [{ "path": "#.encodedVm", "label": "Attestation", "visible": "never" }]
       },
       "completeTransferAndUnwrapETHWithPayload(bytes encodedVm)": {
         "intent": "Complete with payload, unwrap native coin",
-        "fields": [
-          { "path": "#.encodedVm", "label": "Attestation", "visible": "never" }
-        ]
+        "fields": [{ "path": "#.encodedVm", "label": "Attestation", "visible": "never" }]
       },
-      "createWrapped(bytes encodedVm)": {
-        "intent": "Create wrapped token",
-        "fields": [
-          { "path": "#.encodedVm", "label": "Attestation", "visible": "never" }
-        ]
-      },
-      "updateWrapped(bytes encodedVm)": {
-        "intent": "Update wrapped token",
-        "fields": [
-          { "path": "#.encodedVm", "label": "Attestation", "visible": "never" }
-        ]
-      },
-      "initialize()": {
-        "intent": "Initialize Token Bridge",
-        "fields": []
-      },
-      "registerChain(bytes encodedVM)": {
-        "intent": "Register chain",
-        "fields": [
-          { "path": "#.encodedVM", "label": "Governance message", "visible": "never" }
-        ]
-      },
-      "upgrade(bytes encodedVM)": {
-        "intent": "Upgrade Token Bridge",
-        "fields": [
-          { "path": "#.encodedVM", "label": "Governance message", "visible": "never" }
-        ]
-      },
-      "submitRecoverChainId(bytes encodedVM)": {
-        "intent": "Recover chain ID",
-        "fields": [
-          { "path": "#.encodedVM", "label": "Governance message", "visible": "never" }
-        ]
-      }
+      "createWrapped(bytes encodedVm)": { "intent": "Create wrapped token", "fields": [{ "path": "#.encodedVm", "label": "Attestation", "visible": "never" }] },
+      "updateWrapped(bytes encodedVm)": { "intent": "Update wrapped token", "fields": [{ "path": "#.encodedVm", "label": "Attestation", "visible": "never" }] },
+      "initialize()": { "intent": "Initialize Token Bridge", "fields": [] },
+      "registerChain(bytes encodedVM)": { "intent": "Register chain", "fields": [{ "path": "#.encodedVM", "label": "Governance message", "visible": "never" }] },
+      "upgrade(bytes encodedVM)": { "intent": "Upgrade Token Bridge", "fields": [{ "path": "#.encodedVM", "label": "Governance message", "visible": "never" }] },
+      "submitRecoverChainId(bytes encodedVM)": { "intent": "Recover chain ID", "fields": [{ "path": "#.encodedVM", "label": "Governance message", "visible": "never" }] }
     }
   }
 }
