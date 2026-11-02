@@ -1,0 +1,66 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "CleaveMeasuredShellV2",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x5AfF91027390f731058AcC15E0A3F927b250c9FE" },
+        { "chainId": 10, "address": "0x003d4C95756608Ed4C11C5d0Ad9ca4c4076cAF20" },
+        { "chainId": 56, "address": "0xC269a4F4dEbD4036597ee830349d824D5bA9ca7E" },
+        { "chainId": 137, "address": "0xA06eE4d57A2E6ea9213Ab4Bce2C055fD09BB43A1" },
+        { "chainId": 8453, "address": "0x003d4C95756608Ed4C11C5d0Ad9ca4c4076cAF20" },
+        { "chainId": 42161, "address": "0x78D851D8BC6A9b9739549E7515Bf02D6394E1794" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Cleave",
+    "contractName": "CleaveMeasuredShellV2",
+    "info": { "url": "https://cleave.fi" },
+    "enums": { "wrappedNativeOut": { "true": "Keep wrapped", "false": "Unwrap to native" } }
+  },
+  "display": {
+    "formats": {
+      "swapMeasuredWithBlobV1((address tokenIn,address tokenOut,uint256 amountIn,uint256 minAmountOut,uint256 deadline,address recipient,address referrer,uint16 referralFeeBps,bool wethAsErc20) params,(uint256 maxDebit,uint256 minGrossOut) bounds,bytes blob)": {
+        "$id": "swapMeasuredWithBlobV1",
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {params.amountIn}",
+        "fields": [
+          { "path": "params.amountIn", "label": "Amount in", "format": "tokenAmount", "params": { "tokenPath": "params.tokenIn" } },
+          { "path": "bounds.maxDebit", "label": "Max amount in", "format": "tokenAmount", "params": { "tokenPath": "params.tokenIn" } },
+          {
+            "path": "params.minAmountOut",
+            "label": "Minimum to receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.tokenOut" }
+          },
+          {
+            "path": "params.recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "params.deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          {
+            "path": "params.wethAsErc20",
+            "label": "If wrapped native out",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.wrappedNativeOut" }
+          },
+          { "path": "params.referralFeeBps", "label": "Referral fee", "format": "unit", "params": { "base": "%", "decimals": 2 } },
+          {
+            "path": "params.referrer",
+            "label": "Referral recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] }
+          },
+          { "path": "@.value", "label": "Native value sent", "format": "amount" },
+          { "path": "params.tokenIn", "label": "Token in", "visible": "never" },
+          { "path": "params.tokenOut", "label": "Token out", "visible": "never" },
+          { "path": "bounds.minGrossOut", "label": "Minimum gross output", "visible": "never" },
+          { "path": "blob", "label": "Route", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
