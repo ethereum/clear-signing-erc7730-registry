@@ -14,12 +14,21 @@
       "multicall((address to, bytes data, uint256 value, bool skipRevert, bytes32 callbackHash)[] bundle)": {
         "intent": "Bundler3 Multicall",
         "fields": [
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": "always" },
           {
-            "path": "#.bundle.[].data",
-            "label": "Action",
-            "format": "calldata",
-            "params": { "calleePath": "#.bundle.[].to", "amountPath": "#.bundle.[].value" },
-            "visible": "always"
+            "path": "#.bundle.[]",
+            "iteration": "bundled",
+            "fields": [
+              { "path": "to", "label": "Call Target", "format": "addressName", "params": { "types": ["contract"] }, "visible": "always" },
+              { "path": "value", "label": "ETH Forwarded", "format": "amount", "visible": { "ifNotIn": ["0"] } },
+              {
+                "path": "data",
+                "label": "Action",
+                "format": "calldata",
+                "params": { "calleePath": "to", "amountPath": "value" },
+                "visible": "always"
+              }
+            ]
           }
         ]
       },
@@ -27,11 +36,19 @@
         "intent": "Reenter Bundler3",
         "fields": [
           {
-            "path": "#.bundle.[].data",
-            "label": "Action",
-            "format": "calldata",
-            "params": { "calleePath": "#.bundle.[].to", "amountPath": "#.bundle.[].value" },
-            "visible": "always"
+            "path": "#.bundle.[]",
+            "iteration": "bundled",
+            "fields": [
+              { "path": "to", "label": "Call Target", "format": "addressName", "params": { "types": ["contract"] }, "visible": "always" },
+              { "path": "value", "label": "ETH Forwarded", "format": "amount", "visible": { "ifNotIn": ["0"] } },
+              {
+                "path": "data",
+                "label": "Action",
+                "format": "calldata",
+                "params": { "calleePath": "to", "amountPath": "value" },
+                "visible": "always"
+              }
+            ]
           }
         ]
       }
