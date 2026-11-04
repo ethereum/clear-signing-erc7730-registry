@@ -16,6 +16,11 @@
  * passed too: a descriptor whose includes chain references a now-missing
  * changed file is still reported as affected.
  *
+ * With the optional BASE_ROOT environment variable (a directory that holds
+ * the registry/ and ercs/ trees of the base), a changed file with the same
+ * JSON as its base version is not a change. "erc7730 format" changes only
+ * the layout of the files.
+ *
  * The optional ADDED_FILES, MODIFIED_FILES, RENAMED_FILES and DELETED_FILES
  * environment variables carry the same paths split by what the pull request
  * did to each file (a renamed file counts as modified). They only feed the
@@ -117,6 +122,19 @@ function includeClosure(absFile) {
   return closure;
 }
 
+/**
+ * JSON text without the whitespace between tokens, and with each string in
+ * one escape form ("→" and "→" are the same). Key order, duplicate keys
+ * and number text stay as they are: JSON.parse would drop or round them.
+ * Throws when the text is not JSON.
+ */
+function normalizeJson(text) {
+  JSON.parse(text);
+  return text.replace(/"(?:[^"\\]|\\.)*"|\s+/g, (token) =>
+    token[0] === '"' ? JSON.stringify(JSON.parse(token)) : ''
+  );
+}
+
 /** The paths of a whitespace-separated environment variable. */
 function envFiles(name) {
   return (process.env[name] || '')
@@ -130,6 +148,17 @@ function main() {
     ...process.argv.slice(2).map((f) => f.trim().replace(/^\.\//, '')).filter((f) => f !== ''),
     ...envFiles('CHANGED_FILES'),
   ]);
+
+  if (process.env.BASE_ROOT) {
+    const json = (root, file) => normalizeJson(fs.readFileSync(path.join(root, file), 'utf8'));
+    for (const file of changed) {
+      try {
+        if (json(repoRoot, file) === json(process.env.BASE_ROOT, file)) changed.delete(file);
+      } catch {
+        // Not in the base, or not JSON: a change.
+      }
+    }
+  }
 
   // What the pull request did to one file. A renamed file counts as
   // modified. A file in none of the lists is unchanged.
