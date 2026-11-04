@@ -1,0 +1,451 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "USD8 DefiInsurance",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0xAC1a522D0FdC1C39d455D1688AD54615dE5B48b9"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "USD8",
+    "info": {
+      "url": "https://usd8.fi"
+    },
+    "contractName": "DefiInsurance"
+  },
+  "display": {
+    "formats": {
+      "sweepETH(address to)": {
+        "intent": "Sweep Stray ETH",
+        "interpolatedIntent": "Sweep all stray ETH to {to}",
+        "fields": [
+          {
+            "path": "#.to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "sweepToken(address token, address to)": {
+        "intent": "Sweep Stray Token",
+        "interpolatedIntent": "Sweep all stray {token} to {to}",
+        "fields": [
+          {
+            "path": "#.token",
+            "label": "Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "upgradeToAndCall(address newImplementation, bytes data)": {
+        "intent": "Upgrade Contract",
+        "interpolatedIntent": "Upgrade to {newImplementation} and run setup call",
+        "fields": [
+          {
+            "path": "#.newImplementation",
+            "label": "New Implementation",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.data",
+            "label": "Setup Call Data",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "ETH Sent",
+            "format": "amount",
+            "visible": "optional"
+          }
+        ]
+      },
+      "openClaimIncident(address insuredToken, uint64 referenceBlock)": {
+        "intent": "Open Claim Incident",
+        "interpolatedIntent": "Open an incident for {insuredToken} at block {referenceBlock}",
+        "fields": [
+          {
+            "path": "#.insuredToken",
+            "label": "Insured Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.referenceBlock",
+            "label": "Reference Block",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "adminCorrectSettlement(bytes32 root, uint256[] poolPayouts)": {
+        "intent": "Correct Settlement",
+        "interpolatedIntent": "Replace the settlement root with {root}",
+        "fields": [
+          {
+            "path": "#.root",
+            "label": "New Root (0 = Void)",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.poolPayouts.[]",
+            "label": "Budget Per Pool",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "setClaimBondAmount(uint128 amount)": {
+        "intent": "Set Claim Bond",
+        "interpolatedIntent": "Set the claim bond to {amount}",
+        "fields": [
+          {
+            "path": "#.amount",
+            "label": "Bond Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0x2fE01f5E235eeaB9045066f873f531dE20f31947"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setSettlementParams((uint64 twapLookbackBlocks, uint64 minHoldingRequired, uint64 sampleStepBlocks) p)": {
+        "intent": "Set Settlement Windows",
+        "interpolatedIntent": "Set settlement windows in blocks",
+        "fields": [
+          {
+            "path": "#.p.twapLookbackBlocks",
+            "label": "TWAP Lookback",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.p.minHoldingRequired",
+            "label": "Min Holding Blocks",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.p.sampleStepBlocks",
+            "label": "Sample Step",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "editInsuredToken(address insuredToken, uint256 maxCoverageBps, address underlyingPriceOracle, address conversionAddress, bytes conversionCallData)": {
+        "intent": "Edit Insured Token",
+        "interpolatedIntent": "Edit insured token {insuredToken}, max coverage {maxCoverageBps}",
+        "fields": [
+          {
+            "path": "#.insuredToken",
+            "label": "Insured Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.maxCoverageBps",
+            "label": "Max Coverage (0 = Delist)",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 2,
+              "prefix": false
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.underlyingPriceOracle",
+            "label": "Price Oracle",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.conversionAddress",
+            "label": "Conversion Address",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.conversionCallData",
+            "label": "Conversion Call",
+            "format": "raw",
+            "visible": "optional"
+          }
+        ]
+      },
+      "setTeeSigner(address signer, bool authorized)": {
+        "intent": "Set TEE Signer",
+        "interpolatedIntent": "Set TEE signer {signer} authorized to {authorized}",
+        "fields": [
+          {
+            "path": "#.signer",
+            "label": "Signer",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.authorized",
+            "label": "Authorized",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "fileClaim(address insuredToken, uint128 insuredTokenAmount, uint256 scoreToSpend, uint256 boosterAmount, uint64 referenceBlock, bytes signature)": {
+        "intent": "File Insurance Claim",
+        "interpolatedIntent": "File a claim with {insuredTokenAmount} of {insuredToken}",
+        "fields": [
+          {
+            "path": "#.insuredToken",
+            "label": "Insured Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.insuredTokenAmount",
+            "label": "Insured Token Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "#.insuredToken"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.scoreToSpend",
+            "label": "Score To Spend",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.boosterAmount",
+            "label": "Booster Units",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.referenceBlock",
+            "label": "Reference Block",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.signature",
+            "label": "Open Signature",
+            "format": "raw",
+            "visible": "never"
+          }
+        ]
+      },
+      "cancelClaim()": {
+        "intent": "Cancel Insurance Claim",
+        "interpolatedIntent": "Cancel the active insurance claim",
+        "fields": []
+      },
+      "finalizeClaim(uint256 claimId, bool acceptPayout, uint256[] amounts, uint256 scoreSpent, uint256 boostedScore, uint256 eligibleAmount, uint256 eligibleBoosterAmount, bytes32[] proof)": {
+        "intent": "Finalize Insurance Claim",
+        "interpolatedIntent": "Finalize claim {claimId}, accept payout: {acceptPayout}",
+        "fields": [
+          {
+            "path": "#.claimId",
+            "label": "Claim ID",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.acceptPayout",
+            "label": "Accept Payout",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.amounts.[]",
+            "label": "Payout Per Pool",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.scoreSpent",
+            "label": "Score Spent",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.boostedScore",
+            "label": "Boosted Score",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.eligibleAmount",
+            "label": "Eligible Amount",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.eligibleBoosterAmount",
+            "label": "Eligible Boosters",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.proof.[]",
+            "label": "Merkle Proof",
+            "format": "raw",
+            "visible": "never"
+          }
+        ]
+      },
+      "settleIncident(bytes32 root, uint256[] poolPayouts, bytes signature)": {
+        "intent": "Relay Incident Settlement",
+        "interpolatedIntent": "Relay the signed settlement for the active incident",
+        "fields": [
+          {
+            "path": "#.root",
+            "label": "Settlement Root",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.poolPayouts.[]",
+            "label": "Budget Per Pool",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.signature",
+            "label": "Settlement Signature",
+            "format": "raw",
+            "visible": "never"
+          }
+        ]
+      }
+    }
+  }
+}

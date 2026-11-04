@@ -1,0 +1,381 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-DefiInsurance.json",
+  "dataProvider": {
+    "tokens": {
+      "0x2fe01f5e235eeab9045066f873f531de20f31947": {
+        "symbol": "USD8",
+        "decimals": 18,
+        "name": "USD8"
+      },
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0": {
+        "symbol": "wstETH",
+        "decimals": 18,
+        "name": "Wrapped stETH"
+      },
+      "0x4bf47e25e8b42579c5cbaf84edaefb1a0f30c1b8": {
+        "symbol": "USD8-cp-wstETH",
+        "decimals": 21,
+        "name": "USD8 Cover Pool wstETH"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Mainnet: file claim with 1000 USD8",
+      "rawTx": "0x02f9016f0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980b901447dd2ac690000000000000000000000002fe01f5e235eeab9045066f873f531de20f3194700000000000000000000000000000000000000000000003635c9adc5dea0000000000000000000000000000000000000000000000000010f0cf064dd59200000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000018ff4ac00000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000041ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab00000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "File Insurance Claim",
+        "interpolatedIntent": "File a claim with 1000 USD8 of 0x2fE01f5E235eeaB9045066f873f531dE20f31947",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Insured Token",
+            "value": "0x2fE01f5E235eeaB9045066f873f531dE20f31947"
+          },
+          {
+            "label": "Insured Token Amount",
+            "value": "1000 USD8"
+          },
+          {
+            "label": "Score To Spend",
+            "value": "5000000000000000000000"
+          },
+          {
+            "label": "Booster Units",
+            "value": "1"
+          },
+          {
+            "label": "Reference Block",
+            "value": "26211500"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet: cancel claim",
+      "rawTx": "0x02ed0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980842bd7cc0fc0",
+      "expected": {
+        "intent": "Cancel Insurance Claim",
+        "interpolatedIntent": "Cancel the active insurance claim",
+        "owner": "USD8",
+        "fields": []
+      }
+    },
+    {
+      "description": "Mainnet: finalize claim accepting payout",
+      "rawTx": "0x02f901af0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980b901842ebab59200000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000010f0cf064dd5920000000000000000000000000000000000000000000000000010f0cf064dd5920000000000000000000000000000000000000000000000000003635c9adc5dea000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000015555555555555555555555555555555555555555555555555555555555555555c0",
+      "expected": {
+        "intent": "Finalize Insurance Claim",
+        "interpolatedIntent": "Finalize claim 3, accept payout: true",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Claim ID",
+            "value": "3"
+          },
+          {
+            "label": "Accept Payout",
+            "value": "true"
+          },
+          {
+            "label": "Payout Per Pool",
+            "value": "1000000000000000000"
+          },
+          {
+            "label": "Score Spent",
+            "value": "5000000000000000000000"
+          },
+          {
+            "label": "Boosted Score",
+            "value": "5000000000000000000000"
+          },
+          {
+            "label": "Eligible Amount",
+            "value": "1000000000000000000000"
+          },
+          {
+            "label": "Eligible Boosters",
+            "value": "1"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet: relay incident settlement",
+      "rawTx": "0x02f9014f0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980b90124a9daa5466666666666666666666666666666666666666666666666666666666666666666000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000001bc16d674ec800000000000000000000000000000000000000000000000000000000000000000041ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab00000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Relay Incident Settlement",
+        "interpolatedIntent": "Relay the signed settlement for the active incident",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Settlement Root",
+            "value": "0x6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          {
+            "label": "Budget Per Pool",
+            "value": "2000000000000000000"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Admin: sweep ETH",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980a41163b2b0000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc5284176c0",
+      "expected": {
+        "intent": "Sweep Stray ETH",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Recipient",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          }
+        ],
+        "interpolatedIntent": "Sweep all stray ETH to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: sweep token",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980b844258836fe0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc5284176c0",
+      "expected": {
+        "intent": "Sweep Stray Token",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+          },
+          {
+            "label": "Recipient",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          }
+        ],
+        "interpolatedIntent": "Sweep all stray 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0 to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: upgrade",
+      "rawTx": "0x02f88e0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980b8644f1ef286000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc528417600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Upgrade Contract",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "New Implementation",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Setup Call Data",
+            "value": "0x"
+          },
+          {
+            "label": "ETH Sent",
+            "value": "0 ETH"
+          }
+        ],
+        "interpolatedIntent": "Upgrade to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176 and run setup call"
+      }
+    },
+    {
+      "description": "Admin: open incident",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980b84415fd5c190000000000000000000000002fe01f5e235eeab9045066f873f531de20f3194700000000000000000000000000000000000000000000000000000000018ff4acc0",
+      "expected": {
+        "intent": "Open Claim Incident",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Insured Token",
+            "value": "0x2fE01f5E235eeaB9045066f873f531dE20f31947"
+          },
+          {
+            "label": "Reference Block",
+            "value": "26211500"
+          }
+        ],
+        "interpolatedIntent": "Open an incident for 0x2fE01f5E235eeaB9045066f873f531dE20f31947 at block 26211500"
+      }
+    },
+    {
+      "description": "Admin: correct settlement",
+      "rawTx": "0x02f8ae0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980b88485aebff9abababababababababababababababababababababababababababababababab000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000001bc16d674ec80000c0",
+      "expected": {
+        "intent": "Correct Settlement",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "New Root (0 = Void)",
+            "value": "0xabababababababababababababababababababababababababababababababab"
+          },
+          {
+            "label": "Budget Per Pool",
+            "value": "2000000000000000000"
+          }
+        ],
+        "interpolatedIntent": "Replace the settlement root with 0xabababababababababababababababababababababababababababababababab"
+      }
+    },
+    {
+      "description": "Admin: void settlement",
+      "rawTx": "0x02f8ae0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980b88485aebff90000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Correct Settlement",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "New Root (0 = Void)",
+            "value": "0x0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Budget Per Pool",
+            "value": "0"
+          }
+        ],
+        "interpolatedIntent": "Replace the settlement root with 0x0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "description": "Admin: bond 10 USD8",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980a4083553380000000000000000000000000000000000000000000000008ac7230489e80000c0",
+      "expected": {
+        "intent": "Set Claim Bond",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Bond Amount",
+            "value": "10 USD8"
+          }
+        ],
+        "interpolatedIntent": "Set the claim bond to 10 USD8"
+      }
+    },
+    {
+      "description": "Admin: settlement windows",
+      "rawTx": "0x02f88e0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980b8646ddf86970000000000000000000000000000000000000000000000000000000000001c20000000000000000000000000000000000000000000000000000000000000c4e0000000000000000000000000000000000000000000000000000000000000012cc0",
+      "expected": {
+        "intent": "Set Settlement Windows",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "TWAP Lookback",
+            "value": "7200"
+          },
+          {
+            "label": "Min Holding Blocks",
+            "value": "50400"
+          },
+          {
+            "label": "Sample Step",
+            "value": "300"
+          }
+        ],
+        "interpolatedIntent": "Set settlement windows in blocks"
+      }
+    },
+    {
+      "description": "Admin: list token 80%",
+      "rawTx": "0x02f8ee0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980b8c4aab155160000000000000000000000002fe01f5e235eeab9045066f873f531de20f319470000000000000000000000000000000000000000000000000000000000001f40000000000000000000000000164b276057258d81941e97b0a900d4c7b358bce0000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc528417600000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Edit Insured Token",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Insured Token",
+            "value": "0x2fE01f5E235eeaB9045066f873f531dE20f31947"
+          },
+          {
+            "label": "Max Coverage (0 = Delist)",
+            "value": "80%"
+          },
+          {
+            "label": "Price Oracle",
+            "value": "0x164b276057258d81941e97B0a900D4C7B358bCe0"
+          },
+          {
+            "label": "Conversion Address",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Conversion Call",
+            "value": "0x"
+          }
+        ],
+        "interpolatedIntent": "Edit insured token 0x2fE01f5E235eeaB9045066f873f531dE20f31947, max coverage 80%"
+      }
+    },
+    {
+      "description": "Admin: delist token",
+      "rawTx": "0x02f8ee0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980b8c4aab155160000000000000000000000002fe01f5e235eeab9045066f873f531de20f319470000000000000000000000000000000000000000000000000000000000000000000000000000000000000000164b276057258d81941e97b0a900d4c7b358bce0000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc528417600000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Edit Insured Token",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Insured Token",
+            "value": "0x2fE01f5E235eeaB9045066f873f531dE20f31947"
+          },
+          {
+            "label": "Max Coverage (0 = Delist)",
+            "value": "0%"
+          },
+          {
+            "label": "Price Oracle",
+            "value": "0x164b276057258d81941e97B0a900D4C7B358bCe0"
+          },
+          {
+            "label": "Conversion Address",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Conversion Call",
+            "value": "0x"
+          }
+        ],
+        "interpolatedIntent": "Edit insured token 0x2fE01f5E235eeaB9045066f873f531dE20f31947, max coverage 0%"
+      }
+    },
+    {
+      "description": "Admin: authorize signer",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980b84461e8ecad000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc52841760000000000000000000000000000000000000000000000000000000000000001c0",
+      "expected": {
+        "intent": "Set TEE Signer",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Signer",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Authorized",
+            "value": "true"
+          }
+        ],
+        "interpolatedIntent": "Set TEE signer 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176 authorized to true"
+      }
+    },
+    {
+      "description": "Admin: revoke signer",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e094ac1a522d0fdc1c39d455d1688ad54615de5b48b980b84461e8ecad000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc52841760000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Set TEE Signer",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Signer",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Authorized",
+            "value": "false"
+          }
+        ],
+        "interpolatedIntent": "Set TEE signer 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176 authorized to false"
+      }
+    }
+  ]
+}

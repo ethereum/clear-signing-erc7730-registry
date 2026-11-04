@@ -1,0 +1,179 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-USD8.json",
+  "dataProvider": {
+    "tokens": {
+      "0x2fe01f5e235eeab9045066f873f531de20f31947": {
+        "symbol": "USD8",
+        "decimals": 18,
+        "name": "USD8"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Mainnet: send 1.5 USD8",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0942fe01f5e235eeab9045066f873f531de20f3194780b844a9059cbb000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc528417600000000000000000000000000000000000000000000000014d1120d7b160000c0",
+      "expected": {
+        "intent": "Send USD8",
+        "interpolatedIntent": "Send 1.5 USD8 to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Recipient",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Amount",
+            "value": "1.5 USD8"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet: approve 100 USD8",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0942fe01f5e235eeab9045066f873f531de20f3194780b844095ea7b3000000000000000000000000724e8951d39e14cebcb5fb02638f49a637c978380000000000000000000000000000000000000000000000056bc75e2d63100000c0",
+      "expected": {
+        "intent": "Approve USD8 Spending",
+        "interpolatedIntent": "Allow 0x724e8951d39E14CEBcB5fB02638f49A637C97838 to spend 100 USD8",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x724e8951d39E14CEBcB5fB02638f49A637C97838"
+          },
+          {
+            "label": "Amount",
+            "value": "100 USD8"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet: approve unlimited USD8",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0942fe01f5e235eeab9045066f873f531de20f3194780b844095ea7b3000000000000000000000000724e8951d39e14cebcb5fb02638f49a637c97838ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Approve USD8 Spending",
+        "interpolatedIntent": "Allow 0x724e8951d39E14CEBcB5fB02638f49A637C97838 to spend Unlimited USD8",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x724e8951d39E14CEBcB5fB02638f49A637C97838"
+          },
+          {
+            "label": "Amount",
+            "value": "Unlimited USD8"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet: send 2 USD8 from another account",
+      "rawTx": "0x02f88e0107843b9aca008504a817c800830493e0942fe01f5e235eeab9045066f873f531de20f3194780b86423b872dd000000000000000000000000724e8951d39e14cebcb5fb02638f49a637c97838000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc52841760000000000000000000000000000000000000000000000001bc16d674ec80000c0",
+      "expected": {
+        "intent": "Send USD8 From Account",
+        "interpolatedIntent": "Send 2 USD8 from 0x724e8951d39E14CEBcB5fB02638f49A637C97838 to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "From",
+            "value": "0x724e8951d39E14CEBcB5fB02638f49A637C97838"
+          },
+          {
+            "label": "To",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Amount",
+            "value": "2 USD8"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mainnet: permit 100 USD8",
+      "rawTx": "0x02f9010e0107843b9aca008504a817c800830493e0942fe01f5e235eeab9045066f873f531de20f3194780b8e4d505accf000000000000000000000000724e8951d39e14cebcb5fb02638f49a637c97838000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc52841760000000000000000000000000000000000000000000000056bc75e2d63100000000000000000000000000000000000000000000000000000000000006adf0240000000000000000000000000000000000000000000000000000000000000001b11111111111111111111111111111111111111111111111111111111111111112222222222222222222222222222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Permit USD8 Spending",
+        "interpolatedIntent": "Permit 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176 to spend 100 USD8 of 0x724e8951d39E14CEBcB5fB02638f49A637C97838 until 2026-10-26 07:33:20Z",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Owner",
+            "value": "0x724e8951d39E14CEBcB5fB02638f49A637C97838"
+          },
+          {
+            "label": "Spender",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Amount",
+            "value": "100 USD8"
+          },
+          {
+            "label": "Valid Until",
+            "value": "2026-10-26 07:33:20Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Admin: sweep ETH",
+      "rawTx": "0x02f84d0107843b9aca008504a817c800830493e0942fe01f5e235eeab9045066f873f531de20f3194780a41163b2b0000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc5284176c0",
+      "expected": {
+        "intent": "Sweep Stray ETH",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Recipient",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          }
+        ],
+        "interpolatedIntent": "Sweep all stray ETH to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: sweep token",
+      "rawTx": "0x02f86e0107843b9aca008504a817c800830493e0942fe01f5e235eeab9045066f873f531de20f3194780b844258836fe0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc5284176c0",
+      "expected": {
+        "intent": "Sweep Stray Token",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+          },
+          {
+            "label": "Recipient",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          }
+        ],
+        "interpolatedIntent": "Sweep all stray 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0 to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+      }
+    },
+    {
+      "description": "Admin: upgrade",
+      "rawTx": "0x02f88e0107843b9aca008504a817c800830493e0942fe01f5e235eeab9045066f873f531de20f3194780b8644f1ef286000000000000000000000000b446b0c85cc4ef5f5ebf495c4fdd38ecc528417600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Upgrade Contract",
+        "owner": "USD8",
+        "fields": [
+          {
+            "label": "New Implementation",
+            "value": "0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176"
+          },
+          {
+            "label": "Setup Call Data",
+            "value": "0x"
+          },
+          {
+            "label": "ETH Sent",
+            "value": "0 ETH"
+          }
+        ],
+        "interpolatedIntent": "Upgrade to 0xB446b0c85cc4ef5f5Ebf495C4FDD38eCc5284176 and run setup call"
+      }
+    }
+  ]
+}

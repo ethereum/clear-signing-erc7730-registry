@@ -1,0 +1,362 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "USD8 Treasury",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x0EaE2d44dfeb2154F60CD702Dc2C9c5aBb090F05"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "USD8",
+    "info": {
+      "url": "https://usd8.fi"
+    },
+    "contractName": "Treasury",
+    "enums": {
+      "mode": {
+        "0": "Direct Transfer",
+        "1": "Receive Profit Distribution"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "sweepETH(address to)": {
+        "intent": "Sweep Stray ETH",
+        "interpolatedIntent": "Sweep all stray ETH to {to}",
+        "fields": [
+          {
+            "path": "#.to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "sweepToken(address token, address to)": {
+        "intent": "Sweep Stray Token",
+        "interpolatedIntent": "Sweep all stray {token} to {to}",
+        "fields": [
+          {
+            "path": "#.token",
+            "label": "Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "upgradeToAndCall(address newImplementation, bytes data)": {
+        "intent": "Upgrade Contract",
+        "interpolatedIntent": "Upgrade to {newImplementation} and run setup call",
+        "fields": [
+          {
+            "path": "#.newImplementation",
+            "label": "New Implementation",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.data",
+            "label": "Setup Call Data",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "ETH Sent",
+            "format": "amount",
+            "visible": "optional"
+          }
+        ]
+      },
+      "addStrategy(address s, uint256 index)": {
+        "intent": "Add Treasury Strategy",
+        "interpolatedIntent": "Add strategy {s} at queue position {index}",
+        "fields": [
+          {
+            "path": "#.s",
+            "label": "Strategy",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.index",
+            "label": "Queue Position",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "removeStrategy(address s)": {
+        "intent": "Remove Treasury Strategy",
+        "interpolatedIntent": "Remove strategy {s}",
+        "fields": [
+          {
+            "path": "#.s",
+            "label": "Strategy",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "depositToStrategy(address s, uint256 amount)": {
+        "intent": "Deposit To Strategy",
+        "interpolatedIntent": "Move {amount} idle to strategy {s}",
+        "fields": [
+          {
+            "path": "#.s",
+            "label": "Strategy",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.amount",
+            "label": "USDC Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdrawFromStrategy(address s, uint256 amount)": {
+        "intent": "Withdraw From Strategy",
+        "interpolatedIntent": "Pull {amount} from strategy {s}",
+        "fields": [
+          {
+            "path": "#.s",
+            "label": "Strategy",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.amount",
+            "label": "USDC Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "harvestAndDistribute()": {
+        "intent": "Harvest And Distribute",
+        "interpolatedIntent": "Mint surplus USD8 and distribute revenue",
+        "fields": []
+      },
+      "setProfitReceiver(address receiver, uint256 weight, uint8 mode)": {
+        "intent": "Set Profit Receiver",
+        "interpolatedIntent": "Set {receiver} revenue weight to {weight}",
+        "fields": [
+          {
+            "path": "#.receiver",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.weight",
+            "label": "Weight",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.mode",
+            "label": "Delivery Mode",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.mode"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "removeProfitReceiver(address receiver)": {
+        "intent": "Remove Profit Receiver",
+        "interpolatedIntent": "Remove revenue receiver {receiver}",
+        "fields": [
+          {
+            "path": "#.receiver",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "setHarvestBufferDivisor(uint256 divisor)": {
+        "intent": "Set Harvest Buffer",
+        "interpolatedIntent": "Set harvest buffer divisor to {divisor}",
+        "fields": [
+          {
+            "path": "#.divisor",
+            "label": "Buffer Divisor",
+            "format": "raw",
+            "visible": "always"
+          }
+        ]
+      },
+      "mintUSD8(uint256 usdcAmount)": {
+        "intent": "Mint USD8",
+        "interpolatedIntent": "Deposit {usdcAmount} to mint USD8 at 1:1",
+        "fields": [
+          {
+            "path": "#.usdcAmount",
+            "label": "USDC To Deposit",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "redeemUSD8(uint256 usd8Amount, uint256 minUsdcOut)": {
+        "intent": "Redeem USD8 For USDC",
+        "interpolatedIntent": "Redeem {usd8Amount} for at least {minUsdcOut}",
+        "fields": [
+          {
+            "path": "#.usd8Amount",
+            "label": "USD8 To Redeem",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0x2fE01f5E235eeaB9045066f873f531dE20f31947"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "#.minUsdcOut",
+            "label": "Min USDC To Receive",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+            },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
