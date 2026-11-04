@@ -1,0 +1,67 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "SV3FloorPolicyController",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 46630,
+          "address": "0xe239Ca59e529A1bBBbBa8F88b00919A3783C14F0"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "SV3 Protocol",
+    "contractName": "SV3 Floor Policy Controller"
+  },
+  "display": {
+    "formats": {
+      "raiseIfEligible(address market, (uint64 policyVersion, uint64 expectedMarketStateNonce, bytes32 expectedEngineStateHash, bytes32 expectedPlanHash, uint48 deadline, uint256 minNewFloorPriceWad) witness)": {
+        "intent": "Raise market floor",
+        "fields": [
+          {
+            "path": "#.market",
+            "label": "Market",
+            "format": "addressName",
+            "params": { "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.witness", "label": "Floor-raise witness", "visible": "never" },
+          {
+            "path": "#.witness.policyVersion",
+            "label": "Policy version",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.witness.expectedMarketStateNonce",
+            "label": "Expected nonce",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "#.witness.expectedEngineStateHash",
+            "label": "Engine state",
+            "visible": "never"
+          },
+          { "path": "#.witness.expectedPlanHash", "label": "Expected plan", "visible": "never" },
+          {
+            "path": "#.witness.deadline",
+            "label": "Deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          {
+            "path": "#.witness.minNewFloorPriceWad",
+            "label": "Minimum new floor",
+            "format": "unit",
+            "params": { "base": "USDC/AVM", "decimals": 18 },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
