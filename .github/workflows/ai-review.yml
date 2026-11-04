@@ -38,6 +38,9 @@ env:
   REPORTS_BRANCH: test-reports
   AI_REVIEW_MODEL: claude-opus-5-5
   AI_REVIEW_EFFORT: high
+  # The list-price value of the subscription's weekly limit, measured by hand
+  # (docs/ai-review/README.md). The comment estimates a run's share from it.
+  AI_REVIEW_WEEKLY_BUDGET_USD: "2100"
 
 jobs:
   review:
@@ -198,7 +201,7 @@ jobs:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         run: |
           node scripts/.github/scripts/ai-review/run.js --inputs ai-review/inputs --out ai-review --repo scripts \
-            --model "$AI_REVIEW_MODEL" --effort "$AI_REVIEW_EFFORT"
+            --model "$AI_REVIEW_MODEL" --effort "$AI_REVIEW_EFFORT" --weekly-budget-usd "$AI_REVIEW_WEEKLY_BUDGET_USD"
 
       - name: Upload the answers of the review
         if: ${{ !cancelled() && steps.collect.outcome == 'success' }}

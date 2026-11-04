@@ -5,6 +5,7 @@
  *
  * Usage: node run.js --inputs <dir> --out <dir> --repo <dir>
  *          --model <model> --effort <effort> [--parallel 3]
+ *          [--weekly-budget-usd <dollars>]
  *
  * Environment: CLAUDE_CODE_OAUTH_TOKEN, a Claude subscription token made with
  * `claude setup-token`. Each request runs the Claude Code CLI (`claude` on
@@ -27,7 +28,9 @@
  * Writes, under <out>/answers/<model>/, one <unit>.json per unit (the answer,
  * the token usage, the cost that Claude Code estimates at list price, the
  * weekly usage of the subscription), one <unit>.md with the answer alone, and
- * summary.json with the totals and the latest weekly usage.
+ * summary.json with the totals and the latest weekly usage. With
+ * --weekly-budget-usd, the list-price value of the weekly limit, the totals
+ * also estimate the share of the limit that the run used.
  */
 
 const fs = require('fs');
@@ -51,6 +54,7 @@ const { values: opts } = parseArgs({
     model: { type: 'string' },
     effort: { type: 'string' },
     parallel: { type: 'string', default: '3' },
+    'weekly-budget-usd': { type: 'string' },
   },
 });
 if (!opts.inputs || !opts.out || !opts.repo || !opts.model || !opts.effort) {
@@ -59,6 +63,7 @@ if (!opts.inputs || !opts.out || !opts.repo || !opts.model || !opts.effort) {
 }
 const { model, effort } = opts;
 const parallel = Math.max(1, Number(opts.parallel));
+const weeklyBudgetUSD = Number(opts['weekly-budget-usd']) || null;
 
 // ---------------------------------------------------------------------------
 // The system prompt: the prompt, the spec, then the nonce section. It is the
@@ -271,6 +276,7 @@ async function reviewAll(ws, units, maxBytes, outDir) {
 function totalsOf(records) {
   const reviewed = records.filter((r) => r.usage);
   const sum = (key) => reviewed.reduce((n, r) => n + (r.usage[key] ?? 0), 0);
+  const costUSD = reviewed.reduce((n, r) => n + (r.costUSD ?? 0), 0);
   return {
     reviewed: records.filter((r) => r.answer).length,
     failed: records.filter((r) => !r.answer).length,
@@ -279,7 +285,8 @@ function totalsOf(records) {
     cacheWriteTokens: sum('cacheWriteTokens'),
     outputTokens: sum('outputTokens'),
     seconds: reviewed.reduce((n, r) => n + r.seconds, 0),
-    costUSD: reviewed.reduce((n, r) => n + (r.costUSD ?? 0), 0),
+    costUSD,
+    weeklyShare: weeklyBudgetUSD ? costUSD / weeklyBudgetUSD : null,
   };
 }
 
@@ -311,7 +318,8 @@ async function main() {
   fs.writeFileSync(path.join(outDir, 'summary.json'), JSON.stringify(summary, null, 2));
 
   const t = totals;
-  const weekly = latestWeeklyUsage ? `, weekly subscription limit ${Math.round(latestWeeklyUsage.utilization * 100)}% used` : '';
+  const share = t.weeklyShare != null ? `, about ${(t.weeklyShare * 100).toFixed(3)}% of the weekly limit (estimate)` : '';
+  const weekly = `${share}${latestWeeklyUsage ? `, weekly limit ${Math.round(latestWeeklyUsage.utilization * 100)}% used in all` : ''}`;
   const line = `${t.reviewed} reviewed, ${t.failed} failed; ${t.inputTokens} input tokens (${t.cacheReadTokens} cached), ${t.outputTokens} output tokens, ${t.seconds}s of model time, about $${t.costUSD.toFixed(3)} at list price${weekly}`;
   console.log(line);
   if (process.env.GITHUB_STEP_SUMMARY) {
