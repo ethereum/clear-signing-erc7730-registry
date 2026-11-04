@@ -25,8 +25,9 @@
  * checked for those sections here and rendered by render.js, which escapes it.
  *
  * Writes, under <out>/answers/<model>/, one <unit>.json per unit (the answer,
- * the token usage, the cost that Claude Code estimates at list price), one
- * <unit>.md with the answer alone, and summary.json with the totals.
+ * the token usage, the cost that Claude Code estimates at list price, the
+ * weekly usage of the subscription), one <unit>.md with the answer alone, and
+ * summary.json with the totals and the latest weekly usage.
  */
 
 const fs = require('fs');
@@ -107,12 +108,15 @@ function workspace() {
   return { dir, system };
 }
 
-/** Runs `claude -p` with the message on stdin and returns its JSON result. */
+/**
+ * Runs `claude -p` with the message on stdin. Returns its result and its last
+ * rate limit event, which carries the usage of the subscription's limits.
+ */
 function claude(ws, message) {
   // An API key would take precedence over the subscription token.
   const { ANTHROPIC_API_KEY, ...env } = process.env;
   const args = [
-    '-p', '--output-format', 'json', '--model', model, '--effort', effort,
+    '-p', '--output-format', 'stream-json', '--verbose', '--model', model, '--effort', effort,
     '--system-prompt-file', ws.system,
     '--tools', '', '--strict-mcp-config', '--setting-sources', '', '--no-session-persistence',
   ];
@@ -124,22 +128,27 @@ function claude(ws, message) {
       maxBuffer: 64 * 1024 * 1024,
     }, (error, stdout, stderr) => {
       // On an API error Claude Code exits 1 and still prints its result.
-      if (!stdout.trim()) return reject(new Error(stderr.trim() || error?.message || 'claude printed nothing'));
-      try { resolve(JSON.parse(stdout)); } catch (e) { reject(e); }
+      let events;
+      try { events = stdout.split('\n').filter((l) => l.trim()).map((l) => JSON.parse(l)); } catch (e) { return reject(e); }
+      const result = events.findLast((e) => e.type === 'result');
+      if (!result) return reject(new Error(stderr.trim() || error?.message || 'claude printed no result'));
+      resolve({ result, rateLimit: events.findLast((e) => e.type === 'rate_limit_event')?.rate_limit_info ?? null });
     });
     child.stdin.end(message);
   });
 }
 
 /**
- * Sends one unit. Returns { id, text, stop, usage, costUSD } or throws; a 401
- * stops the run, anything else is recorded for the unit. usage.inputTokens is
- * the whole input, cache reads and writes included.
+ * Sends one unit. Returns { id, text, stop, usage, costUSD, weeklyUsage } or
+ * throws; a 401 stops the run, anything else is recorded for the unit.
+ * usage.inputTokens is the whole input, cache reads and writes included.
+ * weeklyUsage.utilization is the used share of the weekly limit, 0 to 1.
  */
 async function ask(ws, input) {
-  const r = await claude(ws, userMessage(input));
+  const { result: r, rateLimit } = await claude(ws, userMessage(input));
   if (r.is_error) throw Object.assign(new Error(r.result), { status: r.api_error_status });
   const u = r.usage ?? {};
+  const week = rateLimit?.unifiedWindows?.seven_day;
   return {
     id: r.session_id,
     text: r.result ?? '',
@@ -151,6 +160,7 @@ async function ask(ws, input) {
       outputTokens: u.output_tokens ?? 0,
     },
     costUSD: r.total_cost_usd ?? null,
+    weeklyUsage: week ? { utilization: week.utilization, resetsAt: week.resetsAt } : null,
   };
 }
 
@@ -177,14 +187,19 @@ function checkAnswer(text) {
 
 const kilobytes = (bytes) => Math.round((bytes ?? 0) / 1000);
 
+// The weekly usage of the subscription from the request that finished last.
+let latestWeeklyUsage = null;
+
 /** Sends one unit to the model. Returns the answer, its checks, the usage and the cost. */
 async function askModel(ws, input) {
   const started = Date.now();
-  const result = { ok: false, error: null, problems: [], answer: null, counts: null, usage: null, costUSD: null, stop: null, responseId: null };
+  const result = { ok: false, error: null, problems: [], answer: null, counts: null, usage: null, costUSD: null, weeklyUsage: null, stop: null, responseId: null };
   try {
     const reply = await ask(ws, input);
     result.usage = reply.usage;
     result.costUSD = reply.costUSD;
+    result.weeklyUsage = reply.weeklyUsage;
+    latestWeeklyUsage = reply.weeklyUsage ?? latestWeeklyUsage;
     result.responseId = reply.id ?? null;
     result.stop = reply.stop;
     result.answer = reply.text || null;
@@ -291,11 +306,13 @@ async function main() {
     ranAt: new Date().toISOString(),
     units: records.map(({ answer, ...rest }) => rest),
     totals,
+    weeklyUsage: latestWeeklyUsage,
   };
   fs.writeFileSync(path.join(outDir, 'summary.json'), JSON.stringify(summary, null, 2));
 
   const t = totals;
-  const line = `${t.reviewed} reviewed, ${t.failed} failed; ${t.inputTokens} input tokens (${t.cacheReadTokens} cached), ${t.outputTokens} output tokens, ${t.seconds}s of model time, about $${t.costUSD.toFixed(3)} at list price`;
+  const weekly = latestWeeklyUsage ? `, weekly subscription limit ${Math.round(latestWeeklyUsage.utilization * 100)}% used` : '';
+  const line = `${t.reviewed} reviewed, ${t.failed} failed; ${t.inputTokens} input tokens (${t.cacheReadTokens} cached), ${t.outputTokens} output tokens, ${t.seconds}s of model time, about $${t.costUSD.toFixed(3)} at list price${weekly}`;
   console.log(line);
   if (process.env.GITHUB_STEP_SUMMARY) {
     fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `\n## AI review: ${model}, effort ${effort}\n\n${line}\n`);
