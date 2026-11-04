@@ -36,15 +36,15 @@ concurrency:
 
 env:
   REPORTS_BRANCH: test-reports
-  AI_REVIEW_ANTHROPIC_MODEL: claude-sonnet-5-5
-  AI_REVIEW_ANTHROPIC_EFFORT: medium
+  AI_REVIEW_MODEL: claude-opus-5-5
+  AI_REVIEW_EFFORT: high
 
 jobs:
   review:
     name: Review (optional, needs a maintainer's approval)
     environment: ai-review
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 60
     steps:
       # A pull request can edit the workflows that check it, so one that
       # touches anything outside the registry could have made Registry Checks
@@ -193,12 +193,12 @@ jobs:
       # the step; the script gets no token for GitHub and writes nothing but
       # the answers.
       - name: Review the inputs with Claude
-        timeout-minutes: 15
+        timeout-minutes: 40
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         run: |
           node scripts/.github/scripts/ai-review/run.js --inputs ai-review/inputs --out ai-review --repo scripts \
-            --provider anthropic --model "$AI_REVIEW_ANTHROPIC_MODEL" --effort "$AI_REVIEW_ANTHROPIC_EFFORT"
+            --model "$AI_REVIEW_MODEL" --effort "$AI_REVIEW_EFFORT"
 
       - name: Upload the answers of the review
         if: ${{ !cancelled() && steps.collect.outcome == 'success' }}
@@ -255,7 +255,8 @@ jobs:
             --run-url "$RUN_URL" --head-sha "$HEAD_SHA"
 
       # One comment per model and pull request: the comment that starts with
-      # the same marker is updated, otherwise a new one is created.
+      # the same marker is updated, otherwise a new one is created. The
+      # marker names the model, so a new model gets a new comment.
       - name: Post the comments
         if: steps.download.outcome == 'success'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
