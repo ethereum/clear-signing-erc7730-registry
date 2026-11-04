@@ -8,6 +8,8 @@
  *          [--parallel 3]
  *
  * Environment: OPENAI_API_KEY or ANTHROPIC_API_KEY, for the provider used.
+ * With CLAUDE_CODE_OAUTH_TOKEN (from `claude setup-token`), the anthropic
+ * provider runs through the Claude Code CLI on a Claude subscription instead.
  *
  * A review unit is one descriptor with one implementation, as
  * collect.js wrote it under <inputs>. Everything in a unit comes
@@ -29,8 +31,10 @@
  */
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const crypto = require('crypto');
+const { execFile } = require('child_process');
 const { parseArgs } = require('util');
 const { countFindings } = require('./findings');
 
@@ -99,6 +103,10 @@ function spec() {
 }
 
 const prefix = `${fs.readFileSync(path.join(opts.repo, '.github/scripts/ai-review/prompt.md'), 'utf8')}\n${spec()}\n`;
+
+// One nonce per run: the units are fixed before it is drawn, and a system
+// prompt that is the same for every unit is cached whole by Claude Code.
+const nonce = crypto.randomBytes(8).toString('hex');
 
 const nonceSection = (nonce) => `
 ## The nonce
@@ -188,8 +196,63 @@ const providers = {
       };
     },
   },
+  // The anthropic provider on a Claude subscription: Claude Code in print
+  // mode, in an empty folder, with no tools, no settings and no MCP servers.
+  claudeCode: {
+    key: 'CLAUDE_CODE_OAUTH_TOKEN',
+    client() {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ai-review-'));
+      const system = path.join(dir, 'system.md');
+      fs.writeFileSync(system, prefix + nonceSection(nonce));
+      return { dir, system };
+    },
+    fatal(e) { return e.status === 401; },
+    describe(e) { return String(e.message ?? e); },
+    async ask(client, nonce, input) {
+      const r = JSON.parse(await claude(client, userMessage(nonce, input)));
+      if (r.is_error) throw Object.assign(new Error(r.result), { status: r.api_error_status });
+      const u = r.usage ?? {};
+      return {
+        id: r.session_id,
+        text: r.result ?? '',
+        stop: r.stop_reason === 'end_turn' ? 'end' : r.stop_reason === 'refusal' ? 'refusal' : `${r.stop_reason}`,
+        refusal: r.stop_reason === 'refusal' ? 'no detail' : null,
+        usage: {
+          inputTokens: (u.input_tokens ?? 0) + (u.cache_read_input_tokens ?? 0) + (u.cache_creation_input_tokens ?? 0),
+          cacheReadTokens: u.cache_read_input_tokens ?? 0,
+          cacheWriteTokens: u.cache_creation_input_tokens ?? 0,
+          outputTokens: u.output_tokens ?? 0,
+          reasoningTokens: null,
+        },
+      };
+    },
+  },
 };
-const api = providers[provider];
+const api = provider === 'anthropic' && process.env.CLAUDE_CODE_OAUTH_TOKEN ? providers.claudeCode : providers[provider];
+
+/** Runs `claude -p` with the message on stdin and returns its JSON result. */
+function claude(client, message) {
+  // Without the API key, Claude Code uses the subscription token.
+  const { ANTHROPIC_API_KEY, ...env } = process.env;
+  const args = [
+    '-p', '--output-format', 'json', '--model', model, '--effort', effort,
+    '--system-prompt-file', client.system,
+    '--tools', '', '--strict-mcp-config', '--setting-sources', '', '--no-session-persistence',
+  ];
+  return new Promise((resolve, reject) => {
+    const child = execFile('claude', args, {
+      cwd: client.dir,
+      env: { ...env, CLAUDE_CODE_MAX_OUTPUT_TOKENS: String(MAX_OUTPUT_TOKENS.anthropic) },
+      timeout: 20 * 60 * 1000,
+      maxBuffer: 64 * 1024 * 1024,
+    }, (error, stdout, stderr) => {
+      // On an API error Claude Code exits 1 and still prints its result.
+      if (stdout.trim()) resolve(stdout);
+      else reject(new Error(stderr.trim() || error?.message || 'claude printed nothing'));
+    });
+    child.stdin.end(message);
+  });
+}
 
 function cost(usage) {
   const price = PRICES[provider][model];
@@ -223,7 +286,6 @@ const kilobytes = (bytes) => Math.round((bytes ?? 0) / 1000);
 
 /** Sends one unit to the model. Returns the answer, its checks, the usage and the cost. */
 async function askModel(client, input) {
-  const nonce = crypto.randomBytes(8).toString('hex');
   const started = Date.now();
   const result = { ok: false, error: null, problems: [], answer: null, counts: null, usage: null, costUSD: null, stop: null, responseId: null };
   try {
@@ -327,7 +389,7 @@ async function main() {
   const outDir = path.join(opts.out, 'answers', label);
   fs.mkdirSync(outDir, { recursive: true });
 
-  if (!process.env[api.key]) throw new Error(`${api.key} is not set`);
+  if (!process.env[api.key]) throw new Error(`${provider === 'anthropic' ? 'CLAUDE_CODE_OAUTH_TOKEN or ' : ''}${api.key} is not set`);
   const client = api.client();
   const records = await reviewAll(client, units, index.maxBytes, outDir);
   const totals = totalsOf(records);

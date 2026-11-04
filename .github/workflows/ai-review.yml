@@ -9,9 +9,9 @@ name: AI Review
 # every job: nothing from the pull request is executed, and nothing from it
 # reaches a shell line (the steps read the changed files, the run
 # conclusions and the test report bundle through the GitHub API, as data);
-# the API keys and the permission to write comments never share a job.
+# the Claude token and the permission to write comments never share a job.
 #
-# The review job is bound to the Environment ai-review, which holds the keys
+# The review job is bound to the Environment ai-review, which holds the token
 # and requires a maintainer's approval: the check waits until a maintainer
 # clicks. Descriptor Test Results publishes the bundle one to three minutes
 # after the tests complete; a click inside that window fails on the bundle,
@@ -38,8 +38,6 @@ env:
   REPORTS_BRANCH: test-reports
   AI_REVIEW_ANTHROPIC_MODEL: claude-sonnet-5-5
   AI_REVIEW_ANTHROPIC_EFFORT: medium
-  AI_REVIEW_OPENAI_MODEL: gpt-6.1-sol
-  AI_REVIEW_OPENAI_EFFORT: medium
 
 jobs:
   review:
@@ -185,28 +183,22 @@ jobs:
           path: ai-review/inputs
           retention-days: 30
 
-      # One request per input and model. A key is the only secret of its
-      # step; the script gets no token for GitHub and writes nothing but the
-      # answers. The second model runs even when the first failed, so one
-      # provider's outage does not hide the other's review, and each step has
-      # its own timeout, so a slow model fails its step and the answers of
-      # the other are still uploaded and posted.
+      # Claude runs through Claude Code on a Claude subscription. The install
+      # runs the package's postinstall, which only puts in place the binary
+      # the next step runs anyway.
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code@2.1.308
+
+      # One request per input. The subscription token is the only secret of
+      # the step; the script gets no token for GitHub and writes nothing but
+      # the answers.
       - name: Review the inputs with Claude
         timeout-minutes: 15
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         run: |
           node scripts/.github/scripts/ai-review/run.js --inputs ai-review/inputs --out ai-review --repo scripts \
             --provider anthropic --model "$AI_REVIEW_ANTHROPIC_MODEL" --effort "$AI_REVIEW_ANTHROPIC_EFFORT"
-
-      - name: Review the inputs with GPT
-        if: ${{ !cancelled() && steps.collect.outcome == 'success' }}
-        timeout-minutes: 15
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
-          node scripts/.github/scripts/ai-review/run.js --inputs ai-review/inputs --out ai-review --repo scripts \
-            --provider openai --model "$AI_REVIEW_OPENAI_MODEL" --effort "$AI_REVIEW_OPENAI_EFFORT"
 
       - name: Upload the answers of the review
         if: ${{ !cancelled() && steps.collect.outcome == 'success' }}
@@ -219,8 +211,8 @@ jobs:
 
   # The only job that can write on the pull request. It reads the answers
   # from the artifact of the review job and nothing from the pull request.
-  # It runs when the review job failed too, so the answers of one model are
-  # posted when the other failed.
+  # It runs when the review job failed too, so the answers are posted when
+  # some units got none.
   post:
     name: Post the review
     needs: review
