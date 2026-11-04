@@ -286,7 +286,11 @@ function renderComment(folder) {
 
   let footer = `<sub>Model ${modelName}, effort ${ticks(summary.effort, 20)}`;
   if (t.inputTokens != null) footer += `, ${t.inputTokens} input tokens (${t.cacheReadTokens ?? 0} cached), ${t.outputTokens} output tokens`;
-  if (t.costUSD != null) footer += `, about $${Number(t.costUSD).toFixed(3)}`;
+  const share = t.weeklyShare == null ? NaN : Number(t.weeklyShare) * 100;
+  if (Number.isFinite(share)) {
+    footer += share < 0.01 ? ', less than 0.01%' : `, about ${share < 1 ? share.toFixed(2) : share.toFixed(1)}%`;
+    footer += ' of the weekly subscription limit (estimate)';
+  }
   footer += `, on the descriptor${units.length > 1 ? 's' : ''} of ${sha ? `commit \`${sha.slice(0, 7)}\`` : 'this pull request'}, the tests and the verified source of the deployments.`;
   footer += `${runUrl ? ` [Run](${runUrl}),` : ''} answers and token usage in the artifact \`ai-review-answers\`.</sub>\n`;
 
