@@ -53,12 +53,18 @@
       "swap((address callTarget, address approveTarget, bytes targetData, (address srcToken, address dstToken, address[] srcReceivers, uint256[] srcAmounts, address[] feeReceivers, uint256[] feeAmounts, address dstReceiver, uint256 amount, uint256 minReturnAmount, uint256 flags, bytes permit) desc, bytes clientData) execution)": {
         "$id": "swap",
         "intent": "Swap",
-        "interpolatedIntent": "Swap {execution.desc.amount} for at least {execution.desc.minReturnAmount} to recipient {execution.desc.dstReceiver}",
+        "interpolatedIntent": "Swap {execution.desc.amount} for at least {execution.desc.minReturnAmount} to recipient {execution.desc.dstReceiver}, with {@.value} attached",
         "fields": [
           {
             "path": "execution.desc.amount",
             "$ref": "$.display.definitions.sendAmount",
             "params": { "tokenPath": "execution.desc.srcToken" },
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Native Value Sent",
+            "format": "amount",
             "visible": "always"
           },
           {
