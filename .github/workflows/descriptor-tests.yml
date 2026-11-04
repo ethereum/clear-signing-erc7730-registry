@@ -88,6 +88,9 @@ jobs:
           MODIFIED_FILES: ${{ steps.changed-files.outputs.modified_files }}
           RENAMED_FILES: ${{ steps.changed-files.outputs.renamed_files }}
           DELETED_FILES: ${{ steps.changed-files.outputs.deleted_files }}
+          # A file with the same JSON as in the base is not affected, so a
+          # format-only pull request runs no tests.
+          BASE_ROOT: base-scripts
         run: |
           # A change to a shared file must run the tests of every descriptor
           # that includes it, so deleted files are passed too.
