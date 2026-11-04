@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-kpk-KPK_USDC_Yield-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0xd5cce260e7a755ddf0fb9cdf06443d593aaeaa13": { "decimals": 18, "name": "KPK USDC Yield", "symbol": "KPK_USDC_Yield" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f018201948405f5e100840ea208608312f8e594d5cce260e7a755ddf0fb9cdf06443d593aaeaa1380b8446e553f6500000000000000000000000000000000000000000000000000000000000186a0000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x3d45196f531a76ff80a268ce882fb6f68e67845ffd02702c85181a8931517817",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.1 USDC" },
+          { "label": "Share ticker", "value": "KPK_USDC_Yield" },
+          { "label": "Send shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Deposit 0.1 USDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "KPK"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b8203cf8439c25c3e831e848094d5cce260e7a755ddf0fb9cdf06443d593aaeaa1380b84494bf804d0000000000000000000000000000000000000000000000000c7d713b49da0000000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x9fa1e515a56391434684ad7d7d94d2ca8e266eaf02bb653975000d30498636ac",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "USDC" },
+          { "label": "Minted shares", "value": "0.9 KPK_USDC_Yield" },
+          { "label": "Mint shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Mint 0.9 KPK_USDC_Yield for 0x000000000000000000000000000000000000dEaD",
+        "owner": "KPK"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f895013c8403db61a684081266d083181c6d94d5cce260e7a755ddf0fb9cdf06443d593aaeaa1380b86cb460af94000000000000000000000000000000000000000000000000000000000b6ea2c000000000000000000000000097d84e06a463f32b87d1aeb31b2fa4e136397bf100000000000000000000000097d84e06a463f32b87d1aeb31b2fa4e136397bf1697ebc3e2222da44c0",
+      "txHash": "0xe3fd13b8ae3aad431006364d39a2b354df57bb87deadd19b14d3af0990562fa0",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "191.8 USDC" },
+          { "label": "To", "value": "0x97D84E06A463F32b87d1aEB31B2fA4e136397bf1" },
+          { "label": "Owner", "value": "0x97D84E06A463F32b87d1aEB31B2fA4e136397bf1" }
+        ],
+        "interpolatedIntent": "Withdraw 191.8 USDC to 0x97D84E06A463F32b87d1aEB31B2fA4e136397bf1",
+        "owner": "KPK"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f897018202798477359400847b20505a83217f2694d5cce260e7a755ddf0fb9cdf06443d593aaeaa1380b86cba08765200000000000000000000000000000000000000000000010e164f52f261a9a361000000000000000000000000c5883a16258af48d77ef432472538f593842fccb000000000000000000000000c5883a16258af48d77ef432472538f593842fccb697969762222da44c0",
+      "txHash": "0x012e50f91c71e2fb9787dd14de12aef210a15f4330d77368630d670cfd8d3fcd",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "4982.228494694547563361 KPK_USDC_Yield" },
+          { "label": "To", "value": "0xC5883A16258Af48d77EF432472538F593842fCCb" },
+          { "label": "Owner", "value": "0xC5883A16258Af48d77EF432472538F593842fCCb" }
+        ],
+        "interpolatedIntent": "Redeem 4982.228494694547563361 KPK_USDC_Yield to 0xC5883A16258Af48d77EF432472538F593842fCCb",
+        "owner": "KPK"
+      }
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "includes": "common-VaultV2-NoMint.json",
+  "display": {
+    "formats": {
+      "mint(uint256 shares, address onBehalf)": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "format": "raw",
+            "value": "$.metadata.constants.underlyingTicker"
+          },
+          {
+            "path": "shares",
+            "label": "Minted shares",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "onBehalf",
+            "label": "Mint shares to",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          }
+        ],
+        "interpolatedIntent": "Mint {#.shares} for {#.onBehalf}"
+      }
+    }
+  }
+}

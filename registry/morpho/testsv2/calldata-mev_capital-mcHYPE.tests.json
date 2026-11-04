@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-mev_capital-mcHYPE.json",
+  "dataProvider": {
+    "tokens": {
+      "0x5555555555555555555555555555555555555555": { "decimals": 18, "name": "WHYPE", "symbol": "WHYPE" },
+      "0xd19e3d00f8547f7d108abfd4bbb015486437b487": { "decimals": 18, "name": "MEV Capital HYPE", "symbol": "mcHYPE" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f8708203e71f84f93f4f8c8501052b118c8306391494d19e3d00f8547f7d108abfd4bbb015486437b48780b8446e553f65000000000000000000000000000000000000000000000000002386f26fc10000000000000000000000000000444543b439b1169cefc50be42caa628b0ea35d85c0",
+      "txHash": "0x4f2b4c980f459b60a542cdca9b4c3d84afc669f5f9dfb2e5d1d8ae954cda4427",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.01 WHYPE" },
+          { "label": "Share ticker", "value": "mcHYPE" },
+          { "label": "Send shares to", "value": "0x444543B439b1169CEfc50Be42CAa628b0Ea35D85" }
+        ],
+        "owner": "MEV Capital"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8918203e78202038405f5e1008405f5e1008307a12094d19e3d00f8547f7d108abfd4bbb015486437b48780b864b460af940000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000001c0143fb639cbb1abfd787db6d1bac9a5b3de0020000000000000000000000001c0143fb639cbb1abfd787db6d1bac9a5b3de002c0",
+      "txHash": "0x4b643a655ac2cdca1466eaeacd3bd9a019fa745f209d8a57bbe50feb00a2e78f",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "1 WHYPE" },
+          { "label": "To", "value": "0x1C0143fb639CBb1aBFd787Db6d1bAc9a5B3de002" },
+          { "label": "Owner", "value": "0x1C0143fb639CBb1aBFd787Db6d1bAc9a5B3de002" }
+        ],
+        "owner": "MEV Capital"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88d8203e78201828084419b23b2830598b394d19e3d00f8547f7d108abfd4bbb015486437b48780b864ba08765200000000000000000000000000000000000000000000001b1a8a6553a4ef79d00000000000000000000000000e3f53df11321d652694c3ce5fc0dcf578ff49ee0000000000000000000000000e3f53df11321d652694c3ce5fc0dcf578ff49eec0",
+      "txHash": "0x8f0d1d30023971cf006dbc074ceb3030f17223587260c746649d4c9c0d37b961",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "499.974542391853939152 mcHYPE" },
+          { "label": "To", "value": "0x0e3F53df11321D652694c3cE5fc0dcf578fF49ee" },
+          { "label": "Owner", "value": "0x0e3F53df11321D652694c3cE5fc0dcf578fF49ee" }
+        ],
+        "owner": "MEV Capital"
+      }
+    }
+  ]
+}

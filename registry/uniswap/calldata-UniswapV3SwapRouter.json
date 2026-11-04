@@ -1,0 +1,220 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0xE592427A0AEce92De3Edee1F18E0157C05861564" }] } },
+  "metadata": {
+    "owner": "Uniswap Labs",
+    "contractName": "Uniswap v3 Router",
+    "constants": { "factory": "0x1F98431c8aD98523631AE4a59f267346ea31F984", "WETH9": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" },
+    "info": { "url": "https://uniswap.org/" }
+  },
+  "display": {
+    "formats": {
+      "exactInputSingle((address tokenIn,address tokenOut,uint24 fee,address recipient,uint256 deadline,uint256 amountIn,uint256 amountOutMinimum,uint160 sqrtPriceLimitX96) params)": {
+        "intent": "Swap",
+        "fields": [
+          { "path": "params.amountIn", "label": "Amount to Send", "format": "tokenAmount", "params": { "tokenPath": "params.tokenIn" } },
+          {
+            "path": "params.amountOutMinimum",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.tokenOut" }
+          },
+          {
+            "path": "params.recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "params.deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "params.fee", "label": "Pool Fee", "format": "unit", "params": { "decimals": 4, "base": "%", "prefix": false } },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
+          { "path": "params.tokenIn", "label": "Token In", "visible": "never" },
+          { "path": "params.tokenOut", "label": "Token Out", "visible": "never" },
+          { "path": "params.sqrtPriceLimitX96", "label": "Price Limit", "format": "raw", "visible": { "mustMatch": [0] } }
+        ],
+        "interpolatedIntent": "Swap {params.amountIn} for at least {params.amountOutMinimum}"
+      },
+      "exactOutputSingle((address tokenIn,address tokenOut,uint24 fee,address recipient,uint256 deadline,uint256 amountOut,uint256 amountInMaximum,uint160 sqrtPriceLimitX96) params)": {
+        "intent": "Swap",
+        "fields": [
+          {
+            "path": "params.amountOut",
+            "label": "Amount to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.tokenOut" }
+          },
+          {
+            "path": "params.amountInMaximum",
+            "label": "Maximum to Send",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "params.tokenIn",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            }
+          },
+          {
+            "path": "params.recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "params.deadline", "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "params.fee", "label": "Pool Fee", "format": "unit", "params": { "decimals": 4, "base": "%", "prefix": false } },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
+          { "path": "params.sqrtPriceLimitX96", "label": "Price Limit", "format": "raw", "visible": { "mustMatch": [0] } },
+          { "path": "params.tokenIn", "label": "Token In", "visible": "never" },
+          { "path": "params.tokenOut", "label": "Token Out", "visible": "never" }
+        ],
+        "interpolatedIntent": "Swap at most {params.amountInMaximum} for {params.amountOut}"
+      },
+      "refundETH()": {
+        "intent": "Refund ETH",
+        "fields": [{ "path": "@.value", "label": "ETH Sent", "format": "amount" }],
+        "interpolatedIntent": "Refund ETH held by the router"
+      },
+      "selfPermit(address token,uint256 value,uint256 deadline,uint8 v,bytes32 r,bytes32 s)": {
+        "intent": "Approve router",
+        "fields": [
+          {
+            "path": "value",
+            "label": "Approval Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "token",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            }
+          },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
+          { "path": "token", "label": "Token", "visible": "never" },
+          { "path": "deadline", "label": "Deadline", "visible": "never" },
+          { "path": "v", "label": "V", "visible": "never" },
+          { "path": "r", "label": "R", "visible": "never" },
+          { "path": "s", "label": "S", "visible": "never" }
+        ],
+        "interpolatedIntent": "Let router spend {value}"
+      },
+      "selfPermitAllowed(address token,uint256 nonce,uint256 expiry,uint8 v,bytes32 r,bytes32 s)": {
+        "intent": "Approve router (unlimited)",
+        "fields": [
+          { "path": "token", "label": "Unlimited Approval", "format": "tokenTicker" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
+          { "path": "nonce", "label": "Nonce", "visible": "never" },
+          { "path": "expiry", "label": "Expiry", "visible": "never" },
+          { "path": "v", "label": "V", "visible": "never" },
+          { "path": "r", "label": "R", "visible": "never" },
+          { "path": "s", "label": "S", "visible": "never" }
+        ],
+        "interpolatedIntent": "Let router spend all {token}"
+      },
+      "selfPermitAllowedIfNecessary(address token,uint256 nonce,uint256 expiry,uint8 v,bytes32 r,bytes32 s)": {
+        "intent": "Approve router (unlimited)",
+        "fields": [
+          { "path": "token", "label": "Unlimited Approval", "format": "tokenTicker" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
+          { "path": "nonce", "label": "Nonce", "visible": "never" },
+          { "path": "expiry", "label": "Expiry", "visible": "never" },
+          { "path": "v", "label": "V", "visible": "never" },
+          { "path": "r", "label": "R", "visible": "never" },
+          { "path": "s", "label": "S", "visible": "never" }
+        ],
+        "interpolatedIntent": "Let router spend all {token}"
+      },
+      "selfPermitIfNecessary(address token,uint256 value,uint256 deadline,uint8 v,bytes32 r,bytes32 s)": {
+        "intent": "Approve router",
+        "fields": [
+          {
+            "path": "value",
+            "label": "Approval Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "token",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            }
+          },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
+          { "path": "token", "label": "Token", "visible": "never" },
+          { "path": "deadline", "label": "Deadline", "visible": "never" },
+          { "path": "v", "label": "V", "visible": "never" },
+          { "path": "r", "label": "R", "visible": "never" },
+          { "path": "s", "label": "S", "visible": "never" }
+        ],
+        "interpolatedIntent": "Let router spend {value}"
+      },
+      "sweepToken(address token,uint256 amountMinimum,address recipient)": {
+        "intent": "Sweep tokens",
+        "fields": [
+          { "path": "amountMinimum", "label": "Minimum to Receive", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "token", "label": "Token", "format": "tokenTicker" },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Sweep at least {amountMinimum} to {recipient}"
+      },
+      "sweepTokenWithFee(address token,uint256 amountMinimum,address recipient,uint256 feeBips,address feeRecipient)": {
+        "intent": "Sweep tokens",
+        "fields": [
+          { "path": "amountMinimum", "label": "Minimum Before Fee", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "token", "label": "Token", "format": "tokenTicker" },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "feeBips", "label": "Fee", "format": "unit", "params": { "decimals": 2, "base": "%", "prefix": false } },
+          {
+            "path": "feeRecipient",
+            "label": "Fee Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Sweep at least {amountMinimum} less {feeBips} fee to {recipient}"
+      },
+      "unwrapWETH9(uint256 amountMinimum,address recipient)": {
+        "intent": "Unwrap WETH",
+        "fields": [
+          { "path": "amountMinimum", "label": "Minimum to Receive", "format": "amount" },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Unwrap at least {amountMinimum} to {recipient}"
+      },
+      "unwrapWETH9WithFee(uint256 amountMinimum,address recipient,uint256 feeBips,address feeRecipient)": {
+        "intent": "Unwrap WETH",
+        "fields": [
+          { "path": "amountMinimum", "label": "Minimum Before Fee", "format": "amount" },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "feeBips", "label": "Fee", "format": "unit", "params": { "decimals": 2, "base": "%", "prefix": false } },
+          {
+            "path": "feeRecipient",
+            "label": "Fee Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Unwrap at least {amountMinimum} less {feeBips} fee to {recipient}"
+      }
+    }
+  }
+}

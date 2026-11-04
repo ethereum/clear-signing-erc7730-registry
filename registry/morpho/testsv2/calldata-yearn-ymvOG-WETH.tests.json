@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-yearn-ymvOG-WETH.json",
+  "dataProvider": {
+    "tokens": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "decimals": 18, "name": "WETH", "symbol": "WETH" },
+      "0xe89371eaaac6d46d4c3ed23453241987916224fc": { "decimals": 18, "name": "Yearn OG WETH", "symbol": "ymvOG-WETH" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e01820172830186a08401708f0f830d1b9c94e89371eaaac6d46d4c3ed23453241987916224fc80b8446e553f6500000000000000000000000000000000000000000000000000000002540be400000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0xd1b96ab4fdfcc0bab5d871b7e7db51e4616a6cb6a27d773e54f6c440f65e2e54",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.00000001 WETH" },
+          { "label": "Share ticker", "value": "ymvOG-WETH" },
+          { "label": "Send shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "owner": "Yearn"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f897018201008407b1e5418410b5404483093f5594e89371eaaac6d46d4c3ed23453241987916224fc80b86cb460af94000000000000000000000000000000000000000000000000007c585087238000000000000000000000000000f200ef1dad3d0cee48380f860e61362b4f1eb96b000000000000000000000000f200ef1dad3d0cee48380f860e61362b4f1eb96b6a3f2ce02222da44c0",
+      "txHash": "0x95c3361a737cae567457e86ac962a0c4ad4c6ea92195b15e90487efcf7c7123a",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "0.035 WETH" },
+          { "label": "To", "value": "0xf200EF1DAd3d0cEE48380F860e61362B4f1eb96B" },
+          { "label": "Owner", "value": "0xf200EF1DAd3d0cEE48380F860e61362B4f1eb96B" }
+        ],
+        "owner": "Yearn"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88e0182010b8386f6c88402aa8690830a206294e89371eaaac6d46d4c3ed23453241987916224fc80b864ba087652000000000000000000000000000000000000000000000000001f735601bcfe4d000000000000000000000000cfb997d7f0012e8343ec85650d9e880ccb846df6000000000000000000000000cfb997d7f0012e8343ec85650d9e880ccb846df6c0",
+      "txHash": "0xe237d93f3e691af903fd07cac6a6589e94bcca7636371097893685fb0a83ce3e",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "0.008852537511575117 ymvOG-WETH" },
+          { "label": "To", "value": "0xCfb997D7f0012E8343ec85650D9E880CcB846Df6" },
+          { "label": "Owner", "value": "0xCfb997D7f0012E8343ec85650D9E880CcB846Df6" }
+        ],
+        "owner": "Yearn"
+      }
+    }
+  ]
+}

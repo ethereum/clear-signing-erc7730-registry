@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-unified_labs-urRWA-v2-143.json",
+  "dataProvider": {
+    "tokens": {
+      "0x754704bc059f8c67012fed69bc8a327a5aafb603": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0x0ed3615ff949c8a34d15441970900e849a3409fc": { "decimals": 18, "name": "Unified Labs USDC RWA", "symbol": "urRWA" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f870818f5f8517bfac7c0085372e4d020083065613940ed3615ff949c8a34d15441970900e849a3409fc80b8446e553f6500000000000000000000000000000000000000000000000000000000000f4240000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0xacd20dbd3f63477d0331967668b670f9503da9caf857d684499b361bc9f13d05",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "1 USDC" },
+          { "label": "Share ticker", "value": "urRWA" },
+          { "label": "Send shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Deposit 1 USDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Unified Labs"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b17851766444d00830bd560940ed3615ff949c8a34d15441970900e849a3409fc80b84494bf804d0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000560dd482c42347e8194bbf1b1e78e0c75c11417d818f8080",
+      "txHash": "0xfcd386a7fd7ae8112472dc343cf50d945b7439a55a04fe80a9ba060bb99d1c51",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "USDC" },
+          { "label": "Minted shares", "value": "0 urRWA" },
+          { "label": "Mint shares to", "value": "0x560dD482C42347e8194bbf1b1e78e0C75c11417D" }
+        ],
+        "interpolatedIntent": "Mint 0 urRWA for 0x560dD482C42347e8194bbf1b1e78e0C75c11417D",
+        "owner": "Unified Labs"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f898818f798517cad981e08537397a07e0830be22b940ed3615ff949c8a34d15441970900e849a3409fc80b86cb460af9400000000000000000000000000000000000000000000000000000000000f42400000000000000000000000003ff3a32986a159ab40e14fd5c4747f0cc0f048f80000000000000000000000003ff3a32986a159ab40e14fd5c4747f0cc0f048f869df798b2222da44c0",
+      "txHash": "0x446de6123c8e4bf1cdb4e820a52bbd456482579c80539bd188fd0f6ca3bcf335",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "1 USDC" },
+          { "label": "To", "value": "0x3FF3a32986A159aB40e14fD5c4747F0cc0f048F8" },
+          { "label": "Owner", "value": "0x3FF3a32986A159aB40e14fD5c4747F0cc0f048F8" }
+        ],
+        "interpolatedIntent": "Withdraw 1 USDC to 0x3FF3a32986A159aB40e14fD5c4747F0cc0f048F8",
+        "owner": "Unified Labs"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0xf88b3b851766444d0083082a8e940ed3615ff949c8a34d15441970900e849a3409fc80b864ba0876520000000000000000000000000000000000000000000000000000000000000000000000000000000000000000560dd482c42347e8194bbf1b1e78e0c75c11417d000000000000000000000000560dd482c42347e8194bbf1b1e78e0c75c11417d818f8080",
+      "txHash": "0x068742a77329892fe32fba24c1399ec10d5fa9e645e5b79f7320625c3960fdad",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "0 urRWA" },
+          { "label": "To", "value": "0x560dD482C42347e8194bbf1b1e78e0C75c11417D" },
+          { "label": "Owner", "value": "0x560dD482C42347e8194bbf1b1e78e0C75c11417D" }
+        ],
+        "interpolatedIntent": "Redeem 0 urRWA to 0x560dD482C42347e8194bbf1b1e78e0C75c11417D",
+        "owner": "Unified Labs"
+      }
+    }
+  ]
+}

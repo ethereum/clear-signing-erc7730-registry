@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-steakEURCV-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0x5f7827fdeb7c20b443265fc2f40845b715385ff2": { "decimals": 18, "name": "EURCV", "symbol": "EURCV" },
+      "0xbeef0c075da5d01112ae5cf34d257074fb5ddb2f": { "decimals": 18, "name": "Steakhouse Prime EURCV", "symbol": "steakEURCV" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86b0182305203840fc91c3b830c7d7b94beef0c075da5d01112ae5cf34d257074fb5ddb2f80b8446e553f65000000000000000000000000000000000000000000000000002386f26fc10000000000000000000000000000feed46c11f57b7126a773eec6ae9ca7ae1c03c9ac0",
+      "txHash": "0x6a9cf5a1d759055ca46a9ddefb65349793333212dbaef93343d2cc2cac126705",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.01 EURCV" },
+          { "label": "Share ticker", "value": "steakEURCV" },
+          { "label": "Send shares to", "value": "0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a" }
+        ],
+        "interpolatedIntent": "Deposit 0.01 EURCV for 0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b820310841dcd65008309edff94beef0c075da5d01112ae5cf34d257074fb5ddb2f80b84494bf804d0000000000000000000000000000000000000000000000002fec8e6e58f76c00000000000000000000000000d8dd2706ef4ef9cd0fb7f54a1c5413aedd93121f018080",
+      "txHash": "0xf9748258fcf956fe60357098bf38db4cb1f0eb0c3e93631760d3beffcd0db96b",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "EURCV" },
+          { "label": "Minted shares", "value": "3.453291618876484608 steakEURCV" },
+          { "label": "Mint shares to", "value": "0xd8dd2706eF4EF9cd0fB7F54a1C5413Aedd93121f" }
+        ],
+        "interpolatedIntent": "Mint 3.453291618876484608 steakEURCV for 0xd8dd2706eF4EF9cd0fB7F54a1C5413Aedd93121f",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f893018230cd0f840279d9a08311a85894beef0c075da5d01112ae5cf34d257074fb5ddb2f80b86cb460af940000000000000000000000000000000000000000000000c88ed03f9c840dd33c000000000000000000000000fdbbfb0fe2986672af97eca0e797d76a0bbf35c9000000000000000000000000fdbbfb0fe2986672af97eca0e797d76a0bbf35c9696e30752222da44c0",
+      "txHash": "0x26fc59fca87236e70c8a8a14f8c138ac4cf8ed14ca94351339cd6402df8fb628",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "3699.63960983191485318 EURCV" },
+          { "label": "To", "value": "0xFdbBfB0Fe2986672af97Eca0e797D76A0bbF35c9" },
+          { "label": "Owner", "value": "0xFdbBfB0Fe2986672af97Eca0e797D76A0bbF35c9" }
+        ],
+        "interpolatedIntent": "Withdraw 3699.63960983191485318 EURCV to 0xFdbBfB0Fe2986672af97Eca0e797D76A0bbF35c9",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f895018224b58203e88402966250830f40dd94beef0c075da5d01112ae5cf34d257074fb5ddb2f80b86cba087652000000000000000000000000000000000000000000002947c6534c7c0593cebd000000000000000000000000b497070466dc15fa6420b4781bb0352257146495000000000000000000000000b497070466dc15fa6420b4781bb03522571464956971ba4a2222da44c0",
+      "txHash": "0xb0aab4c542b7082387a44a069d543becf4bfb5d82ef87e6343817e3be0f5b465",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "194941.035477026961870525 steakEURCV" },
+          { "label": "To", "value": "0xb497070466Dc15FA6420b4781bB0352257146495" },
+          { "label": "Owner", "value": "0xb497070466Dc15FA6420b4781bB0352257146495" }
+        ],
+        "interpolatedIntent": "Redeem 194941.035477026961870525 steakEURCV to 0xb497070466Dc15FA6420b4781bB0352257146495",
+        "owner": "Steakhouse Financial"
+      }
+    }
+  ]
+}

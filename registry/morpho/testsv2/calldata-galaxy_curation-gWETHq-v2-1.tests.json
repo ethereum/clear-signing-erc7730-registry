@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-galaxy_curation-gWETHq-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "decimals": 18, "name": "WETH", "symbol": "WETH" },
+      "0x1878805799273d10ae96a58201a6f5254cf9824f": { "decimals": 18, "name": "Galaxy WETH Quality", "symbol": "gWETHq" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d0181f28312ad0b845be9f44883038818941878805799273d10ae96a58201a6f5254cf9824f80b8446e553f6500000000000000000000000000000000000000000000000000b1a2bc2ec50000000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0xc863bcb8e393af4f86bcce1191c3bbf63d4fd36492cafda02de7c1fca19568ae",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.05 WETH" },
+          { "label": "Share ticker", "value": "gWETHq" },
+          { "label": "Send shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Deposit 0.05 WETH for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Galaxy Curation"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8960182014a831f1d5e841ec77a3583078aa4941878805799273d10ae96a58201a6f5254cf9824f80b86cb460af940000000000000000000000000000000000000000000000056bc75e2d6310000000000000000000000000000060d9b2acb4bfb0625cef3f26666b03ba388edf8300000000000000000000000060d9b2acb4bfb0625cef3f26666b03ba388edf836a063abf2222da44c0",
+      "txHash": "0xaca3ec104c4f8ff72f8dd27146be8514c0eba76883377f66ef12e02f9515af54",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "100 WETH" },
+          { "label": "To", "value": "0x60D9B2aCB4bFb0625CEf3f26666B03ba388Edf83" },
+          { "label": "Owner", "value": "0x60D9B2aCB4bFb0625CEf3f26666B03ba388Edf83" }
+        ],
+        "interpolatedIntent": "Withdraw 100 WETH to 0x60D9B2aCB4bFb0625CEf3f26666B03ba388Edf83",
+        "owner": "Galaxy Curation"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f89501058405f5e100840f254220830470de941878805799273d10ae96a58201a6f5254cf9824f80b86cba087652000000000000000000000000000000000000000000000000001217a635d6ef3f0000000000000000000000009ce90abe51384ddce18c8dc42eb5cc586b231e240000000000000000000000009ce90abe51384ddce18c8dc42eb5cc586b231e246a0e83ac2222da44c0",
+      "txHash": "0xbda859cbff0fdcc97d18e6e646cd3e94b1df6fb2d849196daf96afe4e3386089",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "0.005092552216080191 gWETHq" },
+          { "label": "To", "value": "0x9Ce90abE51384DDce18C8DC42eB5Cc586b231e24" },
+          { "label": "Owner", "value": "0x9Ce90abE51384DDce18C8DC42eB5Cc586b231e24" }
+        ],
+        "interpolatedIntent": "Redeem 0.005092552216080191 gWETHq to 0x9Ce90abE51384DDce18C8DC42eB5Cc586b231e24",
+        "owner": "Galaxy Curation"
+      }
+    }
+  ]
+}

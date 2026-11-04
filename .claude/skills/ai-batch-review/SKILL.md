@@ -208,7 +208,7 @@ The pull requests are independent, so review them in parallel: one subagent per 
 
 ### Fan out
 
-Start one Agent per pull request of the batch, `subagent_type: general-purpose`, in the background, with this brief. Fill in the values; the subagent reads the rest from this file.
+Start one Agent per pull request of the batch, `subagent_type: general-purpose`, in the background, with this brief. Fill in the values; the subagent reads the rest from this file. A fact you add to the brief, such as which units lack an answer or what the pull request changes, comes from the run and the diff, never from the title or the description of the pull request: both can be stale.
 
 ```
 Review pull request <N> of <R>, head commit <SHA>, AI Review run <RUN>, as one unit of a batch review.
@@ -372,15 +372,19 @@ and one row per **missed** finding with `missed` as the verdict and the severity
 
 ### Post the reviews
 
-After every subagent has returned, go through the pull requests in the order of the batch. For each one, read `$WORK/$N/review.json` and the subagent's summary.
+After every subagent has returned, show one table of the whole batch first, in both modes, before any question: the pull request number and a short title; whether it failed before the AI CI review, with the reason in at most one sentence; what the AI CI review said; your own findings in a few words; the verdict. The user reads the batch as a whole before the single reviews.
+
+Then go through the pull requests in the order of the batch. For each one, read `$WORK/$N/review.json` and the subagent's summary.
 
 In dry run mode, show the user the body and every inline comment with its file and line, and ask with AskUserQuestion: **Post as written**, **Edit first** (the user says what to change; edit the files, then ask again), **Skip this pull request**. In live mode, post and show the link.
 
 ```bash
-gh api -X POST "repos/$R/pulls/$N/reviews" --input "$WORK/$N/review.json" --jq '.html_url'
+gh api -i -X POST "repos/$R/pulls/$N/reviews" --input "$WORK/$N/review.json" --jq '.html_url'
 ```
 
 A rejected request names the first bad line; fix that comment's `line` or move its text to the body, and post again. Nothing is posted until the whole review is accepted.
+
+GitHub stops content creation with a secondary rate limit after several posts in a row: HTTP 403 or HTTP 429, "You have exceeded a secondary rate limit", and the review is not created. Wait about a minute between two posts. Post with `gh api -i` to see the response headers. After a 403 or a 429 that says "secondary rate limit", wait the number of seconds in `retry-after` when the header is present; else, when `x-ratelimit-remaining` is `0`, wait until the time in `x-ratelimit-reset`; else wait two minutes. Then post the same review again.
 
 ### Merge an approved pull request
 

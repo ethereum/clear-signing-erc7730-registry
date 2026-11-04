@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-sparkdao-sparkUSDTbc-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xdac17f958d2ee523a2206206994597c13d831ec7": { "decimals": 6, "name": "USDT", "symbol": "USDT" },
+      "0xb0c424116172b55cbb6dd3136f5989f7959e5b91": { "decimals": 18, "name": "Spark Blue Chip USDT Vault", "symbol": "sparkUSDTbc" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d0147841dcd65008424fa8d80830391c294b0c424116172b55cbb6dd3136f5989f7959e5b9180b8446e553f6500000000000000000000000000000000000000000000000000000000000f4240000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x2402ea9b1d4e73fb13af5784886f73882a20425207d217905608f7fa04d0b89b",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "1 USDT" },
+          { "label": "Share ticker", "value": "sparkUSDTbc" },
+          { "label": "Send shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Deposit 1 USDT for 0x000000000000000000000000000000000000dEaD",
+        "owner": "SparkDAO"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f894010b830d3830841015d7168307dab894b0c424116172b55cbb6dd3136f5989f7959e5b9180b86cb460af9400000000000000000000000000000000000000000000000000000003d77a05000000000000000000000000002c73bcc8d88605305173a3d66cae74910b383af60000000000000000000000002c73bcc8d88605305173a3d66cae74910b383af66a2eb9952222da44c0",
+      "txHash": "0x3c9a813f7b32b378b033c0eca5dd557edef3aebdb75f4764ef9d132531471c2e",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "16500 USDT" },
+          { "label": "To", "value": "0x2C73BCC8d88605305173a3D66cAe74910B383AF6" },
+          { "label": "Owner", "value": "0x2C73BCC8d88605305173a3D66cAe74910B383AF6" }
+        ],
+        "interpolatedIntent": "Withdraw 16500 USDT to 0x2C73BCC8d88605305173a3D66cAe74910B383AF6",
+        "owner": "SparkDAO"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8940154830aa2388409a49cd683083cdf94b0c424116172b55cbb6dd3136f5989f7959e5b9180b86cba08765200000000000000000000000000000000000000000000014ebae40f0a15c01470000000000000000000000000935e562106bf1c02a4490681ba9c28d6e9599e8d000000000000000000000000935e562106bf1c02a4490681ba9c28d6e9599e8d6a2d42c22222da44c0",
+      "txHash": "0xc7bd2b3848688766b5622e7248565ac133a391884124d770f8b45701998c9931",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "6174.679425940723864688 sparkUSDTbc" },
+          { "label": "To", "value": "0x935E562106Bf1C02A4490681ba9C28d6e9599e8d" },
+          { "label": "Owner", "value": "0x935E562106Bf1C02A4490681ba9C28d6e9599e8d" }
+        ],
+        "interpolatedIntent": "Redeem 6174.679425940723864688 sparkUSDTbc to 0x935E562106Bf1C02A4490681ba9C28d6e9599e8d",
+        "owner": "SparkDAO"
+      }
+    }
+  ]
+}
