@@ -238,6 +238,302 @@
             "visible": "never"
           }
         ]
+      },
+      "bond(uint256 _amount, address _to)": {
+        "intent": "Delegate LPT; existing stake moves to delegate",
+        "interpolatedIntent": "Delegate {_amount} to {_to}; any existing stake moves there too",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.LPTaddress"
+            },
+            "path": "#._amount",
+            "visible": "always"
+          },
+          {
+            "label": "Delegate",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._to",
+            "visible": "always"
+          }
+        ]
+      },
+      "unbond(uint256 _amount)": {
+        "intent": "Undelegate LPT; full unbond resigns orchestrator",
+        "interpolatedIntent": "Undelegate {_amount}; a full unbond resigns an orchestrator",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.LPTaddress"
+            },
+            "path": "#._amount",
+            "visible": "always"
+          }
+        ]
+      },
+      "rebond(uint256 _unbondingLockId)": {
+        "intent": "Rebond LPT to current delegate",
+        "interpolatedIntent": "Rebond LPT of unbonding lock #{_unbondingLockId} to the current delegate",
+        "fields": [
+          {
+            "label": "Unbonding lock",
+            "format": "raw",
+            "path": "#._unbondingLockId",
+            "visible": "always"
+          }
+        ]
+      },
+      "rebondWithHint(uint256 _unbondingLockId, address _newPosPrev, address _newPosNext)": {
+        "intent": "Rebond LPT to current delegate",
+        "interpolatedIntent": "Rebond LPT of unbonding lock #{_unbondingLockId} to the current delegate",
+        "fields": [
+          {
+            "label": "Unbonding lock",
+            "format": "raw",
+            "path": "#._unbondingLockId",
+            "visible": "always"
+          },
+          {
+            "label": "List hint (prev)",
+            "path": "#._newPosPrev",
+            "visible": "never"
+          },
+          {
+            "label": "List hint (next)",
+            "path": "#._newPosNext",
+            "visible": "never"
+          }
+        ]
+      },
+      "rebondFromUnbonded(address _to, uint256 _unbondingLockId)": {
+        "intent": "Rebond LPT to a new delegate",
+        "interpolatedIntent": "Rebond LPT of unbonding lock #{_unbondingLockId} to {_to}",
+        "fields": [
+          {
+            "label": "Delegate",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._to",
+            "visible": "always"
+          },
+          {
+            "label": "Unbonding lock",
+            "format": "raw",
+            "path": "#._unbondingLockId",
+            "visible": "always"
+          }
+        ]
+      },
+      "rebondFromUnbondedWithHint(address _to, uint256 _unbondingLockId, address _newPosPrev, address _newPosNext)": {
+        "intent": "Rebond LPT to a new delegate",
+        "interpolatedIntent": "Rebond LPT of unbonding lock #{_unbondingLockId} to {_to}",
+        "fields": [
+          {
+            "label": "Delegate",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._to",
+            "visible": "always"
+          },
+          {
+            "label": "Unbonding lock",
+            "format": "raw",
+            "path": "#._unbondingLockId",
+            "visible": "always"
+          },
+          {
+            "label": "List hint (prev)",
+            "path": "#._newPosPrev",
+            "visible": "never"
+          },
+          {
+            "label": "List hint (next)",
+            "path": "#._newPosNext",
+            "visible": "never"
+          }
+        ]
+      },
+      "claimEarnings(uint256 _endRound)": {
+        "intent": "Claim pending rewards and fees",
+        "fields": [
+          {
+            "label": "Unused parameter",
+            "path": "#._endRound",
+            "visible": "never"
+          }
+        ]
+      },
+      "transferBond(address _delegator, uint256 _amount, address _oldDelegateNewPosPrev, address _oldDelegateNewPosNext, address _newDelegateNewPosPrev, address _newDelegateNewPosNext)": {
+        "intent": "Transfer staked LPT; full transfer resigns orchestrator",
+        "interpolatedIntent": "Transfer {_amount} of bonded stake to {_delegator}; a full transfer resigns an orchestrator",
+        "fields": [
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._delegator",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.LPTaddress"
+            },
+            "path": "#._amount",
+            "visible": "always"
+          },
+          {
+            "label": "List hint 1",
+            "path": "#._oldDelegateNewPosPrev",
+            "visible": "never"
+          },
+          {
+            "label": "List hint 2",
+            "path": "#._oldDelegateNewPosNext",
+            "visible": "never"
+          },
+          {
+            "label": "List hint 3",
+            "path": "#._newDelegateNewPosPrev",
+            "visible": "never"
+          },
+          {
+            "label": "List hint 4",
+            "path": "#._newDelegateNewPosNext",
+            "visible": "never"
+          }
+        ]
+      },
+      "transcoder(uint256 _rewardCut, uint256 _feeShare)": {
+        "intent": "Set orchestrator commission rates",
+        "interpolatedIntent": "Set reward cut to {_rewardCut} and fee share to {_feeShare}; tries to join the orchestrator pool if not yet in it",
+        "fields": [
+          {
+            "label": "Reward cut",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 4
+            },
+            "path": "#._rewardCut",
+            "visible": "always"
+          },
+          {
+            "label": "Fee share",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 4
+            },
+            "path": "#._feeShare",
+            "visible": "always"
+          }
+        ]
+      },
+      "transcoderWithHint(uint256 _rewardCut, uint256 _feeShare, address _newPosPrev, address _newPosNext)": {
+        "intent": "Set orchestrator commission rates",
+        "interpolatedIntent": "Set reward cut to {_rewardCut} and fee share to {_feeShare}; tries to join the orchestrator pool if not yet in it",
+        "fields": [
+          {
+            "label": "Reward cut",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 4
+            },
+            "path": "#._rewardCut",
+            "visible": "always"
+          },
+          {
+            "label": "Fee share",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 4
+            },
+            "path": "#._feeShare",
+            "visible": "always"
+          },
+          {
+            "label": "List hint (prev)",
+            "path": "#._newPosPrev",
+            "visible": "never"
+          },
+          {
+            "label": "List hint (next)",
+            "path": "#._newPosNext",
+            "visible": "never"
+          }
+        ]
+      },
+      "checkpointBondingState(address _account)": {
+        "intent": "Checkpoint voting stake",
+        "interpolatedIntent": "Checkpoint the bonding state of {_account} for governance",
+        "fields": [
+          {
+            "label": "Account",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._account",
+            "visible": "always"
+          }
+        ]
       }
     }
   }
