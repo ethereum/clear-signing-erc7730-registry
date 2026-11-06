@@ -1,0 +1,36 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x881D40237659C251811CEC9c364ef91dC08D300C" }] } },
+  "metadata": { "owner": "MetaMask", "contractName": "MetaSwap", "info": { "url": "https://metamask.io" } },
+  "display": {
+    "formats": {
+      "swap(string aggregatorId,address tokenFrom,uint256 amount,bytes data)": {
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {amount} for at least {data.[96:128]}",
+        "fields": [
+          {
+            "path": "aggregatorId",
+            "label": "Via",
+            "format": "raw",
+            "visible": { "mustMatch": ["oneInchV6FeeDynamic", "uniswapPermit212FeeDynamic", "kyberSwapFeeDynamic", "pancakeSwapRouterFeeDynamic"] }
+          },
+          {
+            "path": "amount",
+            "label": "Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenFrom", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "path": "data.[96:128]",
+            "label": "Receive at least",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "data.[44:64]", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "data.[224:256]", "label": "Fee on output", "format": "raw", "visible": { "mustMatch": [0] } },
+          { "path": "@.value", "label": "Native paid", "format": "amount" },
+          { "path": "tokenFrom", "label": "Token From", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
