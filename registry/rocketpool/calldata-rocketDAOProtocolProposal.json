@@ -7,18 +7,18 @@
   "metadata": {
     "owner": "Rocket Pool",
     "info": { "url": "https://rocketpool.net" },
-    "enums": { "voteDirection": { "0": "No vote", "1": "Abstain", "2": "For", "3": "Against" } },
+    "enums": { "voteDirection": { "0": "No vote", "1": "Abstain", "2": "For", "3": "Against", "4": "Against with veto" } },
     "contractName": "rocketDAOProtocolProposal"
   },
   "display": {
     "formats": {
       "propose(string _proposalMessage, bytes _payload, uint32 _blockNumber, (uint256 sum, bytes32 hash)[] _treeNodes)": {
-        "intent": "Submit pDAO proposal",
-        "interpolatedIntent": "Submit pDAO proposal: {_proposalMessage}",
+        "intent": "Submit pDAO proposal, lock RPL bond",
+        "interpolatedIntent": "Submit pDAO proposal and lock the RPL bond: {_proposalMessage}",
         "fields": [
           { "label": "Message", "format": "raw", "path": "#._proposalMessage", "visible": "always" },
           { "label": "Block number", "format": "raw", "path": "#._blockNumber", "visible": "always" },
-          { "label": "Payload", "path": "#._payload", "visible": "never" },
+          { "label": "Payload (executed if passed)", "format": "raw", "path": "#._payload", "visible": "always" },
           { "label": "Tree nodes", "path": "#._treeNodes.[]", "visible": "never" }
         ]
       },
@@ -34,7 +34,13 @@
             "path": "#._voteDirection",
             "visible": "always"
           },
-          { "label": "Voting power", "format": "raw", "path": "#._votingPower", "visible": "always" },
+          {
+            "label": "Voting power",
+            "format": "unit",
+            "path": "#._votingPower",
+            "visible": "always",
+            "params": { "base": "votes", "decimals": 18 }
+          },
           { "label": "Node index", "path": "#._nodeIndex", "visible": "never" },
           { "label": "Witness", "path": "#._witness.[]", "visible": "never" }
         ]
@@ -61,11 +67,6 @@
       "execute(uint256 _proposalID)": {
         "intent": "Execute pDAO proposal",
         "interpolatedIntent": "Execute pDAO proposal {_proposalID}",
-        "fields": [{ "label": "Proposal ID", "format": "raw", "path": "#._proposalID", "visible": "always" }]
-      },
-      "destroy(uint256 _proposalID)": {
-        "intent": "Destroy pDAO proposal",
-        "interpolatedIntent": "Destroy pDAO proposal {_proposalID}",
         "fields": [{ "label": "Proposal ID", "format": "raw", "path": "#._proposalID", "visible": "always" }]
       }
     }

@@ -12,7 +12,8 @@
   "metadata": {
     "owner": "Rocket Pool",
     "info": { "url": "https://rocketpool.net" },
-    "contractName": "rocketDAONodeTrustedProposals"
+    "contractName": "rocketDAONodeTrustedProposals",
+    "enums": { "support": { "true": "For", "false": "Against" } }
   },
   "display": {
     "formats": {
@@ -21,7 +22,7 @@
         "interpolatedIntent": "Submit oracle DAO proposal: {_proposalMessage}",
         "fields": [
           { "label": "Message", "format": "raw", "path": "#._proposalMessage", "visible": "always" },
-          { "label": "Payload", "path": "#._payload", "visible": "never" }
+          { "label": "Payload (executed if passed)", "format": "raw", "path": "#._payload", "visible": "always" }
         ]
       },
       "vote(uint256 _proposalID, bool _support)": {
@@ -29,7 +30,13 @@
         "interpolatedIntent": "Vote {_support} on oracle DAO proposal {_proposalID}",
         "fields": [
           { "label": "Proposal ID", "format": "raw", "path": "#._proposalID", "visible": "always" },
-          { "label": "Support", "format": "raw", "path": "#._support", "visible": "always" }
+          {
+            "label": "Vote",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.support" },
+            "path": "#._support",
+            "visible": "always"
+          }
         ]
       },
       "cancel(uint256 _proposalID)": {

@@ -12,7 +12,8 @@
   "metadata": {
     "owner": "Rocket Pool",
     "info": { "url": "https://rocketpool.net" },
-    "contractName": "rocketNodeManager"
+    "contractName": "rocketNodeManager",
+    "enums": { "confirm": { "true": "Apply now", "false": "Pending confirmation" } }
   },
   "display": {
     "formats": {
@@ -44,7 +45,13 @@
             "path": "#._newRPLWithdrawalAddress",
             "visible": "always"
           },
-          { "label": "Confirm", "format": "raw", "path": "#._confirm", "visible": "always" }
+          {
+            "label": "Effect",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.confirm" },
+            "path": "#._confirm",
+            "visible": "always"
+          }
         ]
       },
       "confirmRPLWithdrawalAddress(address _nodeAddress)": {

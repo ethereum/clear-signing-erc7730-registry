@@ -1,18 +1,13 @@
 {
   "$schema": "../../../specs/erc7730-tests-v2.schema.json",
   "descriptor": "../calldata-rocketDAONodeTrustedActions.json",
-  "dataProvider": {
-    "tokens": {
-      "0xd33526068d116ce69f19a9ee46f0bd304f21a51f": { "symbol": "RPL", "decimals": 18, "name": "Rocket Pool Protocol" }
-    }
-  },
   "tests": [
     {
       "description": "Join oracle DAO - chain 1",
       "rawTx": "0x02ed0180843b9aca008506fc23ac008303d09094029d946f28f93399a5b0d09c879fc8c94e596aeb808437a787d7c0",
       "expected": {
-        "intent": "Join oracle DAO",
-        "interpolatedIntent": "Join oracle DAO",
+        "intent": "Join oracle DAO, pay RPL bond",
+        "interpolatedIntent": "Join oracle DAO and pay the RPL bond",
         "owner": "Rocket Pool",
         "fields": []
       }
@@ -24,9 +19,7 @@
         "intent": "Leave oracle DAO",
         "interpolatedIntent": "Leave oracle DAO, refund bond to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
         "owner": "Rocket Pool",
-        "fields": [
-          { "label": "Refund address", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
-        ]
+        "fields": [{ "label": "Refund address", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }]
       }
     },
     {
@@ -38,32 +31,7 @@
         "owner": "Rocket Pool",
         "fields": [
           { "label": "Node", "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" },
-          { "label": "Challenge cost", "value": "1 ETH" }
-        ]
-      }
-    },
-    {
-      "description": "Kick oracle DAO member with 100 RPL fine - chain 1",
-      "rawTx": "0x02f86e0180843b9aca008506fc23ac008303d09094029d946f28f93399a5b0d09c879fc8c94e596aeb80b84435dfabd90000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc0000000000000000000000000000000000000000000000056bc75e2d63100000c0",
-      "expected": {
-        "intent": "Kick oracle DAO member",
-        "interpolatedIntent": "Kick 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC with 100 RPL fine",
-        "owner": "Rocket Pool",
-        "fields": [
-          { "label": "Node", "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" },
-          { "label": "RPL fine", "value": "100 RPL" }
-        ]
-      }
-    },
-    {
-      "description": "Join oracle DAO as node - chain 1",
-      "rawTx": "0x02f84d0180843b9aca008506fc23ac008303d09094029d946f28f93399a5b0d09c879fc8c94e596aeb80a4a802624200000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8c0",
-      "expected": {
-        "intent": "Join oracle DAO",
-        "interpolatedIntent": "Join oracle DAO as 0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        "owner": "Rocket Pool",
-        "fields": [
-          { "label": "Node", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
+          { "label": "Challenge fee (not refunded)", "value": "1 ETH" }
         ]
       }
     },
@@ -74,9 +42,7 @@
         "intent": "Decide oracle DAO challenge",
         "interpolatedIntent": "Decide challenge against 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "owner": "Rocket Pool",
-        "fields": [
-          { "label": "Node", "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" }
-        ]
+        "fields": [{ "label": "Node", "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" }]
       }
     }
   ]

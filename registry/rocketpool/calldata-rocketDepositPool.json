@@ -13,24 +13,9 @@
   "display": {
     "formats": {
       "deposit()": {
-        "intent": "Stake ETH for rETH",
-        "interpolatedIntent": "Stake {@.value}",
+        "intent": "Stake ETH for rETH (deposit fee applies)",
+        "interpolatedIntent": "Stake {@.value} for rETH, minus the deposit fee",
         "fields": [{ "label": "Amount staked", "format": "amount", "path": "@.value", "visible": "always" }]
-      },
-      "exitQueue(address _nodeAddress, uint32 _validatorId, bool _expressQueue)": {
-        "intent": "Exit deposit queue",
-        "interpolatedIntent": "Exit validator {_validatorId} from deposit queue",
-        "fields": [
-          {
-            "label": "Node",
-            "format": "addressName",
-            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
-            "path": "#._nodeAddress",
-            "visible": "always"
-          },
-          { "label": "Validator ID", "format": "raw", "path": "#._validatorId", "visible": "always" },
-          { "label": "Express queue", "format": "raw", "path": "#._expressQueue", "visible": "always" }
-        ]
       },
       "assignDeposits(uint256 _max)": {
         "intent": "Assign deposits",
@@ -43,16 +28,16 @@
         "fields": [{ "label": "Max assignments", "format": "raw", "path": "#._max", "visible": "always" }]
       },
       "withdrawCredit(uint256 _amount)": {
-        "intent": "Withdraw ETH credit as rETH",
-        "interpolatedIntent": "Withdraw {_amount} credit as rETH",
+        "intent": "Withdraw credit as rETH (fee applies)",
+        "interpolatedIntent": "Withdraw {_amount} credit as rETH, minus the deposit fee",
         "fields": [{ "label": "Credit withdrawn", "format": "amount", "path": "#._amount", "visible": "always" }]
       },
       "withdrawCreditFor(address _nodeAddress, uint256 _amount)": {
-        "intent": "Withdraw ETH credit as rETH",
-        "interpolatedIntent": "Withdraw {_amount} credit for {_nodeAddress}",
+        "intent": "Withdraw credit as rETH (fee applies)",
+        "interpolatedIntent": "Withdraw {_amount} credit of {_nodeAddress} as rETH, minus the deposit fee",
         "fields": [
           {
-            "label": "Node",
+            "label": "Node whose credit is used",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
             "path": "#._nodeAddress",

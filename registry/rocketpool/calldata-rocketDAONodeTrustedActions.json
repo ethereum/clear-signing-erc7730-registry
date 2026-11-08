@@ -9,28 +9,10 @@
       ]
     }
   },
-  "metadata": {
-    "owner": "Rocket Pool",
-    "info": { "url": "https://rocketpool.net" },
-    "constants": { "RPLaddress": "0xD33526068D116cE69F19A9ee46F0bd304F21A51f" },
-    "contractName": "rocketDAONodeTrustedActions"
-  },
+  "metadata": { "owner": "Rocket Pool", "info": { "url": "https://rocketpool.net" }, "contractName": "rocketDAONodeTrustedActions" },
   "display": {
     "formats": {
-      "actionJoin()": { "intent": "Join oracle DAO", "interpolatedIntent": "Join oracle DAO", "fields": [] },
-      "actionJoinRequired(address _nodeAddress)": {
-        "intent": "Join oracle DAO",
-        "interpolatedIntent": "Join oracle DAO as {_nodeAddress}",
-        "fields": [
-          {
-            "label": "Node",
-            "format": "addressName",
-            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
-            "path": "#._nodeAddress",
-            "visible": "always"
-          }
-        ]
-      },
+      "actionJoin()": { "intent": "Join oracle DAO, pay RPL bond", "interpolatedIntent": "Join oracle DAO and pay the RPL bond", "fields": [] },
       "actionLeave(address _rplBondRefundAddress)": {
         "intent": "Leave oracle DAO",
         "interpolatedIntent": "Leave oracle DAO, refund bond to {_rplBondRefundAddress}",
@@ -55,7 +37,7 @@
             "path": "#._nodeAddress",
             "visible": "always"
           },
-          { "label": "Challenge cost", "format": "amount", "path": "@.value", "visible": "always" }
+          { "label": "Challenge fee (not refunded)", "format": "amount", "path": "@.value", "visible": "always" }
         ]
       },
       "actionChallengeDecide(address _nodeAddress)": {
@@ -67,26 +49,6 @@
             "format": "addressName",
             "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
             "path": "#._nodeAddress",
-            "visible": "always"
-          }
-        ]
-      },
-      "actionKick(address _nodeAddress, uint256 _rplFine)": {
-        "intent": "Kick oracle DAO member",
-        "interpolatedIntent": "Kick {_nodeAddress} with {_rplFine} fine",
-        "fields": [
-          {
-            "label": "Node",
-            "format": "addressName",
-            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
-            "path": "#._nodeAddress",
-            "visible": "always"
-          },
-          {
-            "label": "RPL fine",
-            "format": "tokenAmount",
-            "path": "#._rplFine",
-            "params": { "token": "$.metadata.constants.RPLaddress" },
             "visible": "always"
           }
         ]

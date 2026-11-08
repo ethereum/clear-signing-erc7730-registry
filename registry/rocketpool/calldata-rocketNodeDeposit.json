@@ -9,11 +9,7 @@
       ]
     }
   },
-  "metadata": {
-    "owner": "Rocket Pool",
-    "info": { "url": "https://rocketpool.net" },
-    "contractName": "rocketNodeDeposit"
-  },
+  "metadata": { "owner": "Rocket Pool", "info": { "url": "https://rocketpool.net" }, "contractName": "rocketNodeDeposit" },
   "display": {
     "formats": {
       "deposit(uint256 _bondAmount, bool _useExpressTicket, bytes _validatorPubkey, bytes _validatorSignature, bytes32 _depositDataRoot)": {
@@ -29,11 +25,11 @@
         ]
       },
       "depositWithCredit(uint256 _bondAmount, bool _useExpressTicket, bytes _validatorPubkey, bytes _validatorSignature, bytes32 _depositDataRoot)": {
-        "intent": "Create validator using credit",
-        "interpolatedIntent": "Create validator with {_bondAmount} bond using credit",
+        "intent": "Create validator using credit or balance",
+        "interpolatedIntent": "Create validator with {_bondAmount} bond using credit or balance",
         "fields": [
           { "label": "Bond amount", "format": "amount", "path": "#._bondAmount", "visible": "always" },
-          { "label": "ETH deposited", "format": "amount", "path": "@.value", "visible": "always" },
+          { "label": "ETH sent with the call", "format": "amount", "path": "@.value", "visible": "always" },
           { "label": "Validator pubkey", "format": "raw", "path": "#._validatorPubkey", "visible": "always" },
           { "label": "Use express ticket", "format": "raw", "path": "#._useExpressTicket", "visible": "always" },
           { "label": "Validator signature", "path": "#._validatorSignature", "visible": "never" },
@@ -44,12 +40,17 @@
         "intent": "Create validators",
         "interpolatedIntent": "Create validators depositing {@.value}",
         "fields": [
-          { "label": "ETH deposited", "format": "amount", "path": "@.value", "visible": "always" },
-          { "label": "Bond amount", "format": "amount", "path": "#._deposits.[].bondAmount", "visible": "always" },
-          { "label": "Validator pubkey", "format": "raw", "path": "#._deposits.[].validatorPubkey", "visible": "always" },
-          { "label": "Use express ticket", "path": "#._deposits.[].useExpressTicket", "visible": "never" },
-          { "label": "Validator signature", "path": "#._deposits.[].validatorSignature", "visible": "never" },
-          { "label": "Deposit data root", "path": "#._deposits.[].depositDataRoot", "visible": "never" }
+          { "label": "ETH sent with the call", "format": "amount", "path": "@.value", "visible": "always" },
+          {
+            "path": "#._deposits.[]",
+            "fields": [
+              { "label": "Bond amount", "format": "amount", "path": "bondAmount", "visible": "always" },
+              { "label": "Validator pubkey", "format": "raw", "path": "validatorPubkey", "visible": "always" },
+              { "label": "Use express ticket", "format": "raw", "path": "useExpressTicket", "visible": "always" },
+              { "label": "Validator signature", "path": "validatorSignature", "visible": "never" },
+              { "label": "Deposit data root", "path": "depositDataRoot", "visible": "never" }
+            ]
+          }
         ]
       },
       "depositEthFor(address _nodeAddress)": {
