@@ -1,0 +1,51 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "rocketDepositPool",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xCE15294273CFb9D9b628F4D61636623decDF4fdC" },
+        { "chainId": 560048, "address": "0x425E6f83e27f1676AD78BC39dA79C2C7b33d3Fd8" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Rocket Pool", "info": { "url": "https://rocketpool.net" }, "contractName": "rocketDepositPool" },
+  "display": {
+    "formats": {
+      "deposit()": {
+        "intent": "Stake ETH for rETH (deposit fee applies)",
+        "interpolatedIntent": "Stake {@.value} for rETH, minus the deposit fee",
+        "fields": [{ "label": "Amount staked", "format": "amount", "path": "@.value", "visible": "always" }]
+      },
+      "assignDeposits(uint256 _max)": {
+        "intent": "Assign deposits",
+        "interpolatedIntent": "Assign up to {_max} deposits",
+        "fields": [{ "label": "Max assignments", "format": "raw", "path": "#._max", "visible": "always" }]
+      },
+      "maybeAssignDeposits(uint256 _max)": {
+        "intent": "Assign deposits if enabled",
+        "interpolatedIntent": "Assign up to {_max} deposits if enabled",
+        "fields": [{ "label": "Max assignments", "format": "raw", "path": "#._max", "visible": "always" }]
+      },
+      "withdrawCredit(uint256 _amount)": {
+        "intent": "Withdraw credit as rETH (fee applies)",
+        "interpolatedIntent": "Withdraw {_amount} credit as rETH, minus the deposit fee",
+        "fields": [{ "label": "Credit withdrawn", "format": "amount", "path": "#._amount", "visible": "always" }]
+      },
+      "withdrawCreditFor(address _nodeAddress, uint256 _amount)": {
+        "intent": "Withdraw credit as rETH (fee applies)",
+        "interpolatedIntent": "Withdraw {_amount} credit of {_nodeAddress} as rETH, minus the deposit fee",
+        "fields": [
+          {
+            "label": "Node whose credit is used",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          { "label": "Credit withdrawn", "format": "amount", "path": "#._amount", "visible": "always" }
+        ]
+      }
+    }
+  }
+}
