@@ -7,7 +7,10 @@
   "metadata": {
     "owner": "ether.fi",
     "info": { "url": "https://www.ether.fi" },
-    "constants": { "WETHaddress": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" },
+    "constants": {
+      "WETHaddress": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "stETHaddress": "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84"
+    },
     "contractName": "DepositAdapter"
   },
   "display": {
@@ -32,6 +35,22 @@
             "visible": "always"
           },
           { "label": "Referral", "path": "#._referral", "visible": "never" }
+        ]
+      },
+      "depositStETHForWeETHWithPermit(uint256 _amount, uint256 _minOutAmount, address _referral, (uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) _permit)": {
+        "intent": "Stake stETH",
+        "interpolatedIntent": "Stake {_amount} for weETH",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#._amount",
+            "params": { "token": "$.metadata.constants.stETHaddress" },
+            "visible": "always"
+          },
+          { "label": "Minimum ETH value", "format": "amount", "path": "#._minOutAmount", "visible": "always" },
+          { "label": "Referral", "path": "#._referral", "visible": "never" },
+          { "label": "Permit", "path": "#._permit", "visible": "never" }
         ]
       }
     }

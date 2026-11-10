@@ -1,7 +1,12 @@
 {
   "$schema": "../../../specs/erc7730-tests-v2.schema.json",
   "descriptor": "../calldata-DepositAdapter.json",
-  "dataProvider": { "tokens": { "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" } } },
+  "dataProvider": {
+    "tokens": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" },
+      "0xae7ab96520de3a18e5e111b5eaab095312d7fe84": { "symbol": "stETH", "decimals": 18, "name": "Liquid staked Ether 2.0" }
+    }
+  },
   "tests": [
     {
       "description": "Stake ETH for weETH - chain 1",
@@ -34,6 +39,44 @@
         "owner": "ether.fi",
         "fields": [{ "label": "Amount", "value": "0.406387640285988545 WETH" }],
         "interpolatedIntent": "Stake 0.406387640285988545 WETH for weETH"
+      }
+    },
+    {
+      "description": "Stake stETH for weETH with permit - chain 1 (1)",
+      "rawTx": "0x02f9012f018212e7831e84808409896800830b88fc94cfc6d9bd7411962bfe7145451a7ef71a24b6a7a280b90104c951ccf0000000000000000000000000000000000000000000000001c493d3a6d88b43e2000000000000000000000000000000000000000000000001c3383f4e067c82e90000000000000000000000001f0299d886f1328d30e7b9f68a03aa94feefbcd6000000000000000000000000000000000000000000000001c493d3a6d88b43e2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000001b837e081941b5b56b3c791bcdfe361c0aae58ee07a325b0c3c2a8579d4a2830c854ba93718e768c36015eb632fba44d16bceaea0261b2cdfaf0e438ead854aa3dc0",
+      "txHash": "0xb71780a2ba8f1908e5f9dfb2a6780ec864c913331679402a611d02ec09583023",
+      "expected": {
+        "intent": "Stake stETH",
+        "owner": "ether.fi",
+        "fields": [
+          { "label": "Amount", "value": "32.611642040270930914 stETH" },
+          { "label": "Minimum ETH value", "value": "32.513807114150118121 ETH" }
+        ],
+        "interpolatedIntent": "Stake 32.611642040270930914 stETH for weETH"
+      }
+    },
+    {
+      "description": "Stake stETH for weETH with permit - chain 1 (2)",
+      "rawTx": "0x02f9012e01818b834c4b40840aba9500830b756d94cfc6d9bd7411962bfe7145451a7ef71a24b6a7a280b90104c951ccf0000000000000000000000000000000000000000000000004722f124cfc40490b0000000000000000000000000000000000000000000000046ec4f23eee2eaf39000000000000000000000000ccaa76f69f3a3f75a8b60600bf16443c1c4614e7000000000000000000000000000000000000000000000004722f124cfc40490bffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000001b471273093267cd66d48e610ad748dac61d23d2aa2bd1c4dd7d7f06bee1d8aa353ddb931f0e98598da9c4395a5d60f0d76d734799cb295af9a08e3af416a77117c0",
+      "txHash": "0x88133b706cf27a508ff1d78972a197b6e6ae8c21300e5b2263fef4279d856e80",
+      "expected": {
+        "intent": "Stake stETH",
+        "owner": "ether.fi",
+        "fields": [
+          { "label": "Amount", "value": "82.014791460926277899 stETH" },
+          { "label": "Minimum ETH value", "value": "81.768747086543499065 ETH" }
+        ],
+        "interpolatedIntent": "Stake 82.014791460926277899 stETH for weETH"
+      }
+    },
+    {
+      "description": "Stake stETH for weETH after approve, empty permit - constructed, not on-chain",
+      "rawTx": "0x02f9012f0180843b9aca008504a817c80083061a8094cfc6d9bd7411962bfe7145451a7ef71a24b6a7a280b90104c951ccf00000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000dcef33a6f83800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Stake stETH",
+        "owner": "ether.fi",
+        "fields": [{ "label": "Amount", "value": "1 stETH" }, { "label": "Minimum ETH value", "value": "0.995 ETH" }],
+        "interpolatedIntent": "Stake 1 stETH for weETH"
       }
     }
   ]
