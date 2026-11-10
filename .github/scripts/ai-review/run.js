@@ -45,6 +45,7 @@ const { countFindings } = require('./findings');
 // The answer is asked to stay under 12,000 characters; thinking counts toward
 // the limit too.
 const MAX_OUTPUT_TOKENS = 64_000;
+const TIMEOUT_MINUTES = 20;
 const SECTIONS = ['## Critical', '## Warning', '## Info'];
 
 const { values: opts } = parseArgs({
@@ -130,9 +131,10 @@ function claude(ws, message) {
     const child = execFile('claude', args, {
       cwd: ws.dir,
       env: { ...env, CLAUDE_CODE_MAX_OUTPUT_TOKENS: String(MAX_OUTPUT_TOKENS) },
-      timeout: 20 * 60 * 1000,
+      timeout: TIMEOUT_MINUTES * 60 * 1000,
       maxBuffer: 64 * 1024 * 1024,
     }, (error, stdout, stderr) => {
+      if (error?.killed) return reject(new Error(`Claude Code did not finish in ${TIMEOUT_MINUTES} minutes`));
       // On an API error Claude Code exits 1 and still prints its result.
       let events;
       try { events = stdout.split('\n').filter((l) => l.trim()).map((l) => JSON.parse(l)); } catch (e) { return reject(e); }
