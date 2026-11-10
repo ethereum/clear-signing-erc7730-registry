@@ -1,0 +1,222 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Decentria Splitter",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 8453,
+          "address": "0xfD20f2a03C69aF26f3076144921d5fcAA54a9d75"
+        },
+        {
+          "chainId": 84532,
+          "address": "0x7685D69e7F0800c1F5cbf75B013C909C4ca38616"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Decentria",
+    "info": {
+      "url": "https://decentria.io",
+      "deploymentDate": "2026-10-24T21:15:41Z"
+    },
+    "constants": {
+      "usdc": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+    },
+    "contractName": "Splitter"
+  },
+  "display": {
+    "formats": {
+      "pay(address creator, uint256 amount, bytes32 listingId, bytes32 nonce, (uint256 value,uint256 deadline,uint8 v,bytes32 r,bytes32 s) permit, (address to,uint8 v,bytes32 r,bytes32 s) fee)": {
+        "$id": "pay",
+        "intent": "Pay a Decentria listing",
+        "interpolatedIntent": "Pay {amount} to {creator}",
+        "fields": [
+          {
+            "path": "creator",
+            "label": "Creator",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "amount",
+            "label": "Price",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.usdc"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "permit.value",
+            "label": "USDC approval",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.usdc"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "permit.deadline",
+            "label": "Approval valid until",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "fee.to",
+            "label": "Decentria fee to",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "listingId",
+            "label": "Listing id",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "nonce",
+            "label": "Sale nonce",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "permit.v",
+            "label": "Permit signature v",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "permit.r",
+            "label": "Permit signature r",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "permit.s",
+            "label": "Permit signature s",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "fee.v",
+            "label": "Fee authorisation v",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "fee.r",
+            "label": "Fee authorisation r",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "fee.s",
+            "label": "Fee authorisation s",
+            "format": "raw",
+            "visible": "never"
+          }
+        ]
+      },
+      "refund(address buyer, uint256 amount, bytes32 nonce, uint256 permitValue, uint256 deadline, uint8 v, bytes32 r, bytes32 s)": {
+        "$id": "refund",
+        "intent": "Refund a Decentria buyer",
+        "interpolatedIntent": "Refund {amount} to {buyer}",
+        "fields": [
+          {
+            "path": "buyer",
+            "label": "Buyer",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "amount",
+            "label": "Refund",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.usdc"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "permitValue",
+            "label": "USDC approval",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.usdc"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "deadline",
+            "label": "Approval valid until",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "nonce",
+            "label": "Sale nonce",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "v",
+            "label": "Permit signature v",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "r",
+            "label": "Permit signature r",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "s",
+            "label": "Permit signature s",
+            "format": "raw",
+            "visible": "never"
+          }
+        ]
+      }
+    }
+  }
+}
