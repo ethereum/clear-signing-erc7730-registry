@@ -1,0 +1,87 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "$id": "weETH", "contract": { "deployments": [{ "chainId": 1, "address": "0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee" }] } },
+  "metadata": {
+    "owner": "ether.fi",
+    "info": { "url": "https://www.ether.fi" },
+    "constants": {
+      "eETHaddress": "0x35fA164735182de50811E8e2E824cFb9B6118ac2",
+      "weETHaddress": "0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee"
+    },
+    "contractName": "weETH"
+  },
+  "display": {
+    "formats": {
+      "approve(address spender, uint256 amount)": {
+        "intent": "Authorize spending",
+        "interpolatedIntent": "Allow to spend {amount}",
+        "fields": [
+          {
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "path": "#.spender",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.amount",
+            "params": {
+              "token": "$.metadata.constants.weETHaddress",
+              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
+              "message": "Unlimited"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "transfer(address to, uint256 amount)": {
+        "intent": "Transfer weETH",
+        "interpolatedIntent": "Send {amount} to {to}",
+        "fields": [
+          {
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.to",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.amount",
+            "params": { "token": "$.metadata.constants.weETHaddress" },
+            "visible": "always"
+          }
+        ]
+      },
+      "wrap(uint256 _eETHAmount)": {
+        "intent": "Wrap eETH",
+        "interpolatedIntent": "Wrap {_eETHAmount}",
+        "fields": [
+          {
+            "label": "eETH amount",
+            "format": "tokenAmount",
+            "path": "#._eETHAmount",
+            "params": { "token": "$.metadata.constants.eETHaddress" },
+            "visible": "always"
+          }
+        ]
+      },
+      "unwrap(uint256 _weETHAmount)": {
+        "intent": "Unwrap weETH to eETH",
+        "interpolatedIntent": "Unwrap {_weETHAmount}",
+        "fields": [
+          {
+            "label": "weETH amount",
+            "format": "tokenAmount",
+            "path": "#._weETHAmount",
+            "params": { "token": "$.metadata.constants.weETHaddress" },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
