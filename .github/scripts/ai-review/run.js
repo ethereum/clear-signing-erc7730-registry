@@ -137,6 +137,11 @@ function claude(ws, message) {
       try { events = stdout.split('\n').filter((l) => l.trim()).map((l) => JSON.parse(l)); } catch (e) { return reject(e); }
       const result = events.findLast((e) => e.type === 'result');
       if (!result) return reject(new Error(stderr.trim() || error?.message || 'claude printed no result'));
+      // The model reads text from the pull request, so a tool stops the run.
+      const init = events.find((e) => e.type === 'system' && e.subtype === 'init');
+      if (!init || init.tools?.length || init.mcp_servers?.length) {
+        return reject(Object.assign(new Error('the init event of Claude Code is missing or lists tools or MCP servers'), { fatal: true }));
+      }
       resolve({ result, rateLimit: events.findLast((e) => e.type === 'rate_limit_event')?.rate_limit_info ?? null });
     });
     child.stdin.end(message);
@@ -145,7 +150,8 @@ function claude(ws, message) {
 
 /**
  * Sends one unit. Returns { id, text, stop, usage, costUSD, weeklyUsage } or
- * throws; a 401 stops the run, anything else is recorded for the unit.
+ * throws; a 401 or a Claude Code with tools stops the run, anything else is
+ * recorded for the unit.
  * usage.inputTokens is the whole input, cache reads and writes included.
  * weeklyUsage.utilization is the used share of the weekly limit, 0 to 1.
  */
@@ -219,7 +225,7 @@ async function askModel(ws, input) {
       if (!result.ok) result.error = `the answer does not follow the format: ${result.problems.join('; ')}`;
     }
   } catch (e) {
-    if (e.status === 401) throw e;
+    if (e.status === 401 || e.fatal) throw e;
     result.error = String(e.message ?? e);
   }
   result.seconds = Math.round((Date.now() - started) / 1000);

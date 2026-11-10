@@ -66,7 +66,7 @@ The prompt asks fourteen questions:
 
 Claude Opus 5.5 runs at high effort, through Claude Code on a Claude subscription. The Environment `ai-review` holds the subscription token `CLAUDE_CODE_OAUTH_TOKEN`, made with `claude setup-token`. The model posts one comment, with its token usage and an estimate of the share of the subscription's weekly limit that the run used at the bottom. Anthropic reports the weekly usage only in whole percents, so the estimate is the list-price cost of the run divided by `AI_REVIEW_WEEKLY_BUDGET_USD` in `ai-review.yml`, the list-price value of the whole weekly limit. To measure that value again, add up the list-price cost of the requests since the last weekly reset and divide it by the weekly usage that `/usage` in Claude Code shows. In November 2026, $213 of requests gave 10%, so about $2,100. Before, GPT-6.1 Sol and Claude Sonnet 5.5 ran on the APIs at medium effort, so the team could compare the two models on real pull requests. The first benchmark is in [#3069](https://github.com/ethereum/clear-signing-erc7730-registry/issues/3069); the prompt comes from a comparison on 20 review units of open pull requests, with Opus 5.5 as the reference, see below.
 
-The review step is red only when a unit got no answer: the model refused, the API failed, or the unit is above the size limit. An answer that strays from the expected format is posted with a note.
+The review step is red when a unit got no answer: the model refused, the API failed, or the unit is above the size limit. It is also red when Claude Code starts with a tool or an MCP server, which stops the run. An answer that strays from the expected format is posted with a note.
 
 <details>
 <summary>What the answer looks like</summary>
@@ -94,7 +94,7 @@ The deterministic checks ran before it and passed, so the prompt tells the model
 <details>
 <summary>Prompt injection</summary>
 
-Everything the model reads can carry text written to steer it: descriptor labels, test names, Solidity comments. The unit is wrapped in a tag with a random nonce, and the prompt says that only text outside that tag is an instruction; the model is asked to report such text as a `prompt-injection` finding. The prompt and the spec come from the base branch, so a pull request cannot change them.
+Everything the model reads can carry text written to steer it: descriptor labels, test names, Solidity comments. The unit is wrapped in a tag with a random nonce, and the prompt says that only text outside that tag is an instruction; the model is asked to report such text as a `prompt-injection` finding. The prompt and the spec come from the base branch, so a pull request cannot change them. The model has no tools, and the run stops when Claude Code reports that it started with one.
 
 </details>
 
