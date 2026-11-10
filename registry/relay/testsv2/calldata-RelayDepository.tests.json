@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-RelayDepository.json",
+  "dataProvider": {
+    "tokens": { "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "name": "USD Coin", "symbol": "USDC", "decimals": 6 } },
+    "addressNames": {}
+  },
+  "tests": [
+    {
+      "description": "cancelOwnershipHandover - chain 1",
+      "rawTx": "0x02e401808080830f4240944cd00e387622c35bddb9b4c962c136462338bc31808454d1f13dc0",
+      "from": "0x1111111111111111111111111111111111111111",
+      "expected": { "intent": "Cancel ownership handover", "owner": "Relay", "fields": [{ "label": "Value Sent", "value": "0 ETH" }] }
+    },
+    {
+      "description": "completeOwnershipHandover - chain 1",
+      "rawTx": "0x02f84401808080830f4240944cd00e387622c35bddb9b4c962c136462338bc3180a4f04e283e0000000000000000000000001111111111111111111111111111111111111111c0",
+      "from": "0xF61A305199fa1135d76FFaB3752D42F55cBd775A",
+      "expected": {
+        "intent": "Complete ownership handover",
+        "interpolatedIntent": "Hand over to 0x1111111111111111111111111111111111111111",
+        "owner": "Relay",
+        "fields": [{ "label": "New Owner", "value": "0x1111111111111111111111111111111111111111" }, { "label": "Value Sent", "value": "0 ETH" }]
+      }
+    },
+    {
+      "description": "depositErc20-allowance - chain 1",
+      "rawTx": "0x02f88501808080830f4240944cd00e387622c35bddb9b4c962c136462338bc3180b8645a1ee3ac0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb482800946563bf2410942312f8bf6f5809fc5f73265564fa0965d5a2dd9c2119b3c0",
+      "from": "0x62590f84ebdc8e02fd18ed5e513e9f72e084723e",
+      "expected": {
+        "intent": "Deposit approved amount",
+        "interpolatedIntent": "Deposit all approved USDC for Sender",
+        "owner": "Relay",
+        "fields": [
+          { "label": "Token (all approved)", "value": "USDC" },
+          { "label": "Credited To", "value": "Sender" },
+          { "label": "Relay Order ID", "value": "0x2800946563bf2410942312f8bf6f5809fc5f73265564fa0965d5a2dd9c2119b3" }
+        ]
+      }
+    },
+    {
+      "description": "depositErc20 - chain 1",
+      "rawTx": "0x02f8a501808080830f4240944cd00e387622c35bddb9b4c962c136462338bc3180b884e8017952000000000000000000000000381c039df605117653b87ac5ddb06a2b328c827c000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000001279c46d37dd1066fcee66cc3c94f5147435dfd94549e16eaf5b9f2167bb8b0e62a66fc0",
+      "from": "0x381c039DF605117653B87AC5Ddb06A2b328C827c",
+      "txHash": "0xac966c29219668601efda7e0ee2eb6d055f4086bd2e881992616ca7efa4bc138",
+      "expected": {
+        "intent": "Deposit to Relay",
+        "interpolatedIntent": "Deposit 1.21082 USDC for 0x381c039DF605117653B87AC5Ddb06A2b328C827c",
+        "owner": "Relay",
+        "fields": [
+          { "label": "Amount", "value": "1.21082 USDC" },
+          { "label": "Credited To", "value": "0x381c039DF605117653B87AC5Ddb06A2b328C827c" },
+          { "label": "Relay Order ID", "value": "0x6d37dd1066fcee66cc3c94f5147435dfd94549e16eaf5b9f2167bb8b0e62a66f" }
+        ]
+      }
+    },
+    {
+      "description": "depositNative - chain 1",
+      "rawTx": "0x02f86c01808080830f4240944cd00e387622c35bddb9b4c962c136462338bc318727147114877fffb84449290c1c00000000000000000000000074cb10208a098167aa55636465909b31f62c77fbbfc6a78ab08d943bce5e1951536aec649e88938c3d0b994babbf90698cf8dc81c0",
+      "from": "0x74CB10208a098167Aa55636465909B31F62c77fb",
+      "txHash": "0x9318f3fa419a69b1843d37050fdc94c7345e4ff313cb36538ad1d9cb08b77f05",
+      "expected": {
+        "intent": "Deposit to Relay",
+        "interpolatedIntent": "Deposit 0.010999999999999999 ETH for 0x74CB10208a098167Aa55636465909B31F62c77fb",
+        "owner": "Relay",
+        "fields": [
+          { "label": "Amount", "value": "0.010999999999999999 ETH" },
+          { "label": "Credited To", "value": "0x74CB10208a098167Aa55636465909B31F62c77fb" },
+          { "label": "Relay Order ID", "value": "0xbfc6a78ab08d943bce5e1951536aec649e88938c3d0b994babbf90698cf8dc81" }
+        ]
+      }
+    },
+    {
+      "description": "renounceOwnership - chain 1",
+      "rawTx": "0x02e401808080830f4240944cd00e387622c35bddb9b4c962c136462338bc318084715018a6c0",
+      "from": "0xF61A305199fa1135d76FFaB3752D42F55cBd775A",
+      "expected": { "intent": "Renounce ownership permanently", "owner": "Relay", "fields": [{ "label": "Value Sent", "value": "0 ETH" }] }
+    },
+    {
+      "description": "requestOwnershipHandover - chain 1",
+      "rawTx": "0x02e401808080830f4240944cd00e387622c35bddb9b4c962c136462338bc31808425692962c0",
+      "from": "0x1111111111111111111111111111111111111111",
+      "expected": { "intent": "Request ownership handover", "owner": "Relay", "fields": [{ "label": "Value Sent", "value": "0 ETH" }] }
+    },
+    {
+      "description": "setAllocator - chain 1",
+      "rawTx": "0x02f84401808080830f4240944cd00e387622c35bddb9b4c962c136462338bc3180a4bf83f2a20000000000000000000000001111111111111111111111111111111111111111c0",
+      "from": "0xF61A305199fa1135d76FFaB3752D42F55cBd775A",
+      "expected": {
+        "intent": "Set allocator",
+        "interpolatedIntent": "Set allocator to 0x1111111111111111111111111111111111111111",
+        "owner": "Relay",
+        "fields": [{ "label": "New Allocator", "value": "0x1111111111111111111111111111111111111111" }]
+      }
+    },
+    {
+      "description": "transferOwnership - chain 1",
+      "rawTx": "0x02f84401808080830f4240944cd00e387622c35bddb9b4c962c136462338bc3180a4f2fde38b0000000000000000000000001111111111111111111111111111111111111111c0",
+      "from": "0xF61A305199fa1135d76FFaB3752D42F55cBd775A",
+      "expected": {
+        "intent": "Transfer ownership",
+        "interpolatedIntent": "Make 0x1111111111111111111111111111111111111111 the owner",
+        "owner": "Relay",
+        "fields": [{ "label": "New Owner", "value": "0x1111111111111111111111111111111111111111" }, { "label": "Value Sent", "value": "0 ETH" }]
+      }
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-sentora-senPYUSDPST-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0x6c3ea9036406852006290770bedfcaba0e23a0e8": { "decimals": 6, "name": "PYUSD", "symbol": "PYUSD" },
+      "0x8381a156958711e230f325428b5eb4b6555c75d9": { "decimals": 18, "name": "Sentora Huma PST Main", "symbol": "senPYUSDPST" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e018202af832dc6c0840d1dab938302c7e4948381a156958711e230f325428b5eb4b6555c75d980b8446e553f6500000000000000000000000000000000000000000000000000000000001e848000000000000000000000000013de0cee0b83562cbfd46682e10ffa4e3c5090e1c0",
+      "txHash": "0xe5597bb7ae0872eb022a716c86ac48f73587fe81eed3e50c59fc3aaf1fc7260a",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "2 PYUSD" },
+          { "label": "Share ticker", "value": "senPYUSDPST" },
+          { "label": "Send shares to", "value": "0x13DE0cEE0B83562CBfD46682e10FfA4E3c5090e1" }
+        ],
+        "interpolatedIntent": "Deposit 2 PYUSD for 0x13DE0cEE0B83562CBfD46682e10FfA4E3c5090e1",
+        "owner": "Sentora"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f86e018202ac832dc6c0840d1dab938303ae48948381a156958711e230f325428b5eb4b6555c75d980b84494bf804d0000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x8b10a9a2c989e55de1552a861bee929307cffa11350b7a93ff7c3da6e0b6f8e4",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "PYUSD" },
+          { "label": "Minted shares", "value": "1 senPYUSDPST" },
+          { "label": "Mint shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Mint 1 senPYUSDPST for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Sentora"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8970182093684090e998d840dfb34d883071c14948381a156958711e230f325428b5eb4b6555c75d980b86cb460af940000000000000000000000000000000000000000000000000000001d562f6c000000000000000000000000006c76e681cbc01b283677cb5255587c22a29780f00000000000000000000000006c76e681cbc01b283677cb5255587c22a29780f06a92dab52222da44c0",
+      "txHash": "0xbc94ae798f35ce1fd457ed67fcc6498912a812cab344d4ab1daed0578e1d196a",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "126000 PYUSD" },
+          { "label": "To", "value": "0x6c76E681CBc01B283677Cb5255587c22a29780f0" },
+          { "label": "Owner", "value": "0x6c76E681CBc01B283677Cb5255587c22a29780f0" }
+        ],
+        "interpolatedIntent": "Withdraw 126000 PYUSD to 0x6c76E681CBc01B283677Cb5255587c22a29780f0",
+        "owner": "Sentora"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8960182094b830186a084514d100c8304bb18948381a156958711e230f325428b5eb4b6555c75d980b86cba0876520000000000000000000000000000000000000000000028038def8d0e0f8fe85b0000000000000000000000006c76e681cbc01b283677cb5255587c22a29780f00000000000000000000000006c76e681cbc01b283677cb5255587c22a29780f06a959b9f2222da44c0",
+      "txHash": "0xd8db74d5799e22771df3cf204f85087e08301223eb3900c79f309af2b7b8ac6f",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "188960.227095377249036379 senPYUSDPST" },
+          { "label": "To", "value": "0x6c76E681CBc01B283677Cb5255587c22a29780f0" },
+          { "label": "Owner", "value": "0x6c76E681CBc01B283677Cb5255587c22a29780f0" }
+        ],
+        "interpolatedIntent": "Redeem 188960.227095377249036379 senPYUSDPST to 0x6c76E681CBc01B283677Cb5255587c22a29780f0",
+        "owner": "Sentora"
+      }
+    }
+  ]
+}

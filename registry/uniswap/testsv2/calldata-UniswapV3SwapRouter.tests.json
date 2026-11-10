@@ -1,0 +1,174 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-UniswapV3SwapRouter.json",
+  "dataProvider": {
+    "tokens": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "name": "Wrapped Ether", "symbol": "WETH", "decimals": 18 },
+      "0x54ce4b27caabba24926865f035d432dbde2901f7": { "name": "Dacity Coin", "symbol": "DACITY", "decimals": 18 },
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "name": "USD Coin", "symbol": "USDC", "decimals": 6 },
+      "0x8b1484d57abbe239bb280661377363b03c89caea": { "name": "ADI", "symbol": "ADI", "decimals": 18 },
+      "0x6b175474e89094c44da98b954eedeac495271d0f": { "name": "Dai Stablecoin", "symbol": "DAI", "decimals": 18 }
+    },
+    "addressNames": {}
+  },
+  "tests": [
+    {
+      "description": "exactInputSingle - chain 1",
+      "rawTx": "0x02f9012e01808080830f424094e592427a0aece92de3edee1f18e0157c058615648807a5b405600912bab90104414bf389000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000054ce4b27caabba24926865f035d432dbde2901f70000000000000000000000000000000000000000000000000000000000000064000000000000000000000000d59dde3ca6d315f90755dc1bbea6ad6f0b4e64ba000000000000000000000000000000000000000000000000000000006ad9d96b00000000000000000000000000000000000000000000000007a5b405600912ba00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0xd59dde3Ca6D315F90755Dc1BbEa6Ad6f0B4E64BA",
+      "txHash": "0x6e3e95a88cb66cea16dba245c749324dea4152003b5365204dd2bf4853e5154a",
+      "expected": {
+        "intent": "Swap",
+        "interpolatedIntent": "Swap 0.551044464601797306 WETH for at least 0 DACITY",
+        "owner": "Uniswap Labs",
+        "fields": [
+          { "label": "Amount to Send", "value": "0.551044464601797306 WETH" },
+          { "label": "Minimum to Receive", "value": "0 DACITY" },
+          { "label": "Recipient", "value": "0xd59dde3Ca6D315F90755Dc1BbEa6Ad6f0B4E64BA" },
+          { "label": "Deadline", "value": "2026-10-22 09:37:47Z" },
+          { "label": "Pool Fee", "value": "0.01%" },
+          { "label": "ETH Sent", "value": "0.551044464601797306 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "exactOutputSingle - chain 1",
+      "rawTx": "0x02f9012601808080830f424094e592427a0aece92de3edee1f18e0157c0586156480b90104db3e21980000000000000000000000008b1484d57abbe239bb280661377363b03c89caea000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000001f400000000000000000000000062590f84ebdc8e02fd18ed5e513e9f72e084723e000000000000000000000000000000000000000000000000000000006adb2a9f000000000000000000000000000000000000000000000000000000001325c0700000000000000000000000000000000000000000000000022fd0ae0d352eb7040000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x62590f84EBDc8E02fd18Ed5E513e9f72e084723e",
+      "txHash": "0x0a10c26ca22f6a687eca0eed9855a43f049c3c4001229a38c66876be3919b1c9",
+      "expected": {
+        "intent": "Swap",
+        "interpolatedIntent": "Swap at most 40.3389332341075945 ADI for 321.2412 USDC",
+        "owner": "Uniswap Labs",
+        "fields": [
+          { "label": "Amount to Receive", "value": "321.2412 USDC" },
+          { "label": "Maximum to Send", "value": "40.3389332341075945 ADI" },
+          { "label": "Recipient", "value": "0x62590f84EBDc8E02fd18Ed5E513e9f72e084723e" },
+          { "label": "Deadline", "value": "2026-10-23 09:36:31Z" },
+          { "label": "Pool Fee", "value": "0.05%" },
+          { "label": "ETH Sent", "value": "0 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "refundETH - chain 1",
+      "rawTx": "0x02e401808080830f424094e592427a0aece92de3edee1f18e0157c05861564808412210e8ac0",
+      "from": "0x1d21E09565FA0063E445C7587037b5cF933127c7",
+      "txHash": "0xe3002d0ff8d955cb7640813598dfc1cb5abe8b6af561a5c6092533bd9989b9ce",
+      "expected": {
+        "intent": "Refund ETH",
+        "interpolatedIntent": "Refund ETH held by the router",
+        "owner": "Uniswap Labs",
+        "fields": [{ "label": "ETH Sent", "value": "0 ETH" }]
+      }
+    },
+    {
+      "description": "selfPermit - chain 1",
+      "rawTx": "0x02f8e501808080830f424094e592427a0aece92de3edee1f18e0157c0586156480b8c4f3995c67000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000006955b900000000000000000000000000000000000000000000000000000000000000001b58dc70c63473cb4dc592c1c57dbdc92f27473643df7d1eb058b2b151e537cbad417fda54be0a1974875725d54f38ae0f3376cb8dd631a5919ccf493488845a1dc0",
+      "expected": {
+        "intent": "Approve router",
+        "interpolatedIntent": "Let router spend 1000 USDC",
+        "owner": "Uniswap Labs",
+        "fields": [{ "label": "Approval Amount", "value": "1000 USDC" }, { "label": "ETH Sent", "value": "0 ETH" }]
+      }
+    },
+    {
+      "description": "selfPermitAllowed - chain 1",
+      "rawTx": "0x02f8e501808080830f424094e592427a0aece92de3edee1f18e0157c0586156480b8c44659a4940000000000000000000000006b175474e89094c44da98b954eedeac495271d0f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006955b900000000000000000000000000000000000000000000000000000000000000001b58dc70c63473cb4dc592c1c57dbdc92f27473643df7d1eb058b2b151e537cbad417fda54be0a1974875725d54f38ae0f3376cb8dd631a5919ccf493488845a1dc0",
+      "expected": {
+        "intent": "Approve router (unlimited)",
+        "interpolatedIntent": "Let router spend all DAI",
+        "owner": "Uniswap Labs",
+        "fields": [{ "label": "Unlimited Approval", "value": "DAI" }, { "label": "ETH Sent", "value": "0 ETH" }]
+      }
+    },
+    {
+      "description": "selfPermitAllowedIfNecessary - chain 1",
+      "rawTx": "0x02f8e501808080830f424094e592427a0aece92de3edee1f18e0157c0586156480b8c4a4a78f0c0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000006955b900000000000000000000000000000000000000000000000000000000000000001b58dc70c63473cb4dc592c1c57dbdc92f27473643df7d1eb058b2b151e537cbad417fda54be0a1974875725d54f38ae0f3376cb8dd631a5919ccf493488845a1dc0",
+      "expected": {
+        "intent": "Approve router (unlimited)",
+        "interpolatedIntent": "Let router spend all DAI",
+        "owner": "Uniswap Labs",
+        "fields": [{ "label": "Unlimited Approval", "value": "DAI" }, { "label": "ETH Sent", "value": "0 ETH" }]
+      }
+    },
+    {
+      "description": "selfPermitIfNecessary - chain 1",
+      "rawTx": "0x02f8e501808080830f424094e592427a0aece92de3edee1f18e0157c0586156480b8c4c2e3140a000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000002aa1efb94e00000000000000000000000000000000000000000000000000000000000068017ddb000000000000000000000000000000000000000000000000000000000000001b58dc70c63473cb4dc592c1c57dbdc92f27473643df7d1eb058b2b151e537cbad417fda54be0a1974875725d54f38ae0f3376cb8dd631a5919ccf493488845a1dc0",
+      "from": "0x410A7A53ED01e45B7029dfE5d505C23929fc39A9",
+      "txHash": "0x05e0d0b598058a7ff09ce784a37d7e5a0aa3c635a5f8ef694b779d2f9413e62b",
+      "expected": {
+        "intent": "Approve router",
+        "interpolatedIntent": "Let router spend 0.012 WETH",
+        "owner": "Uniswap Labs",
+        "fields": [{ "label": "Approval Amount", "value": "0.012 WETH" }, { "label": "ETH Sent", "value": "0 ETH" }]
+      }
+    },
+    {
+      "description": "sweepToken - chain 1",
+      "rawTx": "0x02f88501808080830f424094e592427a0aece92de3edee1f18e0157c0586156480b864df2ab5bb000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000039dc4992d10664000000000000000000000000abea7d5825f027cffe7d4b6d42d9dcbc18a24e29c0",
+      "from": "0xabEa7d5825F027cFFE7d4b6D42D9dCBc18A24e29",
+      "txHash": "0x3a7618218abfb49f3e57ced820e8651dd66c73100ebad2d2e9394d000e476e8d",
+      "expected": {
+        "intent": "Sweep tokens",
+        "interpolatedIntent": "Sweep at least 0.016286282226402916 WETH to 0xabEa7d5825F027cFFE7d4b6D42D9dCBc18A24e29",
+        "owner": "Uniswap Labs",
+        "fields": [
+          { "label": "Minimum to Receive", "value": "0.016286282226402916 WETH" },
+          { "label": "Token", "value": "WETH" },
+          { "label": "Recipient", "value": "0xabEa7d5825F027cFFE7d4b6D42D9dCBc18A24e29" },
+          { "label": "ETH Sent", "value": "0 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "sweepTokenWithFee - chain 1",
+      "rawTx": "0x02f8c501808080830f424094e592427a0aece92de3edee1f18e0157c0586156480b8a4e0e189a0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000003b023380000000000000000000000000abea7d5825f027cffe7d4b6d42d9dcbc18a24e2900000000000000000000000000000000000000000000000000000000000000190000000000000000000000002c6ba4f2b66fc95a7d681d89498266e19c278ff6c0",
+      "expected": {
+        "intent": "Sweep tokens",
+        "interpolatedIntent": "Sweep at least 990 USDC less 0.25% fee to 0xabEa7d5825F027cFFE7d4b6D42D9dCBc18A24e29",
+        "owner": "Uniswap Labs",
+        "fields": [
+          { "label": "Minimum Before Fee", "value": "990 USDC" },
+          { "label": "Token", "value": "USDC" },
+          { "label": "Recipient", "value": "0xabEa7d5825F027cFFE7d4b6D42D9dCBc18A24e29" },
+          { "label": "Fee", "value": "0.25%" },
+          { "label": "Fee Recipient", "value": "0x2C6ba4F2b66FC95A7D681d89498266E19C278fF6" },
+          { "label": "ETH Sent", "value": "0 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "unwrapWETH9 - chain 1",
+      "rawTx": "0x02f86501808080830f424094e592427a0aece92de3edee1f18e0157c0586156480b84449404b7c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000002c6ba4f2b66fc95a7d681d89498266e19c278ff6c0",
+      "from": "0x2C6ba4F2b66FC95A7D681d89498266E19C278fF6",
+      "txHash": "0x25928030a2df22e8da41c6ca50f68faa6c0b434a92cee6255f79d401e54e961e",
+      "expected": {
+        "intent": "Unwrap WETH",
+        "interpolatedIntent": "Unwrap at least 0 ETH to 0x2C6ba4F2b66FC95A7D681d89498266E19C278fF6",
+        "owner": "Uniswap Labs",
+        "fields": [
+          { "label": "Minimum to Receive", "value": "0 ETH" },
+          { "label": "Recipient", "value": "0x2C6ba4F2b66FC95A7D681d89498266E19C278fF6" },
+          { "label": "ETH Sent", "value": "0 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "unwrapWETH9WithFee - chain 1",
+      "rawTx": "0x02f8a501808080830f424094e592427a0aece92de3edee1f18e0157c0586156480b8849b2c0a3700000000000000000000000000000000000000000000000006f05b59d3b20000000000000000000000000000abea7d5825f027cffe7d4b6d42d9dcbc18a24e2900000000000000000000000000000000000000000000000000000000000000190000000000000000000000002c6ba4f2b66fc95a7d681d89498266e19c278ff6c0",
+      "expected": {
+        "intent": "Unwrap WETH",
+        "interpolatedIntent": "Unwrap at least 0.5 ETH less 0.25% fee to 0xabEa7d5825F027cFFE7d4b6D42D9dCBc18A24e29",
+        "owner": "Uniswap Labs",
+        "fields": [
+          { "label": "Minimum Before Fee", "value": "0.5 ETH" },
+          { "label": "Recipient", "value": "0xabEa7d5825F027cFFE7d4b6D42D9dCBc18A24e29" },
+          { "label": "Fee", "value": "0.25%" },
+          { "label": "Fee Recipient", "value": "0x2C6ba4F2b66FC95A7D681d89498266E19C278fF6" },
+          { "label": "ETH Sent", "value": "0 ETH" }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-rockawayx-roxTORI-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0x3bd9adae6643ddcddd02746b8b60075e56df9478": { "decimals": 18, "name": "RockawayX Tori Ecosystem", "symbol": "roxTORI" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d015e8411dd0f20841d0581208302b2d5943bd9adae6643ddcddd02746b8b60075e56df947880b8446e553f6500000000000000000000000000000000000000000000000000000000000f42400000000000000000000000009a450e8787dd4c0d77f630d79469bbea64eb5506c0",
+      "txHash": "0x0a2629b919864fe78ecd48f58ea047afa56c48687c1f70cf676bd96004836651",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "1 USDC" },
+          { "label": "Share ticker", "value": "roxTORI" },
+          { "label": "Send shares to", "value": "0x9A450E8787dd4c0d77F630d79469bBea64Eb5506" }
+        ],
+        "interpolatedIntent": "Deposit 1 USDC for 0x9A450E8787dd4c0d77F630d79469bBea64Eb5506",
+        "owner": "RockawayX"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8950181ef8307a1208404f6fc4783063616943bd9adae6643ddcddd02746b8b60075e56df947880b86cb460af94000000000000000000000000000000000000000000000000000002ba7def30000000000000000000000000002e3dc205e5687e02eb4bea4f657c9572a83490e50000000000000000000000002e3dc205e5687e02eb4bea4f657c9572a83490e56a6896762222da44c0",
+      "txHash": "0xc29e8ec60bfe4c42b9622b1d7cb994b40f8b106f9616fb846cd25223d205857f",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "3000000 USDC" },
+          { "label": "To", "value": "0x2E3dC205E5687E02eb4beA4F657c9572A83490e5" },
+          { "label": "Owner", "value": "0x2E3dC205E5687E02eb4beA4F657c9572A83490e5" }
+        ],
+        "interpolatedIntent": "Withdraw 3000000 USDC to 0x2E3dC205E5687E02eb4beA4F657c9572A83490e5",
+        "owner": "RockawayX"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8950181f0836b7e438404de8e7a83068d19943bd9adae6643ddcddd02746b8b60075e56df947880b86cba08765200000000000000000000000000000000000000000000d3c42bac0172c2cd4bc80000000000000000000000002e3dc205e5687e02eb4bea4f657c9572a83490e50000000000000000000000002e3dc205e5687e02eb4bea4f657c9572a83490e56a6897cb2222da44c0",
+      "txHash": "0xd0a57aedf333092f1a2384955b0593274b402aa28e129e3fd9b173c71f919147",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "1000038.036615774243474376 roxTORI" },
+          { "label": "To", "value": "0x2E3dC205E5687E02eb4beA4F657c9572A83490e5" },
+          { "label": "Owner", "value": "0x2E3dC205E5687E02eb4beA4F657c9572A83490e5" }
+        ],
+        "interpolatedIntent": "Redeem 1000038.036615774243474376 roxTORI to 0x2E3dC205E5687E02eb4beA4F657c9572A83490e5",
+        "owner": "RockawayX"
+      }
+    }
+  ]
+}

@@ -5,8 +5,13 @@ name: Registry Checks
 # tooling looks only at the files that the pull request changes, and at the
 # descriptors that include them. A cheap job scans the whole registry. The
 # linter needs a secret, so it runs in descriptor-lint.yml.
+#
+# merge_group runs the same jobs on the merge queue branch: master plus the
+# queued pull requests. The index check sees two queued pull requests that
+# conflict with each other, which no pull_request run can.
 on:
   pull_request:
+  merge_group:
 
 permissions:
   contents: read

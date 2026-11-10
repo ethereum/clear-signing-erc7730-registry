@@ -1,0 +1,116 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x3154Cf16ccdb4C6d922629664174b904d80F2C35" }] } },
+  "metadata": { "owner": "Base", "contractName": "Base L1StandardBridge", "info": { "url": "https://base.org" } },
+  "display": {
+    "formats": {
+      "bridgeERC20(address _localToken,address _remoteToken,uint256 _amount,uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Bridge token to Base",
+        "fields": [
+          { "path": "_amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "_localToken" } },
+          { "path": "_remoteToken", "label": "Token on Base", "format": "tokenTicker", "params": { "chainId": 8453 } },
+          { "path": "_localToken", "label": "L1 Token", "visible": "never" },
+          { "path": "_minGasLimit", "label": "Min L2 Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Bridge {_amount} to your address on Base"
+      },
+      "bridgeERC20To(address _localToken,address _remoteToken,address _to,uint256 _amount,uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Bridge token to Base",
+        "fields": [
+          { "path": "_amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "_localToken" } },
+          { "path": "_to", "label": "L2 Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_remoteToken", "label": "Token on Base", "format": "tokenTicker", "params": { "chainId": 8453 } },
+          { "path": "_localToken", "label": "L1 Token", "visible": "never" },
+          { "path": "_minGasLimit", "label": "Min L2 Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Bridge {_amount} to {_to} on Base"
+      },
+      "bridgeETH(uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Bridge ETH to Base",
+        "fields": [
+          { "path": "@.value", "label": "ETH to Bridge", "format": "amount" },
+          { "path": "_minGasLimit", "label": "Min L2 Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Bridge {@.value} to your address on Base"
+      },
+      "bridgeETHTo(address _to,uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Bridge ETH to Base",
+        "fields": [
+          { "path": "@.value", "label": "ETH to Bridge", "format": "amount" },
+          { "path": "_to", "label": "L2 Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_minGasLimit", "label": "Min L2 Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Bridge {@.value} to {_to} on Base"
+      },
+      "depositERC20(address _l1Token,address _l2Token,uint256 _amount,uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Deposit token to Base",
+        "fields": [
+          { "path": "_amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "_l1Token" } },
+          { "path": "_l2Token", "label": "Token on Base", "format": "tokenTicker", "params": { "chainId": 8453 } },
+          { "path": "_l1Token", "label": "L1 Token", "visible": "never" },
+          { "path": "_minGasLimit", "label": "Min L2 Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Deposit {_amount} to your address on Base"
+      },
+      "depositERC20To(address _l1Token,address _l2Token,address _to,uint256 _amount,uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Deposit token to Base",
+        "fields": [
+          { "path": "_amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "_l1Token" } },
+          { "path": "_to", "label": "L2 Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_l2Token", "label": "Token on Base", "format": "tokenTicker", "params": { "chainId": 8453 } },
+          { "path": "_l1Token", "label": "L1 Token", "visible": "never" },
+          { "path": "_minGasLimit", "label": "Min L2 Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Deposit {_amount} to {_to} on Base"
+      },
+      "depositETH(uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Deposit ETH to Base",
+        "fields": [
+          { "path": "@.value", "label": "ETH to Bridge", "format": "amount" },
+          { "path": "_minGasLimit", "label": "Min L2 Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Deposit {@.value} to your address on Base"
+      },
+      "depositETHTo(address _to,uint32 _minGasLimit,bytes _extraData)": {
+        "intent": "Deposit ETH to Base",
+        "fields": [
+          { "path": "@.value", "label": "ETH to Bridge", "format": "amount" },
+          { "path": "_to", "label": "L2 Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_minGasLimit", "label": "Min L2 Gas Limit", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Deposit {@.value} to {_to} on Base"
+      },
+      "finalizeBridgeERC20(address _localToken,address _remoteToken,address _from,address _to,uint256 _amount,bytes _extraData)": {
+        "intent": "Release token from Base bridge",
+        "fields": [
+          { "path": "_amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "_localToken" } },
+          { "path": "_to", "label": "L1 Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_from", "label": "L2 Sender", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_localToken", "label": "L1 Token", "visible": "never" },
+          { "path": "_remoteToken", "label": "Token on Base", "visible": "never" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Pay {_amount} withdrawn by {_from} on Base to {_to}"
+      },
+      "finalizeBridgeETH(address _from,address _to,uint256 _amount,bytes _extraData)": {
+        "intent": "Release ETH from Base bridge",
+        "fields": [
+          { "path": "_amount", "label": "ETH Amount", "format": "amount" },
+          { "path": "_to", "label": "L1 Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_from", "label": "L2 Sender", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "@.value", "label": "ETH from Caller", "format": "amount" },
+          { "path": "_extraData", "label": "Extra Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Pay {_amount} withdrawn by {_from} on Base to {_to}"
+      }
+    }
+  }
+}
