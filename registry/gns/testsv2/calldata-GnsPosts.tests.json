@@ -1,0 +1,78 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-GnsPosts.json",
+  "dataProvider": {
+    "tokens": { "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "name": "USD Coin", "symbol": "USDC", "decimals": 6 } },
+    "nftCollectionNames": { "0x9d51d507bc7264d4fe8ad1cf7fe191933a0a81d6": "Gwei Name Service" }
+  },
+  "tests": [
+    {
+      "description": "authorize - with publishing fee",
+      "rawTx": "0x02f8ab01808080830f42409473849f6f2785ba7fd2f41b5b4573b75554417981861bb8ad92a000b88448ba60b50e24f168a9aefaa6f9db6d247e5c62b7475f9069744ed24232022df6a7504093124f115da0b66ff27ca43258d096942f9cc3f969e17efd0f3e9f12810ee28881014fc70c608c80316d97a810d79941631e3ee1e3e4ff44388843eadf80e8d76b000000000000000000000000244c707fa9fbb1907dc394075633babd2351f18dc0",
+      "txHash": "0x6b3192fc0a43c62112937d5117ec5372fe13f771579da0ca704e0c005844c6db",
+      "expected": {
+        "intent": "Authorize post",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #6397652517071540705496916313363966161645403317596040103136030772429744783507"
+          },
+          { "label": "Post hash", "value": "0x124f115da0b66ff27ca43258d096942f9cc3f969e17efd0f3e9f12810ee28881" },
+          { "label": "Blob hash", "value": "0x014fc70c608c80316d97a810d79941631e3ee1e3e4ff44388843eadf80e8d76b" },
+          { "label": "Publisher", "value": "0x244C707FA9Fbb1907Dc394075633BabD2351F18d" },
+          { "label": "Publishing fee", "value": "0.00003048 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "post",
+      "rawTx": "0x02f88501808080830f42409473849f6f2785ba7fd2f41b5b4573b7555441798180b864976fd2ed0e24f168a9aefaa6f9db6d247e5c62b7475f9069744ed24232022df6a7504093124f115da0b66ff27ca43258d096942f9cc3f969e17efd0f3e9f12810ee288810000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Publish post",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #6397652517071540705496916313363966161645403317596040103136030772429744783507"
+          },
+          { "label": "Post hash", "value": "0x124f115da0b66ff27ca43258d096942f9cc3f969e17efd0f3e9f12810ee28881" }
+        ]
+      }
+    },
+    {
+      "description": "publish",
+      "rawTx": "0x02e401808080830f42409473849f6f2785ba7fd2f41b5b4573b755544179818084075d4782c0",
+      "txHash": "0x0bde00bcbe5b304bd88e46cb0e83cd67a572678ad927d505e8aaf50f15d6520f",
+      "expected": { "intent": "Publish posts, collect fees", "owner": "Gwei Name Service", "fields": [] }
+    },
+    {
+      "description": "refund",
+      "rawTx": "0x02f86501808080830f42409473849f6f2785ba7fd2f41b5b4573b7555441798180b84445b4032c014fc70c608c80316d97a810d79941631e3ee1e3e4ff44388843eadf80e8d76b000000000000000000000000244c707fa9fbb1907dc394075633babd2351f18dc0",
+      "expected": {
+        "intent": "Refund unpublished post fee",
+        "owner": "Gwei Name Service",
+        "fields": [
+          { "label": "Blob hash", "value": "0x014fc70c608c80316d97a810d79941631e3ee1e3e4ff44388843eadf80e8d76b" },
+          { "label": "Publisher", "value": "0x244C707FA9Fbb1907Dc394075633BabD2351F18d" }
+        ]
+      }
+    },
+    {
+      "description": "remove",
+      "rawTx": "0x02f86501808080830f42409473849f6f2785ba7fd2f41b5b4573b7555441798180b84428b0558bcc0d5c287e1f0ea7578a9183307a41ee9afd769cf1a77b6fd7dc491cc5a93f1523df4136f1db56737dbb6b080c2fa2d23992425cce4adc60e2f508064c84c4e3c0",
+      "txHash": "0xda23d897e5df9db0635d299ac592f6fd1d2e1dc5e8e425e3dca1d9d21031c13e",
+      "expected": {
+        "intent": "Remove post",
+        "owner": "Gwei Name Service",
+        "fields": [
+          {
+            "label": "Name",
+            "value": "Gwei Name Service #92295426175172358600449307646331220912868886062520800328944981236304726015765"
+          },
+          { "label": "Post hash", "value": "0x23df4136f1db56737dbb6b080c2fa2d23992425cce4adc60e2f508064c84c4e3" }
+        ]
+      }
+    }
+  ]
+}
