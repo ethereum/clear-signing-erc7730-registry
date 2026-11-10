@@ -26,8 +26,9 @@
  * checked for those sections here and rendered by render.js, which escapes it.
  *
  * Writes, under <out>/answers/<model>/, one <unit>.json per unit (the answer,
- * the token usage, the cost that Claude Code estimates at list price, the
- * weekly usage of the subscription), one <unit>.md with the answer alone, and
+ * the models that wrote it, the token usage, the cost that Claude Code
+ * estimates at list price, the weekly usage of the subscription), one
+ * <unit>.md with the answer alone, and
  * summary.json with the totals and the latest weekly usage. With
  * --weekly-budget-usd, the list-price value of the weekly limit, the totals
  * also estimate the share of the limit that the run used.
@@ -149,11 +150,13 @@ function claude(ws, message) {
 }
 
 /**
- * Sends one unit. Returns { id, text, stop, usage, costUSD, weeklyUsage } or
+ * Sends one unit. Returns { id, text, stop, usage, costUSD, weeklyUsage, models } or
  * throws; a 401 or a Claude Code with tools stops the run, anything else is
  * recorded for the unit.
  * usage.inputTokens is the whole input, cache reads and writes included.
  * weeklyUsage.utilization is the used share of the weekly limit, 0 to 1.
+ * models are the models that answered; a flagged request can run again on
+ * another model.
  */
 async function ask(ws, input) {
   const { result: r, rateLimit } = await claude(ws, userMessage(input));
@@ -172,6 +175,7 @@ async function ask(ws, input) {
     },
     costUSD: r.total_cost_usd ?? null,
     weeklyUsage: week ? { utilization: week.utilization, resetsAt: week.resetsAt } : null,
+    models: Object.keys(r.modelUsage ?? {}),
   };
 }
 
@@ -204,12 +208,13 @@ let latestWeeklyUsage = null;
 /** Sends one unit to the model. Returns the answer, its checks, the usage and the cost. */
 async function askModel(ws, input) {
   const started = Date.now();
-  const result = { ok: false, error: null, problems: [], answer: null, counts: null, usage: null, costUSD: null, weeklyUsage: null, stop: null, responseId: null };
+  const result = { ok: false, error: null, problems: [], answer: null, counts: null, usage: null, costUSD: null, weeklyUsage: null, models: null, stop: null, responseId: null };
   try {
     const reply = await ask(ws, input);
     result.usage = reply.usage;
     result.costUSD = reply.costUSD;
     result.weeklyUsage = reply.weeklyUsage;
+    result.models = reply.models;
     latestWeeklyUsage = reply.weeklyUsage ?? latestWeeklyUsage;
     result.responseId = reply.id ?? null;
     result.stop = reply.stop;

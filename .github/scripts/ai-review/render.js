@@ -214,10 +214,14 @@ function whereLine(record) {
   return `${code} at ${deploymentsLine(record)}`;
 }
 
-/** The body of one reviewed unit: the answer folded; an answer that strays from the format gets a note first. */
+/** The body of one reviewed unit: the answer folded; an answer that another model wrote or that strays from the format gets a note first. */
 function unitBody(record) {
+  const others = (record.models ?? []).filter((m) => m !== record.model);
+  const swap = others.length > 0
+    ? `*A different model wrote part or all of this answer: ${others.map((m) => ticks(m, 40)).join(', ')}.*\n\n`
+    : '';
   const note = record.ok ? '' : `*The answer does not follow the expected format (${line(record.error, 300)}); it is shown as it came.*\n\n`;
-  return note + foldAnswer(record.answer);
+  return swap + note + foldAnswer(record.answer);
 }
 
 const kilobytes = (bytes) => Math.round((Number(bytes) || 0) / 1000);
