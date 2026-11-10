@@ -1,0 +1,39 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "DepositAdapter",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xcfC6d9Bd7411962Bfe7145451A7EF71A24b6A7A2" }] }
+  },
+  "metadata": {
+    "owner": "ether.fi",
+    "info": { "url": "https://www.ether.fi" },
+    "constants": { "WETHaddress": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" },
+    "contractName": "DepositAdapter"
+  },
+  "display": {
+    "formats": {
+      "depositETHForWeETH(address _referral)": {
+        "intent": "Stake ETH",
+        "interpolatedIntent": "Stake {@.value} for weETH",
+        "fields": [
+          { "label": "Amount", "format": "amount", "path": "@.value", "visible": "always" },
+          { "label": "Referral", "path": "#._referral", "visible": "never" }
+        ]
+      },
+      "depositWETHForWeETH(uint256 _amount, address _referral)": {
+        "intent": "Stake WETH",
+        "interpolatedIntent": "Stake {_amount} for weETH",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#._amount",
+            "params": { "token": "$.metadata.constants.WETHaddress" },
+            "visible": "always"
+          },
+          { "label": "Referral", "path": "#._referral", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "WeETHWithdrawAdapter",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xFbfe6b9cEe0E555Bad7e2E7309EFFC75200cBE38" }] }
+  },
+  "metadata": {
+    "owner": "ether.fi",
+    "info": { "url": "https://www.ether.fi" },
+    "constants": { "weETHaddress": "0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee" },
+    "contractName": "WeETHWithdrawAdapter"
+  },
+  "display": {
+    "formats": {
+      "requestWithdraw(uint256 weETHAmount, address recipient)": {
+        "intent": "Request withdrawal",
+        "interpolatedIntent": "Withdraw {weETHAmount}",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#.weETHAmount",
+            "params": { "token": "$.metadata.constants.weETHaddress" },
+            "visible": "always"
+          },
+          {
+            "label": "Beneficiary",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
+            "path": "#.recipient",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
