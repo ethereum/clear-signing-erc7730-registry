@@ -186,6 +186,51 @@ jobs:
 
           [ "$FAILED" -eq 0 ] || exit 1
 
+  # The default file systems of macOS and Windows ignore letter case, so they
+  # can hold only one of two paths that differ only in letter case. After a
+  # clone, git shows the other file as modified, and "git add -A" then
+  # overwrites one file with the content of the other.
+  validate_path_case:
+    name: No two paths differ only in letter case
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        timeout-minutes: 10
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Check every tracked path of the repository
+        timeout-minutes: 5
+        run: |
+          # The scan reads the git index, so it covers the whole repository.
+          # It also compares the folders, because two folders that differ only
+          # in letter case become one folder on those file systems. Each
+          # output line of awk is one group of colliding paths.
+          FOUND=0
+          while IFS= read -r group; do
+            echo "::error file=${group%% | *},line=1::These paths differ only in letter case: ${group}. A file system that ignores letter case (the default on macOS and Windows) can hold only one of them. Rename all but one of them, for example with the chain id as a suffix (calldata-name-8453.json)."
+            FOUND=$((FOUND + 1))
+          done < <(git -c core.quotePath=false ls-files | awk '
+                     {
+                       path = $0
+                       while (!(path in seen)) {
+                         seen[path] = 1
+                         key = tolower(path)
+                         group[key] = (key in group) ? group[key] " | " path : path
+                         count[key]++
+                         if (!sub("/[^/]*$", "", path)) break
+                       }
+                     }
+                     END { for (key in count) if (count[key] > 1) print group[key] }
+                   ' | sort)
+
+          [ "$FOUND" -eq 0 ] && exit 0
+
+          # GitHub shows 10 annotations per step, so give the total as well.
+          echo "${FOUND} group(s) of paths differ only in letter case. See the log for the full list." \
+            >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+
   # An auditor attestation in sigs/ is bound to a descriptor by file name. A
   # change to that descriptor, also through a shared file it includes, would
   # make the attestation vouch for content the auditor never saw. A deleted
