@@ -45,13 +45,14 @@ A unit above 600 KB, about 200K tokens, is not reviewed: the review fails for th
 
 Each unit goes to a model in one request: the [prompt](../../.github/scripts/ai-review/prompt.md) and the relevant sections of the ERC-7730 specification as the system prompt, the unit as the user message, no tools, no conversation. The model answers in Markdown, critical findings first, and the answer is posted on the pull request.
 
-The prompt asks fourteen questions:
+The prompt asks fifteen questions:
 
 | Check | Question |
 |---|---|
 | intent-truthfulness | Does the intent say what the function does, including side effects it hides? |
 | hidden-values | Does hiding a value change what the transaction does or means? |
 | field-format | Does each field use the format and parameters that match the code? |
+| array-display | Does the order of the array lines, sequential or bundled, fit how the code uses the arrays? |
 | interpolated-intent | Does the interpolated intent read correctly and match the intent? |
 | special-values | Does the code treat a value specially (zero, max, the zero address) and is that shown? |
 | metadata | Do owner, name, token, constants, enums and maps match the contract? |
