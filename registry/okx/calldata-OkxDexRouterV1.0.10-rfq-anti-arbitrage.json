@@ -1,0 +1,262 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "metadata": {
+    "owner": "OKX Labs",
+    "info": { "url": "https://web3.okx.com/dex-swap", "deploymentDate": "2026-07-27T08:48:28Z" },
+    "enums": { "swapDirection": { "0": "ETH --> WETH", "1": "WETH --> ETH", "128": "WETH --> ETH" } },
+    "contractName": "OKX DEX Router v1.0.10-rfq-anti-arbitrage"
+  },
+  "context": {
+    "$id": "OKX DEX Router v1.0.10-rfq-anti-arbitrage",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x8feab81d36e7576107d5de0758c1b839be31b4f6" },
+        { "chainId": 10, "address": "0x1f5b43127414e36c31ecb5ff5567262997cd24d0" },
+        { "chainId": 25, "address": "0xc86fb5bf6bfde081fd627c639c05e70d23cf7717" },
+        { "chainId": 56, "address": "0x5994814f2c4040b863a0125a45de152a8c2a4dec" },
+        { "chainId": 130, "address": "0xe3dab8bf5187f9b4e8e89ff5414d7cf71e2c82e1" },
+        { "chainId": 137, "address": "0x3c4829196bfadff4394726b45159aeaac6fcd41c" },
+        { "chainId": 143, "address": "0xc1c76e784db8d68585fb608ce68fc5dcff14000e" },
+        { "chainId": 146, "address": "0xd72f9af181a0eb1b8550a00124ecdb71bb758c89" },
+        { "chainId": 169, "address": "0xd72f9af181a0eb1b8550a00124ecdb71bb758c89" },
+        { "chainId": 196, "address": "0x7c5bee2a8091c3ef39072f64f18fac913060aeaf" },
+        { "chainId": 250, "address": "0xd72f9af181a0eb1b8550a00124ecdb71bb758c89" },
+        { "chainId": 324, "address": "0x46eDEcEa0228f04Ab88dC34BE98314863bA40bE0" },
+        { "chainId": 1030, "address": "0x7ae91b984da4795d9fd88419d051d0842f8d3677" },
+        { "chainId": 1088, "address": "0x472fc4f7fd3c9f06f0b8637c5505815ac80938ad" },
+        { "chainId": 4200, "address": "0xd72f9af181a0eb1b8550a00124ecdb71bb758c89" },
+        { "chainId": 5000, "address": "0x472fc4f7fd3c9f06f0b8637c5505815ac80938ad" },
+        { "chainId": 7000, "address": "0xd72f9af181a0eb1b8550a00124ecdb71bb758c89" },
+        { "chainId": 8453, "address": "0x67d03631fe51b741c0c00c4e16eb662ac84381df" },
+        { "chainId": 9745, "address": "0xd72f9af181a0eb1b8550a00124ecdb71bb758c89" },
+        { "chainId": 42161, "address": "0x09f94b5fc68e227c323a6fbae3bd98c97fd8c849" },
+        { "chainId": 43114, "address": "0xab96dcfa7a7d669d9bf5918fab8641479973dd0a" },
+        { "chainId": 59144, "address": "0xdfcb0cecc10e78f3f3749f3f3d3ee4047b2c9829" },
+        { "chainId": 81457, "address": "0x472fc4f7fd3c9f06f0b8637c5505815ac80938ad" },
+        { "chainId": 534352, "address": "0x6148d68ec192df0a7d36d97bdabbebb014c69938" }
+      ]
+    }
+  },
+  "display": {
+    "definitions": {
+      "sendAmount": {
+        "label": "Amount to Send",
+        "format": "tokenAmount",
+        "params": { "nativeCurrencyAddress": ["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", "0x0000000000000000000000000000000000000000"] }
+      },
+      "minReceiveAmount": {
+        "label": "Minimum to Receive",
+        "format": "tokenAmount",
+        "params": { "nativeCurrencyAddress": ["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", "0x0000000000000000000000000000000000000000"] }
+      },
+      "beneficiary": { "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa", "wallet"] } },
+      "deadline": { "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+      "orderId": { "label": "Order ID", "format": "raw" },
+      "tokenAddress": { "label": "Token", "format": "addressName", "params": { "types": ["token"] } }
+    },
+    "formats": {
+      "dagSwapByOrderId(uint256 orderId, (uint256 fromToken, address toToken, uint256 fromTokenAmount, uint256 minReturnAmount, uint256 deadLine) baseRequest, (address[] mixAdapters, address[] assetTo, uint256[] rawData, bytes[] extraData, uint256 fromToken)[] paths)": {
+        "$id": "dagSwapByOrderId",
+        "intent": "Swap",
+        "fields": [
+          { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
+          {
+            "path": "baseRequest.fromTokenAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "baseRequest.fromToken.[-20:]" },
+            "visible": "always"
+          },
+          {
+            "path": "baseRequest.minReturnAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "baseRequest.toToken" },
+            "visible": "always"
+          },
+          { "path": "baseRequest.deadLine", "$ref": "$.display.definitions.deadline" },
+          { "label": "Paths", "path": "paths", "visible": "never" }
+        ]
+      },
+      "dagSwapTo(uint256 orderId, address receiver, (uint256 fromToken, address toToken, uint256 fromTokenAmount, uint256 minReturnAmount, uint256 deadLine) baseRequest, (address[] mixAdapters, address[] assetTo, uint256[] rawData, bytes[] extraData, uint256 fromToken)[] paths)": {
+        "$id": "dagSwapTo",
+        "intent": "Swap",
+        "fields": [
+          { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
+          { "path": "receiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          {
+            "path": "baseRequest.fromTokenAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "baseRequest.fromToken.[-20:]" },
+            "visible": "always"
+          },
+          {
+            "path": "baseRequest.minReturnAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "baseRequest.toToken" },
+            "visible": "always"
+          },
+          { "path": "baseRequest.deadLine", "$ref": "$.display.definitions.deadline" },
+          { "label": "Paths", "path": "paths", "visible": "never" }
+        ]
+      },
+      "smartSwapByOrderId(uint256 orderId, (uint256 fromToken, address toToken, uint256 fromTokenAmount, uint256 minReturnAmount, uint256 deadLine) baseRequest, uint256[] batchesAmount, (address[] mixAdapters, address[] assetTo, uint256[] rawData, bytes[] extraData, uint256 fromToken)[][] batches, (uint256 pathIndex, address payer, address fromToken, address toToken, uint256 fromTokenAmountMax, uint256 toTokenAmountMax, uint256 salt, uint256 deadLine, bool isPushOrder, bytes extension)[] extraData)": {
+        "$id": "smartSwapByOrderId",
+        "intent": "Swap",
+        "fields": [
+          { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
+          {
+            "path": "baseRequest.fromTokenAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "baseRequest.fromToken.[-20:]" },
+            "visible": "always"
+          },
+          {
+            "path": "baseRequest.minReturnAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "baseRequest.toToken" },
+            "visible": "always"
+          },
+          { "path": "baseRequest.deadLine", "$ref": "$.display.definitions.deadline" },
+          { "label": "Batches", "path": "batches", "visible": "never" },
+          { "label": "Batches Amount", "path": "batchesAmount", "visible": "never" }
+        ]
+      },
+      "smartSwapTo(uint256 orderId, address receiver, (uint256 fromToken, address toToken, uint256 fromTokenAmount, uint256 minReturnAmount, uint256 deadLine) baseRequest, uint256[] batchesAmount, (address[] mixAdapters, address[] assetTo, uint256[] rawData, bytes[] extraData, uint256 fromToken)[][] batches, (uint256 pathIndex, address payer, address fromToken, address toToken, uint256 fromTokenAmountMax, uint256 toTokenAmountMax, uint256 salt, uint256 deadLine, bool isPushOrder, bytes extension)[] extraData)": {
+        "$id": "smartSwapTo",
+        "intent": "Swap",
+        "fields": [
+          { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
+          { "path": "receiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          {
+            "path": "baseRequest.fromTokenAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "baseRequest.fromToken.[-20:]" },
+            "visible": "always"
+          },
+          {
+            "path": "baseRequest.minReturnAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "baseRequest.toToken" },
+            "visible": "always"
+          },
+          { "path": "baseRequest.deadLine", "$ref": "$.display.definitions.deadline" },
+          { "label": "Batches", "path": "batches", "visible": "never" },
+          { "label": "Batches Amount", "path": "batchesAmount", "visible": "never" }
+        ]
+      },
+      "swapWrap(uint256 orderId, uint256 rawdata)": {
+        "$id": "swapWrap",
+        "intent": "Wrap/Unwrap",
+        "fields": [
+          { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
+          { "path": "rawdata.[0:1]", "label": "Direction", "format": "enum", "params": { "$ref": "$.metadata.enums.swapDirection" } },
+          {
+            "path": "rawdata.[-17:]",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" }
+          }
+        ]
+      },
+      "swapWrapToWithBaseRequest(uint256 orderId, address receiver, (uint256 fromToken, address toToken, uint256 fromTokenAmount, uint256 minReturnAmount, uint256 deadLine) baseRequest)": {
+        "$id": "Wrap/Unwrap",
+        "intent": "Swap",
+        "fields": [
+          { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
+          { "path": "receiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          {
+            "path": "baseRequest.fromTokenAmount",
+            "label": "Wrap/Unwrap Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "baseRequest.fromToken.[-20:]",
+              "nativeCurrencyAddress": ["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", "0x0000000000000000000000000000000000000000"]
+            },
+            "visible": "always"
+          },
+          { "path": "baseRequest.deadLine", "$ref": "$.display.definitions.deadline" }
+        ]
+      },
+      "uniswapV3SwapTo(uint256 receiver, uint256 amount, uint256 minReturn, uint256[] pools)": {
+        "$id": "uniswapV3SwapTo",
+        "intent": "Swap",
+        "fields": [
+          { "path": "receiver.[-20:]", "$ref": "$.display.definitions.beneficiary" },
+          { "label": "Pools", "path": "pools", "visible": "never" }
+        ]
+      },
+      "uniswapV3SwapToWithBaseRequest(uint256 orderId, address receiver, (uint256 fromToken, address toToken, uint256 fromTokenAmount, uint256 minReturnAmount, uint256 deadLine) baseRequest, uint256[] pools)": {
+        "$id": "uniswapV3SwapToWithBaseRequest",
+        "intent": "Swap",
+        "fields": [
+          { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
+          { "path": "receiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          {
+            "path": "baseRequest.fromTokenAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "baseRequest.fromToken.[-20:]" },
+            "visible": "always"
+          },
+          {
+            "path": "baseRequest.minReturnAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "baseRequest.toToken" },
+            "visible": "always"
+          },
+          { "path": "baseRequest.deadLine", "$ref": "$.display.definitions.deadline" },
+          { "label": "Pools", "path": "pools", "visible": "never" }
+        ]
+      },
+      "unxswapByOrderId(uint256 srcToken, uint256 amount, uint256 minReturn, bytes32[] pools)": {
+        "$id": "unxswapByOrderId",
+        "intent": "Swap",
+        "fields": [
+          {
+            "path": "amount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "srcToken.[-20:]" },
+            "visible": "always"
+          },
+          { "path": "minReturn", "label": "Minimum to Receive", "format": "raw", "visible": "always" },
+          { "label": "Pools", "path": "pools", "visible": "never" }
+        ]
+      },
+      "unxswapTo(uint256 srcToken, uint256 amount, uint256 minReturn, address receiver, bytes32[] pools)": {
+        "$id": "unxswapTo",
+        "intent": "Swap",
+        "fields": [
+          { "path": "receiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          {
+            "path": "amount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "srcToken.[-20:]" },
+            "visible": "always"
+          },
+          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount", "visible": "always" },
+          { "label": "Pools", "path": "pools", "visible": "never" }
+        ]
+      },
+      "unxswapToWithBaseRequest(uint256 orderId, address receiver, (uint256 fromToken, address toToken, uint256 fromTokenAmount, uint256 minReturnAmount, uint256 deadLine) baseRequest, bytes32[] pools)": {
+        "$id": "unxswapToWithBaseRequest",
+        "intent": "Swap",
+        "fields": [
+          { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
+          { "path": "receiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
+          {
+            "path": "baseRequest.fromTokenAmount",
+            "$ref": "$.display.definitions.sendAmount",
+            "params": { "tokenPath": "baseRequest.fromToken.[-20:]" },
+            "visible": "always"
+          },
+          {
+            "path": "baseRequest.minReturnAmount",
+            "$ref": "$.display.definitions.minReceiveAmount",
+            "params": { "tokenPath": "baseRequest.toToken" },
+            "visible": "always"
+          },
+          { "path": "baseRequest.deadLine", "$ref": "$.display.definitions.deadline" },
+          { "label": "Pools", "path": "pools", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
