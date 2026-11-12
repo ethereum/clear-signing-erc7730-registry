@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-SimplePSMV2.json",
+  "dataProvider": {
+    "tokens": {
+      "0xaaab6b05e5eecb015898483d4e6703d7f218850b": {
+        "symbol": "UCD",
+        "decimals": 18,
+        "name": "Ultimate Collateral Dollar"
+      },
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0xdac17f958d2ee523a2206206994597c13d831ec7": {
+        "symbol": "USDT",
+        "decimals": 6,
+        "name": "Tether USD"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "swap - 1000 USDC for at least 995 UCD",
+      "rawTx": "0x02f88e0106843b9aca008504a817c8008307a12094fe0c14b4e614f40bf58845b4b04ced17fd11653280b8649f1d0f59000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000035f0661c4399ac0000c0",
+      "expected": {
+        "intent": "Buy UCD",
+        "interpolatedIntent": "Swap 1000 USDC for UCD",
+        "owner": "Diamond Hands",
+        "fields": [
+          {
+            "label": "Amount to swap",
+            "value": "1000 USDC"
+          },
+          {
+            "label": "Minimum received",
+            "value": "995 UCD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "redeem - 500 UCD for at least 498 USDT",
+      "rawTx": "0x02f88e0106843b9aca008504a817c8008307a12094fe0c14b4e614f40bf58845b4b04ced17fd11653280b8642b83cccd000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec700000000000000000000000000000000000000000000001b1ae4d6e2ef500000000000000000000000000000000000000000000000000000000000001daee080c0",
+      "expected": {
+        "intent": "Redeem UCD",
+        "interpolatedIntent": "Redeem 500 UCD",
+        "owner": "Diamond Hands",
+        "fields": [
+          {
+            "label": "Amount to redeem",
+            "value": "500 UCD"
+          },
+          {
+            "label": "Minimum received",
+            "value": "498 USDT"
+          }
+        ]
+      }
+    }
+  ]
+}
