@@ -86,22 +86,21 @@
     },
     "formats": {
       "swapTokensMultipleV3ERC20ToERC20(bytes32 _transactionId, string _integrator, string _referrer, address _receiver, uint256 _minAmountOut, (address callTo, address approveTo, address sendingAssetId, address receivingAssetId, uint256 fromAmount, bytes callData, bool requiresDeposit)[] _swapData)": {
+        "$id": "swapTokensMultipleV3ERC20ToERC20",
         "intent": "Swap",
-        "interpolatedIntent": "Swap for at least {_minAmountOut} to {_receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
+            "path": "_swapData.[0].fromAmount",
+            "label": "Amount to Send",
             "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+            "params": { "tokenPath": "_swapData.[0].sendingAssetId" },
             "visible": "always"
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_minAmountOut",
             "label": "Minimum to Receive",
             "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[-1].receivingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+            "params": { "tokenPath": "_swapData.[-1].receivingAssetId" },
             "visible": "always"
           },
           {
@@ -111,52 +110,53 @@
             "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
             "visible": "always"
           },
-          { "path": "_transactionId", "label": "Transaction Id", "visible": "never" },
-          { "path": "_integrator", "label": "Integrator", "visible": "never" },
-          { "path": "_referrer", "label": "Referrer", "visible": "never" },
-          { "path": "_swapData.[].callData", "label": "Swap Data Call Data", "visible": "never" },
-          { "path": "_swapData.[].callTo", "label": "Swap Data Call To", "visible": "never" },
-          { "path": "_swapData.[].approveTo", "label": "Swap Data Approve To", "visible": "never" }
+          { "label": "Transaction Id", "path": "_transactionId", "visible": "never" },
+          { "label": "Integrator", "path": "_integrator", "visible": "never" },
+          { "label": "Referrer", "path": "_referrer", "visible": "never" },
+          { "label": "Swap Data Call Data", "path": "_swapData.[].callData", "visible": "never" },
+          { "label": "Swap Data Call To", "path": "_swapData.[].callTo", "visible": "never" },
+          { "label": "Swap Data Approve To", "path": "_swapData.[].approveTo", "visible": "never" },
+          { "label": "Swap Data Requires Deposit", "path": "_swapData.[].requiresDeposit", "visible": "never" }
         ]
       },
       "swapTokensMultipleV3ERC20ToNative(bytes32 _transactionId, string _integrator, string _referrer, address _receiver, uint256 _minAmountOut, (address callTo, address approveTo, address sendingAssetId, address receivingAssetId, uint256 fromAmount, bytes callData, bool requiresDeposit)[] _swapData)": {
+        "$id": "swapTokensMultipleV3ERC20ToNative",
         "intent": "Swap",
-        "interpolatedIntent": "Swap for at least {_minAmountOut} to {_receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
+            "path": "_swapData.[0].fromAmount",
+            "label": "Amount to Send",
             "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+            "params": { "tokenPath": "_swapData.[0].sendingAssetId" },
             "visible": "always"
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
-          { "path": "_minAmountOut", "label": "Minimum to Receive", "format": "amount", "visible": "always" },
+          { "path": "_minAmountOut", "$ref": "$.display.definitions._minAmountOut", "visible": "always" },
           {
             "path": "_receiver",
-            "label": "Recipient",
+            "label": "Receiver",
             "format": "addressName",
             "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
             "visible": "always"
           },
-          { "path": "_transactionId", "label": "Transaction Id", "visible": "never" },
-          { "path": "_integrator", "label": "Integrator", "visible": "never" },
-          { "path": "_referrer", "label": "Referrer", "visible": "never" },
-          { "path": "_swapData.[].callData", "label": "Swap Data Call Data", "visible": "never" },
-          { "path": "_swapData.[].callTo", "label": "Swap Data Call To", "visible": "never" },
-          { "path": "_swapData.[].approveTo", "label": "Swap Data Approve To", "visible": "never" }
+          { "label": "Transaction Id", "path": "_transactionId", "visible": "never" },
+          { "label": "Integrator", "path": "_integrator", "visible": "never" },
+          { "label": "Referrer", "path": "_referrer", "visible": "never" },
+          { "label": "Swap Data Call Data", "path": "_swapData.[].callData", "visible": "never" },
+          { "label": "Swap Data Requires Deposit", "path": "_swapData.[].requiresDeposit", "visible": "never" },
+          { "label": "Swap Data Approve To", "path": "_swapData.[].approveTo", "visible": "never" },
+          { "label": "Swap Data Call To", "path": "_swapData.[].callTo", "visible": "never" }
         ]
       },
       "swapTokensMultipleV3NativeToERC20(bytes32 _transactionId, string _integrator, string _referrer, address _receiver, uint256 _minAmountOut, (address callTo, address approveTo, address sendingAssetId, address receivingAssetId, uint256 fromAmount, bytes callData, bool requiresDeposit)[] _swapData)": {
+        "$id": "swapTokensMultipleV3NativeToERC20",
         "intent": "Swap",
-        "interpolatedIntent": "Swap {@.value} for at least {_minAmountOut} to {_receiver}",
         "fields": [
           { "path": "@.value", "label": "Amount to send", "format": "amount" },
           {
             "path": "_minAmountOut",
             "label": "Minimum to Receive",
             "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[-1].receivingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+            "params": { "tokenPath": "_swapData.[-1].receivingAssetId" },
             "visible": "always"
           },
           {
@@ -166,13 +166,13 @@
             "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
             "visible": "always"
           },
-          { "path": "_transactionId", "label": "Transaction Id", "visible": "never" },
-          { "path": "_integrator", "label": "Integrator", "visible": "never" },
-          { "path": "_referrer", "label": "Referrer", "visible": "never" },
-          { "path": "_swapData.[0].callData", "label": "Swap Data Call Data", "visible": "never" },
-          { "path": "_swapData.[0].callTo", "label": "Swap Data Call To", "visible": "never" },
-          { "path": "_swapData.[0].approveTo", "label": "Swap Data Approve To", "visible": "never" },
-          { "path": "_swapData.[0].requiresDeposit", "label": "Swap Data Requires Deposit", "visible": "never" }
+          { "label": "Transaction Id", "path": "_transactionId", "visible": "never" },
+          { "label": "Integrator", "path": "_integrator", "visible": "never" },
+          { "label": "Referrer", "path": "_referrer", "visible": "never" },
+          { "label": "Swap Data [0] Call Data", "path": "_swapData.[0].callData", "visible": "never" },
+          { "label": "Swap Data [0] Requires Deposit", "path": "_swapData.[0].requiresDeposit", "visible": "never" },
+          { "label": "Swap Data [0] Call To", "path": "_swapData.[0].callTo", "visible": "never" },
+          { "label": "Swap Data [0] Approve To", "path": "_swapData.[0].approveTo", "visible": "never" }
         ]
       },
       "swapTokensSingleV3ERC20ToERC20(bytes32 _transactionId, string _integrator, string _referrer, address _receiver, uint256 _minAmountOut, (address callTo, address approveTo, address sendingAssetId, address receivingAssetId, uint256 fromAmount, bytes callData, bool requiresDeposit) _swapData)": {
