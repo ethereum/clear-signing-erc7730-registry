@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-clearstar-CSBUSDC-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0xf3cc5c9a25508d8d959618fd48f6abc18ca4db49": { "decimals": 18, "name": "Clearstar Boring USDC", "symbol": "CSBUSDC" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f0182018c8431b75b20843ee205c0830a460994f3cc5c9a25508d8d959618fd48f6abc18ca4db4980b8446e553f6500000000000000000000000000000000000000000000000000000000000f4240000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x6676e6f1012f08e102735b350c14c64a4eb118b6864d87b2ff6e59a97fa7e5da",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "1 USDC" },
+          { "label": "Share ticker", "value": "CSBUSDC" },
+          { "label": "Send shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Deposit 1 USDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Clearstar"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88d01738405f5e1008408850f978306042d94f3cc5c9a25508d8d959618fd48f6abc18ca4db4980b864b460af940000000000000000000000000000000000000000000000000000000000001324000000000000000000000000ff84c9b2b9b06176e8566a4ec581670fb2ba7792000000000000000000000000ff84c9b2b9b06176e8566a4ec581670fb2ba7792c0",
+      "txHash": "0xa6dd38000c6fc7b8922c627e1876a9cf024838ea32d062da0bda75589414928d",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "0.0049 USDC" },
+          { "label": "To", "value": "0xff84c9B2B9b06176E8566A4ec581670fb2bA7792" },
+          { "label": "Owner", "value": "0xff84c9B2B9b06176E8566A4ec581670fb2bA7792" }
+        ],
+        "interpolatedIntent": "Withdraw 0.0049 USDC to 0xff84c9B2B9b06176E8566A4ec581670fb2bA7792",
+        "owner": "Clearstar"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f89401378310ff9b84034598038306cdc394f3cc5c9a25508d8d959618fd48f6abc18ca4db4980b86cba0876520000000000000000000000000000000000000000000069dee9aa9f759d08351e000000000000000000000000a1f90a2e2b6e32a89c82951f474e1c2317086e7b000000000000000000000000a1f90a2e2b6e32a89c82951f474e1c2317086e7b699d5f8e2222da44c0",
+      "txHash": "0xf4033cbde6efbce132190cbc9456435c4bde5f70e967bba227048d80001d0d93",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "499960.495331160640468254 CSBUSDC" },
+          { "label": "To", "value": "0xA1f90a2e2B6E32A89c82951F474E1c2317086e7B" },
+          { "label": "Owner", "value": "0xA1f90a2e2B6E32A89c82951F474E1c2317086e7B" }
+        ],
+        "interpolatedIntent": "Redeem 499960.495331160640468254 CSBUSDC to 0xA1f90a2e2B6E32A89c82951F474E1c2317086e7B",
+        "owner": "Clearstar"
+      }
+    }
+  ]
+}

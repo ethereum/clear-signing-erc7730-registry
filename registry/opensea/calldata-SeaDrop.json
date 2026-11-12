@@ -1,0 +1,139 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x00005EA00Ac477B1030CE78506496e8C2dE24bf5" }] } },
+  "metadata": { "owner": "OpenSea", "contractName": "SeaDrop", "info": { "url": "https://opensea.io" } },
+  "display": {
+    "formats": {
+      "mintAllowedTokenHolder(address nftContract,address feeRecipient,address minterIfNotPayer,(address allowedNftToken,uint256[] allowedNftTokenIds) mintParams)": {
+        "intent": "Mint as NFT holder",
+        "fields": [
+          {
+            "path": "nftContract",
+            "label": "Collection",
+            "format": "addressName",
+            "params": { "types": ["collection", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "Total Price", "format": "amount" },
+          {
+            "path": "minterIfNotPayer",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "wallet", "contract"],
+              "sources": ["local", "ens"],
+              "senderAddress": ["0x0000000000000000000000000000000000000000"]
+            }
+          },
+          {
+            "path": "mintParams.allowedNftToken",
+            "label": "Using Collection",
+            "format": "addressName",
+            "params": { "types": ["collection", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "mintParams.allowedNftTokenIds.[]",
+            "label": "Redeems Token ID",
+            "format": "raw",
+            "separator": "Allowed Nft Token Ids {index}"
+          },
+          { "path": "feeRecipient", "label": "The fee recipient", "visible": "never" }
+        ],
+        "interpolatedIntent": "Mint to {minterIfNotPayer} for {@.value}"
+      },
+      "mintAllowList(address nftContract,address feeRecipient,address minterIfNotPayer,uint256 quantity,(uint256 mintPrice,uint256 maxTotalMintableByWallet,uint256 startTime,uint256 endTime,uint256 dropStageIndex,uint256 maxTokenSupplyForStage,uint256 feeBps,bool restrictFeeRecipients) mintParams,bytes32[] proof)": {
+        "intent": "Mint NFTs",
+        "fields": [
+          { "path": "quantity", "label": "Quantity", "format": "raw" },
+          {
+            "path": "nftContract",
+            "label": "Collection",
+            "format": "addressName",
+            "params": { "types": ["collection", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "Total Price", "format": "amount" },
+          {
+            "path": "minterIfNotPayer",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "wallet", "contract"],
+              "sources": ["local", "ens"],
+              "senderAddress": ["0x0000000000000000000000000000000000000000"]
+            }
+          },
+          { "path": "feeRecipient", "label": "The fee recipient", "visible": "never" },
+          { "path": "mintParams.mintPrice", "label": "Mint Price", "visible": "never" },
+          { "path": "mintParams.maxTotalMintableByWallet", "label": "Max Per Wallet", "visible": "never" },
+          { "path": "mintParams.startTime", "label": "Start Time", "visible": "never" },
+          { "path": "mintParams.endTime", "label": "End Time", "visible": "never" },
+          { "path": "mintParams.dropStageIndex", "label": "Drop Stage Index", "visible": "never" },
+          { "path": "mintParams.maxTokenSupplyForStage", "label": "Max Stage Supply", "visible": "never" },
+          { "path": "mintParams.feeBps", "label": "Fee Bps", "visible": "never" },
+          { "path": "mintParams.restrictFeeRecipients", "label": "Restrict Fee Addrs", "visible": "never" },
+          { "path": "proof.[]", "label": "Proof", "visible": "never" }
+        ],
+        "interpolatedIntent": "Mint {quantity} to {minterIfNotPayer} for {@.value}"
+      },
+      "mintPublic(address nftContract,address feeRecipient,address minterIfNotPayer,uint256 quantity)": {
+        "intent": "Mint NFTs",
+        "fields": [
+          { "path": "quantity", "label": "Quantity", "format": "raw" },
+          {
+            "path": "nftContract",
+            "label": "Collection",
+            "format": "addressName",
+            "params": { "types": ["collection", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "Total Price", "format": "amount" },
+          {
+            "path": "minterIfNotPayer",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "wallet", "contract"],
+              "sources": ["local", "ens"],
+              "senderAddress": ["0x0000000000000000000000000000000000000000"]
+            }
+          },
+          { "path": "feeRecipient", "label": "The fee recipient", "visible": "never" }
+        ],
+        "interpolatedIntent": "Mint {quantity} to {minterIfNotPayer} for {@.value}"
+      },
+      "mintSigned(address nftContract,address feeRecipient,address minterIfNotPayer,uint256 quantity,(uint256 mintPrice,uint256 maxTotalMintableByWallet,uint256 startTime,uint256 endTime,uint256 dropStageIndex,uint256 maxTokenSupplyForStage,uint256 feeBps,bool restrictFeeRecipients) mintParams,uint256 salt,bytes signature)": {
+        "intent": "Mint NFTs",
+        "fields": [
+          { "path": "quantity", "label": "Quantity", "format": "raw" },
+          {
+            "path": "nftContract",
+            "label": "Collection",
+            "format": "addressName",
+            "params": { "types": ["collection", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "Total Price", "format": "amount" },
+          {
+            "path": "minterIfNotPayer",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "wallet", "contract"],
+              "sources": ["local", "ens"],
+              "senderAddress": ["0x0000000000000000000000000000000000000000"]
+            }
+          },
+          { "path": "feeRecipient", "label": "The fee recipient", "visible": "never" },
+          { "path": "mintParams.mintPrice", "label": "Mint Price", "visible": "never" },
+          { "path": "mintParams.maxTotalMintableByWallet", "label": "Max Per Wallet", "visible": "never" },
+          { "path": "mintParams.startTime", "label": "Start Time", "visible": "never" },
+          { "path": "mintParams.endTime", "label": "End Time", "visible": "never" },
+          { "path": "mintParams.dropStageIndex", "label": "Drop Stage Index", "visible": "never" },
+          { "path": "mintParams.maxTokenSupplyForStage", "label": "Max Stage Supply", "visible": "never" },
+          { "path": "mintParams.feeBps", "label": "Fee Bps", "visible": "never" },
+          { "path": "mintParams.restrictFeeRecipients", "label": "Restrict Fee Addrs", "visible": "never" },
+          { "path": "salt", "label": "Salt", "visible": "never" },
+          { "path": "signature", "label": "Signature", "visible": "never" }
+        ],
+        "interpolatedIntent": "Mint {quantity} to {minterIfNotPayer} for {@.value}"
+      }
+    }
+  }
+}

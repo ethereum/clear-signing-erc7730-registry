@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-compUSDT.json",
+  "dataProvider": {
+    "tokens": {
+      "0xc2132d05d31c914a87c6611c10748aeb04b58e8f": { "decimals": 6, "name": "USDT0", "symbol": "USDT0" },
+      "0xfd06859a671c21497a2eb8c5e3fea48de924d6c8": { "decimals": 18, "name": "Compound USDT", "symbol": "compUSDT" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f8708189578506fc23ac008506fc25ca7083064f0894fd06859a671c21497a2eb8c5e3fea48de924d6c880b8446e553f6500000000000000000000000000000000000000000000000000000000002dc6c0000000000000000000000000f603265f91f58f1efa4fad57694fb3b77b25fc18c0",
+      "txHash": "0xc2ecb84561d537a03079b88bd44ede8e44aec3ac6d48826adf8cebd86b65a4aa",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "3 USDT0" },
+          { "label": "Share ticker", "value": "compUSDT" },
+          { "label": "Send shares to", "value": "0xf603265f91f58F1EfA4fAd57694Fb3B77b25fC18" }
+        ],
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0xf88b5185098bca5a008307ec9894fd06859a671c21497a2eb8c5e3fea48de924d6c880b864b460af940000000000000000000000000000000000000000000000000000000005f5e1000000000000000000000000002f5734ed49b55c9e32d2720d8e3a1eb503b568200000000000000000000000002f5734ed49b55c9e32d2720d8e3a1eb503b5682081898080",
+      "txHash": "0xafdfcf8c8cf2d973a91ba9b61f74c5c3436f9230314c039f6e0f43b07db6b69f",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "100 USDT0" },
+          { "label": "To", "value": "0x2f5734Ed49B55C9e32d2720d8E3a1EB503B56820" },
+          { "label": "Owner", "value": "0x2f5734Ed49B55C9e32d2720d8E3a1EB503B56820" }
+        ],
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f891818981bb853a35294400853a352944008305035c94fd06859a671c21497a2eb8c5e3fea48de924d6c880b864ba087652000000000000000000000000000000000000000000000000d00b67875e1f159f000000000000000000000000e9805ecab212eabf696cf458d2c4840a619ee6de000000000000000000000000e9805ecab212eabf696cf458d2c4840a619ee6dec0",
+      "txHash": "0x687592bbeea2cda08509f11649576f228306efaa5f3ccf9769dc7edd66b84b36",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "14.991189615730169247 compUSDT" },
+          { "label": "To", "value": "0xe9805eCAB212EAbf696cf458d2C4840A619Ee6De" },
+          { "label": "Owner", "value": "0xe9805eCAB212EAbf696cf458d2C4840A619Ee6De" }
+        ],
+        "owner": "Gauntlet"
+      }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "includes": "common-gondi.json",
+  "context": {
+    "eip712": {
+      "domain": { "name": "GONDI_MULTI_SOURCE_LOAN" },
+      "deployments": [
+        { "chainId": 1, "address": "0xf65B99CE6DC5F6c556172BCC0Ff27D3665a7d9A8" },
+        { "chainId": 1, "address": "0xf41B389E0C1950dc0B16C9498eaE77131CC08A56" },
+        { "chainId": 999, "address": "0x6Ad675624EC8320E5806858Cd5dB101a0b927FD9" },
+        { "chainId": 4663, "address": "0x0e79e08e9E35388382b7FebB26Bc73F80465e2fB" },
+        { "chainId": 1, "address": "0xE365fF3cad44d19cb7aBa81df8ffd6818A66Ac0a" }
+      ]
+    }
+  },
+  "display": {
+    "formats": {
+      "RenegotiationOffer(uint256 renegotiationId,uint256 loanId,address lender,uint256 fee,uint256[] trancheIndex,uint256 principalAmount,uint256 aprBps,uint256 expirationTime,uint256 duration)": {
+        "intent": "Make renegotiation offer",
+        "interpolatedIntent": "Offer new terms on loan {loanId}",
+        "fields": [
+          { "path": "loanId", "label": "Loan ID", "format": "raw", "visible": "always" },
+          { "path": "principalAmount", "label": "Principal (units)", "format": "raw", "visible": "always" },
+          { "path": "aprBps", "label": "APR", "format": "unit", "params": { "base": "%", "decimals": 2 }, "visible": "always" },
+          { "path": "duration", "label": "Duration", "format": "duration", "visible": "always" },
+          { "path": "fee", "label": "Fee (units)", "format": "raw", "visible": "always" },
+          {
+            "path": "lender",
+            "label": "Lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "expirationTime",
+            "label": "Offer expires",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "trancheIndex.[]", "label": "Tranche index", "format": "raw", "visible": "always" },
+          { "path": "renegotiationId", "label": "Renegotiation ID", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

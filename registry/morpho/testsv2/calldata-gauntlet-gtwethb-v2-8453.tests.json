@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-gtwethb-v2-8453.json",
+  "dataProvider": {
+    "tokens": {
+      "0x4200000000000000000000000000000000000006": { "decimals": 18, "name": "WETH", "symbol": "WETH" },
+      "0xfefec33668e22677c4762d0853d56245a800ff08": { "decimals": 18, "name": "Gauntlet WETH Balanced", "symbol": "gtwethb" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d8221054f830f424083c96a808306536594fefec33668e22677c4762d0853d56245a800ff0880b8446e553f65000000000000000000000000000000000000000000000000005110d6d5684408000000000000000000000000fcc2b735c923e1820b7c2398c669641f428f94d3c0",
+      "txHash": "0x448e3231b9c8d65267c0705771b0ffb481026dd9df1df17a7f168bbf2b1708ba",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.022817988002989064 WETH" },
+          { "label": "Share ticker", "value": "gtwethb" },
+          { "label": "Send shares to", "value": "0xFcC2b735C923E1820B7c2398c669641F428F94D3" }
+        ],
+        "interpolatedIntent": "Deposit 0.022817988002989064 WETH for 0xFcC2b735C923E1820B7c2398c669641F428F94D3",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f86f822105158401b1588c840ae5c5718319bb2094fefec33668e22677c4762d0853d56245a800ff0880b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x49c43e37fd6049dc50fdeb6359cf6b0d9510eb2d8f64cd603b0e10713ce1ba84",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "WETH" },
+          { "label": "Minted shares", "value": "0.000000001 gtwethb" },
+          { "label": "Mint shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Mint 0.000000001 gtwethb for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f897822105820165830f4240837c5bf0830940cb94fefec33668e22677c4762d0853d56245a800ff0880b86cb460af9400000000000000000000000000000000000000000000000070181f058b0e9ab10000000000000000000000009328429372db08d406a8953f6b4bf9f6c86797aa0000000000000000000000009328429372db08d406a8953f6b4bf9f6c86797aa6ab5143b2222da44c0",
+      "txHash": "0xd79215d66cebfc810f2caea0444b2f0db58db1e750aefabc20d005b605b441b9",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "8.077240040357272241 WETH" },
+          { "label": "To", "value": "0x9328429372dB08D406A8953f6b4Bf9F6C86797aA" },
+          { "label": "Owner", "value": "0x9328429372dB08D406A8953f6b4Bf9F6C86797aA" }
+        ],
+        "interpolatedIntent": "Withdraw 8.077240040357272241 WETH to 0x9328429372dB08D406A8953f6b4Bf9F6C86797aA",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88d8221052c830f424083c96a808306281994fefec33668e22677c4762d0853d56245a800ff0880b864ba087652000000000000000000000000000000000000000000000000005bbd1b272adb2a0000000000000000000000005741ed2581457652d2e5fc77fc5c5549045288530000000000000000000000005741ed2581457652d2e5fc77fc5c554904528853c0",
+      "txHash": "0xcb1c68827f6ebf1c047288f2c1289dda743451a4c00b747ac9a77e84dcc7749e",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "0.025822147199556394 gtwethb" },
+          { "label": "To", "value": "0x5741eD2581457652D2e5FC77fC5C554904528853" },
+          { "label": "Owner", "value": "0x5741eD2581457652D2e5FC77fC5C554904528853" }
+        ],
+        "interpolatedIntent": "Redeem 0.025822147199556394 gtwethb to 0x5741eD2581457652D2e5FC77fC5C554904528853",
+        "owner": "Gauntlet"
+      }
+    }
+  ]
+}

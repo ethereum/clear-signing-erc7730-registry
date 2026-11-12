@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-mev_capital-MC-USDC-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0x9480034d908989b006d78bdbbd7bd509c92e8bbc": { "decimals": 18, "name": "MEV CAPITAL USDC", "symbol": "MC-USDC" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86c0166839896808420827a338305b75f949480034d908989b006d78bdbbd7bd509c92e8bbc80b8446e553f6500000000000000000000000000000000000000000000000000000000640b6e1c000000000000000000000000576f7f5d6cfe5ce3a5a988b866c85e2369cda29fc0",
+      "txHash": "0x9573d3a9550273f581becc2e2aceba7943dc633432556661a31fd7d08716867c",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "1678.470684 USDC" },
+          { "label": "Share ticker", "value": "MC-USDC" },
+          { "label": "Send shares to", "value": "0x576f7f5D6Cfe5cE3a5A988B866C85e2369cda29F" }
+        ],
+        "interpolatedIntent": "Deposit 1678.470684 USDC for 0x576f7f5D6Cfe5cE3a5A988B866C85e2369cda29F",
+        "owner": "MEV Capital"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f86e0181e18405f5e1008478c24e80830a4829949480034d908989b006d78bdbbd7bd509c92e8bbc80b84494bf804d0000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x24d448b4bb031e0fe970916164510896a096c1df5acb7156d5809dac019a1fe3",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "USDC" },
+          { "label": "Minted shares", "value": "1 MC-USDC" },
+          { "label": "Mint shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Mint 1 MC-USDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "MEV Capital"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8960181bf847735940084a00e008f83069b88949480034d908989b006d78bdbbd7bd509c92e8bbc80b86cb460af940000000000000000000000000000000000000000000000000000000059682f00000000000000000000000000382547a89309e686c69d1a578d649e508b4e1e33000000000000000000000000382547a89309e686c69d1a578d649e508b4e1e336a3961a62222da44c0",
+      "txHash": "0xca9a6290def6512c84c67c059a1a283c1c1fd6e8188b576a0028bdd346f5dbe1",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "1500 USDC" },
+          { "label": "To", "value": "0x382547A89309e686C69D1a578d649e508b4E1e33" },
+          { "label": "Owner", "value": "0x382547A89309e686C69D1a578d649e508b4E1e33" }
+        ],
+        "interpolatedIntent": "Withdraw 1500 USDC to 0x382547A89309e686C69D1a578d649e508b4E1e33",
+        "owner": "MEV Capital"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f894010f83525523840c9ae41d8305c992949480034d908989b006d78bdbbd7bd509c92e8bbc80b86cba08765200000000000000000000000000000000000000000000013884f22e3a87247439000000000000000000000000a188f59759cadae826fd8de219d96964a0c7b3b1000000000000000000000000a188f59759cadae826fd8de219d96964a0c7b3b16a43b7132222da44c0",
+      "txHash": "0xbb65bfd664e9fb2f4012a72b3b348ee31e7b67e7aed3adf557fee2cff2cc76e8",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "5764.963921183660864569 MC-USDC" },
+          { "label": "To", "value": "0xA188f59759CaDAE826FD8De219d96964A0c7b3B1" },
+          { "label": "Owner", "value": "0xA188f59759CaDAE826FD8De219d96964A0c7b3B1" }
+        ],
+        "interpolatedIntent": "Redeem 5764.963921183660864569 MC-USDC to 0xA188f59759CaDAE826FD8De219d96964A0c7b3B1",
+        "owner": "MEV Capital"
+      }
+    }
+  ]
+}

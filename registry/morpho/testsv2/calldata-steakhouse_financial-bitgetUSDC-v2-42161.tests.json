@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-bitgetUSDC-v2-42161.json",
+  "dataProvider": {
+    "tokens": {
+      "0xaf88d065e77c8cc2239327c5edb3a432268e5831": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0xbeeff1d5de8f79ff37a151681100b039661da518": { "decimals": 18, "name": "Bitget x Steakhouse USDC", "symbol": "bitgetUSDC" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86c82a4b181ab018401312d0183128ed394beeff1d5de8f79ff37a151681100b039661da51880b8446e553f650000000000000000000000000000000000000000000000000000000000002710000000000000000000000000feed46c11f57b7126a773eec6ae9ca7ae1c03c9ac0",
+      "txHash": "0xc26505576a4cb98a51b6dcfc2b1b3f7289c76e11896e12cf0a38aba0ae8cfa8f",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.01 USDC" },
+          { "label": "Share ticker", "value": "bitgetUSDC" },
+          { "label": "Send shares to", "value": "0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a" }
+        ],
+        "interpolatedIntent": "Deposit 0.01 USDC for 0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0xf8948202c283cdfe608317c63994beeff1d5de8f79ff37a151681100b039661da51880b86cb460af94000000000000000000000000000000000000000000000000000000156433fc6c0000000000000000000000002e036f0f906ce191c2caf955147f5e70fb402e430000000000000000000000002e036f0f906ce191c2caf955147f5e70fb402e436942b8d02222da4482a4b18080",
+      "txHash": "0x1eaa8303c69c821ba9471239c3cbb36044fa5a751038f248d356787afffe4cc8",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "91875.441772 USDC" },
+          { "label": "To", "value": "0x2e036f0f906CE191C2cAF955147F5E70FB402E43" },
+          { "label": "Owner", "value": "0x2e036f0f906CE191C2cAF955147F5E70FB402E43" }
+        ],
+        "interpolatedIntent": "Withdraw 91875.441772 USDC to 0x2e036f0f906CE191C2cAF955147F5E70FB402E43",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f89582a4b1822668808401228dd6831291f494beeff1d5de8f79ff37a151681100b039661da51880b86cba087652000000000000000000000000000000000000000000000040eb17c651f09eacc3000000000000000000000000869921f41af38fe397c8309d3d1885809508b723000000000000000000000000869921f41af38fe397c8309d3d1885809508b7236942b5402222da44c0",
+      "txHash": "0x8b8e683d30b001356c0005d95738ada4d310f2062e9b81f2e08c24668b336c8c",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "1197.531847296020294851 bitgetUSDC" },
+          { "label": "To", "value": "0x869921f41Af38Fe397c8309d3D1885809508B723" },
+          { "label": "Owner", "value": "0x869921f41Af38Fe397c8309d3D1885809508B723" }
+        ],
+        "interpolatedIntent": "Redeem 1197.531847296020294851 bitgetUSDC to 0x869921f41Af38Fe397c8309d3D1885809508B723",
+        "owner": "Steakhouse Financial"
+      }
+    }
+  ]
+}

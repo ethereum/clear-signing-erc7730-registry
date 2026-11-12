@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-felix-feUSDEv2-v2-999.json",
+  "dataProvider": {
+    "tokens": {
+      "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34": { "decimals": 18, "name": "USDe", "symbol": "USDe" },
+      "0x3d2e92b54fb4b906246539bcd91617ebcb391616": { "decimals": 18, "name": "Felix USDe V2", "symbol": "feUSDEv2" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f8728203e7830259088405f5e1008411e1a300830632a5943d2e92b54fb4b906246539bcd91617ebcb39161680b8446e553f650000000000000000000000000000000000000000000000008ac7230489e80000000000000000000000000000dd00059904ddf45e30b4131345957f76f26b8f6cc0",
+      "txHash": "0xa32d1b43c19ed14dc7a963ae716ab804794b319d842c88619417b167b25877fe",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "10 USDe" },
+          { "label": "Share ticker", "value": "feUSDEv2" },
+          { "label": "Send shares to", "value": "0xDd00059904ddF45e30b4131345957f76F26b8f6c" }
+        ],
+        "interpolatedIntent": "Deposit 10 USDe for 0xDd00059904ddF45e30b4131345957f76F26b8f6c",
+        "owner": "Felix"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88b8203e71401841acde0a083079adf943d2e92b54fb4b906246539bcd91617ebcb39161680b864b460af9400000000000000000000000000000000000000000000002086ac351052600000000000000000000000000000908ae90f3d30175eebc39ccb2fa19a61a212c5c5000000000000000000000000908ae90f3d30175eebc39ccb2fa19a61a212c5c5c0",
+      "txHash": "0x5bb881cabdfe35a8a7b92be3606faf39a5eaa50968e609b1a15c808ca7765548",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "600 USDe" },
+          { "label": "To", "value": "0x908ae90F3D30175eEBc39CCb2fA19a61A212c5C5" },
+          { "label": "Owner", "value": "0x908ae90F3D30175eEBc39CCb2fA19a61A212c5C5" }
+        ],
+        "interpolatedIntent": "Withdraw 600 USDe to 0x908ae90F3D30175eEBc39CCb2fA19a61A212c5C5",
+        "owner": "Felix"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8928203e78302590e8405f5e1008411e1a30083050e38943d2e92b54fb4b906246539bcd91617ebcb39161680b864ba0876520000000000000000000000000000000000000000000000008ac7230489e80000000000000000000000000000dd00059904ddf45e30b4131345957f76f26b8f6c000000000000000000000000dd00059904ddf45e30b4131345957f76f26b8f6cc0",
+      "txHash": "0xc6811c240bea09d43a6de7a1a848ccfd282e8fe1746337a25ec05c5d1c50866b",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "10 feUSDEv2" },
+          { "label": "To", "value": "0xDd00059904ddF45e30b4131345957f76F26b8f6c" },
+          { "label": "Owner", "value": "0xDd00059904ddF45e30b4131345957f76F26b8f6c" }
+        ],
+        "interpolatedIntent": "Redeem 10 feUSDEv2 to 0xDd00059904ddF45e30b4131345957f76F26b8f6c",
+        "owner": "Felix"
+      }
+    }
+  ]
+}

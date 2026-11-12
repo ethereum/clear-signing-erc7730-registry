@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-grove-bbqUSDC-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0xbeeff08df54897e7544ab01d0e86f013da354111": { "decimals": 18, "name": "Grove x Steakhouse USDC", "symbol": "grove-bbqUSDC" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86b018233fc0a840404bdf2830c610a94beeff08df54897e7544ab01d0e86f013da35411180b8446e553f650000000000000000000000000000000000000000000000000000000000002710000000000000000000000000feed46c11f57b7126a773eec6ae9ca7ae1c03c9ac0",
+      "txHash": "0x7cf3031bf7013d5c6f168f85fa06c17cf73c42ab66fdc0c55f99113c1cc537b9",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.01 USDC" },
+          { "label": "Share ticker", "value": "grove-bbqUSDC" },
+          { "label": "Send shares to", "value": "0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a" }
+        ],
+        "interpolatedIntent": "Deposit 0.01 USDC for 0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b8203cd8437d03dac831e848094beeff08df54897e7544ab01d0e86f013da35411180b84494bf804d0000000000000000000000000000000000000000000000000de0b6b36bc93600000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x6b4ad3a1a5ee640a2dbb68c97d6095e1b519ed2f0599cc282183253d8954111a",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "USDC" },
+          { "label": "Minted shares", "value": "0.999999999 grove-bbqUSDC" },
+          { "label": "Mint shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Mint 0.999999999 grove-bbqUSDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8960181cc840fff758084338739208314b08694beeff08df54897e7544ab01d0e86f013da35411180b86cb460af94000000000000000000000000000000000000000000000000000000012a05f20000000000000000000000000016d786614466510c0930642f62f1b391e26e9be100000000000000000000000016d786614466510c0930642f62f1b391e26e9be1697e7b7b2222da44c0",
+      "txHash": "0x423d5bb5df039b59c1d04d163f25bc6eed0f1c2f00d27f5ba1b085fd250d2f25",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "5000 USDC" },
+          { "label": "To", "value": "0x16D786614466510C0930642F62F1b391e26E9be1" },
+          { "label": "Owner", "value": "0x16D786614466510C0930642F62F1b391e26E9be1" }
+        ],
+        "interpolatedIntent": "Withdraw 5000 USDC to 0x16D786614466510C0930642F62F1b391e26E9be1",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f896018201ed830495da84041f3c3b830e4e5994beeff08df54897e7544ab01d0e86f013da35411180b86cba08765200000000000000000000000000000000000000000000021d4782ce6b2529de2b000000000000000000000000312a5b51951cd9207c92e87e5b623c32cb91eba2000000000000000000000000312a5b51951cd9207c92e87e5b623c32cb91eba2697892472222da44c0",
+      "txHash": "0xe255701ee37f9c95ba4e695b3a5e05e14fc98f5dee2d47533740e3f964af50fe",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "9984.841451760113016363 grove-bbqUSDC" },
+          { "label": "To", "value": "0x312A5b51951Cd9207c92e87e5b623C32cb91eBA2" },
+          { "label": "Owner", "value": "0x312A5b51951Cd9207c92e87e5b623C32cb91eBA2" }
+        ],
+        "interpolatedIntent": "Redeem 9984.841451760113016363 grove-bbqUSDC to 0x312A5b51951Cd9207c92e87e5b623C32cb91eBA2",
+        "owner": "Steakhouse Financial"
+      }
+    }
+  ]
+}
