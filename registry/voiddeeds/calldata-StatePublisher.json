@@ -1,0 +1,62 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 11155111,
+          "address": "0x508D558e06820bE083a54f15dA685Cad8D3fB9E3"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Voiddeeds",
+    "contractName": "StatePublisher",
+    "info": {
+      "url": "https://voiddeeds.xyz/"
+    },
+    "enums": {
+      "Destinations": {
+        "9900119385908781505": "ApeChain Curtis",
+        "2032988798112970440": "Robinhood Testnet",
+        "10344971235874465080": "Base Sepolia",
+        "9763904284804119144": "Ink Sepolia",
+        "3034092155422581607": "Arc Testnet"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "dispatch(uint64 selector,uint256 id,uint256 expectedSequence)": {
+        "intent": "Send Deed activation",
+        "interpolatedIntent": "Send Deed #{id} activation",
+        "fields": [
+          {
+            "path": "id",
+            "label": "Deed ID",
+            "format": "raw"
+          },
+          {
+            "path": "selector",
+            "label": "Destination network",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.Destinations"
+            }
+          },
+          {
+            "path": "expectedSequence",
+            "label": "Settings version",
+            "format": "raw"
+          },
+          {
+            "path": "@.value",
+            "label": "CCIP delivery fee",
+            "format": "amount"
+          }
+        ]
+      }
+    }
+  }
+}
