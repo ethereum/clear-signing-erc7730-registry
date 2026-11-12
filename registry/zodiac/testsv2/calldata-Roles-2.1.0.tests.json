@@ -1,0 +1,678 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-Roles-2.1.0.json",
+  "tests": [
+    {
+      "description": "Allow all calls to a target with send value",
+      "rawTx": "0x02f88e0180843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b8647b0da5b24d414e414745520000000000000000000000000000000000000000000000000000000000000000000000000011111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000001c0",
+      "expected": {
+        "intent": "Allow all calls to target",
+        "interpolatedIntent": "Allow all calls to 0x1111111111111111111111111111111111111111 (Send value)",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Role",
+            "value": "0x4d414e4147455200000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Target",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Execution options",
+            "value": "Send value"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Allow all calls to a target with send and delegate call",
+      "rawTx": "0x02f88e0101843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b8647b0da5b24d414e414745520000000000000000000000000000000000000000000000000000000000000000000000000011111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000003c0",
+      "expected": {
+        "intent": "Allow all calls to target",
+        "interpolatedIntent": "Allow all calls to 0x1111111111111111111111111111111111111111 (Send + delegate call)",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Role",
+            "value": "0x4d414e4147455200000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Target",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Execution options",
+            "value": "Send + delegate call"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Scope a target",
+      "rawTx": "0x02f86e0102843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b8440c6c76b84d414e41474552000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111c0",
+      "expected": {
+        "intent": "Scope target",
+        "interpolatedIntent": "Scope 0x1111111111111111111111111111111111111111",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Role",
+            "value": "0x4d414e4147455200000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Target",
+            "value": "0x1111111111111111111111111111111111111111"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Revoke a target",
+      "rawTx": "0x02f86e0103843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b8440172a43a4d414e41474552000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111c0",
+      "expected": {
+        "intent": "Revoke target",
+        "interpolatedIntent": "Revoke 0x1111111111111111111111111111111111111111",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Role",
+            "value": "0x4d414e4147455200000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Target",
+            "value": "0x1111111111111111111111111111111111111111"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Allow a function without value or delegate call",
+      "rawTx": "0x02f8ae0104843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b884b3dd25c74d414e41474552000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111a9059cbb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Allow function",
+        "interpolatedIntent": "Allow 0xa9059cbb on 0x1111111111111111111111111111111111111111 (Call only)",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Role",
+            "value": "0x4d414e4147455200000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Target",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Function selector",
+            "value": "0xa9059cbb"
+          },
+          {
+            "label": "Execution options",
+            "value": "Call only"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Allow a function with delegate call",
+      "rawTx": "0x02f8ae0105843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b884b3dd25c74d414e41474552000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111a9059cbb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002c0",
+      "expected": {
+        "intent": "Allow function",
+        "interpolatedIntent": "Allow 0xa9059cbb on 0x1111111111111111111111111111111111111111 (Delegate call)",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Role",
+            "value": "0x4d414e4147455200000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Target",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Function selector",
+            "value": "0xa9059cbb"
+          },
+          {
+            "label": "Execution options",
+            "value": "Delegate call"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Scope transfer to a fixed recipient",
+      "rawTx": "0x02f9034f0106843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b903247508dd984d414e41474552000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111a9059cbb0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000500000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000020000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Scope function",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Role",
+            "value": "0x4d414e4147455200000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Target",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Function selector",
+            "value": "0xa9059cbb"
+          },
+          {
+            "label": "Condition parent",
+            "value": "0"
+          },
+          {
+            "label": "Condition parent",
+            "value": "0"
+          },
+          {
+            "label": "Condition parent",
+            "value": "0"
+          },
+          {
+            "label": "Parameter type",
+            "value": "Calldata"
+          },
+          {
+            "label": "Parameter type",
+            "value": "Static"
+          },
+          {
+            "label": "Parameter type",
+            "value": "Static"
+          },
+          {
+            "label": "Condition",
+            "value": "Matches"
+          },
+          {
+            "label": "Condition",
+            "value": "Equal to"
+          },
+          {
+            "label": "Condition",
+            "value": "Pass"
+          },
+          {
+            "label": "Compared value",
+            "value": "0x"
+          },
+          {
+            "label": "Compared value",
+            "value": "0x0000000000000000000000002222222222222222222222222222222222222222"
+          },
+          {
+            "label": "Compared value",
+            "value": "0x"
+          },
+          {
+            "label": "Execution options",
+            "value": "Call only"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Revoke a function",
+      "rawTx": "0x02f88e0107843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b86466523f7d4d414e41474552000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111a9059cbb00000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Revoke function",
+        "interpolatedIntent": "Revoke 0xa9059cbb on 0x1111111111111111111111111111111111111111",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Role",
+            "value": "0x4d414e4147455200000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Target",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Function selector",
+            "value": "0xa9059cbb"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Grant one role and revoke another",
+      "rawTx": "0x02f9014f0108843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b90124957ed2b30000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000024d414e41474552000000000000000000000000000000000000000000000000004f50455241544f52000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Assign roles and enable member",
+        "interpolatedIntent": "Assign roles to 0x2222222222222222222222222222222222222222 and enable it as module",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Member",
+            "value": "0x2222222222222222222222222222222222222222"
+          },
+          {
+            "label": "Role",
+            "value": "0x4d414e4147455200000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Is member",
+            "value": "true"
+          },
+          {
+            "label": "Role",
+            "value": "0x4f50455241544f52000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Is member",
+            "value": "false"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set the default role of a member",
+      "rawTx": "0x02f86e0109843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b844946d364e00000000000000000000000022222222222222222222222222222222222222224d414e4147455200000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Set default role",
+        "interpolatedIntent": "Set default role of 0x2222222222222222222222222222222222222222",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Member",
+            "value": "0x2222222222222222222222222222222222222222"
+          },
+          {
+            "label": "Role",
+            "value": "0x4d414e4147455200000000000000000000000000000000000000000000000000"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set a daily refilling allowance",
+      "rawTx": "0x02f8ee010a843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b8c4a8ec43ee4441494c595f5553444300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000012a05f200000000000000000000000000000000000000000000000000000000003b9aca000000000000000000000000000000000000000000000000000000000000015180000000000000000000000000000000000000000000000000000000006955b900c0",
+      "expected": {
+        "intent": "Set allowance",
+        "interpolatedIntent": "Set allowance to 1000000000, refill 1000000000 every 24:00:00",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Allowance",
+            "value": "0x4441494c595f5553444300000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Balance",
+            "value": "1000000000"
+          },
+          {
+            "label": "Refill amount",
+            "value": "1000000000"
+          },
+          {
+            "label": "Refill cap",
+            "value": "5000000000"
+          },
+          {
+            "label": "Refill period",
+            "value": "24:00:00"
+          },
+          {
+            "label": "Last refill",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set an uncapped allowance that starts now",
+      "rawTx": "0x02f8ee0118843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b8c4a8ec43ee4441494c595f5553444300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003b9aca000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003b9aca0000000000000000000000000000000000000000000000000000000000000151800000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Set allowance",
+        "interpolatedIntent": "Set allowance to 1000000000, refill 1000000000 every 24:00:00",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Allowance",
+            "value": "0x4441494c595f5553444300000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Balance",
+            "value": "1000000000"
+          },
+          {
+            "label": "Refill amount",
+            "value": "1000000000"
+          },
+          {
+            "label": "Refill period",
+            "value": "24:00:00"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set the MultiSend unwrapper",
+      "rawTx": "0x02f88e010b843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b8642916a9af00000000000000000000000038869bf66a61cf6bdb996a6ae40d5853fd43b5268d80ff0a00000000000000000000000000000000000000000000000000000000000000000000000000000000b4cd4bb764c089f20da18700ce8bc5e49f369efdc0",
+      "expected": {
+        "intent": "Set transaction unwrapper",
+        "interpolatedIntent": "Unwrap 0x8d80ff0a on 0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526 with 0xB4Cd4bb764C089f20DA18700CE8bc5e49F369efD",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Target",
+            "value": "0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526"
+          },
+          {
+            "label": "Function selector",
+            "value": "0x8d80ff0a"
+          },
+          {
+            "label": "Unwrapper",
+            "value": "0xB4Cd4bb764C089f20DA18700CE8bc5e49F369efD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Execute a call sending 0.5 ETH with a role",
+      "rawTx": "0x02f9014f010c843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b90124c6fe87470000000000000000000000009646fdad06d3e24444381f44362a3b0eb343d33700000000000000000000000000000000000000000000000006f05b59d3b2000000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000004d414e41474552000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002469ecc3cfabababababababababababababababababababababababababababababababab00000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Execute with role",
+        "interpolatedIntent": "Call to 0x9646fDAD06d3e24444381f44362a3B0eB343D337 with role",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Role",
+            "value": "0x4d414e4147455200000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "To",
+            "value": "0x9646fDAD06d3e24444381f44362a3B0eB343D337"
+          },
+          {
+            "label": "Value",
+            "value": "0.5 ETH"
+          },
+          {
+            "label": "Operation type",
+            "value": "Call"
+          },
+          {
+            "label": "Transaction",
+            "value": {
+              "intent": "Invalidate signed transaction",
+              "owner": "Zodiac Labs",
+              "fields": [
+                {
+                  "label": "Transaction hash",
+                  "value": "0xabababababababababababababababababababababababababababababababab"
+                }
+              ]
+            }
+          },
+          {
+            "label": "Revert on failure",
+            "value": "true"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Execute a delegate call with a role",
+      "rawTx": "0x02f9014f010d843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b90124c6fe87470000000000000000000000009646fdad06d3e24444381f44362a3b0eb343d337000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000014d414e41474552000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002469ecc3cfabababababababababababababababababababababababababababababababab00000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Execute with role",
+        "interpolatedIntent": "Delegate call to 0x9646fDAD06d3e24444381f44362a3B0eB343D337 with role",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Role",
+            "value": "0x4d414e4147455200000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "To",
+            "value": "0x9646fDAD06d3e24444381f44362a3B0eB343D337"
+          },
+          {
+            "label": "Value",
+            "value": "0 ETH"
+          },
+          {
+            "label": "Operation type",
+            "value": "Delegate call"
+          },
+          {
+            "label": "Transaction",
+            "value": {
+              "intent": "Invalidate signed transaction",
+              "owner": "Zodiac Labs",
+              "fields": [
+                {
+                  "label": "Transaction hash",
+                  "value": "0xabababababababababababababababababababababababababababababababab"
+                }
+              ]
+            }
+          },
+          {
+            "label": "Revert on failure",
+            "value": "true"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Execute a call with a role and return data",
+      "rawTx": "0x02f9014f010e843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b901242b99e5060000000000000000000000009646fdad06d3e24444381f44362a3b0eb343d337000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000004d414e41474552000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002469ecc3cfabababababababababababababababababababababababababababababababab00000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Execute with role",
+        "interpolatedIntent": "Call to 0x9646fDAD06d3e24444381f44362a3B0eB343D337 with role",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Role",
+            "value": "0x4d414e4147455200000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "To",
+            "value": "0x9646fDAD06d3e24444381f44362a3B0eB343D337"
+          },
+          {
+            "label": "Value",
+            "value": "0 ETH"
+          },
+          {
+            "label": "Operation type",
+            "value": "Call"
+          },
+          {
+            "label": "Transaction",
+            "value": {
+              "intent": "Invalidate signed transaction",
+              "owner": "Zodiac Labs",
+              "fields": [
+                {
+                  "label": "Transaction hash",
+                  "value": "0xabababababababababababababababababababababababababababababababab"
+                }
+              ]
+            }
+          },
+          {
+            "label": "Revert on failure",
+            "value": "false"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Execute a call with the default role",
+      "rawTx": "0x02f9010e010f843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b8e4468721a70000000000000000000000009646fdad06d3e24444381f44362a3b0eb343d337000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002469ecc3cfabababababababababababababababababababababababababababababababab00000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Execute with default role",
+        "interpolatedIntent": "Call to 0x9646fDAD06d3e24444381f44362a3B0eB343D337 with default role",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "To",
+            "value": "0x9646fDAD06d3e24444381f44362a3B0eB343D337"
+          },
+          {
+            "label": "Value",
+            "value": "0 ETH"
+          },
+          {
+            "label": "Operation type",
+            "value": "Call"
+          },
+          {
+            "label": "Transaction",
+            "value": {
+              "intent": "Invalidate signed transaction",
+              "owner": "Zodiac Labs",
+              "fields": [
+                {
+                  "label": "Transaction hash",
+                  "value": "0xabababababababababababababababababababababababababababababababab"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "Execute a call with the default role and return data",
+      "rawTx": "0x02f9010e0110843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b8e45229073f0000000000000000000000009646fdad06d3e24444381f44362a3b0eb343d337000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002469ecc3cfabababababababababababababababababababababababababababababababab00000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Execute with default role",
+        "interpolatedIntent": "Call to 0x9646fDAD06d3e24444381f44362a3B0eB343D337 with default role",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "To",
+            "value": "0x9646fDAD06d3e24444381f44362a3B0eB343D337"
+          },
+          {
+            "label": "Value",
+            "value": "0 ETH"
+          },
+          {
+            "label": "Operation type",
+            "value": "Call"
+          },
+          {
+            "label": "Transaction",
+            "value": {
+              "intent": "Invalidate signed transaction",
+              "owner": "Zodiac Labs",
+              "fields": [
+                {
+                  "label": "Transaction hash",
+                  "value": "0xabababababababababababababababababababababababababababababababab"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "Invalidate a signed transaction",
+      "rawTx": "0x02f84d0111843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780a469ecc3cfababababababababababababababababababababababababababababababababc0",
+      "expected": {
+        "intent": "Invalidate signed transaction",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Transaction hash",
+            "value": "0xabababababababababababababababababababababababababababababababab"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Enable a module",
+      "rawTx": "0x02f84d0112843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780a4610b59250000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Enable module",
+        "interpolatedIntent": "Enable module 0x2222222222222222222222222222222222222222",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Module",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Disable a module",
+      "rawTx": "0x02f86e0113843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b844e009cfde00000000000000000000000000000000000000000000000000000000000000010000000000000000000000002222222222222222222222222222222222222222c0",
+      "expected": {
+        "intent": "Disable module",
+        "interpolatedIntent": "Disable module 0x2222222222222222222222222222222222222222",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Module",
+            "value": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Change the avatar",
+      "rawTx": "0x02f84d0114843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780a4086cfca80000000000000000000000003333333333333333333333333333333333333333c0",
+      "expected": {
+        "intent": "Change avatar",
+        "interpolatedIntent": "Change avatar to 0x3333333333333333333333333333333333333333",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "New avatar",
+            "value": "0x3333333333333333333333333333333333333333"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Change the execution target",
+      "rawTx": "0x02f84d0115843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780a4776d1a010000000000000000000000003333333333333333333333333333333333333333c0",
+      "expected": {
+        "intent": "Change execution target",
+        "interpolatedIntent": "Change execution target to 0x3333333333333333333333333333333333333333",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "New target",
+            "value": "0x3333333333333333333333333333333333333333"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Transfer ownership",
+      "rawTx": "0x02f84d0116843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780a4f2fde38b0000000000000000000000003333333333333333333333333333333333333333c0",
+      "expected": {
+        "intent": "Transfer ownership",
+        "interpolatedIntent": "Transfer ownership to 0x3333333333333333333333333333333333333333",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "New owner",
+            "value": "0x3333333333333333333333333333333333333333"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Renounce ownership",
+      "rawTx": "0x02ed0117843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d3378084715018a6c0",
+      "expected": {
+        "intent": "Renounce ownership",
+        "owner": "Zodiac Labs",
+        "fields": []
+      }
+    }
+  ]
+}
