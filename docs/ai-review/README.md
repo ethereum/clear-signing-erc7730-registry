@@ -52,8 +52,8 @@ The prompt asks fifteen questions:
 | intent-truthfulness | Does the intent say what the function does, including side effects it hides? |
 | hidden-values | Does hiding a value change what the transaction does or means? |
 | field-format | Does each field use the format and parameters that match the code? |
-| array-display | Does the order of the array lines, sequential or bundled, fit how the code uses the arrays? |
 | interpolated-intent | Does the interpolated intent read correctly and match the intent? |
+| array-display | Does the order of the array lines, sequential or bundled, fit how the code uses the arrays? |
 | special-values | Does the code treat a value specially (zero, max, the zero address) and is that shown? |
 | metadata | Do owner, name, token, constants, enums and maps match the contract? |
 | binding-context | Are the deployments the addresses a signer sends to (the proxy, not the implementation)? |
