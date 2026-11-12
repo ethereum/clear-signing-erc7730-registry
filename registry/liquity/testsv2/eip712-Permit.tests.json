@@ -1,0 +1,59 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-Permit.json",
+  "dataProvider": {
+    "tokens": {
+      "0x6440f144b7e50d6a8439336510312d2f54beb01d": { "symbol": "BOLD", "decimals": 18, "name": "BOLD Stablecoin" },
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" },
+      "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0": { "symbol": "wstETH", "decimals": 18, "name": "Wrapped liquid staked Ether 2.0" },
+      "0xae78736cd615f374d3085123a210448e74fc6393": { "symbol": "rETH", "decimals": 18, "name": "Rocket Pool ETH" }
+    }
+  },
+  "tests": [
+    {
+      "description": "BOLD ERC-2612 permit",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Permit": [
+            { "name": "owner", "type": "address" },
+            { "name": "spender", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": {
+          "name": "BOLD Stablecoin",
+          "version": "1",
+          "chainId": 1,
+          "verifyingContract": "0x6440f144b7e50d6a8439336510312d2f54beb01d"
+        },
+        "message": {
+          "owner": "0x1111111111111111111111111111111111111111",
+          "spender": "0x2222222222222222222222222222222222222222",
+          "value": "1000000000000000000000",
+          "nonce": "0",
+          "deadline": "1893456000"
+        }
+      },
+      "expected": {
+        "intent": "Approve BOLD",
+        "owner": "Liquity",
+        "fields": [
+          { "label": "Spender", "value": "0x2222222222222222222222222222222222222222" },
+          { "label": "Amount", "value": "1000 BOLD" },
+          { "label": "Expires", "value": "2030-01-01 00:00:00Z" },
+          { "label": "Owner", "value": "0x1111111111111111111111111111111111111111" }
+        ],
+        "interpolatedIntent": "Approve 1000 BOLD"
+      }
+    }
+  ]
+}
