@@ -1,0 +1,113 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Candide social recovery votes, 14 days",
+    "eip712": {
+      "domain": {
+        "name": "Social Recovery Module",
+        "version": "0.0.1"
+      },
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x9BacD92F4687Db306D7ded5d4513a51EA05df25b"
+        },
+        {
+          "chainId": 10,
+          "address": "0x9BacD92F4687Db306D7ded5d4513a51EA05df25b"
+        },
+        {
+          "chainId": 100,
+          "address": "0x9BacD92F4687Db306D7ded5d4513a51EA05df25b"
+        },
+        {
+          "chainId": 137,
+          "address": "0x9BacD92F4687Db306D7ded5d4513a51EA05df25b"
+        },
+        {
+          "chainId": 8453,
+          "address": "0x9BacD92F4687Db306D7ded5d4513a51EA05df25b"
+        },
+        {
+          "chainId": 42161,
+          "address": "0x9BacD92F4687Db306D7ded5d4513a51EA05df25b"
+        },
+        {
+          "chainId": 42220,
+          "address": "0x9BacD92F4687Db306D7ded5d4513a51EA05df25b"
+        },
+        {
+          "chainId": 84532,
+          "address": "0x9BacD92F4687Db306D7ded5d4513a51EA05df25b"
+        },
+        {
+          "chainId": 11155111,
+          "address": "0x9BacD92F4687Db306D7ded5d4513a51EA05df25b"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Candide",
+    "contractName": "Recovery (14 days)",
+    "info": {
+      "url": "https://candide.dev"
+    }
+  },
+  "display": {
+    "formats": {
+      "ExecuteRecovery(address wallet,address[] newOwners,uint256 newThreshold,uint256 nonce)": {
+        "intent": "Vote to recover Safe",
+        "fields": [
+          {
+            "path": "wallet",
+            "label": "Safe",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "newOwners.[]",
+            "label": "New owners",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "newThreshold",
+            "label": "Owner sigs needed",
+            "format": "raw"
+          },
+          {
+            "value": "14 days",
+            "label": "Wait before takeover",
+            "format": "raw"
+          },
+          {
+            "path": "nonce",
+            "visible": "never",
+            "label": "Nonce"
+          }
+        ],
+        "interpolatedIntent": "Vote to make {newOwners} the only owners of {wallet}"
+      }
+    }
+  }
+}
