@@ -1,0 +1,91 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-CometUSDCv3.json",
+  "dataProvider": {
+    "tokens": {
+      "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0x3128a0f7f0ea68e7b7c9b00afa7e41045828e858": {
+        "symbol": "sUSDC",
+        "decimals": 18,
+        "name": "Savings USDC"
+      },
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0xbc65ad17c5c0a2a4d159fa5a503f4992c7b545fe": {
+        "symbol": "sUSDC",
+        "decimals": 18,
+        "name": "Savings USDC"
+      },
+      "0x514910771af9ca656af840dff83e8264ecf986ca": {
+        "symbol": "LINK",
+        "decimals": 18,
+        "name": "ChainLink Token"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Supply - chain 8453",
+      "rawTx": "0x02f8b08221057383837d4d83ea7c7d8305c29894b125e6687d4313864e53df431d5425969c15eb2f80b844f2b9fdb8000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda029130000000000000000000000000000000000000000000000000000000000b157bdc080a08ec5bae02f393d420cf1bbc9b78f2d0a31c6ac6f4ae7e435548d3773001f9b94a027e155108c1beb79b53b8b5ff662308a322504efe326bd9ddca0407dd524ebbe",
+      "expected": {
+        "intent": "Supply",
+        "owner": "Compound",
+        "fields": [
+          {
+            "label": "Amount to supply",
+            "value": "11.622333 USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw - chain 8453",
+      "rawTx": "0x02f8b3822105820118833e66a884016e3600830278e494b125e6687d4313864e53df431d5425969c15eb2f80b844f3fef3a3000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc001a016655c662451b5377763aa965ab46960822b8ef53208a33e1292e861d5d36318a006ad60c6b19c0b3e95e5004b87b7128403716da2188954d6b710ae25bf1dccb2",
+      "expected": {
+        "intent": "Withdraw or borrow",
+        "owner": "Compound",
+        "fields": [
+          {
+            "label": "Amount (borrows what you don't have)",
+            "value": "Max USDC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Supply collateral (LINK) - chain 1",
+      "rawTx": "0x02f8b2018202a38477359400847c3ec85c83022ac494c3d688b66703497daa19211eedff47f25384cdc380b844f2b9fdb8000000000000000000000000514910771af9ca656af840dff83e8264ecf986ca000000000000000000000000000000000000000000000010be4c33c15185bfa6c080a03e020da60edbcb0a7eee1b0df25a524ae9d13da4aa3d986c580d0fa79e8d326ea001a755d5ea73a029e6ab6bbaa9d7cf331b96a40d0b18594e05878436edd65270",
+      "expected": {
+        "intent": "Supply",
+        "owner": "Compound",
+        "fields": [
+          {
+            "label": "Amount to supply",
+            "value": "308.860297050178568102 LINK"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw - chain 1",
+      "rawTx": "0x02f8b2018202a18477359400847d335e6a8304c2d494c3d688b66703497daa19211eedff47f25384cdc380b844f3fef3a3000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000147d35700c001a0f189c86d34cc5496a4bb1cbee064a7b4ac7bd24e74d022d553a16f70ed7b1dfaa0598e92e94d6d4c4d7b921bfe32cd06ea20d9e102a8876ba634925f0fea717cc3",
+      "expected": {
+        "intent": "Withdraw or borrow",
+        "owner": "Compound",
+        "fields": [
+          {
+            "label": "Amount (borrows what you don't have)",
+            "value": "5500 USDC"
+          }
+        ]
+      }
+    }
+  ]
+}
