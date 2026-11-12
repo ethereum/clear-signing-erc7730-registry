@@ -20,6 +20,10 @@
     "enums": {
       "tokenId": {
         "1": "1% Cover Booster"
+      },
+      "rights": {
+        "True": "Grant all",
+        "False": "Deny all"
       }
     }
   },
@@ -245,8 +249,8 @@
         ]
       },
       "setApprovalForAll(address operator, bool approved)": {
-        "intent": "Approve All Boosters",
-        "interpolatedIntent": "Set approval of {operator} for all USD8 Boosters to {approved}",
+        "intent": "Set Booster Operator Rights",
+        "interpolatedIntent": "Set rights of {operator} over all USD8 Boosters to {approved}",
         "fields": [
           {
             "path": "#.operator",
@@ -267,8 +271,11 @@
           },
           {
             "path": "#.approved",
-            "label": "Approved",
-            "format": "raw",
+            "label": "Access Rights",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.rights"
+            },
             "visible": "always"
           }
         ]

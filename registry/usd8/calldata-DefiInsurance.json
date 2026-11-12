@@ -85,7 +85,7 @@
       },
       "upgradeToAndCall(address newImplementation, bytes data)": {
         "intent": "Upgrade Contract",
-        "interpolatedIntent": "Upgrade to {newImplementation} and run setup call",
+        "interpolatedIntent": "Upgrade to {newImplementation}; run setup data when present",
         "fields": [
           {
             "path": "#.newImplementation",
@@ -114,7 +114,7 @@
             "path": "@.value",
             "label": "ETH Sent",
             "format": "amount",
-            "visible": "optional"
+            "visible": "always"
           }
         ]
       },
@@ -149,7 +149,7 @@
       },
       "adminCorrectSettlement(bytes32 root, uint256[] poolPayouts)": {
         "intent": "Correct Settlement",
-        "interpolatedIntent": "Replace the settlement root with {root}",
+        "interpolatedIntent": "Set the settlement root to {root} (0 = void)",
         "fields": [
           {
             "path": "#.root",
@@ -308,8 +308,8 @@
         ]
       },
       "fileClaim(address insuredToken, uint128 insuredTokenAmount, uint256 scoreToSpend, uint256 boosterAmount, uint64 referenceBlock, bytes signature)": {
-        "intent": "File Insurance Claim",
-        "interpolatedIntent": "File a claim with {insuredTokenAmount} of {insuredToken}",
+        "intent": "File Claim With USD8 Bond",
+        "interpolatedIntent": "File a claim with {insuredTokenAmount} of {insuredToken} and escrow the USD8 claim bond",
         "fields": [
           {
             "path": "#.insuredToken",
@@ -386,7 +386,7 @@
           },
           {
             "path": "#.amounts.[]",
-            "label": "Payout Per Pool",
+            "label": "Payout Per Pool (pool asset)",
             "format": "raw",
             "visible": "always"
           },
@@ -404,13 +404,13 @@
           },
           {
             "path": "#.eligibleAmount",
-            "label": "Eligible Amount",
+            "label": "Insured Tokens Given Up If Accepted",
             "format": "raw",
             "visible": "always"
           },
           {
             "path": "#.eligibleBoosterAmount",
-            "label": "Eligible Boosters",
+            "label": "Boosters Burned If Accepted",
             "format": "raw",
             "visible": "always"
           },
@@ -424,7 +424,7 @@
       },
       "settleIncident(bytes32 root, uint256[] poolPayouts, bytes signature)": {
         "intent": "Relay Incident Settlement",
-        "interpolatedIntent": "Relay the signed settlement for the active incident",
+        "interpolatedIntent": "Relay the signed settlement and delist the insured token",
         "fields": [
           {
             "path": "#.root",
