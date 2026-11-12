@@ -1,0 +1,98 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "$comment": "Every Conduit is a BeaconProxy deployed by the Railnet ConduitFactory, which emits ConduitDeployed with the new Conduit as the indexed `conduit` topic. `factory` covers every Conduit the production ConduitFactory deploys; `deployments` lists the Conduits live today for wallets that only match fixed addresses. The last entry is a test Syrup USDC Conduit (rstgSyrUSDC) from the Railnet test factory, used as the test fixture.",
+  "context": {
+    "$id": "Conduit",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xE627A511c9aC2D9FD271F10c7A200779c833AC5A" },
+        { "chainId": 1, "address": "0xF3bFE863103d4F4a604a6739DF80945bf0Ef7d07" },
+        { "chainId": 1, "address": "0xbb09C703e48A54E8E48F6B088cb9578ACE9848cB" },
+        { "chainId": 1, "address": "0xC0a76b15704F2A3A50105B11b88763b205B9298a" },
+        { "chainId": 1, "address": "0x46E0c35465ce9Bda1E62D8464bBcdE1D523757A4" },
+        { "chainId": 1, "address": "0x6B2Bc4d0614D7744dC5f71B7A2555A9Cef2535D9" }
+      ],
+      "factory": {
+        "deployEvent": "ConduitDeployed(address indexed deployer, address indexed conduit, (string name, string symbol, address vehicle, address feeManager, address accountList, address ownerRegistry, address accessControl, bool transferEnabled, (address asset, (address target, uint256 shareBps, uint256 chainId)[] recipients)[] initialInterceptions, uint256 initialExpectedSupply, bytes32 querySalt, bytes32 deploymentSalt) params)",
+        "deployments": [{ "chainId": 1, "address": "0x9A103cf026824Af04395e09516e68D96fcE6DC7a" }]
+      }
+    }
+  },
+  "metadata": {
+    "owner": "Railnet",
+    "info": { "url": "https://railnet.org" },
+    "enums": { "mode": { "0": "Deposit", "1": "Redeem" } },
+    "contractName": "Conduit"
+  },
+  "display": {
+    "formats": {
+      "create((address owner, address receiver, (address asset, uint256 value) input, (address asset, uint256 value) output, uint8 mode, bytes32 salt, bytes data) query, address receiver, bytes32 sourceSalt)": {
+        "intent": "Deposit or redeem",
+        "interpolatedIntent": "{#.query.mode} {#.query.input.value}",
+        "fields": [
+          {
+            "path": "#.query.mode",
+            "label": "Operation",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.mode" },
+            "visible": "always"
+          },
+          {
+            "path": "#.query.input.value",
+            "label": "Amount in (vehicle shares if redeem)",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.query.input.asset" },
+            "visible": "always"
+          },
+          {
+            "path": "#.query.output.value",
+            "label": "Vehicle min. output, before fees",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.query.output.asset" },
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.query.data", "label": "Vehicle data", "format": "raw", "visible": "optional" },
+          { "path": "#.query.owner", "label": "Query owner", "visible": "never" },
+          { "path": "#.query.receiver", "label": "Query receiver", "visible": "never" },
+          { "path": "#.query.salt", "label": "Query salt", "visible": "never" },
+          { "path": "#.sourceSalt", "label": "Source salt", "visible": "never" }
+        ]
+      },
+      "createRedeemFromConduitShares(uint256 conduitShares, (address asset, uint256 value) outputAsset, bytes32 sourceSalt, address receiver)": {
+        "intent": "Request redeem of Conduit shares",
+        "interpolatedIntent": "Request redeem of {#.conduitShares}",
+        "fields": [
+          {
+            "path": "#.conduitShares",
+            "label": "Shares to redeem",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "#.outputAsset.value",
+            "label": "Minimum output, before fees",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.outputAsset.asset" },
+            "visible": "always"
+          },
+          {
+            "path": "#.receiver",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.sourceSalt", "label": "Source salt", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
