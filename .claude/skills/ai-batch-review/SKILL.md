@@ -331,7 +331,10 @@ A field with `.[]` in its path gives one line per element. The descriptor decide
 
 Read the order from the descriptor. The expected rendering of a test case with two or more elements confirms it; a case with one element looks the same in both modes. The names of the parameters usually tell how the function uses the arrays. When they do not, that is a doubt: read the source.
 
-A sequential order for elements that the function pairs makes the signer count lines to pair them. A bundled order for arrays that the function does not pair shows pairs that do not exist. Both are a warning by the `array-display` check of `prompt.md`, and a critical when a pair shown gives a recipient another amount or asset than the code does. The fix for the first is a `bundled` group that holds those array fields only, or a group on `a.[]`. The fix for the second is to take the fields out of the group.
+The author can make the wrong choice in two ways. Each one is a warning by the `array-display` check of `prompt.md`:
+
+- **Paired elements in sequential order.** The function sends `amounts[i]` to `recipients[i]`, but the signer reads "To Alice, To Bob, Amount 5, Amount 7". The signer must count lines to see what Bob receives. The fix is a `bundled` group that holds those array fields only. For the members of one struct array, a group on `a.[]` is a fix too.
+- **Unpaired arrays in bundled order.** The function uses each array on its own, but the signer reads one element of each array together, as a pair. The fix is to take the fields out of the group. This one is a critical when a pair shown gives a recipient another amount or asset than the code does.
 
 ### Decide
 
