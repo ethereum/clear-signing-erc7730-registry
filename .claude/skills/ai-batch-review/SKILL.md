@@ -325,7 +325,7 @@ A field with `.[]` in its path gives one line per element. The descriptor decide
 
 | Shape in the descriptor | Order of the lines | Right when |
 | --- | --- | --- |
-| Fields outside a group, or a group with `iteration: sequential` or without `iteration` | Sequential: all elements of the first field, then all elements of the next field. Two members of one struct array, `a.[].to` and `a.[].amount`, are two fields. | The function uses each array on its own. |
+| Fields outside a group, or a group with `iteration: sequential` or without `iteration` | Sequential: all elements of the first field, then all elements of the next field, `to[0] to[1] amount[0] amount[1]`. Two members of one struct array, `a.[].to` and `a.[].amount`, are two fields: every `to`, then every `amount`. | The function uses each array on its own. |
 | A group with `iteration: bundled` | Bundled: the elements with the same index together, `to[0] amount[0] to[1] amount[1]`. The arrays must have the same length, or the wallet returns an error. | The function uses the elements with the same index together: a recipient and its amount, a target and its calldata. |
 | A group whose own `path` ends in `.[]` | The fields of each element together, in both modes. | The fields are members of one struct array. |
 
