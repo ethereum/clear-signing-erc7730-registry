@@ -1,0 +1,39 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "0x AllowanceHolder",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x0000000000001ff3684f28c67538d4d072c22734" },
+        { "chainId": 10, "address": "0x0000000000001ff3684f28c67538d4d072c22734" },
+        { "chainId": 56, "address": "0x0000000000001ff3684f28c67538d4d072c22734" },
+        { "chainId": 100, "address": "0x0000000000001ff3684f28c67538d4d072c22734" },
+        { "chainId": 137, "address": "0x0000000000001ff3684f28c67538d4d072c22734" },
+        { "chainId": 8453, "address": "0x0000000000001ff3684f28c67538d4d072c22734" },
+        { "chainId": 42161, "address": "0x0000000000001ff3684f28c67538d4d072c22734" },
+        { "chainId": 43114, "address": "0x0000000000001ff3684f28c67538d4d072c22734" },
+        { "chainId": 11155111, "address": "0x0000000000001ff3684f28c67538d4d072c22734" }
+      ]
+    }
+  },
+  "metadata": { "owner": "0x", "contractName": "AllowanceHolder", "info": { "url": "https://0x.org" } },
+  "display": {
+    "formats": {
+      "exec(address operator, address token, uint256 amount, address target, bytes data)": {
+        "intent": "Swap",
+        "fields": [
+          { "path": "amount", "label": "Spend up to", "format": "tokenAmount", "params": { "tokenPath": "token" }, "visible": "always" },
+          {
+            "path": "operator",
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "@.value", "label": "ETH sent", "format": "amount", "visible": { "ifNotIn": ["0"] } },
+          { "path": "data", "label": "Call", "format": "calldata", "params": { "calleePath": "target" }, "visible": "always" }
+        ]
+      }
+    }
+  }
+}
