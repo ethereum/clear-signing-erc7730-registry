@@ -1,0 +1,109 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Relay Router",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x0729e2a4716d9f7dd17858d5d504426d228697f7" },
+        { "chainId": 10, "address": "0x0729e2a4716d9f7dd17858d5d504426d228697f7" },
+        { "chainId": 56, "address": "0x0729e2a4716d9f7dd17858d5d504426d228697f7" },
+        { "chainId": 100, "address": "0x0729e2a4716d9f7dd17858d5d504426d228697f7" },
+        { "chainId": 137, "address": "0x0729e2a4716d9f7dd17858d5d504426d228697f7" },
+        { "chainId": 8453, "address": "0x0729e2a4716d9f7dd17858d5d504426d228697f7" },
+        { "chainId": 42161, "address": "0x0729e2a4716d9f7dd17858d5d504426d228697f7" },
+        { "chainId": 42220, "address": "0x0729e2a4716d9f7dd17858d5d504426d228697f7" },
+        { "chainId": 43114, "address": "0x0729e2a4716d9f7dd17858d5d504426d228697f7" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Relay", "contractName": "RelayRouter", "info": { "url": "https://relay.link" } },
+  "display": {
+    "formats": {
+      "multicall((address target, bool allowFailure, uint256 value, bytes callData)[] calls, address refundTo, address nftRecipient, bytes metadata)": {
+        "intent": "Swap or bridge",
+        "fields": [
+          { "path": "@.value", "label": "ETH sent", "format": "amount", "visible": { "ifNotIn": ["0"] } },
+          {
+            "path": "calls.[].callData",
+            "label": "Call",
+            "format": "calldata",
+            "params": { "calleePath": "calls.[].target", "amountPath": "calls.[].value" },
+            "visible": "always"
+          },
+          {
+            "path": "refundTo",
+            "label": "Leftover ETH to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "nftRecipient",
+            "label": "NFTs to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          }
+        ]
+      },
+      "cleanupNative(uint256 amount, address recipient, bytes metadata)": {
+        "intent": "Send ETH left in the router",
+        "fields": [
+          { "path": "amount", "label": "Amount (0 = all)", "format": "amount", "visible": "always" },
+          {
+            "path": "recipient",
+            "label": "To (zero = sender)",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "cleanupErc20s(address[] tokens, address[] recipients, uint256[] amounts, bytes metadata)": {
+        "intent": "Send tokens left in the router",
+        "fields": [
+          {
+            "path": "amounts.[]",
+            "label": "Amount (0 = all)",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokens.[]" },
+            "visible": "always"
+          },
+          {
+            "path": "recipients.[]",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "cleanupNativeViaCall(uint256 amount, address to, bytes data)": {
+        "intent": "Send leftover ETH by call",
+        "fields": [
+          { "path": "amount", "label": "Amount (0 = all)", "format": "amount", "visible": "always" },
+          {
+            "path": "data",
+            "label": "Call",
+            "format": "calldata",
+            "params": { "calleePath": "to", "amountPath": "amount" },
+            "visible": "always"
+          }
+        ]
+      },
+      "cleanupErc20sViaCall(address[] tokens, address[] tos, bytes[] datas, uint256[] amounts)": {
+        "intent": "Send leftover tokens by call",
+        "fields": [
+          {
+            "path": "amounts.[]",
+            "label": "Amount (0 = all)",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokens.[]" },
+            "visible": "always"
+          },
+          { "path": "datas.[]", "label": "Call", "format": "calldata", "params": { "calleePath": "tos.[]" }, "visible": "always" }
+        ]
+      }
+    }
+  }
+}
