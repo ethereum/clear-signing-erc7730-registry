@@ -3,283 +3,481 @@
   "context": {
     "contract": {
       "deployments": [
-        { "chainId": 1, "address": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb" },
-        { "chainId": 56, "address": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb" },
-        { "chainId": 137, "address": "0x1bF0c2541F820E775182832f06c0B7Fc27A25f67" },
-        { "chainId": 8453, "address": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb" },
-        { "chainId": 84532, "address": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb" },
-        { "chainId": 11155111, "address": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb" }
+        {
+          "chainId": 1,
+          "address": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb"
+        },
+        {
+          "chainId": 56,
+          "address": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb"
+        },
+        {
+          "chainId": 137,
+          "address": "0x1bF0c2541F820E775182832f06c0B7Fc27A25f67"
+        },
+        {
+          "chainId": 8453,
+          "address": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb"
+        },
+        {
+          "chainId": 84532,
+          "address": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb"
+        },
+        {
+          "chainId": 11155111,
+          "address": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb"
+        }
       ]
     }
   },
-  "metadata": { "owner": "Morpho DAO", "info": { "url": "https://docs.morpho.org/governance/organization/multisigs-and-addresses" } },
+  "metadata": {
+    "owner": "Morpho",
+    "info": {
+      "url": "https://docs.morpho.org/governance/organization/multisigs-and-addresses"
+    }
+  },
   "display": {
     "formats": {
       "borrow((address loanToken, address collateralToken, address oracle, address irm, uint256 lltv) marketParams, uint256 assets, uint256 shares, address onBehalf, address receiver)": {
-        "intent": "Borrow from Morpho Market",
-        "interpolatedIntent": "Borrow {#.assets} ({#.shares} shares) for {#.onBehalf} to {#.receiver}",
+        "intent": "Borrow",
         "fields": [
           {
-            "path": "#.marketParams",
-            "fields": [
-              { "label": "Loan Token", "format": "addressName", "params": { "types": ["token"] }, "path": "loanToken" },
-              { "label": "Collateral Token", "format": "addressName", "params": { "types": ["token"] }, "path": "collateralToken" },
-              {
-                "label": "Oracle",
-                "format": "addressName",
-                "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-                "path": "oracle"
-              },
-              {
-                "label": "Irm",
-                "format": "addressName",
-                "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-                "path": "irm"
-              },
-              { "label": "Liquidation LTV", "format": "unit", "params": { "base": "%", "decimals": 16 }, "path": "lltv" }
-            ]
-          },
-          {
-            "label": "Assets (0 if shares)",
+            "label": "Amount",
             "format": "tokenAmount",
-            "params": { "tokenPath": "#.marketParams.loanToken" },
+            "params": {
+              "tokenPath": "#.marketParams.loanToken"
+            },
             "path": "#.assets",
-            "visible": "always"
+            "visible": {
+              "ifNotIn": [
+                "0"
+              ]
+            }
           },
-          { "label": "Shares (0 if assets)", "format": "raw", "path": "#.shares", "visible": "always" },
           {
-            "label": "On Behalf",
+            "label": "Shares",
+            "format": "raw",
+            "path": "#.shares",
+            "visible": {
+              "ifNotIn": [
+                "0"
+              ]
+            }
+          },
+          {
+            "label": "To",
             "format": "addressName",
-            "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract"
+              ]
+            },
+            "path": "#.receiver"
+          },
+          {
+            "label": "Max loan-to-value",
+            "format": "unit",
+            "params": {
+              "base": "%",
+              "decimals": 16
+            },
+            "path": "#.marketParams.lltv"
+          },
+          {
             "path": "#.onBehalf",
-            "visible": "always"
+            "label": "onBehalf",
+            "format": "raw",
+            "visible": "never"
           },
           {
-            "label": "Receiver",
-            "format": "addressName",
-            "params": { "types": ["eoa", "wallet", "contract"] },
-            "path": "#.receiver",
-            "visible": "always"
+            "path": "#.marketParams.loanToken",
+            "label": "loanToken",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.collateralToken",
+            "label": "collateralToken",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.oracle",
+            "label": "oracle",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.irm",
+            "label": "irm",
+            "format": "raw",
+            "visible": "never"
           }
         ]
       },
       "repay((address loanToken, address collateralToken, address oracle, address irm, uint256 lltv) marketParams, uint256 assets, uint256 shares, address onBehalf, bytes data)": {
-        "intent": "Repay on Morpho Market",
-        "interpolatedIntent": "Repay {#.assets} ({#.shares} shares) for {#.onBehalf}",
+        "intent": "Repay",
         "fields": [
           {
-            "path": "#.marketParams",
-            "fields": [
-              { "label": "Loan Token", "format": "addressName", "params": { "types": ["token"] }, "path": "loanToken" },
-              { "label": "Collateral Token", "format": "addressName", "params": { "types": ["token"] }, "path": "collateralToken" },
-              {
-                "label": "Oracle",
-                "format": "addressName",
-                "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-                "path": "oracle"
-              },
-              {
-                "label": "Irm",
-                "format": "addressName",
-                "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-                "path": "irm"
-              },
-              { "label": "Liquidation LTV", "format": "unit", "params": { "base": "%", "decimals": 16 }, "path": "lltv" }
-            ]
-          },
-          {
-            "label": "Assets (0 if shares)",
+            "label": "Amount",
             "format": "tokenAmount",
-            "params": { "tokenPath": "#.marketParams.loanToken" },
+            "params": {
+              "tokenPath": "#.marketParams.loanToken"
+            },
             "path": "#.assets",
-            "visible": "always"
+            "visible": {
+              "ifNotIn": [
+                "0"
+              ]
+            }
           },
-          { "label": "Shares (0 if assets)", "format": "raw", "path": "#.shares", "visible": "always" },
           {
-            "label": "On Behalf",
-            "format": "addressName",
-            "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-            "path": "#.onBehalf",
-            "visible": "always"
+            "label": "Shares",
+            "format": "raw",
+            "path": "#.shares",
+            "visible": {
+              "ifNotIn": [
+                "0"
+              ]
+            }
           },
-          { "label": "Data", "format": "raw", "path": "#.data", "visible": "always" }
+          {
+            "label": "Debt of",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract"
+              ]
+            },
+            "path": "#.onBehalf"
+          },
+          {
+            "path": "#.marketParams.loanToken",
+            "label": "loanToken",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.collateralToken",
+            "label": "collateralToken",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.oracle",
+            "label": "oracle",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.irm",
+            "label": "irm",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.lltv",
+            "label": "lltv",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.data",
+            "label": "data",
+            "format": "raw",
+            "visible": "never"
+          }
         ]
       },
       "supply((address loanToken, address collateralToken, address oracle, address irm, uint256 lltv) marketParams, uint256 assets, uint256 shares, address onBehalf, bytes data)": {
-        "intent": "Supply on Morpho Market",
-        "interpolatedIntent": "Supply {#.assets} ({#.shares} shares) for {#.onBehalf}",
+        "intent": "Lend",
         "fields": [
           {
-            "path": "#.marketParams",
-            "fields": [
-              { "label": "Loan Token", "format": "addressName", "params": { "types": ["token"] }, "path": "loanToken" },
-              { "label": "Collateral Token", "format": "addressName", "params": { "types": ["token"] }, "path": "collateralToken" },
-              {
-                "label": "Oracle",
-                "format": "addressName",
-                "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-                "path": "oracle"
-              },
-              {
-                "label": "Irm",
-                "format": "addressName",
-                "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-                "path": "irm"
-              },
-              { "label": "Liquidation LTV", "format": "unit", "params": { "base": "%", "decimals": 16 }, "path": "lltv" }
-            ]
-          },
-          {
-            "label": "Assets (0 if shares)",
+            "label": "Amount",
             "format": "tokenAmount",
-            "params": { "tokenPath": "#.marketParams.loanToken" },
+            "params": {
+              "tokenPath": "#.marketParams.loanToken"
+            },
             "path": "#.assets",
-            "visible": "always"
+            "visible": {
+              "ifNotIn": [
+                "0"
+              ]
+            }
           },
-          { "label": "Shares (0 if assets)", "format": "raw", "path": "#.shares", "visible": "always" },
           {
-            "label": "On Behalf",
-            "format": "addressName",
-            "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-            "path": "#.onBehalf",
-            "visible": "always"
+            "label": "Shares",
+            "format": "raw",
+            "path": "#.shares",
+            "visible": {
+              "ifNotIn": [
+                "0"
+              ]
+            }
           },
-          { "label": "Data", "format": "raw", "path": "#.data", "visible": "always" }
+          {
+            "label": "For",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract"
+              ]
+            },
+            "path": "#.onBehalf"
+          },
+          {
+            "path": "#.marketParams.loanToken",
+            "label": "loanToken",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.collateralToken",
+            "label": "collateralToken",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.oracle",
+            "label": "oracle",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.irm",
+            "label": "irm",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.lltv",
+            "label": "lltv",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.data",
+            "label": "data",
+            "format": "raw",
+            "visible": "never"
+          }
         ]
       },
       "supplyCollateral((address loanToken, address collateralToken, address oracle, address irm, uint256 lltv) marketParams, uint256 assets, address onBehalf, bytes data)": {
-        "intent": "Supply Collateral on Morpho Market",
-        "interpolatedIntent": "Supply {#.assets} as collateral for {#.onBehalf}",
+        "intent": "Put up collateral",
+        "interpolatedIntent": "Put up {#.assets} for {#.onBehalf}",
         "fields": [
           {
-            "path": "#.marketParams",
-            "fields": [
-              { "label": "Loan Token", "format": "addressName", "params": { "types": ["token"] }, "path": "loanToken" },
-              { "label": "Collateral Token", "format": "addressName", "params": { "types": ["token"] }, "path": "collateralToken" },
-              {
-                "label": "Oracle",
-                "format": "addressName",
-                "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-                "path": "oracle"
-              },
-              {
-                "label": "Irm",
-                "format": "addressName",
-                "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-                "path": "irm"
-              },
-              { "label": "Liquidation LTV", "format": "unit", "params": { "base": "%", "decimals": 16 }, "path": "lltv" }
-            ]
-          },
-          {
-            "label": "Assets",
+            "label": "Amount",
             "format": "tokenAmount",
-            "params": { "tokenPath": "#.marketParams.collateralToken" },
-            "path": "#.assets",
-            "visible": "always"
+            "params": {
+              "tokenPath": "#.marketParams.collateralToken"
+            },
+            "path": "#.assets"
           },
           {
-            "label": "On Behalf",
+            "label": "For",
             "format": "addressName",
-            "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-            "path": "#.onBehalf",
-            "visible": "always"
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract"
+              ]
+            },
+            "path": "#.onBehalf"
           },
-          { "label": "Data", "format": "raw", "path": "#.data", "visible": "always" }
+          {
+            "path": "#.marketParams.lltv",
+            "label": "lltv",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.loanToken",
+            "label": "loanToken",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.collateralToken",
+            "label": "collateralToken",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.oracle",
+            "label": "oracle",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.irm",
+            "label": "irm",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.data",
+            "label": "data",
+            "format": "raw",
+            "visible": "never"
+          }
         ]
       },
       "withdraw((address loanToken, address collateralToken, address oracle, address irm, uint256 lltv) marketParams, uint256 assets, uint256 shares, address onBehalf, address receiver)": {
-        "intent": "Withdraw from Morpho Market",
-        "interpolatedIntent": "Withdraw {#.assets} ({#.shares} shares) for {#.onBehalf} to {#.receiver}",
+        "intent": "Withdraw",
         "fields": [
           {
-            "path": "#.marketParams",
-            "fields": [
-              { "label": "Loan Token", "format": "addressName", "params": { "types": ["token"] }, "path": "loanToken" },
-              { "label": "Collateral Token", "format": "addressName", "params": { "types": ["token"] }, "path": "collateralToken" },
-              {
-                "label": "Oracle",
-                "format": "addressName",
-                "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-                "path": "oracle"
-              },
-              {
-                "label": "Irm",
-                "format": "addressName",
-                "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-                "path": "irm"
-              },
-              { "label": "Liquidation LTV", "format": "unit", "params": { "base": "%", "decimals": 16 }, "path": "lltv" }
-            ]
-          },
-          {
-            "label": "Assets (0 if shares)",
+            "label": "Amount",
             "format": "tokenAmount",
-            "params": { "tokenPath": "#.marketParams.loanToken" },
+            "params": {
+              "tokenPath": "#.marketParams.loanToken"
+            },
             "path": "#.assets",
-            "visible": "always"
-          },
-          { "label": "Shares (0 if assets)", "format": "raw", "path": "#.shares", "visible": "always" },
-          {
-            "label": "On Behalf",
-            "format": "addressName",
-            "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-            "path": "#.onBehalf",
-            "visible": "always"
+            "visible": {
+              "ifNotIn": [
+                "0"
+              ]
+            }
           },
           {
-            "label": "Receiver",
+            "label": "Shares",
+            "format": "raw",
+            "path": "#.shares",
+            "visible": {
+              "ifNotIn": [
+                "0"
+              ]
+            }
+          },
+          {
+            "label": "To",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet", "contract"] },
-            "path": "#.receiver",
-            "visible": "always"
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract"
+              ]
+            },
+            "path": "#.receiver"
+          },
+          {
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract"
+              ]
+            },
+            "path": "#.onBehalf"
+          },
+          {
+            "path": "#.marketParams.loanToken",
+            "label": "loanToken",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.collateralToken",
+            "label": "collateralToken",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.oracle",
+            "label": "oracle",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.irm",
+            "label": "irm",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.lltv",
+            "label": "lltv",
+            "format": "raw",
+            "visible": "never"
           }
         ]
       },
       "withdrawCollateral((address loanToken, address collateralToken, address oracle, address irm, uint256 lltv) marketParams, uint256 assets, address onBehalf, address receiver)": {
-        "intent": "Withdraw Collateral from Morpho Market",
-        "interpolatedIntent": "Withdraw {#.assets} of collateral for {#.onBehalf} to {#.receiver}",
+        "intent": "Take back collateral",
+        "interpolatedIntent": "Take back {#.assets} to {#.receiver}",
         "fields": [
           {
-            "path": "#.marketParams",
-            "fields": [
-              { "label": "Loan Token", "format": "addressName", "params": { "types": ["token"] }, "path": "loanToken" },
-              { "label": "Collateral Token", "format": "addressName", "params": { "types": ["token"] }, "path": "collateralToken" },
-              {
-                "label": "Oracle",
-                "format": "addressName",
-                "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-                "path": "oracle"
-              },
-              {
-                "label": "Irm",
-                "format": "addressName",
-                "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-                "path": "irm"
-              },
-              { "label": "Liquidation LTV", "format": "unit", "params": { "base": "%", "decimals": 16 }, "path": "lltv" }
-            ]
-          },
-          {
-            "label": "Assets",
+            "label": "Amount",
             "format": "tokenAmount",
-            "params": { "tokenPath": "#.marketParams.collateralToken" },
-            "path": "#.assets",
-            "visible": "always"
+            "params": {
+              "tokenPath": "#.marketParams.collateralToken"
+            },
+            "path": "#.assets"
           },
           {
-            "label": "On Behalf",
+            "label": "To",
             "format": "addressName",
-            "params": { "types": ["wallet", "eoa", "contract", "token", "collection"] },
-            "path": "#.onBehalf",
-            "visible": "always"
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract"
+              ]
+            },
+            "path": "#.receiver"
           },
           {
-            "label": "Receiver",
+            "label": "From",
             "format": "addressName",
-            "params": { "types": ["eoa", "wallet", "contract"] },
-            "path": "#.receiver",
-            "visible": "always"
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract"
+              ]
+            },
+            "path": "#.onBehalf"
+          },
+          {
+            "path": "#.marketParams.loanToken",
+            "label": "loanToken",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.collateralToken",
+            "label": "collateralToken",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.oracle",
+            "label": "oracle",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.irm",
+            "label": "irm",
+            "format": "raw",
+            "visible": "never"
+          },
+          {
+            "path": "#.marketParams.lltv",
+            "label": "lltv",
+            "format": "raw",
+            "visible": "never"
           }
         ]
       }
