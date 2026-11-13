@@ -1,0 +1,101 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ENS v2 ETHRegistrar",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0xd6d8369e55c94ae8afa714e6cf7ab5be54d5cc81"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "ENS",
+    "contractName": "ETHRegistrar",
+    "info": {
+      "url": "https://ens.domains"
+    }
+  },
+  "display": {
+    "formats": {
+      "commit(bytes32 commitment)": {
+        "intent": "Reserve an ENS name (step 1 of 2)",
+        "fields": [
+          {
+            "path": "commitment",
+            "label": "Commitment",
+            "visible": "never"
+          }
+        ]
+      },
+      "register(string label,address owner,bytes32 secret,address subregistry,address resolver,uint64 duration,address paymentToken,bytes32 referrer)": {
+        "intent": "Register ENS name",
+        "interpolatedIntent": "Register {label}.eth",
+        "fields": [
+          {
+            "path": "label",
+            "label": "Name (.eth)",
+            "format": "raw"
+          },
+          {
+            "path": "owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "duration",
+            "label": "Duration (h:mm:ss)",
+            "format": "duration"
+          },
+          {
+            "path": "paymentToken",
+            "label": "Pay with",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "secret",
+            "label": "Secret",
+            "visible": "never"
+          },
+          {
+            "path": "subregistry",
+            "label": "Subregistry",
+            "visible": "never"
+          },
+          {
+            "path": "resolver",
+            "label": "Resolver",
+            "visible": "never"
+          },
+          {
+            "path": "referrer",
+            "label": "Referrer",
+            "visible": "never"
+          }
+        ]
+      }
+    }
+  }
+}
