@@ -99,6 +99,94 @@
           { "path": "agreementSignature", "label": "Terms signature", "visible": "never" }
         ]
       },
+      "createLegacyV2WithMaxFee((address user, uint256 percent)[] distributions_, (uint256 lackOfOutgoingTxRange, uint256 delayLayer2, uint256 delayLayer3) extraConfig_, (address user, uint256 percent) layer2Distribution_, (address user, uint256 percent) layer3Distribution_, (((address token, uint160 amount, uint48 expiration, uint48 nonce)[] details, address spender, uint256 sigDeadline) permitBatch, bytes signature) permit2_, uint256 signatureTimestamp, bytes agreementSignature, uint256 maxFeeBps_)": {
+        "$id": "createLegacyV2WithMaxFee",
+        "intent": "Create legacy, approve tokens",
+        "fields": [
+          {
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "distributions_.[].user",
+                "label": "Beneficiary",
+                "format": "addressName",
+                "params": { "sources": ["local", "ens"] }
+              },
+              { "path": "distributions_.[].percent", "label": "Share", "format": "unit", "params": { "base": "%", "decimals": 4 } }
+            ]
+          },
+          { "path": "distributions_.[]", "label": "Beneficiaries", "visible": "never" },
+          { "path": "extraConfig_.lackOfOutgoingTxRange", "label": "Inactivity period", "format": "duration" },
+          {
+            "path": "layer2Distribution_.user",
+            "label": "Backup beneficiary",
+            "format": "addressName",
+            "params": { "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "path": "layer2Distribution_.percent",
+            "label": "Backup share",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.backupShare" }
+          },
+          { "path": "extraConfig_.delayLayer2", "label": "Backup delay", "format": "duration", "visible": { "ifNotIn": [0] } },
+          {
+            "path": "layer3Distribution_.user",
+            "label": "Second backup",
+            "format": "addressName",
+            "params": { "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "path": "layer3Distribution_.percent",
+            "label": "Second backup share",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.backupShare" }
+          },
+          { "path": "extraConfig_.delayLayer3", "label": "Second backup delay", "format": "duration", "visible": { "ifNotIn": [0] } },
+          { "path": "maxFeeBps_", "label": "Maximum claim fee", "format": "unit", "params": { "base": "%", "decimals": 2 } },
+          {
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "permit2_.permitBatch.details.[].token",
+                "label": "Token covered",
+                "format": "addressName",
+                "params": { "types": ["token"], "sources": ["local"] }
+              },
+              {
+                "path": "permit2_.permitBatch.details.[].amount",
+                "label": "Amount covered",
+                "format": "tokenAmount",
+                "params": {
+                  "tokenPath": "permit2_.permitBatch.details.[].token",
+                  "threshold": "0xffffffffffffffffffffffffffffffffffffffff",
+                  "message": "Unlimited"
+                }
+              },
+              {
+                "path": "permit2_.permitBatch.details.[].expiration",
+                "label": "Permission expires",
+                "format": "date",
+                "params": { "encoding": "timestamp" }
+              }
+            ]
+          },
+          {
+            "path": "permit2_.permitBatch.spender",
+            "label": "Permission held by",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] }
+          },
+          { "path": "permit2_.permitBatch.details.[].nonce", "label": "Permit nonce", "visible": "never" },
+          { "path": "permit2_.permitBatch.details.[]", "label": "Permit details", "visible": "never" },
+          { "path": "permit2_.permitBatch.sigDeadline", "label": "Permit deadline", "visible": "never" },
+          { "path": "permit2_.signature", "label": "Permit signature", "visible": "never" },
+          { "path": "signatureTimestamp", "label": "Terms timestamp", "visible": "never" },
+          { "path": "agreementSignature", "label": "Terms signature", "visible": "never" }
+        ]
+      },
       "avtiveAlive(uint256 legacyId_)": {
         "$id": "avtiveAlive",
         "intent": "Check in",
@@ -303,6 +391,11 @@
         "intent": "Delete legacy",
         "interpolatedIntent": "Delete legacy {legacyId_}",
         "fields": [{ "path": "legacyId_", "label": "Legacy", "format": "raw" }]
+      },
+      "releaseCreateFlag(uint256 legacyId_)": {
+        "$id": "releaseCreateFlag",
+        "intent": "Allow creating a new legacy",
+        "fields": [{ "path": "legacyId_", "label": "Ended legacy", "format": "raw" }]
       },
       "activeLegacy(uint256 legacyId_, address[] assets_, bool isETH_)": {
         "$id": "activeLegacy",
