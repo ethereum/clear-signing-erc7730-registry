@@ -1,0 +1,282 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "LlamaPay USDC",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x3e67cc2c7fff86d9870db9d02c43e789b52fb296"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "LlamaPay",
+    "contractName": "LlamaPay",
+    "info": {
+      "url": "https://llamapay.io"
+    }
+  },
+  "display": {
+    "formats": {
+      "deposit(uint256 amount)": {
+        "intent": "Deposit to LlamaPay",
+        "interpolatedIntent": "Deposit {amount} to LlamaPay",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+            }
+          }
+        ]
+      },
+      "withdrawPayer(uint256 amount)": {
+        "intent": "Withdraw from LlamaPay",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "unit",
+            "params": {
+              "base": " USDC",
+              "decimals": 20
+            }
+          }
+        ]
+      },
+      "withdraw(address from,address to,uint216 amountPerSec)": {
+        "intent": "Pay out a stream",
+        "fields": [
+          {
+            "path": "from",
+            "label": "From",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "amountPerSec",
+            "label": "Rate",
+            "format": "unit",
+            "params": {
+              "base": " USDC a second",
+              "decimals": 20
+            }
+          }
+        ]
+      },
+      "createStream(address to,uint216 amountPerSec)": {
+        "intent": "Start a stream",
+        "fields": [
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "amountPerSec",
+            "label": "Rate",
+            "format": "unit",
+            "params": {
+              "base": " USDC a second",
+              "decimals": 20
+            }
+          }
+        ]
+      },
+      "depositAndCreate(uint256 amountToDeposit,address to,uint216 amountPerSec)": {
+        "intent": "Deposit and start a stream",
+        "fields": [
+          {
+            "path": "amountToDeposit",
+            "label": "Deposit",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+            }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "amountPerSec",
+            "label": "Rate",
+            "format": "unit",
+            "params": {
+              "base": " USDC a second",
+              "decimals": 20
+            }
+          }
+        ]
+      },
+      "cancelStream(address to,uint216 amountPerSec)": {
+        "intent": "Cancel a stream",
+        "fields": [
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "amountPerSec",
+            "label": "Rate",
+            "format": "unit",
+            "params": {
+              "base": " USDC a second",
+              "decimals": 20
+            }
+          }
+        ]
+      },
+      "pauseStream(address to,uint216 amountPerSec)": {
+        "intent": "Pause a stream",
+        "fields": [
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "amountPerSec",
+            "label": "Rate",
+            "format": "unit",
+            "params": {
+              "base": " USDC a second",
+              "decimals": 20
+            }
+          }
+        ]
+      },
+      "modifyStream(address oldTo,uint216 oldAmountPerSec,address to,uint216 amountPerSec)": {
+        "intent": "Change a stream",
+        "fields": [
+          {
+            "path": "oldTo",
+            "label": "Was to",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "oldAmountPerSec",
+            "label": "Was rate",
+            "format": "unit",
+            "params": {
+              "base": " USDC a second",
+              "decimals": 20
+            }
+          },
+          {
+            "path": "to",
+            "label": "Now to",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            }
+          },
+          {
+            "path": "amountPerSec",
+            "label": "Now rate",
+            "format": "unit",
+            "params": {
+              "base": " USDC a second",
+              "decimals": 20
+            }
+          }
+        ]
+      }
+    }
+  }
+}
