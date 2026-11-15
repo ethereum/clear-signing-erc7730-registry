@@ -1,0 +1,81 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-Permit2.json",
+  "dataProvider": {
+    "tokens": {
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "approve: 100 USDC to the Universal Router (a real mainnet tx, rebuilt unsigned) - chain 1",
+      "rawTx": "0x02f8ad01048402faf0808423c346008303d09094000000000022d473030f116ddee9f6b43ac78ba380b88487517c45000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000066a9893cc07d91d95644aedd05d03f95e1dba8af0000000000000000000000000000000000000000000000000000000005f5e100000000000000000000000000000000000000000000000000000000006af9d612c0",
+      "expected": {
+        "intent": "Approve through Permit2",
+        "owner": "Uniswap",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x66a9893cC07D91D95644AEDD05D03f95e1dBA8Af"
+          },
+          {
+            "label": "Amount",
+            "value": "100 USDC"
+          },
+          {
+            "label": "Until",
+            "value": "2026-11-15 15:56:02Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "approve: unlimited USDC to the Universal Router (a real mainnet tx, rebuilt unsigned) - chain 1",
+      "rawTx": "0x02f8ac01820bb3824d22841a502e1782794694000000000022d473030f116ddee9f6b43ac78ba380b88487517c45000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000066a9893cc07d91d95644aedd05d03f95e1dba8af000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000006af9d0c6c0",
+      "expected": {
+        "intent": "Approve through Permit2",
+        "owner": "Uniswap",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x66a9893cC07D91D95644AEDD05D03f95e1dBA8Af"
+          },
+          {
+            "label": "Amount",
+            "value": "Unlimited USDC"
+          },
+          {
+            "label": "Until",
+            "value": "2026-11-15 15:33:26Z"
+          }
+        ]
+      }
+    },
+    {
+      "description": "approve: 0 USDC, which takes an approval back (a real mainnet tx, rebuilt unsigned) - chain 1",
+      "rawTx": "0x02f8ac010b843b9aca00844dc8b84082b48094000000000022d473030f116ddee9f6b43ac78ba380b88487517c45000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000023617e59a5925b2a4bf75d73ff6711cd0b29de850000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006b215dc4c0",
+      "expected": {
+        "intent": "Approve through Permit2",
+        "owner": "Uniswap",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x23617e59A5925b2A4Bf75d73ff6711cD0b29De85"
+          },
+          {
+            "label": "Amount",
+            "value": "0 USDC"
+          },
+          {
+            "label": "Until",
+            "value": "2026-12-15 15:33:24Z"
+          }
+        ]
+      }
+    }
+  ]
+}
