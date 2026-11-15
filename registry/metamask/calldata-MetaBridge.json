@@ -1,0 +1,26 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "MetaMask MetaBridge",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x0439e60f02a8900a951603950d8d4527f400c3f1" }] }
+  },
+  "metadata": { "owner": "MetaMask", "contractName": "MetaBridge", "info": { "url": "https://metamask.io" } },
+  "display": {
+    "formats": {
+      "bridge(string adapterId, address srcToken, uint256 amount, bytes data)": {
+        "intent": "Bridge",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "srcToken", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] },
+            "visible": "always"
+          },
+          { "path": "data.[64:96]", "label": "To chain", "format": "chainId", "visible": "always" },
+          { "path": "adapterId", "label": "Route", "format": "raw", "visible": "always" }
+        ]
+      }
+    }
+  }
+}
