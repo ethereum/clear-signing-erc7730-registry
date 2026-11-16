@@ -1,0 +1,101 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 11155111,
+          "address": "0x734B8a9CE648ACEd3a81f6A675702a471F9494fd"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Voiddeeds",
+    "contractName": "DeedCollection",
+    "info": {
+      "url": "https://voiddeeds.xyz/"
+    },
+    "enums": {
+      "TollNetworks": {
+        "33111": "Curtis (APE)",
+        "46630": "Robinhood (ETH)",
+        "84532": "Base Sepolia (ETH)",
+        "763373": "Ink Sepolia (ETH)",
+        "5042002": "Arc Testnet (USDC)",
+        "11155111": "Sepolia (ETH)"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "configure(uint256 id,(uint256 chainId,uint256 amount)[] changes,string information,(address wallet,uint16 bps)[] recipients)": {
+        "intent": "Configure Deed",
+        "interpolatedIntent": "Update Deed #{id}",
+        "fields": [
+          {
+            "path": "id",
+            "label": "Deed ID",
+            "format": "raw"
+          },
+          {
+            "label": "Toll changes",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "chainId",
+                "label": "Network and currency",
+                "format": "enum",
+                "params": {
+                  "$ref": "$.metadata.enums.TollNetworks"
+                }
+              },
+              {
+                "path": "amount",
+                "label": "Toll per execution",
+                "format": "unit",
+                "params": {
+                  "base": "",
+                  "decimals": 18
+                }
+              }
+            ],
+            "path": "changes.[]"
+          },
+          {
+            "path": "information",
+            "label": "Public info URI",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "label": "Custom recipients",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "wallet",
+                "label": "Recipient wallet",
+                "format": "raw"
+              },
+              {
+                "path": "bps",
+                "label": "Share of Deed funds",
+                "format": "unit",
+                "params": {
+                  "base": "%",
+                  "decimals": 2
+                }
+              }
+            ],
+            "path": "recipients.[]"
+          },
+          {
+            "value": "Empty recipients pay owner; listed shares divide the 90% Deed share",
+            "label": "Deed payout rule",
+            "format": "raw"
+          }
+        ]
+      }
+    }
+  }
+}
