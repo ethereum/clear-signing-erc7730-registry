@@ -26,10 +26,8 @@
         { "chainId": 988, "address": "0x026F252016A7C47CDEf1F05a3Fc9E20C92a49C37" },
         { "chainId": 999, "address": "0x0a0758d937d1059c356D4714e57F5df0239bce1A" },
         { "chainId": 1088, "address": "0x24ca98fB6972F5eE05f0dB00595c7f68D9FaFd68" },
-        { "chainId": 1135, "address": "0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE" },
         { "chainId": 1329, "address": "0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE" },
         { "chainId": 1480, "address": "0x198FC70Dfe05E755C81e54bd67Bff3F729344B9b" },
-        { "chainId": 1625, "address": "0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE" },
         { "chainId": 1672, "address": "0xFf70F4A1d11995621854F3692acF286d8aCd04b2" },
         { "chainId": 1776, "address": "0xeCeC3970Ca674278DA8D9B1c484ACaF6B20181F5" },
         { "chainId": 1868, "address": "0x864b314D4C5a0399368609581d3E8933a63b9232" },
@@ -3574,6 +3572,90 @@
           {
             "path": "_unitData.depositAddress",
             "label": "Unit Deposit Address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount", "visible": "always" },
+          { "path": "_bridgeData.transactionId", "label": "Transaction Id", "visible": "never" },
+          { "path": "_bridgeData.bridge", "label": "Bridge", "visible": "never" },
+          { "path": "_bridgeData.integrator", "label": "Integrator", "visible": "never" },
+          { "path": "_bridgeData.referrer", "label": "Referrer", "visible": "never" },
+          { "path": "_bridgeData.hasSourceSwaps", "label": "Has Source Swaps", "visible": "never" },
+          { "path": "_bridgeData.hasDestinationCall", "label": "Has Destination Call", "visible": "never" },
+          { "path": "_swapData.[].callData", "label": "Swap Data Call Data", "visible": "never" },
+          { "path": "_swapData.[].callTo", "label": "Swap Data Call To", "visible": "never" },
+          { "path": "_swapData.[].approveTo", "label": "Swap Data Approve To", "visible": "never" }
+        ]
+      },
+      "startBridgeTokensViaEco((bytes32 transactionId, string bridge, string integrator, address referrer, address sendingAssetId, address receiver, uint256 minAmount, uint256 destinationChainId, bool hasSourceSwaps, bool hasDestinationCall) _bridgeData, (bytes nonEVMReceiver, address prover, uint64 rewardDeadline, uint64 intentDestination, bytes encodedRoute, bytes32 solanaATA, address refundRecipient, uint256 deadline, bytes signature) _ecoData)": {
+        "intent": "Bridge via Eco",
+        "interpolatedIntent": "Bridge {_bridgeData.minAmount} via Eco to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
+        "fields": [
+          {
+            "path": "_bridgeData.minAmount",
+            "label": "Amount to Bridge",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_bridgeData.sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+            "visible": "always"
+          },
+          { "path": "_bridgeData.destinationChainId", "label": "Destination Chain", "format": "raw", "visible": "always" },
+          {
+            "path": "_bridgeData.receiver",
+            "label": "Recipient (0x11f1\u202611F1 = non-EVM, see below)",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "_ecoData.nonEVMReceiver", "label": "Non-EVM Recipient", "format": "raw", "visible": { "ifNotIn": [0] } },
+          { "path": "_ecoData.solanaATA", "label": "Solana Token Account", "format": "raw", "visible": { "ifNotIn": [0] } },
+          {
+            "path": "_ecoData.refundRecipient",
+            "label": "Refund Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "optional"
+          },
+          { "path": "_bridgeData.transactionId", "label": "Transaction Id", "visible": "never" },
+          { "path": "_bridgeData.bridge", "label": "Bridge", "visible": "never" },
+          { "path": "_bridgeData.integrator", "label": "Integrator", "visible": "never" },
+          { "path": "_bridgeData.referrer", "label": "Referrer", "visible": "never" },
+          { "path": "_bridgeData.hasSourceSwaps", "label": "Has Source Swaps", "visible": "never" },
+          { "path": "_bridgeData.hasDestinationCall", "label": "Has Destination Call", "visible": "never" }
+        ]
+      },
+      "swapAndStartBridgeTokensViaEco((bytes32 transactionId, string bridge, string integrator, address referrer, address sendingAssetId, address receiver, uint256 minAmount, uint256 destinationChainId, bool hasSourceSwaps, bool hasDestinationCall) _bridgeData, (address callTo, address approveTo, address sendingAssetId, address receivingAssetId, uint256 fromAmount, bytes callData, bool requiresDeposit)[] _swapData, (bytes nonEVMReceiver, address prover, uint64 rewardDeadline, uint64 intentDestination, bytes encodedRoute, bytes32 solanaATA, address refundRecipient, uint256 deadline, bytes signature) _ecoData)": {
+        "intent": "Swap & Bridge via Eco",
+        "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via Eco to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
+        "fields": [
+          {
+            "path": "_swapData.[].fromAmount",
+            "label": "Swap Step Input",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+            "visible": "always"
+          },
+          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
+          {
+            "path": "_bridgeData.minAmount",
+            "label": "Amount to Bridge (swap excess to refund)",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "_bridgeData.sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+            "visible": "always"
+          },
+          { "path": "_bridgeData.destinationChainId", "label": "Destination Chain", "format": "raw", "visible": "always" },
+          {
+            "path": "_bridgeData.receiver",
+            "label": "Recipient (0x11f1\u202611F1 = non-EVM, see below)",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "_ecoData.nonEVMReceiver", "label": "Non-EVM Recipient", "format": "raw", "visible": { "ifNotIn": [0] } },
+          { "path": "_ecoData.solanaATA", "label": "Solana Token Account", "format": "raw", "visible": { "ifNotIn": [0] } },
+          {
+            "path": "_ecoData.refundRecipient",
+            "label": "Refund Recipient",
             "format": "addressName",
             "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
             "visible": "always"
