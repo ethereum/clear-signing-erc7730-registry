@@ -1,0 +1,52 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Multicall3",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xca11bde05977b3631167028862be2a173976ca11" },
+        { "chainId": 10, "address": "0xca11bde05977b3631167028862be2a173976ca11" },
+        { "chainId": 56, "address": "0xca11bde05977b3631167028862be2a173976ca11" },
+        { "chainId": 100, "address": "0xca11bde05977b3631167028862be2a173976ca11" },
+        { "chainId": 137, "address": "0xca11bde05977b3631167028862be2a173976ca11" },
+        { "chainId": 8453, "address": "0xca11bde05977b3631167028862be2a173976ca11" },
+        { "chainId": 42161, "address": "0xca11bde05977b3631167028862be2a173976ca11" },
+        { "chainId": 42220, "address": "0xca11bde05977b3631167028862be2a173976ca11" },
+        { "chainId": 43114, "address": "0xca11bde05977b3631167028862be2a173976ca11" },
+        { "chainId": 84532, "address": "0xca11bde05977b3631167028862be2a173976ca11" },
+        { "chainId": 11155111, "address": "0xca11bde05977b3631167028862be2a173976ca11" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Multicall3", "contractName": "Multicall3", "info": { "url": "https://www.multicall3.com" } },
+  "display": {
+    "formats": {
+      "aggregate3((address target, bool allowFailure, bytes callData)[] calls)": {
+        "intent": "Batch of calls",
+        "fields": [{ "path": "calls.[].callData", "label": "Call", "format": "calldata", "params": { "calleePath": "calls.[].target" } }]
+      },
+      "aggregate3Value((address target, bool allowFailure, uint256 value, bytes callData)[] calls)": {
+        "intent": "Batch of calls",
+        "fields": [
+          {
+            "path": "calls.[].callData",
+            "label": "Call",
+            "format": "calldata",
+            "params": { "calleePath": "calls.[].target", "amountPath": "calls.[].value" }
+          }
+        ]
+      },
+      "aggregate((address target, bytes callData)[] calls)": {
+        "intent": "Batch of calls",
+        "fields": [{ "path": "calls.[].callData", "label": "Call", "format": "calldata", "params": { "calleePath": "calls.[].target" } }]
+      },
+      "tryAggregate(bool requireSuccess, (address target, bytes callData)[] calls)": {
+        "intent": "Batch of calls",
+        "fields": [
+          { "path": "requireSuccess", "label": "All calls must succeed", "format": "raw" },
+          { "path": "calls.[].callData", "label": "Call", "format": "calldata", "params": { "calleePath": "calls.[].target" } }
+        ]
+      }
+    }
+  }
+}
