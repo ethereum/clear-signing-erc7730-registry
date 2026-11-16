@@ -1,0 +1,116 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "CryptoartNFT",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x7553a5cEd41c29FA4833ebE65ec9da6e2a9eFDF0" }] }
+  },
+  "metadata": { "owner": "Cryptoart", "contractName": "CryptoartNFT", "info": { "url": "https://cryptoart.com" } },
+  "display": {
+    "formats": {
+      "mint((address recipient,uint256 tokenId,uint256 tokenPrice,uint8 mintType,uint256 requiredBurnOrTradeCount,uint256 deadline,bytes signature) data,(string uriWhenRedeemable,string uriWhenNotRedeemable,uint8 initialURIIndex) tokenUriSet)": {
+        "$id": "mint",
+        "intent": "Mint Cryptoart NFT",
+        "fields": [
+          { "path": "data.tokenId", "label": "Token to mint", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          {
+            "path": "data.recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "Amount to pay", "format": "amount" },
+          { "path": "data.tokenPrice", "label": "Mint price", "format": "amount" },
+          { "path": "data.deadline", "label": "Valid until", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "data.mintType", "label": "Mint type", "format": "raw", "visible": "never" },
+          { "path": "data.requiredBurnOrTradeCount", "label": "Required token count", "format": "raw", "visible": "never" },
+          { "path": "data.signature", "label": "Authorization", "format": "raw", "visible": "never" },
+          { "path": "tokenUriSet.uriWhenRedeemable", "label": "Redeemable URI", "format": "raw", "visible": "never" },
+          { "path": "tokenUriSet.uriWhenNotRedeemable", "label": "Non-redeemable URI", "format": "raw", "visible": "never" },
+          { "path": "tokenUriSet.initialURIIndex", "label": "Initial metadata", "format": "raw", "visible": "never" }
+        ]
+      },
+      "claim((address recipient,uint256 tokenId,uint256 tokenPrice,uint8 mintType,uint256 requiredBurnOrTradeCount,uint256 deadline,bytes signature) data,(string uriWhenRedeemable,string uriWhenNotRedeemable,uint8 initialURIIndex) tokenUriSet)": {
+        "$id": "claim",
+        "intent": "Claim Cryptoart NFT",
+        "fields": [
+          { "path": "data.tokenId", "label": "Token to claim", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          {
+            "path": "data.recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "Amount to pay", "format": "amount" },
+          { "path": "data.tokenPrice", "label": "Mint price", "format": "amount" },
+          { "path": "data.deadline", "label": "Valid until", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "data.mintType", "label": "Mint type", "format": "raw", "visible": "never" },
+          { "path": "data.requiredBurnOrTradeCount", "label": "Required token count", "format": "raw", "visible": "never" },
+          { "path": "data.signature", "label": "Authorization", "format": "raw", "visible": "never" },
+          { "path": "tokenUriSet.uriWhenRedeemable", "label": "Redeemable URI", "format": "raw", "visible": "never" },
+          { "path": "tokenUriSet.uriWhenNotRedeemable", "label": "Non-redeemable URI", "format": "raw", "visible": "never" },
+          { "path": "tokenUriSet.initialURIIndex", "label": "Initial metadata", "format": "raw", "visible": "never" }
+        ]
+      },
+      "burnAndMint(uint256[] tokenIds,(address recipient,uint256 tokenId,uint256 tokenPrice,uint8 mintType,uint256 requiredBurnOrTradeCount,uint256 deadline,bytes signature) data,(string uriWhenRedeemable,string uriWhenNotRedeemable,uint8 initialURIIndex) tokenUriSet)": {
+        "$id": "burnAndMint",
+        "intent": "Burn to mint Cryptoart NFT",
+        "fields": [
+          { "path": "tokenIds.[]", "label": "Token to burn", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          { "path": "data.tokenId", "label": "Token to mint", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          {
+            "path": "data.recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "Amount to pay", "format": "amount" },
+          { "path": "data.deadline", "label": "Valid until", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "data.tokenPrice", "label": "Mint price", "format": "amount", "visible": "never" },
+          { "path": "data.mintType", "label": "Mint type", "format": "raw", "visible": "never" },
+          { "path": "data.requiredBurnOrTradeCount", "label": "Required token count", "format": "raw", "visible": "never" },
+          { "path": "data.signature", "label": "Authorization", "format": "raw", "visible": "never" },
+          { "path": "tokenUriSet.uriWhenRedeemable", "label": "Redeemable URI", "format": "raw", "visible": "never" },
+          { "path": "tokenUriSet.uriWhenNotRedeemable", "label": "Non-redeemable URI", "format": "raw", "visible": "never" },
+          { "path": "tokenUriSet.initialURIIndex", "label": "Initial metadata", "format": "raw", "visible": "never" }
+        ]
+      },
+      "mintWithTrade(uint256[] tradedTokenIds,(address recipient,uint256 tokenId,uint256 tokenPrice,uint8 mintType,uint256 requiredBurnOrTradeCount,uint256 deadline,bytes signature) data,(string uriWhenRedeemable,string uriWhenNotRedeemable,uint8 initialURIIndex) tokenUriSet)": {
+        "$id": "mintWithTrade",
+        "intent": "Trade to mint Cryptoart NFT",
+        "fields": [
+          { "path": "tradedTokenIds.[]", "label": "Token to trade in", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          { "path": "data.tokenId", "label": "Token to mint", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          {
+            "path": "data.recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "Amount to pay", "format": "amount" },
+          { "path": "data.deadline", "label": "Valid until", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "data.tokenPrice", "label": "Mint price", "format": "amount", "visible": "never" },
+          { "path": "data.mintType", "label": "Mint type", "format": "raw", "visible": "never" },
+          { "path": "data.requiredBurnOrTradeCount", "label": "Required token count", "format": "raw", "visible": "never" },
+          { "path": "data.signature", "label": "Authorization", "format": "raw", "visible": "never" },
+          { "path": "tokenUriSet.uriWhenRedeemable", "label": "Redeemable URI", "format": "raw", "visible": "never" },
+          { "path": "tokenUriSet.uriWhenNotRedeemable", "label": "Non-redeemable URI", "format": "raw", "visible": "never" },
+          { "path": "tokenUriSet.initialURIIndex", "label": "Initial metadata", "format": "raw", "visible": "never" }
+        ]
+      },
+      "burn(uint256 tokenId)": {
+        "$id": "burn",
+        "intent": "Burn Cryptoart NFT",
+        "fields": [{ "path": "tokenId", "label": "Token to burn", "format": "nftName", "params": { "collectionPath": "@.to" } }]
+      },
+      "addStory(uint256 tokenId,string collectorName,string story)": {
+        "$id": "addStory",
+        "intent": "Add story to Cryptoart NFT",
+        "fields": [
+          { "path": "tokenId", "label": "Token", "format": "nftName", "params": { "collectionPath": "@.to" } },
+          { "path": "story", "label": "Story", "format": "raw" },
+          { "path": "collectorName", "label": "Name", "format": "raw", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
