@@ -1,0 +1,65 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "SquidRouter",
+    "contract": { "deployments": [{ "chainId": 137, "address": "0xce16F69375520ab01377ce7B88f5BA8C48F8D666" }] }
+  },
+  "metadata": {
+    "owner": "Squid",
+    "contractName": "SquidRouter",
+    "info": { "url": "https://squidrouter.com" },
+    "constants": { "nativeToken": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" }
+  },
+  "display": {
+    "definitions": {
+      "amountIn": {
+        "label": "Amount",
+        "format": "tokenAmount",
+        "params": { "tokenPath": "#.token", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" }
+      },
+      "nativeValue": { "label": "Native value", "format": "amount" }
+    },
+    "formats": {
+      "fundAndRunMulticall(address token,uint256 amount,(uint8 callType,address target,uint256 value,bytes callData,bytes payload)[] calls)": {
+        "$id": "fundAndRunMulticall",
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {#.amount}",
+        "fields": [
+          { "path": "#.amount", "$ref": "$.display.definitions.amountIn", "visible": "always" },
+          { "path": "@.value", "$ref": "$.display.definitions.nativeValue", "visible": "always" },
+          { "path": "#.calls.[].callType", "label": "Call type", "visible": "never" },
+          { "path": "#.calls.[].target", "label": "Call target", "visible": "never" },
+          { "path": "#.calls.[].value", "label": "Call value", "visible": "never" },
+          { "path": "#.calls.[].callData", "label": "Call data", "visible": "never" },
+          { "path": "#.calls.[].payload", "label": "Call payload", "visible": "never" }
+        ]
+      },
+      "callBridgeCall(address token,uint256 amount,(uint8 callType,address target,uint256 value,bytes callData,bytes payload)[] calls,string bridgedTokenSymbol,string destinationChain,string destinationAddress,bytes payload,address gasRefundRecipient,bool enableExpress)": {
+        "$id": "callBridgeCall",
+        "intent": "Bridge",
+        "interpolatedIntent": "Bridge {#.amount} to {#.destinationChain}",
+        "fields": [
+          { "path": "#.amount", "$ref": "$.display.definitions.amountIn", "visible": "always" },
+          { "path": "#.destinationChain", "label": "Dest. chain", "format": "raw", "visible": "always" },
+          { "path": "#.bridgedTokenSymbol", "label": "Bridged token", "format": "raw", "visible": "always" },
+          { "path": "#.destinationAddress", "label": "Dest. contract", "format": "raw", "visible": "always" },
+          {
+            "path": "#.gasRefundRecipient",
+            "label": "Gas refund to",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "@.value", "$ref": "$.display.definitions.nativeValue", "visible": "always" },
+          { "path": "#.calls.[].callType", "label": "Call type", "visible": "never" },
+          { "path": "#.calls.[].target", "label": "Call target", "visible": "never" },
+          { "path": "#.calls.[].value", "label": "Call value", "visible": "never" },
+          { "path": "#.calls.[].callData", "label": "Call data", "visible": "never" },
+          { "path": "#.calls.[].payload", "label": "Call payload", "visible": "never" },
+          { "path": "#.payload", "label": "Dest. payload", "visible": "never" },
+          { "path": "#.enableExpress", "label": "Express", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
