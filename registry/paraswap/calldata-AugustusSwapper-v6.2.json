@@ -98,14 +98,41 @@
             "path": "#.swapData",
             "fields": [
               { "path": "fromAmount", "$ref": "$.display.definitions.sendAmount", "params": { "tokenPath": "srcToken" } },
-              { "path": "toAmount", "$ref": "$.display.definitions.minReceiveAmount", "params": { "tokenPath": "destToken" } },
+              {
+                "path": "toAmount",
+                "$ref": "$.display.definitions.minReceiveAmount",
+                "label": "Minimum before Fees",
+                "params": { "tokenPath": "destToken" }
+              },
+              {
+                "path": "quotedAmount",
+                "label": "50% Fee Above",
+                "format": "tokenAmount",
+                "params": {
+                  "tokenPath": "destToken",
+                  "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"]
+                }
+              },
               { "path": "beneficiary", "$ref": "$.display.definitions.beneficiary" }
             ]
+          },
+          {
+            "path": "#.partnerAndFee.[30:32]",
+            "label": "Max Partner Fee",
+            "format": "unit",
+            "params": { "decimals": 2, "base": "%", "prefix": false },
+            "visible": "always"
+          },
+          {
+            "path": "#.partnerAndFee.[0:20]",
+            "label": "Fee Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
           },
           { "label": "Executor", "path": "#.executor", "visible": "never" },
           { "label": "Permit", "path": "#.permit", "visible": "never" },
           { "label": "Executor Data", "path": "#.executorData", "visible": "never" },
-          { "label": "Swap Data Quoted Amount", "path": "#.swapData.quotedAmount", "visible": "never" },
           { "label": "Swap Data Metadata", "path": "#.swapData.metadata", "visible": "never" },
           { "label": "Partner And Fee", "path": "#.partnerAndFee", "visible": "never" }
         ]
