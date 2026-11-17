@@ -1,0 +1,328 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 8453,
+          "address": "0x2F12814baF2E3fA5c76c26F9d4Aa0a9CfdC3EBaa"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "StreamVaults",
+    "info": {
+      "url": "https://streamvault.eth"
+    }
+  },
+  "display": {
+    "formats": {
+      "closeStreamIfLow(address smartAccount, address superToken)": {
+        "fields": [
+          {
+            "label": "Smart Account",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            },
+            "path": "#.smartAccount"
+          },
+          {
+            "label": "Super Token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.superToken"
+          }
+        ],
+        "intent": "Close low stream (guardian)"
+      },
+      "executeSwap(address smartAccount, (address superTokenIn, uint256 superAmountIn, address tokenIn, address tokenOut, address target, uint256 value, bytes data, uint256 minAmountOut) params)": {
+        "fields": [
+          {
+            "label": "Smart Account",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            },
+            "path": "#.smartAccount"
+          },
+          {
+            "label": "Super Token In",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.params.superTokenIn"
+          },
+          {
+            "label": "Super Amount In",
+            "format": "amount",
+            "path": "#.params.superAmountIn"
+          },
+          {
+            "label": "Token In",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.params.tokenIn"
+          },
+          {
+            "label": "Token Out",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "path": "#.params.tokenOut"
+          },
+          {
+            "label": "Target",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract",
+                "token",
+                "collection"
+              ]
+            },
+            "path": "#.params.target"
+          },
+          {
+            "label": "Value",
+            "format": "amount",
+            "path": "#.params.value"
+          },
+          {
+            "label": "Data",
+            "format": "raw",
+            "path": "#.params.data"
+          },
+          {
+            "label": "Min Amount Out",
+            "format": "amount",
+            "path": "#.params.minAmountOut"
+          },
+          {
+            "label": "Params Data",
+            "path": "#.params.data",
+            "visible": "never"
+          }
+        ],
+        "intent": "Execute a routed swap"
+      },
+      "initialize(address owner_, address config_)": {
+        "fields": [
+          {
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            },
+            "path": "#.owner_"
+          },
+          {
+            "label": "Config",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract",
+                "token",
+                "collection"
+              ]
+            },
+            "path": "#.config_"
+          }
+        ],
+        "intent": "Initialize"
+      },
+      "onReport(bytes param0, bytes report)": {
+        "fields": [
+          {
+            "label": "Report",
+            "format": "raw",
+            "path": "#.report"
+          },
+          {
+            "label": "Metadata",
+            "path": "#.metadata",
+            "visible": "never"
+          }
+        ],
+        "intent": "Execute a DON report"
+      },
+      "setStream(address smartAccount, address superToken, int96 rate)": {
+        "intent": "Update or pause your stream",
+        "fields": [
+          {
+            "path": "#.smartAccount",
+            "label": "Your bot account",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "#.rate",
+            "label": "New rate (0 = pause)",
+            "format": "raw"
+          },
+          {
+            "label": "Super Token",
+            "path": "#.superToken",
+            "visible": "never"
+          }
+        ]
+      },
+      "setStreamCloseThreshold(uint256 thresholdBps)": {
+        "fields": [
+          {
+            "label": "Threshold Bps",
+            "format": "raw",
+            "path": "#.thresholdBps"
+          }
+        ],
+        "intent": "Set auto-close threshold"
+      },
+      "setSwapCooldown(uint256 cooldownBlocks)": {
+        "fields": [
+          {
+            "label": "Cooldown Blocks",
+            "format": "raw",
+            "path": "#.cooldownBlocks"
+          }
+        ],
+        "intent": "Set swap cooldown"
+      },
+      "startStreamBot(address superToken, uint256 underlyingAmount, int96 rate, (uint16 maxSlippageBps, uint256 minTradeAmount, address settlementAddress, address[] targetTokens) rules, (uint256 deadline, uint8 v, bytes32 r, bytes32 s) permitSig)": {
+        "intent": "Start your StreamBot",
+        "fields": [
+          {
+            "path": "#.underlyingAmount",
+            "label": "Budget to stream",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+            }
+          },
+          {
+            "path": "#.rate",
+            "label": "Stream rate /sec",
+            "format": "raw"
+          },
+          {
+            "path": "#.rules.minTradeAmount",
+            "label": "Min trade size",
+            "format": "tokenAmount",
+            "params": {
+              "token": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+            }
+          },
+          {
+            "path": "#.rules.maxSlippageBps",
+            "label": "Max slippage (bps)",
+            "format": "raw"
+          },
+          {
+            "path": "#.rules.settlementAddress",
+            "label": "Send swaps to",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          },
+          {
+            "path": "#.rules.targetTokens.[]",
+            "label": "Tokens to buy",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
+          },
+          {
+            "label": "Super Token",
+            "path": "#.superToken",
+            "visible": "never"
+          },
+          {
+            "label": "Permit Sig",
+            "path": "#.permitSig",
+            "visible": "never"
+          }
+        ]
+      },
+      "transferOwnership(address newOwner)": {
+        "fields": [
+          {
+            "label": "New Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            },
+            "path": "#.newOwner"
+          }
+        ],
+        "intent": "Transfer ownership"
+      },
+      "upgradeToAndCall(address newImplementation, bytes data)": {
+        "fields": [
+          {
+            "label": "New Implementation",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "wallet",
+                "eoa",
+                "contract",
+                "token",
+                "collection"
+              ]
+            },
+            "path": "#.newImplementation"
+          },
+          {
+            "label": "Data",
+            "format": "raw",
+            "path": "#.data"
+          }
+        ],
+        "intent": "Upgrade the contract"
+      }
+    }
+  }
+}
