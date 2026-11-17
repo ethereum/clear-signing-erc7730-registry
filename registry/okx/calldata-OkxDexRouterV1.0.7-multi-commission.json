@@ -3,7 +3,7 @@
   "metadata": {
     "owner": "OKX Labs",
     "info": { "url": "https://web3.okx.com/dex-swap", "deploymentDate": "2025-11-28T02:08:59Z" },
-    "enums": { "swapDirection": { "0": "ETH --> WETH", "1": "WETH --> ETH", "128": "WETH --> ETH" } },
+    "enums": { "swapDirection": { "0": "Native --> Wrapped", "128": "Wrapped --> Native" } },
     "contractName": "OKX DEX Router v1.0.7-multi-commission"
   },
   "context": {
@@ -40,7 +40,7 @@
   "display": {
     "definitions": {
       "sendAmount": {
-        "label": "Amount to Send",
+        "label": "Amount to Send, before fees",
         "format": "tokenAmount",
         "params": { "nativeCurrencyAddress": ["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", "0x0000000000000000000000000000000000000000"] }
       },
@@ -49,7 +49,11 @@
         "format": "tokenAmount",
         "params": { "nativeCurrencyAddress": ["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", "0x0000000000000000000000000000000000000000"] }
       },
-      "beneficiary": { "label": "Beneficiary", "format": "addressName", "params": { "types": ["eoa", "wallet"] } },
+      "beneficiary": {
+        "label": "Beneficiary",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet"], "senderAddress": ["0x0000000000000000000000000000000000000000"] }
+      },
       "deadline": { "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
       "orderId": { "label": "Order ID", "format": "raw" },
       "tokenAddress": { "label": "Token", "format": "addressName", "params": { "types": ["token"] } }
@@ -59,6 +63,7 @@
         "$id": "dagSwapByOrderId",
         "intent": "Swap",
         "fields": [
+          { "label": "Total sent with fees", "path": "@.value", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
           { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
           {
             "path": "baseRequest.fromTokenAmount",
@@ -80,6 +85,7 @@
         "$id": "dagSwapTo",
         "intent": "Swap",
         "fields": [
+          { "label": "Total sent with fees", "path": "@.value", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
           { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
           { "path": "receiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
           {
@@ -102,6 +108,7 @@
         "$id": "smartSwapByOrderId",
         "intent": "Swap",
         "fields": [
+          { "label": "Total sent with fees", "path": "@.value", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
           { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
           {
             "path": "baseRequest.fromTokenAmount",
@@ -124,6 +131,7 @@
         "$id": "smartSwapTo",
         "intent": "Swap",
         "fields": [
+          { "label": "Total sent with fees", "path": "@.value", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
           { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
           { "path": "receiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
           {
@@ -147,25 +155,22 @@
         "$id": "swapWrap",
         "intent": "Wrap/Unwrap",
         "fields": [
+          { "label": "Total sent with fees", "path": "@.value", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
           { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
           { "path": "rawdata.[0:1]", "label": "Direction", "format": "enum", "params": { "$ref": "$.metadata.enums.swapDirection" } },
-          {
-            "path": "rawdata.[-17:]",
-            "label": "Amount",
-            "format": "tokenAmount",
-            "params": { "token": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" }
-          }
+          { "path": "rawdata.[-16:]", "label": "Amount, before fees", "format": "amount" }
         ]
       },
       "swapWrapToWithBaseRequest(uint256 orderId, address receiver, (uint256 fromToken, address toToken, uint256 fromTokenAmount, uint256 minReturnAmount, uint256 deadLine) baseRequest)": {
         "$id": "Wrap/Unwrap",
         "intent": "Swap",
         "fields": [
+          { "label": "Total sent with fees", "path": "@.value", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
           { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
           { "path": "receiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
           {
             "path": "baseRequest.fromTokenAmount",
-            "label": "Wrap/Unwrap Amount",
+            "label": "Wrap/Unwrap Amount, before fees",
             "format": "tokenAmount",
             "params": {
               "tokenPath": "baseRequest.fromToken.[-20:]",
@@ -180,7 +185,10 @@
         "$id": "uniswapV3SwapTo",
         "intent": "Swap",
         "fields": [
+          { "label": "Total sent with fees", "path": "@.value", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
           { "path": "receiver.[-20:]", "$ref": "$.display.definitions.beneficiary" },
+          { "path": "amount", "label": "Amount to Send, before fees (base units)", "format": "raw", "visible": "always" },
+          { "path": "minReturn", "label": "Minimum to Receive (base units)", "format": "raw", "visible": "always" },
           { "label": "Pools", "path": "pools", "visible": "never" }
         ]
       },
@@ -188,6 +196,7 @@
         "$id": "uniswapV3SwapToWithBaseRequest",
         "intent": "Swap",
         "fields": [
+          { "label": "Total sent with fees", "path": "@.value", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
           { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
           { "path": "receiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
           {
@@ -210,13 +219,14 @@
         "$id": "unxswapByOrderId",
         "intent": "Swap",
         "fields": [
+          { "label": "Total sent with fees", "path": "@.value", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
           {
             "path": "amount",
             "$ref": "$.display.definitions.sendAmount",
             "params": { "tokenPath": "srcToken.[-20:]" },
             "visible": "always"
           },
-          { "path": "minReturn", "label": "Minimum to Receive", "format": "raw", "visible": "always" },
+          { "path": "minReturn", "label": "Minimum to Receive (base units)", "format": "raw", "visible": "always" },
           { "label": "Pools", "path": "pools", "visible": "never" }
         ]
       },
@@ -224,6 +234,7 @@
         "$id": "unxswapTo",
         "intent": "Swap",
         "fields": [
+          { "label": "Total sent with fees", "path": "@.value", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
           { "path": "receiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
           {
             "path": "amount",
@@ -231,7 +242,7 @@
             "params": { "tokenPath": "srcToken.[-20:]" },
             "visible": "always"
           },
-          { "path": "minReturn", "$ref": "$.display.definitions.minReceiveAmount", "visible": "always" },
+          { "path": "minReturn", "label": "Minimum to Receive (base units)", "format": "raw", "visible": "always" },
           { "label": "Pools", "path": "pools", "visible": "never" }
         ]
       },
@@ -239,6 +250,7 @@
         "$id": "unxswapToWithBaseRequest",
         "intent": "Swap",
         "fields": [
+          { "label": "Total sent with fees", "path": "@.value", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
           { "path": "orderId", "$ref": "$.display.definitions.orderId", "visible": "always" },
           { "path": "receiver", "$ref": "$.display.definitions.beneficiary", "visible": "always" },
           {
@@ -261,9 +273,11 @@
         "$id": "smartSwapByInvest",
         "intent": "Swap",
         "fields": [
+          { "label": "Total sent with fees", "path": "@.value", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
           {
             "path": "baseRequest.fromTokenAmount",
             "$ref": "$.display.definitions.sendAmount",
+            "label": "Reference amount (router balance is swapped)",
             "params": { "tokenPath": "baseRequest.fromToken.[-20:]" },
             "visible": "always"
           },
@@ -284,9 +298,11 @@
         "$id": "smartSwapByInvestWithRefund",
         "intent": "Swap",
         "fields": [
+          { "label": "Total sent with fees", "path": "@.value", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
           {
             "path": "baseRequest.fromTokenAmount",
             "$ref": "$.display.definitions.sendAmount",
+            "label": "Reference amount (router balance is swapped)",
             "params": { "tokenPath": "baseRequest.fromToken.[-20:]" },
             "visible": "always"
           },
