@@ -1,0 +1,590 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-BorrowerOperations-wstETH.json",
+  "dataProvider": {
+    "tokens": {
+      "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0": {
+        "symbol": "wstETH",
+        "decimals": 18,
+        "name": "Wrapped liquid staked Ether 2.0"
+      },
+      "0x6440f144b7e50d6a8439336510312d2f54beb01d": {
+        "symbol": "BOLD",
+        "decimals": 18,
+        "name": "BOLD Stablecoin"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Add 1 wstETH collateral",
+      "rawTx": "0x02f865018001018307a12094a741a32f9dcfe6adba088fd0f97e90742d7d5da380b84459f54f40000000000000000000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000de0b6b3a7640000c0",
+      "expected": {
+        "intent": "Add collateral",
+        "interpolatedIntent": "Add 1 wstETH",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "42"
+          },
+          {
+            "label": "Collateral",
+            "value": "1 wstETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "openTrove: on-chain calldata (BorrowerOperations-wstETH)",
+      "rawTx": "0xf9018a2984395a28b683154bdb94a741a32f9dcfe6adba088fd0f97e90742d7d5da380b901649cb90ba6000000000000000000000000e469d2c8fc404e9b4f59f3f0845ed5f69a4d6f3c000000000000000000000000000000000000000000000000000001a06cde058b0000000000000000000000000000000000000000000000005ed7821832bba0000000000000000000000000000000000000000000000001e7e4171bf4d3a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000019396991e7c000000000000000000000000000000000000000000000000000225081d29a489e5a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000018080",
+      "txHash": "0x103abe4c0f238e78d6c26979e98dd62cf43ac5f2f8cd77c4656e1f31e66c7bfe",
+      "expected": {
+        "intent": "Open Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Owner",
+            "value": "0xE469D2C8fc404e9b4f59f3f0845Ed5f69A4d6F3C"
+          },
+          {
+            "label": "Collateral",
+            "value": "6.834074 wstETH"
+          },
+          {
+            "label": "Borrow BOLD",
+            "value": "9000 BOLD"
+          },
+          {
+            "label": "Interest rate",
+            "value": "0.71%"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "2.472618936957967962 BOLD"
+          },
+          {
+            "label": "Add manager",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Remove manager",
+            "value": "0x0000000000000000000000000000000000000000"
+          },
+          {
+            "label": "Receiver",
+            "value": "0x0000000000000000000000000000000000000000"
+          }
+        ],
+        "interpolatedIntent": "Open Trove: borrow 9000 BOLD"
+      }
+    },
+    {
+      "description": "withdrawColl: on-chain calldata (BorrowerOperations-wstETH)",
+      "rawTx": "0xf86b82019684410dbcd08309745d94a741a32f9dcfe6adba088fd0f97e90742d7d5da380b844580de360e1dd41fea91ae5707a15775ccc9b6d177b763f5d30ef247e3e1618c5f45d4d7a000000000000000000000000000000000000000000000000de0b6b3a76400000018080",
+      "txHash": "0xab20e15e1aa8c57f0d92b51d2a97d34ce2c73888d8939bf1e977a45c0e2ad577",
+      "expected": {
+        "intent": "Withdraw collateral",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "102161319611698796930194305313292402300151297082362588878772053641183469849978"
+          },
+          {
+            "label": "Collateral",
+            "value": "16 wstETH"
+          }
+        ],
+        "interpolatedIntent": "Withdraw 16 wstETH"
+      }
+    },
+    {
+      "description": "withdrawBold: on-chain calldata (BorrowerOperations-wstETH)",
+      "rawTx": "0xf8890c84098d62a4830768d394a741a32f9dcfe6adba088fd0f97e90742d7d5da380b86490de348ac436a511d6b1578bea6120c9710196b46c8777728356ced3619477eb8b8cba5a00000000000000000000000000000000000000000000032d26d12e980b60000000000000000000000000000000000000000000000000000064b3cb3a039955e1018080",
+      "txHash": "0x4d2badf599b98e43f928bfd1f90916f95d5b75693a30cbf903cf47496d3d30a4",
+      "expected": {
+        "intent": "Borrow BOLD",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "88749867332894343335161496104242523714310200252972429800430956730774379608666"
+          },
+          {
+            "label": "Borrow BOLD",
+            "value": "15000 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "7.256366874652923361 BOLD"
+          }
+        ],
+        "interpolatedIntent": "Borrow 15000 BOLD"
+      }
+    },
+    {
+      "description": "repayBold: on-chain calldata (BorrowerOperations-wstETH)",
+      "rawTx": "0xf86b82054f840e4e1c008307779f94a741a32f9dcfe6adba088fd0f97e90742d7d5da380b8445cd067cfae744069405bbc59c085e1f90293774cbcc279e4ceb8e7a3c14add314d685e940000000000000000000000000000000000000000000004a8e462d4e010411383018080",
+      "txHash": "0x19e0c16a77a774089c769047edda5f6fa36af65c7caad236f5dd2eea02c65bf5",
+      "expected": {
+        "intent": "Repay BOLD",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "78907834462340963369291382890449062787437397713030205750317186419849035275924"
+          },
+          {
+            "label": "Repay BOLD",
+            "value": "22004.975885908961203075 BOLD"
+          }
+        ],
+        "interpolatedIntent": "Repay 22004.975885908961203075 BOLD"
+      }
+    },
+    {
+      "description": "closeTrove: on-chain calldata (BorrowerOperations-wstETH)",
+      "rawTx": "0xf84b82020985033d2483a7830ce75d94a741a32f9dcfe6adba088fd0f97e90742d7d5da380a45aa6d461ed7794bc4b78ff058e074e60e5eeafb28d1f3639d8dcbba2920f73a97ece391a018080",
+      "txHash": "0xa7b1cc54e6dd0f8598c599c3c2a14a1e08973820ad195483d4c8525a449ec406",
+      "expected": {
+        "intent": "Close Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "107409426449820257023389809672519342515476239213456550850995918164666631469338"
+          }
+        ],
+        "interpolatedIntent": "Close Trove 107409426449820257023389809672519342515476239213456550850995918164666631469338"
+      }
+    },
+    {
+      "description": "adjustTroveInterestRate: on-chain calldata (BorrowerOperations-wstETH)",
+      "rawTx": "0xf8cb82282f840d71c7fc8308b0f794a741a32f9dcfe6adba088fd0f97e90742d7d5da380b8a426f4e2522b6a622efc918975251b1b67350d18a25fee33ad62b47d50cbb5101da0d9f8910000000000000000000000000000000000000000000000000011c37937e08000ddb0425c99dad2dc9a6048db90beaeedbe5781a91d23ab61a0801a5383d2fea50000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff018080",
+      "txHash": "0xc54f398a8a6caba9ba819613b8359b4e326a9b24d8124fa5051467273a8ca841",
+      "expected": {
+        "intent": "Update interest rate",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "19637415915845063529691472571981524597420629400849605482742369806375355807889"
+          },
+          {
+            "label": "New interest rate",
+            "value": "0.5%"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "No limit BOLD"
+          }
+        ],
+        "interpolatedIntent": "Set interest rate to 0.5%"
+      }
+    },
+    {
+      "description": "claimCollateral: on-chain calldata (BorrowerOperations-wstETH)",
+      "rawTx": "0xea821659841017df808302acb894a741a32f9dcfe6adba088fd0f97e90742d7d5da380846f0b0c1c018080",
+      "txHash": "0x0acdbf7e84c1b1890a9b08869b0027672b6c4eb7e37029ce0d6e36d9f5c73556",
+      "expected": {
+        "intent": "Claim collateral",
+        "owner": "Liquity",
+        "fields": []
+      }
+    },
+    {
+      "description": "setInterestBatchManager: on-chain calldata (BorrowerOperations-wstETH)",
+      "rawTx": "0xf8ca81c8843053d868830b680194a741a32f9dcfe6adba088fd0f97e90742d7d5da380b8a49537f00133536c7fd4654eaddb61d7c8702a73419073903b9bf76b17cac4a480a1084961000000000000000000000000000000000017d2a7b863e9ebbe6f9ab7255eb7c5a72b0088fef74588d2c94cdada50a86f8ca458463a850f70ca841216dfe220fb8378ebb8402054e28e48cd80287bea6363ba727aeeec12cab7fac6ffa29cd440ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff018080",
+      "txHash": "0x3ad98ce55b682e5b5fd52c4af0ee18353405efb5d65c660bb504ef4bd870bacc",
+      "expected": {
+        "intent": "Set batch manager",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "23215352419009753071707015057666921414954248989834790247862905823468882250081"
+          },
+          {
+            "label": "Batch manager",
+            "value": "0x000000000017d2a7B863e9EBBe6F9ab7255EB7c5"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "No limit BOLD"
+          }
+        ],
+        "interpolatedIntent": "Set batch manager to 0x000000000017d2a7B863e9EBBe6F9ab7255EB7c5"
+      }
+    },
+    {
+      "description": "Synthetic setInterestIndividualDelegate: standard (BorrowerOperations-wstETH)",
+      "rawTx": "0x02f9014e0180843b9aca008477359400832dc6c094a741a32f9dcfe6adba088fd0f97e90742d7d5da380b90124c6ac2465000000000000010000000000000000000000000000000000000000000000002a0000000000000000000000006666666666666666666666666666666666666666000000000000000000000000000000000000000000000000002386f26fc10000000000000000000000000000000000000000000000000000016345785d8a000000000000000000000000000000000000000000000000000000d99a8cec7e200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001a745c467716a00000000000000000000000000000000000000000000000000000000000000015180c0",
+      "expected": {
+        "intent": "Set rate delegate",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Delegate",
+            "value": "0x6666666666666666666666666666666666666666"
+          },
+          {
+            "label": "Min rate",
+            "value": "1%"
+          },
+          {
+            "label": "Max rate",
+            "value": "10%"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "30.5 BOLD"
+          }
+        ],
+        "interpolatedIntent": "Set rate delegate to 0x6666666666666666666666666666666666666666"
+      }
+    },
+    {
+      "description": "Synthetic openTroveAndJoinInterestBatchManager: standard (BorrowerOperations-wstETH)",
+      "rawTx": "0x02f9018e0180843b9aca008477359400832dc6c094a741a32f9dcfe6adba088fd0f97e90742d7d5da380b90164c440844f0000000000000000000000001111111111111111111111111111111111111111000000000000000000000000000000000000000000000000000000000000000700000000000000000000000000000000000000000000000091b77e5e5d9a000000000000000000000000000000000000000000000000008788344945217c8000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005555555555555555555555555555555555555555000000000000000000000000000000000000000000000001a745c467716a0000000000000000000000000000222222222222222222222222222222222222222200000000000000000000000033333333333333333333333333333333333333330000000000000000000000004444444444444444444444444444444444444444c0",
+      "expected": {
+        "intent": "Open Trove (batch)",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Owner",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "Collateral",
+            "value": "10.5 wstETH"
+          },
+          {
+            "label": "Borrow BOLD",
+            "value": "2500.125 BOLD"
+          },
+          {
+            "label": "Batch manager",
+            "value": "0x5555555555555555555555555555555555555555"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "30.5 BOLD"
+          },
+          {
+            "label": "Add manager",
+            "value": "0x2222222222222222222222222222222222222222"
+          },
+          {
+            "label": "Remove manager",
+            "value": "0x3333333333333333333333333333333333333333"
+          },
+          {
+            "label": "Receiver",
+            "value": "0x4444444444444444444444444444444444444444"
+          }
+        ],
+        "interpolatedIntent": "Open batch Trove: borrow 2500.125 BOLD"
+      }
+    },
+    {
+      "description": "Synthetic adjustTrove: withdraw collateral, repay BOLD (BorrowerOperations-wstETH)",
+      "rawTx": "0x02f8ed0180843b9aca008477359400832dc6c094a741a32f9dcfe6adba088fd0f97e90742d7d5da380b8c484e5253c000000000000010000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000f9ccd8a1c508000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d90ea991e618100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001a745c467716a0000c0",
+      "expected": {
+        "intent": "Adjust Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Collateral change",
+            "value": "false"
+          },
+          {
+            "label": "Collateral amount",
+            "value": "1.125 wstETH"
+          },
+          {
+            "label": "Debt change",
+            "value": "false"
+          },
+          {
+            "label": "BOLD amount",
+            "value": "250.25 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "30.5 BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Synthetic adjustTrove: withdraw collateral, borrow BOLD (BorrowerOperations-wstETH)",
+      "rawTx": "0x02f8ed0180843b9aca008477359400832dc6c094a741a32f9dcfe6adba088fd0f97e90742d7d5da380b8c484e5253c000000000000010000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000f9ccd8a1c508000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d90ea991e618100000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000001a745c467716a0000c0",
+      "expected": {
+        "intent": "Adjust Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Collateral change",
+            "value": "false"
+          },
+          {
+            "label": "Collateral amount",
+            "value": "1.125 wstETH"
+          },
+          {
+            "label": "Debt change",
+            "value": "true"
+          },
+          {
+            "label": "BOLD amount",
+            "value": "250.25 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "30.5 BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Synthetic adjustTrove: add collateral, repay BOLD (BorrowerOperations-wstETH)",
+      "rawTx": "0x02f8ed0180843b9aca008477359400832dc6c094a741a32f9dcfe6adba088fd0f97e90742d7d5da380b8c484e5253c000000000000010000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000f9ccd8a1c508000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000d90ea991e618100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001a745c467716a0000c0",
+      "expected": {
+        "intent": "Adjust Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Collateral change",
+            "value": "true"
+          },
+          {
+            "label": "Collateral amount",
+            "value": "1.125 wstETH"
+          },
+          {
+            "label": "Debt change",
+            "value": "false"
+          },
+          {
+            "label": "BOLD amount",
+            "value": "250.25 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "30.5 BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Synthetic adjustTrove: add collateral, borrow BOLD (BorrowerOperations-wstETH)",
+      "rawTx": "0x02f8ed0180843b9aca008477359400832dc6c094a741a32f9dcfe6adba088fd0f97e90742d7d5da380b8c484e5253c000000000000010000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000f9ccd8a1c508000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000d90ea991e618100000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000001a745c467716a0000c0",
+      "expected": {
+        "intent": "Adjust Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Collateral change",
+            "value": "true"
+          },
+          {
+            "label": "Collateral amount",
+            "value": "1.125 wstETH"
+          },
+          {
+            "label": "Debt change",
+            "value": "true"
+          },
+          {
+            "label": "BOLD amount",
+            "value": "250.25 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "30.5 BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Synthetic adjustZombieTrove: withdraw collateral, repay BOLD (BorrowerOperations-wstETH)",
+      "rawTx": "0x02f9012e0180843b9aca008477359400832dc6c094a741a32f9dcfe6adba088fd0f97e90742d7d5da380b90104dcfbd293000000000000010000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000f9ccd8a1c508000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d90ea991e61810000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001a745c467716a0000c0",
+      "expected": {
+        "intent": "Adjust Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Collateral change",
+            "value": "false"
+          },
+          {
+            "label": "Collateral amount",
+            "value": "1.125 wstETH"
+          },
+          {
+            "label": "Debt change",
+            "value": "false"
+          },
+          {
+            "label": "BOLD amount",
+            "value": "250.25 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "30.5 BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Synthetic adjustZombieTrove: withdraw collateral, borrow BOLD (BorrowerOperations-wstETH)",
+      "rawTx": "0x02f9012e0180843b9aca008477359400832dc6c094a741a32f9dcfe6adba088fd0f97e90742d7d5da380b90104dcfbd293000000000000010000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000f9ccd8a1c508000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d90ea991e61810000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001a745c467716a0000c0",
+      "expected": {
+        "intent": "Adjust Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Collateral change",
+            "value": "false"
+          },
+          {
+            "label": "Collateral amount",
+            "value": "1.125 wstETH"
+          },
+          {
+            "label": "Debt change",
+            "value": "true"
+          },
+          {
+            "label": "BOLD amount",
+            "value": "250.25 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "30.5 BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Synthetic adjustZombieTrove: add collateral, repay BOLD (BorrowerOperations-wstETH)",
+      "rawTx": "0x02f9012e0180843b9aca008477359400832dc6c094a741a32f9dcfe6adba088fd0f97e90742d7d5da380b90104dcfbd293000000000000010000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000f9ccd8a1c508000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000d90ea991e61810000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001a745c467716a0000c0",
+      "expected": {
+        "intent": "Adjust Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Collateral change",
+            "value": "true"
+          },
+          {
+            "label": "Collateral amount",
+            "value": "1.125 wstETH"
+          },
+          {
+            "label": "Debt change",
+            "value": "false"
+          },
+          {
+            "label": "BOLD amount",
+            "value": "250.25 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "30.5 BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Synthetic adjustZombieTrove: add collateral, borrow BOLD (BorrowerOperations-wstETH)",
+      "rawTx": "0x02f9012e0180843b9aca008477359400832dc6c094a741a32f9dcfe6adba088fd0f97e90742d7d5da380b90104dcfbd293000000000000010000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000f9ccd8a1c508000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000d90ea991e61810000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001a745c467716a0000c0",
+      "expected": {
+        "intent": "Adjust Trove",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Collateral change",
+            "value": "true"
+          },
+          {
+            "label": "Collateral amount",
+            "value": "1.125 wstETH"
+          },
+          {
+            "label": "Debt change",
+            "value": "true"
+          },
+          {
+            "label": "BOLD amount",
+            "value": "250.25 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "30.5 BOLD"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Synthetic withdrawBold: unlimited upfront fee (BorrowerOperations-wstETH)",
+      "rawTx": "0x02f88d0180843b9aca008477359400832dc6c094a741a32f9dcfe6adba088fd0f97e90742d7d5da380b86490de348a000000000000010000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000008788344945217c8000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Borrow BOLD",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Trove ID",
+            "value": "1606938044258990275541962092341162602522202993782792835301418"
+          },
+          {
+            "label": "Borrow BOLD",
+            "value": "2500.125 BOLD"
+          },
+          {
+            "label": "Max upfront fee",
+            "value": "No limit BOLD"
+          }
+        ],
+        "interpolatedIntent": "Borrow 2500.125 BOLD"
+      }
+    }
+  ]
+}

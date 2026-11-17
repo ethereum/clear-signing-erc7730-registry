@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-BoldToken.json",
+  "dataProvider": {
+    "tokens": {
+      "0x6440f144b7e50d6a8439336510312d2f54beb01d": {
+        "symbol": "BOLD",
+        "decimals": 18,
+        "name": "BOLD Stablecoin"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "transfer on calldata-BoldToken",
+      "rawTx": "0x02f86e0182015a841dcd65008423525bc082ca67946440f144b7e50d6a8439336510312d2f54beb01d80b844a9059cbb000000000000000000000000930fcc7713010bef90847567897156a0488cadb400000000000000000000000000000000000000000000001b46ec103d344380c4c0",
+      "txHash": "0x87e5750cac676590a51c61d302027033c87d7a63c07761aa4be2eeaa8b98bd7b",
+      "expected": {
+        "intent": "Send BOLD",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "To",
+            "value": "0x930fcC7713010BeF90847567897156A0488cadb4"
+          },
+          {
+            "label": "Amount",
+            "value": "503.172567522372452548 BOLD"
+          }
+        ],
+        "interpolatedIntent": "Send 503.172567522372452548 BOLD to 0x930fcC7713010BeF90847567897156A0488cadb4"
+      }
+    },
+    {
+      "description": "approve on calldata-BoldToken",
+      "rawTx": "0x02f86d01188405f5e10084108ee440830111ae946440f144b7e50d6a8439336510312d2f54beb01d80b844095ea7b3000000000000000000000000111111125421ca6dc452d289314280a0f8842a650000000000000000000000000000000000000000000004574ea66a5853d00000c0",
+      "txHash": "0xb98b582f7f75cb7c7b3abbeca6257b3e14bf6daaedacd822c77b3db5e2fd45f1",
+      "expected": {
+        "intent": "Approve BOLD",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x111111125421cA6dc452d289314280a0f8842A65"
+          },
+          {
+            "label": "Amount",
+            "value": "20500 BOLD"
+          }
+        ],
+        "interpolatedIntent": "Allow 0x111111125421cA6dc452d289314280a0f8842A65 to spend 20500 BOLD"
+      }
+    },
+    {
+      "description": "Synthetic transferFrom with distinct sender and recipient on Ethereum",
+      "rawTx": "0x02f88d0180843b9aca008477359400830186a0946440f144b7e50d6a8439336510312d2f54beb01d80b86423b872dd00000000000000000000000011111111111111111111111111111111111111110000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000043ca2c749129fa0000c0",
+      "expected": {
+        "intent": "Send BOLD",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "From",
+            "value": "0x1111111111111111111111111111111111111111"
+          },
+          {
+            "label": "To",
+            "value": "0x2222222222222222222222222222222222222222"
+          },
+          {
+            "label": "Amount",
+            "value": "1250.5 BOLD"
+          }
+        ],
+        "interpolatedIntent": "Send 1250.5 BOLD from 0x1111111111111111111111111111111111111111 to 0x2222222222222222222222222222222222222222"
+      }
+    },
+    {
+      "description": "Synthetic unlimited approval on Ethereum",
+      "rawTx": "0x02f86d0180843b9aca008477359400830186a0946440f144b7e50d6a8439336510312d2f54beb01d80b844095ea7b30000000000000000000000003333333333333333333333333333333333333333ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0",
+      "expected": {
+        "intent": "Approve BOLD",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x3333333333333333333333333333333333333333"
+          },
+          {
+            "label": "Amount",
+            "value": "Unlimited BOLD"
+          }
+        ],
+        "interpolatedIntent": "Allow 0x3333333333333333333333333333333333333333 to spend Unlimited BOLD"
+      }
+    },
+    {
+      "description": "Synthetic approval revocation on Ethereum",
+      "rawTx": "0x02f86d0180843b9aca008477359400830186a0946440f144b7e50d6a8439336510312d2f54beb01d80b844095ea7b300000000000000000000000033333333333333333333333333333333333333330000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Approve BOLD",
+        "owner": "Liquity",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x3333333333333333333333333333333333333333"
+          },
+          {
+            "label": "Amount",
+            "value": "0 BOLD"
+          }
+        ],
+        "interpolatedIntent": "Allow 0x3333333333333333333333333333333333333333 to spend 0 BOLD"
+      }
+    }
+  ]
+}
