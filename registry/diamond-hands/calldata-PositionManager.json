@@ -1,0 +1,108 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "PositionManager",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x12A1836e56139ccaD8722B89519d84233efc224B" }] }
+  },
+  "metadata": {
+    "owner": "Diamond Hands",
+    "contractName": "PositionManager",
+    "info": { "url": "https://diamondhands.credit", "deploymentDate": "2026-06-16T16:40:50Z" },
+    "constants": { "ucdToken": "0xaAaB6B05E5EecB015898483d4e6703d7F218850b" }
+  },
+  "display": {
+    "definitions": {
+      "positionId": { "label": "Loan", "format": "raw" },
+      "btcPrice": { "label": "BTC price", "format": "unit", "params": { "base": "USD", "decimals": 8 } },
+      "quantumTimestamp": { "label": "Authorized at", "format": "date", "params": { "encoding": "timestamp" } },
+      "ucdAmount": { "format": "tokenAmount", "params": { "token": "$.metadata.constants.ucdToken" } },
+      "termMonths": { "label": "Term (months)", "format": "raw" }
+    },
+    "formats": {
+      "createPosition(bytes32 pkpId, bytes validatorSignature, string mainnetVaultAddress, string regtestVaultAddress, uint256 selectedTermMonths, uint256 validatorVersion, bytes pkpPublicKey)": {
+        "intent": "Open Bitcoin-backed loan",
+        "interpolatedIntent": "Open a {#.selectedTermMonths} month loan",
+        "fields": [
+          { "path": "#.mainnetVaultAddress", "label": "Bitcoin vault", "format": "raw" },
+          { "path": "#.selectedTermMonths", "$ref": "$.display.definitions.termMonths" },
+          { "path": "#.pkpId", "label": "PKP id", "visible": "never" },
+          { "path": "#.validatorSignature", "label": "Validator signature", "visible": "never" },
+          { "path": "#.regtestVaultAddress", "label": "Regtest vault", "visible": "never" },
+          { "path": "#.validatorVersion", "label": "Validator version", "visible": "never" },
+          { "path": "#.pkpPublicKey", "label": "PKP public key", "visible": "never" }
+        ]
+      },
+      "mintUCD(bytes32 positionId, uint256 mintAmount, uint256 mintFee, uint256 newDebt, uint256 newCollateral, uint256 btcPrice, bytes32 authorizedSpendsHash, bytes32 ucdDebtHash, bytes32 contractHash, uint256 quantumTimestamp, bytes mintValidatorSignature)": {
+        "intent": "Borrow UCD",
+        "interpolatedIntent": "Borrow {#.mintAmount}",
+        "fields": [
+          { "path": "#.mintAmount", "label": "Amount to borrow", "$ref": "$.display.definitions.ucdAmount" },
+          { "path": "#.mintFee", "label": "Mint fee", "$ref": "$.display.definitions.ucdAmount" },
+          { "path": "#.newDebt", "label": "Total debt after", "$ref": "$.display.definitions.ucdAmount" },
+          { "path": "#.newCollateral", "label": "Collateral", "format": "unit", "params": { "base": "BTC", "decimals": 8 } },
+          { "path": "#.btcPrice", "$ref": "$.display.definitions.btcPrice" },
+          { "path": "#.quantumTimestamp", "$ref": "$.display.definitions.quantumTimestamp" },
+          { "path": "#.positionId", "$ref": "$.display.definitions.positionId", "visible": "optional" },
+          { "path": "#.authorizedSpendsHash", "label": "Spends hash", "visible": "never" },
+          { "path": "#.ucdDebtHash", "label": "Debt hash", "visible": "never" },
+          { "path": "#.contractHash", "label": "Contract hash", "visible": "never" },
+          { "path": "#.mintValidatorSignature", "label": "Validator signature", "visible": "never" }
+        ]
+      },
+      "extendPosition(bytes32 positionId, uint256 selectedTerm, uint256 quantumTimestamp, uint256 btcPrice, uint256 availableBTCBalance, uint256 proRataRenewalFee, bytes extensionValidatorSignature)": {
+        "intent": "Renew loan",
+        "interpolatedIntent": "Renew for {#.selectedTerm} months",
+        "fields": [
+          { "path": "#.selectedTerm", "$ref": "$.display.definitions.termMonths" },
+          { "path": "#.proRataRenewalFee", "label": "Renewal fee", "$ref": "$.display.definitions.ucdAmount" },
+          { "path": "#.availableBTCBalance", "label": "Collateral", "format": "unit", "params": { "base": "BTC", "decimals": 8 } },
+          { "path": "#.btcPrice", "$ref": "$.display.definitions.btcPrice" },
+          { "path": "#.quantumTimestamp", "$ref": "$.display.definitions.quantumTimestamp" },
+          { "path": "#.positionId", "$ref": "$.display.definitions.positionId", "visible": "optional" },
+          { "path": "#.extensionValidatorSignature", "label": "Validator signature", "visible": "never" }
+        ]
+      },
+      "withdrawBTC((bytes32 positionId, bytes32 actionHash, bytes32 authorizedSpendsHash, bytes32 ucdDebtHash, bytes32 contractBundleHash, string withdrawalAddress, uint256 totalDeduction, uint256 newCollateral, uint256 quantumTimestamp, uint256 btcPrice, string utxoTxid, uint32 utxoVout) params, bytes withdrawalValidatorSignature, bytes btcSpendAuthSignature)": {
+        "intent": "Withdraw Bitcoin collateral",
+        "interpolatedIntent": "Send {#.params.totalDeduction} to {#.params.withdrawalAddress}",
+        "fields": [
+          { "path": "#.params.withdrawalAddress", "label": "Bitcoin destination", "format": "raw" },
+          { "path": "#.params.totalDeduction", "label": "Amount to send", "format": "unit", "params": { "base": "BTC", "decimals": 8 } },
+          {
+            "path": "#.params.newCollateral",
+            "label": "Collateral remaining",
+            "format": "unit",
+            "params": { "base": "BTC", "decimals": 8 }
+          },
+          { "path": "#.params.btcPrice", "$ref": "$.display.definitions.btcPrice" },
+          { "path": "#.params.quantumTimestamp", "$ref": "$.display.definitions.quantumTimestamp" },
+          { "path": "#.params.positionId", "$ref": "$.display.definitions.positionId", "visible": "optional" },
+          { "path": "#.params.actionHash", "label": "Action hash", "visible": "never" },
+          { "path": "#.params.authorizedSpendsHash", "label": "Spends hash", "visible": "never" },
+          { "path": "#.params.ucdDebtHash", "label": "Debt hash", "visible": "never" },
+          { "path": "#.params.contractBundleHash", "label": "Contract bundle hash", "visible": "never" },
+          { "path": "#.params.utxoTxid", "label": "UTXO txid", "visible": "never" },
+          { "path": "#.params.utxoVout", "label": "UTXO vout", "visible": "never" },
+          { "path": "#.withdrawalValidatorSignature", "label": "Validator signature", "visible": "never" },
+          { "path": "#.btcSpendAuthSignature", "label": "Spend auth signature", "visible": "never" }
+        ]
+      },
+      "makePayment(bytes32 positionId, uint256 paymentAmount, uint256 quantumTimestamp, uint256 btcPrice, bytes paymentValidatorSignature)": {
+        "intent": "Repay loan",
+        "interpolatedIntent": "Repay {#.paymentAmount}",
+        "fields": [
+          {
+            "path": "#.paymentAmount",
+            "label": "Repayment amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.ucdToken" }
+          },
+          { "path": "#.btcPrice", "$ref": "$.display.definitions.btcPrice" },
+          { "path": "#.quantumTimestamp", "$ref": "$.display.definitions.quantumTimestamp" },
+          { "path": "#.positionId", "$ref": "$.display.definitions.positionId", "visible": "optional" },
+          { "path": "#.paymentValidatorSignature", "label": "Validator signature", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

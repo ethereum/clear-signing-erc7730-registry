@@ -1,0 +1,48 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-BitcoinWithdrawalAddressRegistry.json",
+  "tests": [
+    {
+      "description": "addAddress - allowlist a native segwit address",
+      "rawTx": "0x02f8ae0106843b9aca008504a817c8008307a12094f667f77fdba7458345f227eb6bfe4148243e727080b88493d83c480000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002a62633171617230737272723778666b7679356c3634336c79646e77397265353967747a7a7766356d647100000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Allow BTC withdrawal address",
+        "owner": "Diamond Hands",
+        "fields": [
+          {
+            "label": "Bitcoin address",
+            "value": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq"
+          }
+        ]
+      }
+    },
+    {
+      "description": "removeAddress - remove a native segwit address",
+      "rawTx": "0x02f8ae0106843b9aca008504a817c8008307a12094f667f77fdba7458345f227eb6bfe4148243e727080b884f94d13120000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002a62633171617230737272723778666b7679356c3634336c79646e77397265353967747a7a7766356d647100000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Remove BTC withdrawal address",
+        "owner": "Diamond Hands",
+        "fields": [
+          {
+            "label": "Bitcoin address",
+            "value": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq"
+          }
+        ]
+      }
+    },
+    {
+      "description": "removeAddressByHash - remove by keccak256 hash",
+      "rawTx": "0x02f84d0106843b9aca008504a817c8008307a12094f667f77fdba7458345f227eb6bfe4148243e727080a4b8f8f46e664749bc041993bf56b9e8b233b9ddcc8abc7742f5a82f015a0d2256e0869a91c0",
+      "expected": {
+        "intent": "Remove BTC withdrawal address",
+        "owner": "Diamond Hands",
+        "fields": [
+          {
+            "label": "Address hash",
+            "value": "0x664749bc041993bf56b9e8b233b9ddcc8abc7742f5a82f015a0d2256e0869a91"
+          }
+        ]
+      }
+    }
+  ]
+}
