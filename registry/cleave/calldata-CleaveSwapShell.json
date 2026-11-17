@@ -1,0 +1,106 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "CleaveSwapShell",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x016750b998AaB0b4b07AA6a2276335053A798758" },
+        { "chainId": 10, "address": "0xb08F28a3575805ee1E3729fc19Ab7E869CBAF563" },
+        { "chainId": 56, "address": "0x48dD089939C9a29211e7De9417e91A141D37F697" },
+        { "chainId": 137, "address": "0x5b4a223D8489a3b97d4EBe8fE93C6A7aC3Ec1AD6" },
+        { "chainId": 8453, "address": "0xb08F28a3575805ee1E3729fc19Ab7E869CBAF563" },
+        { "chainId": 42161, "address": "0x4052700f83324Be5710d187b7bbEa9837DfFa8fc" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Cleave",
+    "contractName": "CleaveSwapShell",
+    "info": { "url": "https://cleave.fi" },
+    "enums": { "wrappedNativeOut": { "true": "Keep wrapped", "false": "Unwrap to native" } }
+  },
+  "display": {
+    "definitions": {
+      "recipient": {
+        "label": "Recipient",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      },
+      "deadline": { "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+      "wrappedNativeOut": { "label": "If wrapped native out", "format": "enum", "params": { "$ref": "$.metadata.enums.wrappedNativeOut" } }
+    },
+    "formats": {
+      "swapWithBlob((address tokenIn,address tokenOut,uint256 amountIn,uint256 minAmountOut,uint256 deadline,address recipient,address referrer,uint16 referralFeeBps,bool wethAsErc20) params,bytes blob)": {
+        "$id": "swapWithBlob",
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {params.amountIn}",
+        "fields": [
+          { "path": "params.amountIn", "label": "Amount in", "format": "tokenAmount", "params": { "tokenPath": "params.tokenIn" } },
+          {
+            "path": "params.minAmountOut",
+            "label": "Minimum to receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.tokenOut" }
+          },
+          { "path": "params.recipient", "$ref": "$.display.definitions.recipient" },
+          { "path": "params.deadline", "$ref": "$.display.definitions.deadline" },
+          { "path": "params.wethAsErc20", "$ref": "$.display.definitions.wrappedNativeOut" },
+          { "path": "params.referralFeeBps", "label": "Referral fee", "format": "unit", "params": { "base": "%", "decimals": 2 } },
+          {
+            "path": "params.referrer",
+            "label": "Referral recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] }
+          },
+          { "path": "@.value", "label": "Native value sent", "format": "amount" },
+          { "path": "params.tokenIn", "label": "Token in", "visible": "never" },
+          { "path": "params.tokenOut", "label": "Token out", "visible": "never" },
+          { "path": "blob", "label": "Route", "visible": "never" }
+        ]
+      },
+      "swapWithBlobAndPermit2((address tokenIn,address tokenOut,uint256 amountIn,uint256 minAmountOut,uint256 deadline,address recipient,address referrer,uint16 referralFeeBps,bool wethAsErc20) params,bytes blob,(((address token,uint256 amount) permitted,uint256 nonce,uint256 deadline) permit,bytes signature) permitData)": {
+        "$id": "swapWithBlobAndPermit2",
+        "intent": "Swap with Permit2",
+        "interpolatedIntent": "Swap {params.amountIn}",
+        "fields": [
+          { "path": "params.amountIn", "label": "Amount in", "format": "tokenAmount", "params": { "tokenPath": "params.tokenIn" } },
+          {
+            "path": "params.minAmountOut",
+            "label": "Minimum to receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.tokenOut" }
+          },
+          { "path": "params.recipient", "$ref": "$.display.definitions.recipient" },
+          { "path": "params.deadline", "$ref": "$.display.definitions.deadline" },
+          { "path": "params.wethAsErc20", "$ref": "$.display.definitions.wrappedNativeOut" },
+          {
+            "path": "permitData.permit.permitted.amount",
+            "label": "Permit2 amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "permitData.permit.permitted.token" }
+          },
+          {
+            "path": "permitData.permit.deadline",
+            "label": "Signature deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" }
+          },
+          { "path": "params.referralFeeBps", "label": "Referral fee", "format": "unit", "params": { "base": "%", "decimals": 2 } },
+          {
+            "path": "params.referrer",
+            "label": "Referral recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] }
+          },
+          { "path": "@.value", "label": "Native value sent", "format": "amount" },
+          { "path": "params.tokenIn", "label": "Token in", "visible": "never" },
+          { "path": "params.tokenOut", "label": "Token out", "visible": "never" },
+          { "path": "blob", "label": "Route", "visible": "never" },
+          { "path": "permitData.permit.permitted.token", "label": "Permit2 token", "visible": "never" },
+          { "path": "permitData.permit.nonce", "label": "Permit2 nonce", "visible": "never" },
+          { "path": "permitData.signature", "label": "Permit2 signature", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
