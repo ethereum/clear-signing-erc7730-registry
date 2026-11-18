@@ -67,31 +67,41 @@
         "intent": "Authorize artwork transfer",
         "interpolatedIntent": "Execute authorized artwork transfers",
         "fields": [
-          { "path": "transferParams_.[].from", "label": "From", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
-          { "path": "transferParams_.[].to", "label": "To", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
-          { "path": "transferParams_.[].tokenID", "label": "Artwork", "format": "nftName", "params": { "collectionPath": "@.to" } },
           {
-            "path": "transferParams_.[].expireTime",
-            "label": "Authorization expires",
-            "format": "date",
-            "params": { "encoding": "timestamp" }
+            "path": "transferParams_.[]",
+            "fields": [
+              { "path": "from", "label": "From", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+              { "path": "to", "label": "To", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+              { "path": "tokenID", "label": "Artwork", "format": "nftName", "params": { "collectionPath": "@.to" } },
+              { "path": "expireTime", "label": "Authorization expires", "format": "date", "params": { "encoding": "timestamp" } }
+            ]
           }
         ]
       },
       "createArtworks((string title,string artistName,string fingerprint,uint256 editionSize,uint256 AEAmount,uint256 PPAmount)[] artworks_)": {
         "intent": "Create artworks",
         "fields": [
-          { "path": "artworks_.[].title", "label": "Title", "format": "raw" },
-          { "path": "artworks_.[].artistName", "label": "Artist", "format": "raw" },
-          { "path": "artworks_.[].editionSize", "label": "Edition size", "format": "raw" }
+          {
+            "path": "artworks_.[]",
+            "fields": [
+              { "path": "title", "label": "Title", "format": "raw" },
+              { "path": "artistName", "label": "Artist", "format": "raw" },
+              { "path": "editionSize", "label": "Edition size", "format": "raw" }
+            ]
+          }
         ]
       },
       "batchMint((uint256 artworkID,uint256 edition,address artist,address owner,string ipfsCID)[] mintParams_)": {
         "intent": "Batch mint editions",
         "fields": [
-          { "path": "mintParams_.[].artworkID", "label": "Artwork ID", "format": "raw" },
-          { "path": "mintParams_.[].edition", "label": "Edition", "format": "raw" },
-          { "path": "mintParams_.[].owner", "label": "Owner", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
+          {
+            "path": "mintParams_.[]",
+            "fields": [
+              { "path": "artworkID", "label": "Artwork ID", "format": "raw" },
+              { "path": "edition", "label": "Edition", "format": "raw" },
+              { "path": "owner", "label": "Owner", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
+            ]
+          }
         ]
       },
       "setRoyaltyPayoutAddress(address royaltyPayoutAddress_)": {

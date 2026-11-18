@@ -28,10 +28,15 @@
       "registerAuctions((uint256 id,uint256 startAt,uint256 endAt,uint256 extendDuration,uint256 extendThreshold,uint256 minIncreaseFactor,uint256 minIncreaseAmount,uint256 minPrice,bool isSettled)[] auctions_)": {
         "intent": "Register auctions",
         "fields": [
-          { "path": "auctions_.[].id", "label": "Auction ID", "format": "raw" },
-          { "path": "auctions_.[].minPrice", "label": "Minimum price", "format": "amount" },
-          { "path": "auctions_.[].startAt", "label": "Starts", "format": "date", "params": { "encoding": "timestamp" } },
-          { "path": "auctions_.[].endAt", "label": "Ends", "format": "date", "params": { "encoding": "timestamp" } }
+          {
+            "path": "auctions_.[]",
+            "fields": [
+              { "path": "id", "label": "Auction ID", "format": "raw" },
+              { "path": "minPrice", "label": "Minimum price", "format": "amount" },
+              { "path": "startAt", "label": "Starts", "format": "date", "params": { "encoding": "timestamp" } },
+              { "path": "endAt", "label": "Ends", "format": "date", "params": { "encoding": "timestamp" } }
+            ]
+          }
         ]
       },
       "settleAuction(uint256 auctionID_,address tokenAddr_,address vaultAddr_,(uint256 price,uint256 cost,uint256 expiryTime,address destination,uint256[] tokenIds,(address recipient,uint256 bps)[][] revenueShares,bool payByVaultContract) saleData_,bytes32 r_,bytes32 s_,uint8 v_)": {

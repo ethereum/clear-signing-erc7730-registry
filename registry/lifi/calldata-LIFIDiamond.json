@@ -1470,13 +1470,18 @@
           { "path": "_squidData.destinationChain", "label": "Squid Destination Chain", "format": "raw", "visible": "always" },
           { "path": "_squidData.bridgedTokenSymbol", "label": "Token Bridged (Axelar)", "format": "raw", "visible": "always" },
           {
-            "path": "_squidData.sourceCalls.[].target",
-            "label": "Source Call Target",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
+            "path": "_squidData.sourceCalls.[]",
+            "fields": [
+              {
+                "path": "target",
+                "label": "Source Call Target",
+                "format": "addressName",
+                "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+                "visible": "always"
+              },
+              { "path": "callData", "label": "Source Call Data", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_squidData.sourceCalls.[].callData", "label": "Source Call Data", "format": "raw", "visible": "always" },
           {
             "path": "_squidData.destinationAddress",
             "label": "Destination Contract (routes 0, 2)",
@@ -1740,13 +1745,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via Across to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -1786,13 +1796,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via AcrossV4 to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -1849,13 +1864,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via AcrossV4Swap to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge (surplus: bridged on route 0, refunded on 1-3)",
@@ -1895,13 +1915,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via AllBridge to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -1955,13 +1980,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via ArbitrumBridge to Arbitrum One for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2008,13 +2038,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via CelerCircleBridge to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2054,13 +2089,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via Centrifuge to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2101,13 +2141,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via Chainflip to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2149,13 +2194,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via DeBridgeDln to chain {_bridgeData.destinationChainId} for {_deBridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge (native: minus DLN fee)",
@@ -2197,13 +2247,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via Eco to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Amount to Bridge (swap excess to refund)",
@@ -2245,13 +2300,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via Frax to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2293,13 +2353,18 @@
         "interpolatedIntent": "Swap then send {_bridgeData.minAmount} via Garden to {_gardenData.redeemer}, filled off-chain for {_bridgeData.receiver} on chain {_bridgeData.destinationChainId}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2352,13 +2417,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via GasZip to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2405,13 +2475,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via Glacis to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2461,13 +2536,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via GnosisBridge to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2500,13 +2580,18 @@
         "interpolatedIntent": "Swap then send {_bridgeData.minAmount} via LayerSwap to {_layerSwapData.depositoryReceiver}, filled off-chain for {_bridgeData.receiver} on chain {_bridgeData.destinationChainId}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2554,13 +2639,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via LiFiIntentEscrowV2 to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2622,13 +2712,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via M0 to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2685,13 +2780,18 @@
         "interpolatedIntent": "Swap then bridge {_mayanData.mayanAmountIn} via Mayan for {_bridgeData.receiver}; chain and output set by the Mayan order",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum Swap Output",
@@ -2771,13 +2871,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via MegaETHBridge to MegaETH for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2827,13 +2932,18 @@
         "interpolatedIntent": "Swap then send {_bridgeData.minAmount} via NEARIntents to {_nearData.depositAddress}, filled off-chain for {_bridgeData.receiver} on chain {_bridgeData.destinationChainId}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Amount to Bridge (swap excess to refund)",
@@ -2883,13 +2993,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via OmniBridge to Gnosis (Ethereum when sent from Gnosis) for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2927,13 +3042,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via OptimismBridge to OP Mainnet for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -2983,13 +3103,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via PaxosTransit, minus fees {_paxosData.quote.protocolFee} and {_paxosData.quote.integratorFee}, to Paxos endpoint {_paxosData.quote.route.destEID} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Amount to Bridge (swap excess to refund)",
@@ -3058,13 +3183,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via PolygonBridge to Polygon PoS for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -3102,13 +3232,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via PolymerCCTP, minus fee {_polymerData.polymerTokenFee}, to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -3180,13 +3315,18 @@
         "interpolatedIntent": "Swap then send {_bridgeData.minAmount} via RelayDepository, filled off-chain for {_bridgeData.receiver} on chain {_bridgeData.destinationChainId}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -3231,13 +3371,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via Squid route {_squidData.routeType} as {_squidData.bridgedTokenSymbol} to {_squidData.destinationChain}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -3267,13 +3412,18 @@
           { "path": "_squidData.destinationChain", "label": "Squid Destination Chain", "format": "raw", "visible": "always" },
           { "path": "_squidData.bridgedTokenSymbol", "label": "Token Bridged (Axelar)", "format": "raw", "visible": "always" },
           {
-            "path": "_squidData.sourceCalls.[].target",
-            "label": "Source Call Target",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
+            "path": "_squidData.sourceCalls.[]",
+            "fields": [
+              {
+                "path": "target",
+                "label": "Source Call Target",
+                "format": "addressName",
+                "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+                "visible": "always"
+              },
+              { "path": "callData", "label": "Source Call Data", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_squidData.sourceCalls.[].callData", "label": "Source Call Data", "format": "raw", "visible": "always" },
           {
             "path": "_squidData.destinationAddress",
             "label": "Destination Contract (routes 0, 2)",
@@ -3298,13 +3448,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via Stargate to LayerZero endpoint {_stargateData.sendParams.dstEid} for {_stargateData.sendParams.to.[12:32]}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -3371,13 +3526,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via Superset to chain {_bridgeData.destinationChainId} for {_bridgeData.receiver}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -3437,13 +3597,18 @@
         "interpolatedIntent": "Swap then bridge {_bridgeData.minAmount} via Symbiosis contract {_symbiosisData.callTo}; recipient and chain set by Symbiosis calldata",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge (Bitcoin route: exact, swap excess to refund)",
@@ -3497,13 +3662,18 @@
         "interpolatedIntent": "Swap then send {_bridgeData.minAmount} via ThorSwap to vault {_thorSwapData.vault} with memo {_thorSwapData.memo}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
@@ -3549,13 +3719,18 @@
         "interpolatedIntent": "Swap then send {_bridgeData.minAmount} via Unit to {_unitData.depositAddress}, filled off-chain for {_bridgeData.receiver} on chain {_bridgeData.destinationChainId}",
         "fields": [
           {
-            "path": "_swapData.[].fromAmount",
-            "label": "Swap Step Input",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "_swapData.[].sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
-            "visible": "always"
+            "path": "_swapData.[]",
+            "fields": [
+              {
+                "path": "fromAmount",
+                "label": "Swap Step Input",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "sendingAssetId", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" },
+                "visible": "always"
+              },
+              { "path": "requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" }
+            ]
           },
-          { "path": "_swapData.[].requiresDeposit", "label": "Swap Step Taken From Wallet", "format": "raw", "visible": "always" },
           {
             "path": "_bridgeData.minAmount",
             "label": "Minimum to Bridge",
