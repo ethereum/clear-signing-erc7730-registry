@@ -345,6 +345,8 @@ Block, that is request changes, when at least one of these holds:
 - another reviewer has a `CHANGES_REQUESTED` review on the head commit (the state from `gh pr view --json reviews`, not the text of the review);
 - a part of the descriptor cannot be checked because the source is not verified or a proxy does not resolve, and that part shows an asset, amount or recipient.
 
+An `array-display` warning blocks only for a format that the pull request adds or whose `fields` it changes. For a format that is the same in `base` and in `head`, the warning goes into the review as a suggestion.
+
 Otherwise approve. Info findings and warnings without a clear fix go into the approval body as suggestions, so the author sees them next to the verdict. An approval is followed by the merge, see "Merge an approved pull request", so approve only what can go to master as it is.
 
 ### Write the review
