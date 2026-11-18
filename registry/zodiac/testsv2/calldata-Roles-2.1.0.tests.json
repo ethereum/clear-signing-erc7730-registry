@@ -1,6 +1,15 @@
 {
   "$schema": "../../../specs/erc7730-tests-v2.schema.json",
   "descriptor": "../calldata-Roles-2.1.0.json",
+  "dataProvider": {
+    "tokens": {
+      "0xdac17f958d2ee523a2206206994597c13d831ec7": {
+        "symbol": "USDT",
+        "decimals": 6,
+        "name": "Tether USD"
+      }
+    }
+  },
   "tests": [
     {
       "description": "Allow all calls to a target with send value",
@@ -145,6 +154,7 @@
       "rawTx": "0x02f9034f0106843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b903247508dd984d414e41474552000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111a9059cbb0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000500000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000020000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000c0",
       "expected": {
         "intent": "Scope function",
+        "interpolatedIntent": "Scope 0xa9059cbb on 0x1111111111111111111111111111111111111111 (Call only)",
         "owner": "Zodiac Labs",
         "fields": [
           {
@@ -164,44 +174,44 @@
             "value": "0"
           },
           {
-            "label": "Condition parent",
-            "value": "0"
-          },
-          {
-            "label": "Condition parent",
-            "value": "0"
-          },
-          {
             "label": "Parameter type",
             "value": "Calldata"
-          },
-          {
-            "label": "Parameter type",
-            "value": "Static"
-          },
-          {
-            "label": "Parameter type",
-            "value": "Static"
           },
           {
             "label": "Condition",
             "value": "Matches"
           },
           {
-            "label": "Condition",
-            "value": "Equal to"
-          },
-          {
-            "label": "Condition",
-            "value": "Pass"
-          },
-          {
             "label": "Compared value",
             "value": "0x"
           },
           {
+            "label": "Condition parent",
+            "value": "0"
+          },
+          {
+            "label": "Parameter type",
+            "value": "Static"
+          },
+          {
+            "label": "Condition",
+            "value": "Equal to"
+          },
+          {
             "label": "Compared value",
             "value": "0x0000000000000000000000002222222222222222222222222222222222222222"
+          },
+          {
+            "label": "Condition parent",
+            "value": "0"
+          },
+          {
+            "label": "Parameter type",
+            "value": "Static"
+          },
+          {
+            "label": "Condition",
+            "value": "Pass"
           },
           {
             "label": "Compared value",
@@ -292,7 +302,7 @@
       "rawTx": "0x02f8ee010a843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b8c4a8ec43ee4441494c595f5553444300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000012a05f200000000000000000000000000000000000000000000000000000000003b9aca000000000000000000000000000000000000000000000000000000000000015180000000000000000000000000000000000000000000000000000000006955b900c0",
       "expected": {
         "intent": "Set allowance",
-        "interpolatedIntent": "Set allowance to 1000000000, refill 1000000000 every 24:00:00",
+        "interpolatedIntent": "Set allowance to 1000000000",
         "owner": "Zodiac Labs",
         "fields": [
           {
@@ -327,7 +337,7 @@
       "rawTx": "0x02f8ee0118843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b8c4a8ec43ee4441494c595f5553444300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003b9aca000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003b9aca0000000000000000000000000000000000000000000000000000000000000151800000000000000000000000000000000000000000000000000000000000000000c0",
       "expected": {
         "intent": "Set allowance",
-        "interpolatedIntent": "Set allowance to 1000000000, refill 1000000000 every 24:00:00",
+        "interpolatedIntent": "Set allowance to 1000000000",
         "owner": "Zodiac Labs",
         "fields": [
           {
@@ -345,6 +355,25 @@
           {
             "label": "Refill period",
             "value": "24:00:00"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Set a one-time allowance that never refills",
+      "rawTx": "0x02f8ee0118843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b8c4a8ec43ee4f4e455f54494d455f5553444300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001dcd65000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Set allowance",
+        "interpolatedIntent": "Set allowance to 500000000",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Allowance",
+            "value": "0x4f4e455f54494d455f5553444300000000000000000000000000000000000000"
+          },
+          {
+            "label": "Balance",
+            "value": "500000000"
           }
         ]
       }
@@ -400,11 +429,60 @@
             "label": "Transaction",
             "value": {
               "intent": "Invalidate signed transaction",
+              "interpolatedIntent": "Invalidate signed transaction 0xabababababababababababababababababababababababababababababababab",
               "owner": "Zodiac Labs",
               "fields": [
                 {
                   "label": "Transaction hash",
                   "value": "0xabababababababababababababababababababababababababababababababab"
+                }
+              ]
+            }
+          },
+          {
+            "label": "Revert on failure",
+            "value": "true"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Execute a USDT transfer with a role",
+      "rawTx": "0x02f9016f0119843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780b90144c6fe8747000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec7000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000004d414e414745520000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000044a9059cbb00000000000000000000000033333333333333333333333333333333333333330000000000000000000000000000000000000000000000000000000005f5e10000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Execute with role",
+        "interpolatedIntent": "Call to 0xdAC17F958D2ee523a2206206994597C13D831ec7 with role",
+        "owner": "Zodiac Labs",
+        "fields": [
+          {
+            "label": "Role",
+            "value": "0x4d414e4147455200000000000000000000000000000000000000000000000000"
+          },
+          {
+            "label": "To",
+            "value": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+          },
+          {
+            "label": "Value",
+            "value": "0 ETH"
+          },
+          {
+            "label": "Operation type",
+            "value": "Call"
+          },
+          {
+            "label": "Transaction",
+            "value": {
+              "intent": "Send",
+              "owner": "Tether Limited",
+              "fields": [
+                {
+                  "label": "Amount",
+                  "value": "100 USDT"
+                },
+                {
+                  "label": "To",
+                  "value": "0x3333333333333333333333333333333333333333"
                 }
               ]
             }
@@ -444,6 +522,7 @@
             "label": "Transaction",
             "value": {
               "intent": "Invalidate signed transaction",
+              "interpolatedIntent": "Invalidate signed transaction 0xabababababababababababababababababababababababababababababababab",
               "owner": "Zodiac Labs",
               "fields": [
                 {
@@ -488,6 +567,7 @@
             "label": "Transaction",
             "value": {
               "intent": "Invalidate signed transaction",
+              "interpolatedIntent": "Invalidate signed transaction 0xabababababababababababababababababababababababababababababababab",
               "owner": "Zodiac Labs",
               "fields": [
                 {
@@ -528,6 +608,7 @@
             "label": "Transaction",
             "value": {
               "intent": "Invalidate signed transaction",
+              "interpolatedIntent": "Invalidate signed transaction 0xabababababababababababababababababababababababababababababababab",
               "owner": "Zodiac Labs",
               "fields": [
                 {
@@ -564,6 +645,7 @@
             "label": "Transaction",
             "value": {
               "intent": "Invalidate signed transaction",
+              "interpolatedIntent": "Invalidate signed transaction 0xabababababababababababababababababababababababababababababababab",
               "owner": "Zodiac Labs",
               "fields": [
                 {
@@ -581,6 +663,7 @@
       "rawTx": "0x02f84d0111843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d33780a469ecc3cfababababababababababababababababababababababababababababababababc0",
       "expected": {
         "intent": "Invalidate signed transaction",
+        "interpolatedIntent": "Invalidate signed transaction 0xabababababababababababababababababababababababababababababababab",
         "owner": "Zodiac Labs",
         "fields": [
           {
@@ -670,6 +753,7 @@
       "rawTx": "0x02ed0117843b9aca008506fc23ac00830493e0949646fdad06d3e24444381f44362a3b0eb343d3378084715018a6c0",
       "expected": {
         "intent": "Renounce ownership",
+        "interpolatedIntent": "Renounce ownership",
         "owner": "Zodiac Labs",
         "fields": []
       }

@@ -119,26 +119,32 @@
       },
       "scopeFunction(bytes32 roleKey,address targetAddress,bytes4 selector,(uint8 parent,uint8 paramType,uint8 operator,bytes compValue)[] conditions,uint8 options)": {
         "intent": "Scope function",
+        "interpolatedIntent": "Scope {selector} on {targetAddress} ({options})",
         "fields": [
           { "path": "roleKey", "$ref": "$.display.definitions.role", "visible": "always" },
           { "path": "targetAddress", "$ref": "$.display.definitions.target", "visible": "always" },
           { "path": "selector", "$ref": "$.display.definitions.selector", "visible": "always" },
-          { "path": "conditions.[].parent", "label": "Condition parent", "format": "raw", "visible": "always" },
           {
-            "path": "conditions.[].paramType",
-            "label": "Parameter type",
-            "format": "enum",
-            "params": { "$ref": "$.metadata.enums.parameterType" },
-            "visible": "always"
+            "iteration": "bundled",
+            "fields": [
+              { "path": "conditions.[].parent", "label": "Condition parent", "format": "raw", "visible": "always" },
+              {
+                "path": "conditions.[].paramType",
+                "label": "Parameter type",
+                "format": "enum",
+                "params": { "$ref": "$.metadata.enums.parameterType" },
+                "visible": "always"
+              },
+              {
+                "path": "conditions.[].operator",
+                "label": "Condition",
+                "format": "enum",
+                "params": { "$ref": "$.metadata.enums.conditionOperator" },
+                "visible": "always"
+              },
+              { "path": "conditions.[].compValue", "label": "Compared value", "format": "raw", "visible": "always" }
+            ]
           },
-          {
-            "path": "conditions.[].operator",
-            "label": "Condition",
-            "format": "enum",
-            "params": { "$ref": "$.metadata.enums.conditionOperator" },
-            "visible": "always"
-          },
-          { "path": "conditions.[].compValue", "label": "Compared value", "format": "raw", "visible": "always" },
           { "path": "options", "$ref": "$.display.definitions.executionOptions", "visible": "always" }
         ]
       },
@@ -175,13 +181,13 @@
       },
       "setAllowance(bytes32 key,uint128 balance,uint128 maxRefill,uint128 refill,uint64 period,uint64 timestamp)": {
         "intent": "Set allowance",
-        "interpolatedIntent": "Set allowance to {balance}, refill {refill} every {period}",
+        "interpolatedIntent": "Set allowance to {balance}",
         "fields": [
           { "path": "key", "label": "Allowance", "format": "raw", "visible": "always" },
           { "path": "balance", "label": "Balance", "format": "raw", "visible": "always" },
-          { "path": "refill", "label": "Refill amount", "format": "raw", "visible": "always" },
+          { "path": "refill", "label": "Refill amount", "format": "raw", "visible": { "ifNotIn": [0, "0"] } },
           { "path": "maxRefill", "label": "Refill cap", "format": "raw", "visible": { "ifNotIn": [0, "0"] } },
-          { "path": "period", "label": "Refill period", "format": "duration", "visible": "always" },
+          { "path": "period", "label": "Refill period", "format": "duration", "visible": { "ifNotIn": [0, "0"] } },
           { "path": "timestamp", "label": "Last refill", "format": "date", "params": { "encoding": "timestamp" }, "visible": { "ifNotIn": [0, "0"] } }
         ]
       },
@@ -240,6 +246,7 @@
       },
       "invalidate(bytes32 hash)": {
         "intent": "Invalidate signed transaction",
+        "interpolatedIntent": "Invalidate signed transaction {hash}",
         "fields": [{ "path": "hash", "label": "Transaction hash", "format": "raw", "visible": "always" }]
       },
       "enableModule(address module)": {
@@ -278,6 +285,7 @@
       },
       "renounceOwnership()": {
         "intent": "Renounce ownership",
+        "interpolatedIntent": "Renounce ownership",
         "fields": []
       }
     }
