@@ -1,0 +1,360 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Enishi Vault",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 56,
+          "address": "0x4a460730DC368F5e71720c70869776717bF241Fe"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Enishi",
+    "contractName": "Enishi Vault",
+    "info": {
+      "url": "https://enishi.io/",
+      "deploymentDate": "2026-10-17T05:37:23Z"
+    }
+  },
+  "display": {
+    "formats": {
+      "executeDeposit(uint8[],address,uint256,uint256[],bytes[],address)": {
+        "$id": "executeDeposit",
+        "intent": "Deposit into Enishi Vault",
+        "interpolatedIntent": "Deposit {#.totalDeposit}",
+        "fields": [
+          {
+            "path": "#.totalDeposit",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "#.depositToken"
+            }
+          },
+          {
+            "path": "#.slots.[]",
+            "label": "Strategy slot",
+            "format": "raw"
+          },
+          {
+            "path": "@.value",
+            "label": "BNB gas top-up",
+            "format": "amount"
+          },
+          {
+            "path": "#.referrer",
+            "label": "Referrer",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "label": "Deposit token",
+            "path": "#.depositToken",
+            "visible": "never"
+          },
+          {
+            "label": "Min token outs",
+            "path": "#.minTokenOuts.[]",
+            "visible": "never"
+          },
+          {
+            "label": "Swap paths",
+            "path": "#.swapPaths.[]",
+            "visible": "never"
+          }
+        ]
+      },
+      "requestExit((uint8,uint256[],bytes[],uint256,bytes,uint256,bytes,uint256,uint8,bytes32,bytes32,bool))": {
+        "$id": "requestExit",
+        "intent": "Request exit",
+        "interpolatedIntent": "Request exit: slot {#.e.slot}",
+        "fields": [
+          {
+            "path": "#.e.slot",
+            "label": "Strategy slot",
+            "format": "raw"
+          },
+          {
+            "path": "#.e.payoutStable",
+            "label": "Pay out in USDT",
+            "format": "raw"
+          },
+          {
+            "path": "#.e.permitDeadline",
+            "label": "Permit deadline",
+            "format": "date",
+            "params": {
+              "encoding": "timestamp"
+            }
+          },
+          {
+            "label": "Min consolidate outs",
+            "path": "#.e.minConsolidationOuts.[]",
+            "visible": "never"
+          },
+          {
+            "label": "Consolidation paths",
+            "path": "#.e.consolidationPaths.[]",
+            "visible": "never"
+          },
+          {
+            "label": "Min stable out",
+            "path": "#.e.minStableOut",
+            "visible": "never"
+          },
+          {
+            "label": "Stable path",
+            "path": "#.e.stablePath",
+            "visible": "never"
+          },
+          {
+            "label": "Min ENC out",
+            "path": "#.e.minEncOut",
+            "visible": "never"
+          },
+          {
+            "label": "ENC path",
+            "path": "#.e.encPath",
+            "visible": "never"
+          },
+          {
+            "label": "Permit V",
+            "path": "#.e.permitV",
+            "visible": "never"
+          },
+          {
+            "label": "Permit R",
+            "path": "#.e.permitR",
+            "visible": "never"
+          },
+          {
+            "label": "Permit S",
+            "path": "#.e.permitS",
+            "visible": "never"
+          }
+        ]
+      },
+      "requestExitMany((uint8,uint256[],bytes[],uint256,bytes,uint256,bytes,uint256,uint8,bytes32,bytes32,bool)[])": {
+        "$id": "requestExitMany",
+        "intent": "Request exits",
+        "fields": [
+          {
+            "path": "#.exits.[]",
+            "fields": [
+              {
+                "path": "slot",
+                "label": "Strategy slot",
+                "format": "raw"
+              },
+              {
+                "path": "payoutStable",
+                "label": "Pay out in USDT",
+                "format": "raw"
+              },
+              {
+                "path": "permitDeadline",
+                "label": "Permit deadline",
+                "format": "date",
+                "params": {
+                  "encoding": "timestamp"
+                }
+              },
+              {
+                "label": "Min consolidate outs",
+                "path": "minConsolidationOuts.[]",
+                "visible": "never"
+              },
+              {
+                "label": "Consolidation paths",
+                "path": "consolidationPaths.[]",
+                "visible": "never"
+              },
+              {
+                "label": "Min stable out",
+                "path": "minStableOut",
+                "visible": "never"
+              },
+              {
+                "label": "Stable path",
+                "path": "stablePath",
+                "visible": "never"
+              },
+              {
+                "label": "Min ENC out",
+                "path": "minEncOut",
+                "visible": "never"
+              },
+              {
+                "label": "ENC path",
+                "path": "encPath",
+                "visible": "never"
+              },
+              {
+                "label": "Permit V",
+                "path": "permitV",
+                "visible": "never"
+              },
+              {
+                "label": "Permit R",
+                "path": "permitR",
+                "visible": "never"
+              },
+              {
+                "label": "Permit S",
+                "path": "permitS",
+                "visible": "never"
+              }
+            ]
+          }
+        ]
+      },
+      "executeExit(bytes32)": {
+        "$id": "executeExit",
+        "intent": "Complete exit",
+        "fields": [
+          {
+            "path": "#.requestId",
+            "label": "Request ID",
+            "format": "raw"
+          }
+        ]
+      },
+      "withdrawExit(address,uint8)": {
+        "$id": "withdrawExit",
+        "intent": "Complete exit",
+        "interpolatedIntent": "Complete exit: slot {#.slot}",
+        "fields": [
+          {
+            "path": "#.user",
+            "label": "User",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "#.slot",
+            "label": "Strategy slot",
+            "format": "raw"
+          }
+        ]
+      },
+      "processProfit((address,address,uint256,address,uint256,bytes))": {
+        "$id": "processProfit",
+        "intent": "Settle profit",
+        "interpolatedIntent": "Settle {#.params.grossProfit}",
+        "fields": [
+          {
+            "path": "#.params.user",
+            "label": "User",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            }
+          },
+          {
+            "path": "#.params.availableToken",
+            "label": "Strategy token",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "token"
+              ]
+            }
+          },
+          {
+            "path": "#.params.grossProfit",
+            "label": "Gross profit",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "#.params.payoutToken"
+            }
+          },
+          {
+            "label": "Payout token",
+            "path": "#.params.payoutToken",
+            "visible": "never"
+          },
+          {
+            "label": "Min ENC out",
+            "path": "#.params.minEncOut",
+            "visible": "never"
+          },
+          {
+            "label": "ENC path",
+            "path": "#.params.encPath",
+            "visible": "never"
+          }
+        ]
+      },
+      "setStakeRouter(address)": {
+        "$id": "setStakeRouter",
+        "intent": "Set stake router",
+        "interpolatedIntent": "Set router {#.newStakeRouter}",
+        "fields": [
+          {
+            "path": "#.newStakeRouter",
+            "label": "New stake router",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "transferOwnership(address)": {
+        "$id": "transferOwnership",
+        "intent": "Transfer ownership",
+        "interpolatedIntent": "Transfer owner to {#.newOwner}",
+        "fields": [
+          {
+            "path": "#.newOwner",
+            "label": "New owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            }
+          }
+        ]
+      },
+      "pause()": {
+        "$id": "pause",
+        "intent": "Pause deposits",
+        "interpolatedIntent": "Pause Vault deposits",
+        "fields": []
+      },
+      "unpause()": {
+        "$id": "unpause",
+        "intent": "Resume deposits",
+        "interpolatedIntent": "Resume Vault deposits",
+        "fields": []
+      },
+      "renounceOwnership()": {
+        "$id": "renounceOwnership",
+        "intent": "Renounce ownership",
+        "interpolatedIntent": "Remove Vault owner forever",
+        "fields": []
+      }
+    }
+  }
+}
