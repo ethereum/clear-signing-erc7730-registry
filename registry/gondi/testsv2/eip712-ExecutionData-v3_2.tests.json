@@ -1,0 +1,216 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-ExecutionData-v3_2.json",
+  "dataProvider": {
+    "tokens": { "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" } },
+    "addressNames": { "0xd04ff5e94340a2e1d913c3728a12b210c5d5bb2d": "OPEN EDITION BY KEVIN ABOSCH" },
+    "nftCollectionNames": { "0xd04ff5e94340a2e1d913c3728a12b210c5d5bb2d": "OPEN EDITION BY KEVIN ABOSCH" }
+  },
+  "tests": [
+    {
+      "description": "Loan terms with lender refinance disabled",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "ExecutionData": [
+            { "name": "offerExecution", "type": "OfferExecution[]" },
+            { "name": "loanId", "type": "uint256" },
+            { "name": "nftCollateralAddress", "type": "address" },
+            { "name": "tokenId", "type": "uint256" },
+            { "name": "duration", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "principalReceiver", "type": "address" },
+            { "name": "callbackData", "type": "bytes" }
+          ],
+          "OfferExecution": [
+            { "name": "offer", "type": "LoanOffer" },
+            { "name": "amount", "type": "uint256" },
+            { "name": "lenderOfferSignature", "type": "bytes" }
+          ],
+          "LoanOffer": [
+            { "name": "offerId", "type": "uint256" },
+            { "name": "lender", "type": "address" },
+            { "name": "fee", "type": "uint256" },
+            { "name": "capacity", "type": "uint256" },
+            { "name": "nftCollateralAddress", "type": "address" },
+            { "name": "nftCollateralTokenId", "type": "uint256" },
+            { "name": "principalAddress", "type": "address" },
+            { "name": "principalAmount", "type": "uint256" },
+            { "name": "aprBps", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "duration", "type": "uint256" },
+            { "name": "maxSeniorRepayment", "type": "uint256" },
+            { "name": "validators", "type": "OfferValidator[]" },
+            { "name": "lenderRefinanceDisabled", "type": "bool" },
+            { "name": "borrower", "type": "address" }
+          ],
+          "OfferValidator": [{ "name": "validator", "type": "address" }, { "name": "arguments", "type": "bytes" }]
+        },
+        "primaryType": "ExecutionData",
+        "domain": {
+          "name": "GONDI_MULTI_SOURCE_LOAN",
+          "version": "3.2",
+          "chainId": 1,
+          "verifyingContract": "0xE365fF3cad44d19cb7aBa81df8ffd6818A66Ac0a"
+        },
+        "message": {
+          "offerExecution": [
+            {
+              "offer": {
+                "offerId": "1",
+                "lender": "0x5aB2d1f5069dd2f9aeEC3b0A8e923B1cdbe7Fc44",
+                "fee": "0",
+                "capacity": "0",
+                "nftCollateralAddress": "0xd04FF5E94340A2e1d913c3728a12B210C5D5Bb2D",
+                "nftCollateralTokenId": "2149",
+                "principalAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "principalAmount": "400000000",
+                "aprBps": "5000",
+                "expirationTime": "1791393679",
+                "duration": "2592000",
+                "maxSeniorRepayment": "0",
+                "validators": [],
+                "lenderRefinanceDisabled": true,
+                "borrower": "0x78d3C01365B196aC94Ec0754Ef0ee051572bBbdD"
+              },
+              "amount": "400000000",
+              "lenderOfferSignature": "0x97d8eeca7db237aabbf1684ebf7af2ff4b6f7902a8bc2cb77a832e1bdf3006d73ebff6868d215973e271201b46ecdf2a5ed969f62f9acf38b02b268d5ef3ab531b"
+            }
+          ],
+          "loanId": "0",
+          "nftCollateralAddress": "0xd04FF5E94340A2e1d913c3728a12B210C5D5Bb2D",
+          "tokenId": "2149",
+          "duration": "2592000",
+          "expirationTime": "1791221434",
+          "principalReceiver": "0x78d3C01365B196aC94Ec0754Ef0ee051572bBbdD",
+          "callbackData": "0x"
+        }
+      },
+      "expected": {
+        "intent": "Accept loan offers (new loan or refinance)",
+        "fields": [
+          { "label": "Collateral", "value": "OPEN EDITION BY KEVIN ABOSCH #2149" },
+          { "label": "Lender", "value": "0x5aB2d1f5069dd2f9aeEC3b0A8e923B1cdbe7Fc44" },
+          { "label": "Amount", "value": "400 USDC" },
+          { "label": "APR", "value": "50%" },
+          { "label": "Lender fee (max)", "value": "0 USDC" },
+          { "label": "No lender refinance", "value": "true" },
+          { "label": "Duration", "value": "720:00:00" },
+          { "label": "Principal receiver", "value": "0x78d3C01365B196aC94Ec0754Ef0ee051572bBbdD" },
+          { "label": "Valid until", "value": "2026-10-05 17:30:34Z" },
+          { "label": "Callback data", "value": "0x" }
+        ],
+        "interpolatedIntent": "Borrow against OPEN EDITION BY KEVIN ABOSCH #2149",
+        "owner": "GONDI"
+      }
+    },
+    {
+      "description": "Loan terms with lender refinance disabled, refinancing loan 15551 (constructed, never signed)",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "ExecutionData": [
+            { "name": "offerExecution", "type": "OfferExecution[]" },
+            { "name": "loanId", "type": "uint256" },
+            { "name": "nftCollateralAddress", "type": "address" },
+            { "name": "tokenId", "type": "uint256" },
+            { "name": "duration", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "principalReceiver", "type": "address" },
+            { "name": "callbackData", "type": "bytes" }
+          ],
+          "OfferExecution": [
+            { "name": "offer", "type": "LoanOffer" },
+            { "name": "amount", "type": "uint256" },
+            { "name": "lenderOfferSignature", "type": "bytes" }
+          ],
+          "LoanOffer": [
+            { "name": "offerId", "type": "uint256" },
+            { "name": "lender", "type": "address" },
+            { "name": "fee", "type": "uint256" },
+            { "name": "capacity", "type": "uint256" },
+            { "name": "nftCollateralAddress", "type": "address" },
+            { "name": "nftCollateralTokenId", "type": "uint256" },
+            { "name": "principalAddress", "type": "address" },
+            { "name": "principalAmount", "type": "uint256" },
+            { "name": "aprBps", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "duration", "type": "uint256" },
+            { "name": "maxSeniorRepayment", "type": "uint256" },
+            { "name": "validators", "type": "OfferValidator[]" },
+            { "name": "lenderRefinanceDisabled", "type": "bool" },
+            { "name": "borrower", "type": "address" }
+          ],
+          "OfferValidator": [{ "name": "validator", "type": "address" }, { "name": "arguments", "type": "bytes" }]
+        },
+        "primaryType": "ExecutionData",
+        "domain": {
+          "name": "GONDI_MULTI_SOURCE_LOAN",
+          "version": "3.2",
+          "chainId": 1,
+          "verifyingContract": "0xE365fF3cad44d19cb7aBa81df8ffd6818A66Ac0a"
+        },
+        "message": {
+          "offerExecution": [
+            {
+              "offer": {
+                "offerId": "1",
+                "lender": "0x5aB2d1f5069dd2f9aeEC3b0A8e923B1cdbe7Fc44",
+                "fee": "0",
+                "capacity": "0",
+                "nftCollateralAddress": "0xd04FF5E94340A2e1d913c3728a12B210C5D5Bb2D",
+                "nftCollateralTokenId": "2149",
+                "principalAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "principalAmount": "400000000",
+                "aprBps": "5000",
+                "expirationTime": "1791393679",
+                "duration": "2592000",
+                "maxSeniorRepayment": "0",
+                "validators": [],
+                "lenderRefinanceDisabled": true,
+                "borrower": "0x78d3C01365B196aC94Ec0754Ef0ee051572bBbdD"
+              },
+              "amount": "400000000",
+              "lenderOfferSignature": "0x97d8eeca7db237aabbf1684ebf7af2ff4b6f7902a8bc2cb77a832e1bdf3006d73ebff6868d215973e271201b46ecdf2a5ed969f62f9acf38b02b268d5ef3ab531b"
+            }
+          ],
+          "loanId": "15551",
+          "nftCollateralAddress": "0xd04FF5E94340A2e1d913c3728a12B210C5D5Bb2D",
+          "tokenId": "2149",
+          "duration": "2592000",
+          "expirationTime": "1791221434",
+          "principalReceiver": "0x78d3C01365B196aC94Ec0754Ef0ee051572bBbdD",
+          "callbackData": "0x"
+        }
+      },
+      "expected": {
+        "intent": "Accept loan offers (new loan or refinance)",
+        "fields": [
+          { "label": "Collateral", "value": "OPEN EDITION BY KEVIN ABOSCH #2149" },
+          { "label": "Lender", "value": "0x5aB2d1f5069dd2f9aeEC3b0A8e923B1cdbe7Fc44" },
+          { "label": "Amount", "value": "400 USDC" },
+          { "label": "APR", "value": "50%" },
+          { "label": "Lender fee (max)", "value": "0 USDC" },
+          { "label": "No lender refinance", "value": "true" },
+          { "label": "Duration", "value": "720:00:00" },
+          { "label": "Principal receiver", "value": "0x78d3C01365B196aC94Ec0754Ef0ee051572bBbdD" },
+          { "label": "Valid until", "value": "2026-10-05 17:30:34Z" },
+          { "label": "Callback data", "value": "0x" },
+          { "label": "Loan to refinance", "value": "15551" }
+        ],
+        "interpolatedIntent": "Borrow against OPEN EDITION BY KEVIN ABOSCH #2149",
+        "owner": "GONDI"
+      }
+    }
+  ]
+}

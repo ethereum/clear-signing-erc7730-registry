@@ -1,0 +1,29 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x1F21d09C65BC8Af92634DCD5a100B6d04f0c81c3" }] } },
+  "metadata": {
+    "owner": "Harbor",
+    "contractName": "Harbor Router",
+    "constants": { "executor": "0x9E3F3F7F3B619D33d0195ea7a51cDe1128D204be" }
+  },
+  "display": {
+    "formats": {
+      "depositWithExpiry(address vault,address asset,uint256 amount,string memo,uint256 expiration)": {
+        "intent": "Deposit to Harbor",
+        "fields": [
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
+          {
+            "path": "amount",
+            "label": "Amount (if token)",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "asset", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "vault", "label": "Vault", "format": "addressName", "params": { "types": ["eoa"] } },
+          { "path": "memo", "label": "Harbor Memo", "format": "raw" },
+          { "path": "expiration", "label": "Expires", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "asset", "label": "Asset", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

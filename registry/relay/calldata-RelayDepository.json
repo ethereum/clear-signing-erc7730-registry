@@ -1,0 +1,105 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x4cD00E387622C35bDDB9b4c962C136462338BC31" }] } },
+  "metadata": { "owner": "Relay", "contractName": "RelayDepository", "info": { "url": "https://relay.link" } },
+  "display": {
+    "formats": {
+      "cancelOwnershipHandover()": { "intent": "Cancel ownership handover", "fields": [{ "path": "@.value", "label": "Value Sent", "format": "amount" }] },
+      "completeOwnershipHandover(address pendingOwner)": {
+        "intent": "Complete ownership handover",
+        "fields": [
+          {
+            "path": "pendingOwner",
+            "label": "New Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "Value Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Hand over to {pendingOwner}"
+      },
+      "depositErc20(address depositor,address token,bytes32 id)": {
+        "intent": "Deposit approved amount",
+        "fields": [
+          { "path": "token", "label": "Token (all approved)", "format": "tokenTicker" },
+          {
+            "path": "depositor",
+            "label": "Credited To",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "wallet", "contract"],
+              "sources": ["local", "ens"],
+              "senderAddress": ["0x0000000000000000000000000000000000000000"]
+            }
+          },
+          { "path": "id", "label": "Relay Order ID", "format": "raw" }
+        ],
+        "interpolatedIntent": "Deposit all approved {token} for {depositor}"
+      },
+      "depositErc20(address depositor,address token,uint256 amount,bytes32 id)": {
+        "intent": "Deposit to Relay",
+        "fields": [
+          { "path": "amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          {
+            "path": "depositor",
+            "label": "Credited To",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "wallet", "contract"],
+              "sources": ["local", "ens"],
+              "senderAddress": ["0x0000000000000000000000000000000000000000"]
+            }
+          },
+          { "path": "id", "label": "Relay Order ID", "format": "raw" },
+          { "path": "token", "label": "Token", "visible": "never" }
+        ],
+        "interpolatedIntent": "Deposit {amount} for {depositor}"
+      },
+      "depositNative(address depositor,bytes32 id)": {
+        "intent": "Deposit to Relay",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount" },
+          {
+            "path": "depositor",
+            "label": "Credited To",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "wallet", "contract"],
+              "sources": ["local", "ens"],
+              "senderAddress": ["0x0000000000000000000000000000000000000000"]
+            }
+          },
+          { "path": "id", "label": "Relay Order ID", "format": "raw" }
+        ],
+        "interpolatedIntent": "Deposit {@.value} for {depositor}"
+      },
+      "renounceOwnership()": { "intent": "Renounce ownership permanently", "fields": [{ "path": "@.value", "label": "Value Sent", "format": "amount" }] },
+      "requestOwnershipHandover()": { "intent": "Request ownership handover", "fields": [{ "path": "@.value", "label": "Value Sent", "format": "amount" }] },
+      "setAllocator(address _allocator)": {
+        "intent": "Set allocator",
+        "fields": [
+          {
+            "path": "_allocator",
+            "label": "New Allocator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ],
+        "interpolatedIntent": "Set allocator to {_allocator}"
+      },
+      "transferOwnership(address newOwner)": {
+        "intent": "Transfer ownership",
+        "fields": [
+          {
+            "path": "newOwner",
+            "label": "New Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "Value Sent", "format": "amount" }
+        ],
+        "interpolatedIntent": "Make {newOwner} the owner"
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-hyperithm-hyperUSDCa.json",
+  "dataProvider": {
+    "tokens": {
+      "0xaf88d065e77c8cc2239327c5edb3a432268e5831": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0x4b6f1c9e5d470b97181786b26da0d0945a7cf027": { "decimals": 18, "name": "Hyperithm USDC Apex", "symbol": "hyperUSDCa" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0xf87a0183fbc520830ce1e7944b6f1c9e5d470b97181786b26da0d0945a7cf02780b8546e553f6500000000000000000000000000000000000000000000000000000012a05f20000000000000000000000000006e2cbf28026be9cb3adc86de467a5d5c1f42fc4e535a2a0fffc69deb000000000000008182a4b18080",
+      "txHash": "0xd9cde14f3121be26bed1fe1a48ddc2ef48dce9c59e45c22ce73edb678b328e92",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "80000 USDC" },
+          { "label": "Share ticker", "value": "hyperUSDCa" },
+          { "label": "Send shares to", "value": "0x6E2CBF28026be9CB3AdC86dE467a5d5c1F42fc4e" }
+        ],
+        "owner": "Hyperithm"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0xf88b0884012b3f32830eb646944b6f1c9e5d470b97181786b26da0d0945a7cf02780b864b460af94000000000000000000000000000000000000000000000000000000000003d090000000000000000000000000b9c0867a4ee647807951220401862d10b316d572000000000000000000000000b9c0867a4ee647807951220401862d10b316d57282a4b18080",
+      "txHash": "0xd196c66bc708ad361b1068a5856bdc2d080741229aba5f2e6a4c85b394947636",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "0.25 USDC" },
+          { "label": "To", "value": "0xB9C0867A4EE647807951220401862D10b316D572" },
+          { "label": "Owner", "value": "0xB9C0867A4EE647807951220401862D10b316D572" }
+        ],
+        "owner": "Hyperithm"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88a82a4b1108083b71b00830ad166944b6f1c9e5d470b97181786b26da0d0945a7cf02780b864ba08765200000000000000000000000000000000000000000000000045318a4e2b61c5510000000000000000000000008a62b5ce6f1020270e12a46063fdcf7ab6f4a65d0000000000000000000000008a62b5ce6f1020270e12a46063fdcf7ab6f4a65dc0",
+      "txHash": "0x8a9b7c0318a643efaf5ae7b09f0e009a360c4f06ea06acd319326deaa495bbb8",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "4.985918330815759697 hyperUSDCa" },
+          { "label": "To", "value": "0x8A62B5cE6f1020270E12A46063FDCf7aB6f4A65d" },
+          { "label": "Owner", "value": "0x8A62B5cE6f1020270E12A46063FDCf7aB6f4A65d" }
+        ],
+        "owner": "Hyperithm"
+      }
+    }
+  ]
+}

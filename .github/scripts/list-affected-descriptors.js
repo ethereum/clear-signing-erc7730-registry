@@ -16,17 +16,36 @@
  * passed too: a descriptor whose includes chain references a now-missing
  * changed file is still reported as affected.
  *
+ * With the optional BASE_ROOT environment variable (a directory that holds
+ * the registry/ and ercs/ trees of the base), a changed file with the same
+ * JSON as its base version is not a change. "erc7730 format" changes only
+ * the layout of the files.
+ *
+ * The optional ADDED_FILES, MODIFIED_FILES, RENAMED_FILES and DELETED_FILES
+ * environment variables carry the same paths split by what the pull request
+ * did to each file (a renamed file counts as modified). They only feed the
+ * "changes" map below; they never change which descriptors are affected.
+ *
  * Prints a JSON object to stdout:
  *   {
  *     "affected_descriptors": [...],  // repo-relative descriptor paths, sorted
  *     "matrix": [{"descriptor", "test_file", "entity", "descriptor_name"}, ...],
  *     "missing_tests": [...],         // affected descriptors with no test file
+ *     "changes": {...},               // per affected descriptor, see below
  *     "has_affected": true|false,     // at least one affected descriptor
  *     "has_tests": true|false         // at least one matrix entry
  *   }
  *
  * "matrix" only contains affected descriptors that have an existing testsv2
  * file, in the shape consumed by the Descriptor Tests workflow.
+ *
+ * "changes" says, for each affected descriptor, what the pull request did to
+ * it: {"descriptor": added|modified|deleted|unchanged, "tests": the same for
+ * its testsv2 file, "includes": [...]}. "includes" lists the changed files of
+ * the descriptor's includes chain, sorted — a deleted shared file stays in
+ * the chain, so it appears here too. The test report reads this map from the
+ * pr-context artifact, so the labels come from the pull request's own changed
+ * files and never from a comparison against the base branch.
  */
 
 const fs = require('fs');
@@ -103,12 +122,54 @@ function includeClosure(absFile) {
   return closure;
 }
 
-function main() {
-  const changed = new Set(
-    [...process.argv.slice(2), ...(process.env.CHANGED_FILES || '').split(/\s+/)]
-      .map((f) => f.trim().replace(/^\.\//, ''))
-      .filter((f) => f !== '')
+/**
+ * JSON text without the whitespace between tokens, and with each string in
+ * one escape form ("→" and "→" are the same). Key order, duplicate keys
+ * and number text stay as they are: JSON.parse would drop or round them.
+ * Throws when the text is not JSON.
+ */
+function normalizeJson(text) {
+  JSON.parse(text);
+  return text.replace(/"(?:[^"\\]|\\.)*"|\s+/g, (token) =>
+    token[0] === '"' ? JSON.stringify(JSON.parse(token)) : ''
   );
+}
+
+/** The paths of a whitespace-separated environment variable. */
+function envFiles(name) {
+  return (process.env[name] || '')
+    .split(/\s+/)
+    .map((f) => f.trim().replace(/^\.\//, ''))
+    .filter((f) => f !== '');
+}
+
+function main() {
+  const changed = new Set([
+    ...process.argv.slice(2).map((f) => f.trim().replace(/^\.\//, '')).filter((f) => f !== ''),
+    ...envFiles('CHANGED_FILES'),
+  ]);
+
+  if (process.env.BASE_ROOT) {
+    const json = (root, file) => normalizeJson(fs.readFileSync(path.join(root, file), 'utf8'));
+    for (const file of changed) {
+      try {
+        if (json(repoRoot, file) === json(process.env.BASE_ROOT, file)) changed.delete(file);
+      } catch {
+        // Not in the base, or not JSON: a change.
+      }
+    }
+  }
+
+  // What the pull request did to one file. A renamed file counts as
+  // modified. A file in none of the lists is unchanged.
+  const deletedFiles = new Set(envFiles('DELETED_FILES'));
+  const addedFiles = new Set(envFiles('ADDED_FILES'));
+  const modifiedFiles = new Set([...envFiles('MODIFIED_FILES'), ...envFiles('RENAMED_FILES')]);
+  const kind = (file) =>
+    deletedFiles.has(file) ? 'deleted'
+    : addedFiles.has(file) ? 'added'
+    : modifiedFiles.has(file) ? 'modified'
+    : 'unchanged';
 
   const descriptors = collectDescriptors(path.join(repoRoot, 'registry'), [])
     .map(rel)
@@ -147,9 +208,17 @@ function main() {
   const affectedSorted = [...affected].sort();
   const matrix = [];
   const missingTests = [];
+  const changes = {};
   for (const descriptor of affectedSorted) {
     const descriptorName = path.posix.basename(descriptor, '.json');
     const testFile = `${path.posix.dirname(descriptor)}/testsv2/${descriptorName}.tests.json`;
+    changes[descriptor] = {
+      descriptor: kind(descriptor),
+      tests: kind(testFile),
+      includes: [...includeClosure(path.join(repoRoot, descriptor))]
+        .filter((f) => changed.has(f))
+        .sort(),
+    };
     if (!fs.existsSync(path.join(repoRoot, testFile))) {
       missingTests.push(descriptor);
       continue;
@@ -167,6 +236,7 @@ function main() {
       affected_descriptors: affectedSorted,
       matrix,
       missing_tests: missingTests,
+      changes,
       has_affected: affectedSorted.length > 0,
       has_tests: matrix.length > 0,
     })
@@ -176,3 +246,7 @@ function main() {
 if (require.main === module) {
   main();
 }
+
+// check-recommended-fields.js reuses the include walk, so the two scripts
+// cannot disagree on what a descriptor includes.
+module.exports = { includeClosure, rel };

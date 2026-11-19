@@ -1,0 +1,105 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-L2ToL1MessagePasser.json",
+  "dataProvider": {
+    "tokens": { "0x6b175474e89094c44da98b954eedeac495271d0f": { "name": "Dai Stablecoin", "symbol": "DAI", "decimals": 18 } },
+    "addressNames": {
+      "0x5d4472f31bd9385709ec61305afc749f0fa8e9d0": "Blast L1CrossDomainMessenger",
+      "0x697402166fbf2f22e970df8a6486ef171dbfc524": "Blast L1StandardBridge",
+      "0x3a05e5d33d7ab3864d53aaec93c8301c1fa49115": "L1BlastBridge",
+      "0x0ec68c5b10f21effb74f2a5c61dfe6b08c0db6cb": "Blast OptimismPortal",
+      "0x4200000000000000000000000000000000000007": "L2CrossDomainMessenger",
+      "0x4200000000000000000000000000000000000010": "L2StandardBridge",
+      "0x4300000000000000000000000000000000000005": "L2BlastBridge"
+    }
+  },
+  "tests": [
+    {
+      "description": "burn - chain 81457",
+      "rawTx": "0x02e783013e31808080830f4240944200000000000000000000000000000000000016808444df8e70c0",
+      "from": "0x0D83D4a8c8010ECEE4593D375B6f820d6BA3cA55",
+      "txHash": "0x0ab9b0d6516ab38e9a6870202f8ea29f1e14232db8527131b7481555893f8dd3",
+      "expected": { "intent": "Burn withdrawn ETH", "interpolatedIntent": "Burn ETH left by withdrawals", "owner": "Blast", "fields": [] }
+    },
+    {
+      "description": "initiateWithdrawal-approve - chain 81457",
+      "rawTx": "0x02f9010883013e31808080830f424094420000000000000000000000000000000000001680b8e4c2b3e5ac000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b3000000000000000000000000dfef68b86eff06691e3edfaebf620c84eb86f0e3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe00000000000000000000000000000000000000000000000000000000c0",
+      "from": "0xdFeF68b86eff06691e3edFAEBF620c84eB86F0E3",
+      "txHash": "0xb6053a1d91c7a067d140e5ba1fb5b1697843217e4ab7eb866339593536c7dade",
+      "expected": {
+        "intent": "Start ETH withdrawal to Ethereum",
+        "interpolatedIntent": "Start withdrawal of 0 ETH to 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 on Ethereum; the L1 payout can be lower",
+        "owner": "Blast",
+        "fields": [
+          { "label": "ETH to Withdraw", "value": "0 ETH" },
+          { "label": "L1 Recipient", "value": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" },
+          { "label": "Min L1 Gas", "value": "200000gas" },
+          {
+            "label": "L1 Call",
+            "value": "0x095ea7b3000000000000000000000000dfef68b86eff06691e3edfaebf620c84eb86f0e3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe"
+          }
+        ]
+      }
+    },
+    {
+      "description": "initiateWithdrawal-eth - chain 81457",
+      "rawTx": "0x02f8b083013e31808080830f4240944200000000000000000000000000000000000016886f0030cc251fbb64b884c2b3e5ac000000000000000000000000ef764bac8a438e7e498c2e5fccf0f174c3e3f8db00000000000000000000000000000000000000000000000000000000000186a000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0xa9a45248C5ce51A10768d9def9433164AA999A0e",
+      "txHash": "0x7880cc73d398b1f9b299f1202ee3f605fac9b966866e161846dadadebb1fd266",
+      "expected": {
+        "intent": "Start ETH withdrawal to Ethereum",
+        "interpolatedIntent": "Start withdrawal of 7.998446591564299108 ETH to 0xef764BAC8a438E7E498c2E5fcCf0f174c3E3F8dB on Ethereum; the L1 payout can be lower",
+        "owner": "Blast",
+        "fields": [
+          { "label": "ETH to Withdraw", "value": "7.998446591564299108 ETH" },
+          { "label": "L1 Recipient", "value": "0xef764BAC8a438E7E498c2E5fcCf0f174c3E3F8dB" },
+          { "label": "Min L1 Gas", "value": "100000gas" },
+          { "label": "L1 Call", "value": "0x" }
+        ]
+      }
+    },
+    {
+      "description": "initiateWithdrawal-call - chain 81457",
+      "rawTx": "0x02f902a983013e31808080830f424094420000000000000000000000000000000000001680b90284c2b3e5ac0000000000000000000000005d4472f31bd9385709ec61305afc749f0fa8e9d000000000000000000000000000000000000000000000000000000000000927c0000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000001e4d764ad0b000100000000000000000000000000000000000000000000000000000001001b00000000000000000000000043000000000000000000000000000000000000050000000000000000000000003a05e5d33d7ab3864d53aaec93c8301c1fa4911500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000061a8000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000e40166a07a0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f0000000000000000000000004300000000000000000000000000000000000003000000000000000000000000ecfd8c0ec309922f9dc5214f7a2d92ba0588a19a000000000000000000000000ecfd8c0ec309922f9dc5214f7a2d92ba0588a19a00000000000000000000000000000000000000000000a859094ea57a5ae0000000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0xeCfD8c0eC309922f9DC5214f7A2D92BA0588A19a",
+      "txHash": "0xd7deb3dd292f10679dc352cceef723322c102474e20215177c6bf7f49da03649",
+      "expected": {
+        "intent": "Start ETH withdrawal to Ethereum",
+        "interpolatedIntent": "Start withdrawal of 0 ETH to Blast L1CrossDomainMessenger on Ethereum; the L1 payout can be lower",
+        "owner": "Blast",
+        "fields": [
+          { "label": "ETH to Withdraw", "value": "0 ETH" },
+          { "label": "L1 Recipient", "value": "Blast L1CrossDomainMessenger" },
+          { "label": "Min L1 Gas", "value": "600000gas" },
+          {
+            "label": "L1 Call",
+            "value": {
+              "intent": "Relay Blast message to L1",
+              "fields": [
+                { "label": "Maximum Amount", "value": "0 ETH" },
+                { "label": "L1 Target", "value": "L1BlastBridge" },
+                { "label": "Blast Sender", "value": "L2BlastBridge" },
+                {
+                  "label": "L1 Call",
+                  "value": {
+                    "intent": "Queue DAI claim for Blast USDB",
+                    "fields": [
+                      { "label": "Maximum Amount", "value": "795000 DAI" },
+                      { "label": "Claimable By", "value": "0xeCfD8c0eC309922f9DC5214f7A2D92BA0588A19a" },
+                      { "label": "Withdrawn By", "value": "0xeCfD8c0eC309922f9DC5214f7A2D92BA0588A19a" }
+                    ],
+                    "interpolatedIntent": "Queue a claim of up to 795000 DAI for 0xeCfD8c0eC309922f9DC5214f7A2D92BA0588A19a, withdrawn by 0xeCfD8c0eC309922f9DC5214f7A2D92BA0588A19a",
+                    "owner": "Blast"
+                  }
+                },
+                { "label": "Max ETH Attached", "value": "0 ETH" }
+              ],
+              "interpolatedIntent": "Relay up to 0 ETH from L2BlastBridge on Blast to L1BlastBridge",
+              "owner": "Blast"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

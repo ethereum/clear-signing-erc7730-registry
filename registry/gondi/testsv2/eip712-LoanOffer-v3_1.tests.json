@@ -1,0 +1,305 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-LoanOffer-v3_1.json",
+  "dataProvider": {
+    "tokens": {
+      "0x0bd7d308f8e1639fab988df18a8011f41eacad73": { "symbol": "WETH", "decimals": 18, "name": "WETH" },
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" },
+      "0xb88339cb7199b77e23db6e890353e22632ba630f": { "symbol": "USDC", "decimals": 6, "name": "USDC" }
+    },
+    "addressNames": {
+      "0x059edd72cd353df5106d2b9cc5ab83a52287ac3a": "Art Blocks",
+      "0x60e4d786628fea6478f785a6d7e704777c86a7c6": "MutantApeYachtClub",
+      "0x85f511d936600f06fdc86288a1390dc21e57faf3": "Hoodnanas",
+      "0x9125e2d6827a00b0f8330d6ef7bef07730bac685": "Hypurr"
+    },
+    "nftCollectionNames": {
+      "0x059edd72cd353df5106d2b9cc5ab83a52287ac3a": "Art Blocks",
+      "0x60e4d786628fea6478f785a6d7e704777c86a7c6": "MutantApeYachtClub",
+      "0x85f511d936600f06fdc86288a1390dc21e57faf3": "Hoodnanas",
+      "0x9125e2d6827a00b0f8330d6ef7bef07730bac685": "Hypurr"
+    }
+  },
+  "tests": [
+    {
+      "description": "Single-NFT USDC offer on Ethereum",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "LoanOffer": [
+            { "name": "offerId", "type": "uint256" },
+            { "name": "lender", "type": "address" },
+            { "name": "fee", "type": "uint256" },
+            { "name": "capacity", "type": "uint256" },
+            { "name": "nftCollateralAddress", "type": "address" },
+            { "name": "nftCollateralTokenId", "type": "uint256" },
+            { "name": "principalAddress", "type": "address" },
+            { "name": "principalAmount", "type": "uint256" },
+            { "name": "aprBps", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "duration", "type": "uint256" },
+            { "name": "maxSeniorRepayment", "type": "uint256" },
+            { "name": "validators", "type": "OfferValidator[]" }
+          ],
+          "OfferValidator": [{ "name": "validator", "type": "address" }, { "name": "arguments", "type": "bytes" }]
+        },
+        "primaryType": "LoanOffer",
+        "domain": {
+          "name": "GONDI_MULTI_SOURCE_LOAN",
+          "version": "3.1",
+          "chainId": 1,
+          "verifyingContract": "0xf41B389E0C1950dc0B16C9498eaE77131CC08A56"
+        },
+        "message": {
+          "offerId": "100",
+          "lender": "0x007CE5c372CC6fcc47d2aaC5665a94a2b165a1b5",
+          "fee": "82748614",
+          "capacity": "0",
+          "nftCollateralAddress": "0x60E4d786628Fea6478F785A6d7e704777c86a7c6",
+          "nftCollateralTokenId": "11025",
+          "principalAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "principalAmount": "1700000000",
+          "aprBps": "500",
+          "expirationTime": "1760756058",
+          "duration": "7776000",
+          "maxSeniorRepayment": "0",
+          "validators": []
+        }
+      },
+      "expected": {
+        "intent": "Make loan offer",
+        "fields": [
+          { "label": "Collection", "value": "MutantApeYachtClub" },
+          { "label": "Token", "value": "MutantApeYachtClub #11025" },
+          { "label": "Loan amount", "value": "1700 USDC" },
+          { "label": "APR", "value": "5%" },
+          { "label": "Duration", "value": "2160:00:00" },
+          { "label": "Origination fee", "value": "82.748614 USDC" },
+          { "label": "Max senior debt", "value": "0 USDC" },
+          { "label": "Lender", "value": "0x007CE5c372CC6fcc47d2aaC5665a94a2b165a1b5" },
+          { "label": "Offer expires", "value": "2025-10-18 02:54:18Z" }
+        ],
+        "interpolatedIntent": "Lend 1700 USDC",
+        "owner": "GONDI"
+      }
+    },
+    {
+      "description": "Collection USDC offer with capacity and a range validator on Ethereum",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "LoanOffer": [
+            { "name": "offerId", "type": "uint256" },
+            { "name": "lender", "type": "address" },
+            { "name": "fee", "type": "uint256" },
+            { "name": "capacity", "type": "uint256" },
+            { "name": "nftCollateralAddress", "type": "address" },
+            { "name": "nftCollateralTokenId", "type": "uint256" },
+            { "name": "principalAddress", "type": "address" },
+            { "name": "principalAmount", "type": "uint256" },
+            { "name": "aprBps", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "duration", "type": "uint256" },
+            { "name": "maxSeniorRepayment", "type": "uint256" },
+            { "name": "validators", "type": "OfferValidator[]" }
+          ],
+          "OfferValidator": [{ "name": "validator", "type": "address" }, { "name": "arguments", "type": "bytes" }]
+        },
+        "primaryType": "LoanOffer",
+        "domain": {
+          "name": "GONDI_MULTI_SOURCE_LOAN",
+          "version": "3.1",
+          "chainId": 1,
+          "verifyingContract": "0xf41B389E0C1950dc0B16C9498eaE77131CC08A56"
+        },
+        "message": {
+          "offerId": "108",
+          "lender": "0x007CE5c372CC6fcc47d2aaC5665a94a2b165a1b5",
+          "fee": "90528209",
+          "capacity": "40000000000",
+          "nftCollateralAddress": "0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a",
+          "nftCollateralTokenId": "0",
+          "principalAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "principalAmount": "7000000000",
+          "aprBps": "500",
+          "expirationTime": "1761062605",
+          "duration": "2592000",
+          "maxSeniorRepayment": "0",
+          "validators": [
+            {
+              "validator": "0x039BC1010f0295246d8004224600D65d804F2b0A",
+              "arguments": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f423f"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "intent": "Make loan offer",
+        "fields": [
+          { "label": "Collection", "value": "Art Blocks" },
+          { "label": "Loan amount", "value": "7000 USDC" },
+          { "label": "APR", "value": "5%" },
+          { "label": "Duration", "value": "720:00:00" },
+          { "label": "Origination fee", "value": "90.528209 USDC" },
+          { "label": "Total capacity", "value": "40000 USDC" },
+          { "label": "Max senior debt", "value": "0 USDC" },
+          { "label": "Lender", "value": "0x007CE5c372CC6fcc47d2aaC5665a94a2b165a1b5" },
+          { "label": "Offer expires", "value": "2025-10-21 16:03:25Z" },
+          { "label": "Validator", "value": "0x039BC1010f0295246d8004224600D65d804F2b0A" }
+        ],
+        "interpolatedIntent": "Lend 7000 USDC",
+        "owner": "GONDI"
+      }
+    },
+    {
+      "description": "Collection offer on HyperEVM",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "LoanOffer": [
+            { "name": "offerId", "type": "uint256" },
+            { "name": "lender", "type": "address" },
+            { "name": "fee", "type": "uint256" },
+            { "name": "capacity", "type": "uint256" },
+            { "name": "nftCollateralAddress", "type": "address" },
+            { "name": "nftCollateralTokenId", "type": "uint256" },
+            { "name": "principalAddress", "type": "address" },
+            { "name": "principalAmount", "type": "uint256" },
+            { "name": "aprBps", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "duration", "type": "uint256" },
+            { "name": "maxSeniorRepayment", "type": "uint256" },
+            { "name": "validators", "type": "OfferValidator[]" }
+          ],
+          "OfferValidator": [{ "name": "validator", "type": "address" }, { "name": "arguments", "type": "bytes" }]
+        },
+        "primaryType": "LoanOffer",
+        "domain": {
+          "name": "GONDI_MULTI_SOURCE_LOAN",
+          "version": "3.1",
+          "chainId": 999,
+          "verifyingContract": "0x6Ad675624EC8320E5806858Cd5dB101a0b927FD9"
+        },
+        "message": {
+          "offerId": "2",
+          "lender": "0x12a39F781e1c2b4Cffc4E8E42685324245199A46",
+          "fee": "97035041",
+          "capacity": "36000000000",
+          "nftCollateralAddress": "0x9125E2d6827a00B0F8330D6ef7BEF07730Bac685",
+          "nftCollateralTokenId": "0",
+          "principalAddress": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+          "principalAmount": "12000000000",
+          "aprBps": "1000",
+          "expirationTime": "1791234164",
+          "duration": "2592000",
+          "maxSeniorRepayment": "0",
+          "validators": [
+            {
+              "validator": "0x0000000000000000000000000000000000000000",
+              "arguments": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "intent": "Make loan offer",
+        "fields": [
+          { "label": "Collection", "value": "Hypurr" },
+          { "label": "Loan amount", "value": "12000 USDC" },
+          { "label": "APR", "value": "10%" },
+          { "label": "Duration", "value": "720:00:00" },
+          { "label": "Origination fee", "value": "97.035041 USDC" },
+          { "label": "Total capacity", "value": "36000 USDC" },
+          { "label": "Max senior debt", "value": "0 USDC" },
+          { "label": "Lender", "value": "0x12a39F781e1c2b4Cffc4E8E42685324245199A46" },
+          { "label": "Offer expires", "value": "2026-10-05 21:02:44Z" },
+          { "label": "Validator", "value": "0x0000000000000000000000000000000000000000" }
+        ],
+        "interpolatedIntent": "Lend 12000 USDC",
+        "owner": "GONDI"
+      }
+    },
+    {
+      "description": "Single-NFT offer on Robinhood Chain",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "LoanOffer": [
+            { "name": "offerId", "type": "uint256" },
+            { "name": "lender", "type": "address" },
+            { "name": "fee", "type": "uint256" },
+            { "name": "capacity", "type": "uint256" },
+            { "name": "nftCollateralAddress", "type": "address" },
+            { "name": "nftCollateralTokenId", "type": "uint256" },
+            { "name": "principalAddress", "type": "address" },
+            { "name": "principalAmount", "type": "uint256" },
+            { "name": "aprBps", "type": "uint256" },
+            { "name": "expirationTime", "type": "uint256" },
+            { "name": "duration", "type": "uint256" },
+            { "name": "maxSeniorRepayment", "type": "uint256" },
+            { "name": "validators", "type": "OfferValidator[]" }
+          ],
+          "OfferValidator": [{ "name": "validator", "type": "address" }, { "name": "arguments", "type": "bytes" }]
+        },
+        "primaryType": "LoanOffer",
+        "domain": {
+          "name": "GONDI_MULTI_SOURCE_LOAN",
+          "version": "3.1",
+          "chainId": 4663,
+          "verifyingContract": "0x0e79e08e9E35388382b7FebB26Bc73F80465e2fB"
+        },
+        "message": {
+          "offerId": "2",
+          "lender": "0x5b85d6DCd8BEcF25F4cB1502497B81B8348A2d70",
+          "fee": "0",
+          "capacity": "0",
+          "nftCollateralAddress": "0x85f511D936600f06Fdc86288A1390dc21E57fAf3",
+          "nftCollateralTokenId": "3374",
+          "principalAddress": "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73",
+          "principalAmount": "100000000000000",
+          "aprBps": "1000",
+          "expirationTime": "1787432418",
+          "duration": "2592000",
+          "maxSeniorRepayment": "0",
+          "validators": []
+        }
+      },
+      "expected": {
+        "intent": "Make loan offer",
+        "fields": [
+          { "label": "Collection", "value": "Hoodnanas" },
+          { "label": "Token", "value": "Hoodnanas #3374" },
+          { "label": "Loan amount", "value": "0.0001 WETH" },
+          { "label": "APR", "value": "10%" },
+          { "label": "Duration", "value": "720:00:00" },
+          { "label": "Origination fee", "value": "0 WETH" },
+          { "label": "Max senior debt", "value": "0 WETH" },
+          { "label": "Lender", "value": "0x5b85d6DCd8BEcF25F4cB1502497B81B8348A2d70" },
+          { "label": "Offer expires", "value": "2026-08-22 21:00:18Z" }
+        ],
+        "interpolatedIntent": "Lend 0.0001 WETH",
+        "owner": "GONDI"
+      }
+    }
+  ]
+}

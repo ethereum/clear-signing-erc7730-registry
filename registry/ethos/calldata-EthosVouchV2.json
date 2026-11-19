@@ -1,0 +1,73 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Ethos VouchV2",
+    "contract": { "deployments": [{ "chainId": 8453, "address": "0x8B5Ef9c00152CaDBfedA4f59212EDB6e2e45de11" }] }
+  },
+  "metadata": {
+    "owner": "Ethos",
+    "info": { "url": "https://ethos.network" },
+    "constants": { "whuf": "0xeeee77bC7e82c0d4166d52F58239D4c5Bf41eeee" }
+  },
+  "display": {
+    "formats": {
+      "vouchWithPermit(string target, uint256 amount, string metadata, uint256 deadline, uint8 v, bytes32 r, bytes32 s)": {
+        "$id": "vouch",
+        "intent": "Vouch, entry fee added",
+        "interpolatedIntent": "Vouch {amount} for {target}, plus entry fee",
+        "fields": [
+          { "path": "target", "label": "Vouch for", "format": "raw" },
+          {
+            "path": "amount",
+            "label": "Amount, fee added",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.whuf" }
+          },
+          { "path": "deadline", "label": "Permit expires", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "metadata", "label": "metadata", "visible": "never" },
+          { "path": "v", "label": "v", "visible": "never" },
+          { "path": "r", "label": "r", "visible": "never" },
+          { "path": "s", "label": "s", "visible": "never" }
+        ]
+      },
+      "increaseVouchWithPermit(uint256 vouchId, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s)": {
+        "$id": "increase_vouch",
+        "intent": "Increase vouch, fee added",
+        "interpolatedIntent": "Increase vouch {vouchId} by {amount}, plus entry fee",
+        "fields": [
+          { "path": "vouchId", "label": "Vouch ID", "format": "raw" },
+          {
+            "path": "amount",
+            "label": "Amount, fee added",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.whuf" }
+          },
+          { "path": "deadline", "label": "Permit expires", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "v", "label": "v", "visible": "never" },
+          { "path": "r", "label": "r", "visible": "never" },
+          { "path": "s", "label": "s", "visible": "never" }
+        ]
+      },
+      "decreaseVouch(uint256 vouchId, uint256 amount)": {
+        "$id": "decrease_vouch",
+        "intent": "Withdraw, exit fee deducted",
+        "interpolatedIntent": "Withdraw {amount} from vouch {vouchId}, minus exit fee",
+        "fields": [
+          { "path": "vouchId", "label": "Vouch ID", "format": "raw" },
+          {
+            "path": "amount",
+            "label": "Amount, fee deducted",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.whuf" }
+          }
+        ]
+      },
+      "unvouch(uint256 vouchId)": {
+        "$id": "unvouch",
+        "intent": "Unvouch, exit fee deducted",
+        "interpolatedIntent": "Unvouch {vouchId}, exit fee deducted from payout",
+        "fields": [{ "path": "vouchId", "label": "Vouch ID", "format": "raw" }]
+      }
+    }
+  }
+}

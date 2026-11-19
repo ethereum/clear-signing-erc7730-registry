@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-sky_money-skyMoneyUsdtSavings-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xdac17f958d2ee523a2206206994597c13d831ec7": { "decimals": 6, "name": "USDT", "symbol": "USDT" },
+      "0x23f5e9c35820f4bab695ac1f19c203cc3f8e1e11": { "decimals": 18, "name": "sky.money USDT Savings", "symbol": "skyMoneyUsdtSavings" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86c0112830f42408407d02d5a830457709423f5e9c35820f4bab695ac1f19c203cc3f8e1e1180b8446e553f6500000000000000000000000000000000000000000000000000000000000f4240000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x935dbccce31dd48d6b7ca19aff66e0ac3e35c88aa4d794a29f8b08b49c9a4073",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "1 USDT" },
+          { "label": "Share ticker", "value": "skyMoneyUsdtSavings" },
+          { "label": "Send shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Deposit 1 USDT for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Sky Money"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8960182028083ad57008403c82b908305f3709423f5e9c35820f4bab695ac1f19c203cc3f8e1e1180b86cb460af94000000000000000000000000000000000000000000000000000000746a528800000000000000000000000000a4bf0486a3a874015aca7e8c5f3cba642a4719bd000000000000000000000000a4bf0486a3a874015aca7e8c5f3cba642a4719bd69a7d0d12222da44c0",
+      "txHash": "0xa7b95995033bad68bc1336df10c0a9c241150c04614dbef1a3cf892103c3f09c",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "500000 USDT" },
+          { "label": "To", "value": "0xa4Bf0486a3a874015ACa7e8C5F3cBa642A4719Bd" },
+          { "label": "Owner", "value": "0xa4Bf0486a3a874015ACa7e8C5F3cBa642A4719Bd" }
+        ],
+        "interpolatedIntent": "Withdraw 500000 USDT to 0xa4Bf0486a3a874015ACa7e8C5F3cBa642A4719Bd",
+        "owner": "Sky Money"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88f0182011a847735940084a0fba6988302cd3f9423f5e9c35820f4bab695ac1f19c203cc3f8e1e1180b864ba08765200000000000000000000000000000000000000000000000000238667518a60b700000000000000000000000055e55c649895940826a852820d9e1a076ec47b0900000000000000000000000055e55c649895940826a852820d9e1a076ec47b09c0",
+      "txHash": "0xd855261e1b24b7eb2d0d34816e73c82c62a496732faad55a1963ac3a41368a31",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "0.009999402492649655 skyMoneyUsdtSavings" },
+          { "label": "To", "value": "0x55e55C649895940826a852820d9e1A076Ec47b09" },
+          { "label": "Owner", "value": "0x55e55C649895940826a852820d9e1A076Ec47b09" }
+        ],
+        "interpolatedIntent": "Redeem 0.009999402492649655 skyMoneyUsdtSavings to 0x55e55C649895940826a852820d9e1A076Ec47b09",
+        "owner": "Sky Money"
+      }
+    }
+  ]
+}

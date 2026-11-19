@@ -83,7 +83,7 @@ Write a single `results.json` per descriptor to the working directory.
 | `cases[].chainId`     | optional    | number | The chain the implementation rendered for                                                                                                                                                                                                                  |
 | `cases[].durationMs`  | optional    | number | How long the case took, in milliseconds                                                                                                                                                                                                                    |
 
-The optional keys are read by the test report bundle, see [`bundle.md`](./bundle.md). A runner that omits them loses nothing in the comment.
+The optional keys are read by the test report bundle, see [`bundle.md`](./bundle.md). A runner that omits them loses nothing in the comment. A coding agent that must fix a pull request follows [`agent-instructions.md`](./agent-instructions.md).
 
 **Calldata formatters.** Fields that use a calldata formatter (the field's value is itself an encoded inner call) appear as a nested `rendered`-shaped object in `fields`; nesting is recursive.
 

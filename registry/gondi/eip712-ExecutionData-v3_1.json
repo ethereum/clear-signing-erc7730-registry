@@ -1,0 +1,89 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "includes": "common-gondi.json",
+  "context": {
+    "eip712": {
+      "domain": { "name": "GONDI_MULTI_SOURCE_LOAN", "version": "3.1" },
+      "deployments": [
+        { "chainId": 1, "address": "0xf41B389E0C1950dc0B16C9498eaE77131CC08A56" },
+        { "chainId": 999, "address": "0x6Ad675624EC8320E5806858Cd5dB101a0b927FD9" },
+        { "chainId": 4663, "address": "0x0e79e08e9E35388382b7FebB26Bc73F80465e2fB" }
+      ]
+    }
+  },
+  "display": {
+    "formats": {
+      "ExecutionData(OfferExecution[] offerExecution,uint256 loanId,address nftCollateralAddress,uint256 tokenId,uint256 duration,uint256 expirationTime,address principalReceiver,bytes callbackData)LoanOffer(uint256 offerId,address lender,uint256 fee,uint256 capacity,address nftCollateralAddress,uint256 nftCollateralTokenId,address principalAddress,uint256 principalAmount,uint256 aprBps,uint256 expirationTime,uint256 duration,uint256 maxSeniorRepayment,OfferValidator[] validators)OfferExecution(LoanOffer offer,uint256 amount,bytes lenderOfferSignature)OfferValidator(address validator,bytes arguments)": {
+        "intent": "Accept loan offers (new loan or refinance)",
+        "interpolatedIntent": "Borrow against {tokenId}",
+        "fields": [
+          {
+            "path": "tokenId",
+            "label": "Collateral",
+            "format": "nftName",
+            "params": { "collectionPath": "nftCollateralAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "offerExecution.[].offer.lender",
+            "label": "Lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "offerExecution.[].amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "offerExecution.[0].offer.principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "offerExecution.[].offer.aprBps",
+            "label": "APR",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 2 },
+            "visible": "always"
+          },
+          {
+            "path": "offerExecution.[].offer.fee",
+            "label": "Lender fee (max)",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "offerExecution.[0].offer.principalAddress" },
+            "visible": "always"
+          },
+          { "path": "offerExecution.[].offer.offerId", "label": "Offer ID", "visible": "never" },
+          { "path": "offerExecution.[].offer.capacity", "label": "Offer capacity", "visible": "never" },
+          { "path": "offerExecution.[].offer.nftCollateralAddress", "label": "Offer collection", "visible": "never" },
+          { "path": "offerExecution.[].offer.nftCollateralTokenId", "label": "Offer token ID", "visible": "never" },
+          { "path": "offerExecution.[].offer.principalAddress", "label": "Offer currency", "visible": "never" },
+          { "path": "offerExecution.[].offer.principalAmount", "label": "Offer max amount", "visible": "never" },
+          { "path": "offerExecution.[].offer.expirationTime", "label": "Offer expiry", "visible": "never" },
+          { "path": "offerExecution.[].offer.duration", "label": "Offer max duration", "visible": "never" },
+          { "path": "offerExecution.[].offer.maxSeniorRepayment", "label": "Max senior debt", "visible": "never" },
+          { "path": "offerExecution.[].offer.validators.[].validator", "label": "Validator", "visible": "never" },
+          { "path": "offerExecution.[].offer.validators.[].arguments", "label": "Validator args", "visible": "never" },
+          { "path": "offerExecution.[].lenderOfferSignature", "label": "Lender signature", "visible": "never" },
+          { "path": "duration", "label": "Duration", "format": "duration", "visible": "always" },
+          {
+            "path": "principalReceiver",
+            "label": "Principal receiver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "expirationTime",
+            "label": "Valid until",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "callbackData", "label": "Callback data", "format": "raw", "visible": "always" },
+          { "path": "nftCollateralAddress", "label": "Collection", "visible": "never" },
+          { "path": "loanId", "label": "Loan to refinance", "format": "raw", "visible": { "ifNotIn": ["0"] } }
+        ]
+      }
+    }
+  }
+}

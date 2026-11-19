@@ -1,0 +1,84 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0xbA3cB449bD2B4ADddBc894D8697F5170800EAdeC" }] } },
+  "metadata": {
+    "owner": "CoW Protocol",
+    "contractName": "CoWSwapEthFlow",
+    "constants": {
+      "cowSwapSettlement": "0x9008D19f58AAbD9eD0D60971565AA8510560ab41",
+      "wrappedNativeToken": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+    },
+    "info": { "url": "https://swap.cow.fi" }
+  },
+  "display": {
+    "formats": {
+      "createOrder((address buyToken,address receiver,uint256 sellAmount,uint256 buyAmount,bytes32 appData,uint256 feeAmount,uint32 validTo,bool partiallyFillable,int64 quoteId) order)": {
+        "intent": "Create ETH sell order",
+        "fields": [
+          { "path": "order.sellAmount", "label": "Amount to Sell", "format": "amount" },
+          {
+            "path": "order.buyAmount",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "order.buyToken", "nativeCurrencyAddress": ["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"] }
+          },
+          {
+            "path": "order.receiver",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] }
+          },
+          { "path": "order.validTo", "label": "Expires", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "order.feeAmount", "label": "Fee", "format": "amount" },
+          { "path": "@.value", "label": "Total ETH Sent", "format": "amount" },
+          { "path": "order.partiallyFillable", "label": "Partial Fills", "format": "raw", "visible": { "mustMatch": [false] } },
+          { "path": "order.buyToken", "label": "Buy Token", "visible": "never" },
+          { "path": "order.appData", "label": "App Data", "visible": "never" },
+          { "path": "order.quoteId", "label": "Quote ID", "visible": "never" }
+        ]
+      },
+      "invalidateOrder((address buyToken,address receiver,uint256 sellAmount,uint256 buyAmount,bytes32 appData,uint256 feeAmount,uint32 validTo,bool partiallyFillable,int64 quoteId) order)": {
+        "intent": "Cancel ETH order, refund owner",
+        "fields": [
+          { "path": "order.sellAmount", "label": "Order Sell Amount", "format": "amount" },
+          {
+            "path": "order.buyAmount",
+            "label": "Order Min. Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "order.buyToken", "nativeCurrencyAddress": ["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"] }
+          },
+          {
+            "path": "order.receiver",
+            "label": "Order Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] }
+          },
+          { "path": "order.feeAmount", "label": "Order Fee", "format": "amount" },
+          { "path": "order.validTo", "label": "Order Expires", "visible": "never" },
+          { "path": "order.buyToken", "label": "Buy Token", "visible": "never" },
+          { "path": "order.partiallyFillable", "label": "Partial Fills", "visible": "never" },
+          { "path": "order.appData", "label": "App Data", "visible": "never" },
+          { "path": "order.quoteId", "label": "Quote ID", "visible": "never" }
+        ]
+      },
+      "unwrap(uint256 amount)": {
+        "intent": "Unwrap EthFlow's WETH",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "WETH to Unwrap",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.wrappedNativeToken" }
+          }
+        ],
+        "interpolatedIntent": "Unwrap {amount} in EthFlow"
+      },
+      "wrap(uint256 amount)": {
+        "intent": "Wrap EthFlow's ETH",
+        "fields": [{ "path": "amount", "label": "ETH to Wrap", "format": "amount" }],
+        "interpolatedIntent": "Wrap {amount} in EthFlow"
+      },
+      "wrapAll()": { "intent": "Wrap all EthFlow's ETH", "fields": [], "interpolatedIntent": "Wrap all ETH held by EthFlow" }
+    }
+  }
+}

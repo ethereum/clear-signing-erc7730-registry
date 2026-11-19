@@ -1,0 +1,112 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ShieldVault",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xA1EA2F8C0518458975E09ED63bf5D48980f76C38" }] }
+  },
+  "metadata": { "owner": "10102", "info": { "url": "https://10102.io" }, "contractName": "ShieldVault" },
+  "display": {
+    "formats": {
+      "open(address token, uint256 amount, (uint32 exitDelay, uint32 silencePeriod, address[] beneficiaries, uint16[] sharesBps, uint16 holdMask) config, uint256 vetoIndex, uint16 maxFeeBps)": {
+        "$id": "open",
+        "intent": "Open Shield Vault holding",
+        "fields": [
+          { "path": "amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "config.exitDelay", "label": "Withdrawals wait", "format": "duration" },
+          { "path": "config.silencePeriod", "label": "Silence (0=off)", "format": "duration" },
+          {
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "config.beneficiaries.[]",
+                "label": "Beneficiary",
+                "format": "addressName",
+                "params": { "sources": ["local", "ens"] }
+              },
+              { "path": "config.sharesBps.[]", "label": "Share", "format": "unit", "params": { "base": "%", "decimals": 2 } }
+            ]
+          },
+          { "path": "maxFeeBps", "label": "Maximum exit fee", "format": "unit", "params": { "base": "%", "decimals": 2 } },
+          { "path": "vetoIndex", "label": "Recovery (max=off)", "format": "raw" },
+          { "path": "token", "label": "Token", "visible": "never" },
+          { "path": "config.holdMask", "label": "Held shares", "visible": "never" }
+        ]
+      },
+      "deposit(uint256 id, uint256 amount)": {
+        "$id": "deposit",
+        "intent": "Add to Shield Vault holding",
+        "fields": [{ "path": "id", "label": "Holding", "format": "raw" }, { "path": "amount", "label": "Amount (base units)", "format": "raw" }]
+      },
+      "checkIn(uint256 id)": {
+        "$id": "checkIn",
+        "intent": "Check in",
+        "interpolatedIntent": "Check in on holding {id}",
+        "fields": [{ "path": "id", "label": "Holding", "format": "raw" }]
+      },
+      "requestWithdraw(uint256 id, uint256 amount, address to)": {
+        "$id": "requestWithdraw",
+        "intent": "Request withdrawal (exit fee)",
+        "fields": [
+          { "path": "id", "label": "Holding", "format": "raw" },
+          { "path": "amount", "label": "Before fee (max=all)", "format": "raw" },
+          { "path": "to", "label": "To", "format": "addressName", "params": { "sources": ["local", "ens"] } }
+        ]
+      },
+      "cancelPending(uint256 id)": {
+        "$id": "cancelPending",
+        "intent": "Cancel pending request",
+        "fields": [{ "path": "id", "label": "Holding", "format": "raw" }]
+      },
+      "executePending(uint256 id)": {
+        "$id": "executePending",
+        "intent": "Complete request (fee on exit)",
+        "fields": [{ "path": "id", "label": "Holding", "format": "raw" }]
+      },
+      "executeFallback(uint256 id)": {
+        "$id": "executeFallback",
+        "intent": "Release to beneficiaries (fee)",
+        "fields": [{ "path": "id", "label": "Holding", "format": "raw" }]
+      },
+      "requestChange(uint256 id, (uint32 exitDelay, uint32 silencePeriod, address[] beneficiaries, uint16[] sharesBps, uint16 holdMask) config, uint256 vetoIndex)": {
+        "$id": "requestChange",
+        "intent": "Request settings change",
+        "fields": [
+          { "path": "id", "label": "Holding", "format": "raw" },
+          { "path": "config.exitDelay", "label": "Withdrawals wait", "format": "duration" },
+          { "path": "config.silencePeriod", "label": "Silence (0=off)", "format": "duration" },
+          {
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "config.beneficiaries.[]",
+                "label": "Beneficiary",
+                "format": "addressName",
+                "params": { "sources": ["local", "ens"] }
+              },
+              { "path": "config.sharesBps.[]", "label": "Share", "format": "unit", "params": { "base": "%", "decimals": 2 } }
+            ]
+          },
+          { "path": "vetoIndex", "label": "Recovery (max=off)", "format": "raw" },
+          { "path": "config.holdMask", "label": "Held shares", "visible": "never" }
+        ]
+      },
+      "veto(uint256 id, bytes32 secret, address recoveryTo)": {
+        "$id": "veto",
+        "intent": "Send all to recovery wallet",
+        "fields": [
+          { "path": "id", "label": "Holding", "format": "raw" },
+          { "path": "recoveryTo", "label": "Recovery wallet", "format": "addressName", "params": { "sources": ["local", "ens"] } },
+          { "path": "secret", "label": "Recovery secret", "visible": "never" }
+        ]
+      },
+      "claimOwed(uint256 id, address beneficiary)": {
+        "$id": "claimOwed",
+        "intent": "Claim held share",
+        "fields": [
+          { "path": "id", "label": "Holding", "format": "raw" },
+          { "path": "beneficiary", "label": "Paid to", "format": "addressName", "params": { "sources": ["local", "ens"] } }
+        ]
+      }
+    }
+  }
+}

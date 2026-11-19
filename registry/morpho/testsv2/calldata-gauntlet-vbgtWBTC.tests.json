@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-vbgtWBTC.json",
+  "dataProvider": {
+    "tokens": {
+      "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": { "decimals": 8, "name": "WBTC", "symbol": "WBTC" },
+      "0x812b2c6ab3f4471c0e43d4bb61098a9211017427": { "decimals": 18, "name": "Vault Bridge WBTC", "symbol": "vbgtWBTC" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d012e841dcd6500846ecabf5083077bcb94812b2c6ab3f4471c0e43d4bb61098a921101742780b8446e553f6500000000000000000000000000000000000000000000000000000000000003e8000000000000000000000000b47f11484e19f1914d32fd393b17671221c10f1fc0",
+      "txHash": "0xc55e41e008838db4031de1fb0b6cb4ba914535aefc728b7aa621dfc0197cbb19",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.00001 WBTC" },
+          { "label": "Share ticker", "value": "vbgtWBTC" },
+          { "label": "Send shares to", "value": "0xB47f11484e19f1914D32fd393b17671221C10F1F" }
+        ],
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b82022c840d6adb7c8316e36094812b2c6ab3f4471c0e43d4bb61098a921101742780b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x92a2556909de2fcdb3082091316c8ace20bb2ac7688d12f29f66a498386f63eb",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "WBTC" },
+          { "label": "Minted shares", "value": "0.000000001 vbgtWBTC" },
+          { "label": "Mint shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88f018201258407694d4c842b638278830461fe94812b2c6ab3f4471c0e43d4bb61098a921101742780b864b460af94000000000000000000000000000000000000000000000000000000000000004100000000000000000000000096b539339b3149dcc2337fe434e0460ff43de32700000000000000000000000096b539339b3149dcc2337fe434e0460ff43de327c0",
+      "txHash": "0x0f0a114434e519e7664a0481b2fa589efa45742cd914eb5c0b77a5f6383dd092",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "0.00000065 WBTC" },
+          { "label": "To", "value": "0x96b539339b3149Dcc2337Fe434E0460fF43dE327" },
+          { "label": "Owner", "value": "0x96b539339b3149Dcc2337Fe434E0460fF43dE327" }
+        ],
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88f01820126840a08d9a9842dbebe888304677e94812b2c6ab3f4471c0e43d4bb61098a921101742780b864ba087652000000000000000000000000000000000000000000000000000000974672c0be00000000000000000000000096b539339b3149dcc2337fe434e0460ff43de32700000000000000000000000096b539339b3149dcc2337fe434e0460ff43de327c0",
+      "txHash": "0x472b42dfee05ca947e793b6a1666f2637f0eea9335ca5be50d58a32604297368",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "0.000000649721987262 vbgtWBTC" },
+          { "label": "To", "value": "0x96b539339b3149Dcc2337Fe434E0460fF43dE327" },
+          { "label": "Owner", "value": "0x96b539339b3149Dcc2337Fe434E0460fF43dE327" }
+        ],
+        "owner": "Gauntlet"
+      }
+    }
+  ]
+}

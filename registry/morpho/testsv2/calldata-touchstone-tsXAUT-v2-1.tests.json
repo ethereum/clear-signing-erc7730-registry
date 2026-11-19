@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-touchstone-tsXAUT-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0x68749665ff8d2d112fa859aa293f07a622782f38": { "decimals": 6, "name": "XAUt", "symbol": "XAUt" },
+      "0x98b102d24b5d03f8d840843b0c7dd98d439ac443": { "decimals": 18, "name": "Touchstone XAUT", "symbol": "tsXAUT" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e0181a48401a5e7d0842eb3d0848306e7459498b102d24b5d03f8d840843b0c7dd98d439ac44380b8446e553f650000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x1df4df8e12b04a791578132416d4b972b42aeb063c95b8084043775dde7ebcba",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.01 XAUt" },
+          { "label": "Share ticker", "value": "tsXAUT" },
+          { "label": "Send shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Deposit 0.01 XAUt for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Touchstone"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f89501098408f0d18084107e1b60830647b89498b102d24b5d03f8d840843b0c7dd98d439ac44380b86cb460af9400000000000000000000000000000000000000000000000000000000001ab3f0000000000000000000000000018d70888513513e63121b6d4cf129a2a4ff8539000000000000000000000000018d70888513513e63121b6d4cf129a2a4ff85396a8f47d62222da44c0",
+      "txHash": "0x0b530ca63d13f43dd912cf005904d322eafec5e5436f5ba6655de55185bef10b",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "1.75 XAUt" },
+          { "label": "To", "value": "0x018d70888513513e63121b6d4CF129A2A4Ff8539" },
+          { "label": "Owner", "value": "0x018d70888513513e63121b6d4CF129A2A4Ff8539" }
+        ],
+        "interpolatedIntent": "Withdraw 1.75 XAUt to 0x018d70888513513e63121b6d4CF129A2A4Ff8539",
+        "owner": "Touchstone"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8940127830f42408433d17d3983066bbe9498b102d24b5d03f8d840843b0c7dd98d439ac44380b86cba08765200000000000000000000000000000000000000000000000002bccb910b2e1ff400000000000000000000000068f43baf89a813757e91e3db6ebf2cec86fe275d00000000000000000000000068f43baf89a813757e91e3db6ebf2cec86fe275d6a88247e2222da44c0",
+      "txHash": "0xa3b98eb5a203b9b1a9125bea0ec142fb2895c3a875d3a1eec7e2247760df4429",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "0.19725630751572786 tsXAUT" },
+          { "label": "To", "value": "0x68f43Baf89a813757E91E3dB6EBF2Cec86FE275d" },
+          { "label": "Owner", "value": "0x68f43Baf89a813757E91E3dB6EBF2Cec86FE275d" }
+        ],
+        "interpolatedIntent": "Redeem 0.19725630751572786 tsXAUT to 0x68f43Baf89a813757E91E3dB6EBF2Cec86FE275d",
+        "owner": "Touchstone"
+      }
+    }
+  ]
+}
