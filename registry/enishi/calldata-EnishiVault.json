@@ -21,7 +21,7 @@
   },
   "display": {
     "formats": {
-      "executeDeposit(uint8[],address,uint256,uint256[],bytes[],address)": {
+      "executeDeposit(uint8[] slots, address depositToken, uint256 totalDeposit, uint256[] minTokenOuts, bytes[] swapPaths, address referrer)": {
         "$id": "executeDeposit",
         "intent": "Deposit into Enishi Vault",
         "interpolatedIntent": "Deposit {#.totalDeposit}",
@@ -72,7 +72,7 @@
           }
         ]
       },
-      "requestExit((uint8,uint256[],bytes[],uint256,bytes,uint256,bytes,uint256,uint8,bytes32,bytes32,bool))": {
+      "requestExit((uint8 slot, uint256[] minConsolidationOuts, bytes[] consolidationPaths, uint256 minStableOut, bytes stablePath, uint256 minEncOut, bytes encPath, uint256 permitDeadline, uint8 permitV, bytes32 permitR, bytes32 permitS, bool payoutStable) e)": {
         "$id": "requestExit",
         "intent": "Request exit",
         "interpolatedIntent": "Request exit: slot {#.e.slot}",
@@ -142,7 +142,7 @@
           }
         ]
       },
-      "requestExitMany((uint8,uint256[],bytes[],uint256,bytes,uint256,bytes,uint256,uint8,bytes32,bytes32,bool)[])": {
+      "requestExitMany((uint8 slot, uint256[] minConsolidationOuts, bytes[] consolidationPaths, uint256 minStableOut, bytes stablePath, uint256 minEncOut, bytes encPath, uint256 permitDeadline, uint8 permitV, bytes32 permitR, bytes32 permitS, bool payoutStable)[] exits)": {
         "$id": "requestExitMany",
         "intent": "Request exits",
         "fields": [
@@ -216,7 +216,7 @@
           }
         ]
       },
-      "executeExit(bytes32)": {
+      "executeExit(bytes32 requestId)": {
         "$id": "executeExit",
         "intent": "Complete exit",
         "fields": [
@@ -227,7 +227,7 @@
           }
         ]
       },
-      "withdrawExit(address,uint8)": {
+      "withdrawExit(address user, uint8 slot)": {
         "$id": "withdrawExit",
         "intent": "Complete exit",
         "interpolatedIntent": "Complete exit: slot {#.slot}",
@@ -250,7 +250,7 @@
           }
         ]
       },
-      "processProfit((address,address,uint256,address,uint256,bytes))": {
+      "processProfit((address user, address availableToken, uint256 grossProfit, address payoutToken, uint256 minEncOut, bytes encPath) params)": {
         "$id": "processProfit",
         "intent": "Settle profit",
         "interpolatedIntent": "Settle {#.params.grossProfit}",
@@ -301,7 +301,7 @@
           }
         ]
       },
-      "setStakeRouter(address)": {
+      "setStakeRouter(address newStakeRouter)": {
         "$id": "setStakeRouter",
         "intent": "Set stake router",
         "interpolatedIntent": "Set router {#.newStakeRouter}",
@@ -318,7 +318,7 @@
           }
         ]
       },
-      "transferOwnership(address)": {
+      "transferOwnership(address newOwner)": {
         "$id": "transferOwnership",
         "intent": "Transfer ownership",
         "interpolatedIntent": "Transfer owner to {#.newOwner}",
