@@ -72,8 +72,12 @@ const STANDARDS = [
   {
     id: 'ERC-4626',
     file: 'calldata-erc4626-erc20-vaults.json',
-    // The legacy file has the same four formats, without ERC-20.
-    aliases: ['calldata-erc4626-vaults.json'],
+    // The legacy file has the same four formats, without ERC-20. The ERC-7540
+    // files write the vault formats themselves.
+    aliases: [
+      'calldata-erc4626-vaults.json', 'calldata-erc7540Deposit-vaults.json',
+      'calldata-erc7540Redeem-vaults.json', 'calldata-erc7540-vaults.json',
+    ],
     functions: [
       'asset()', 'totalAssets()', 'convertToShares(uint256)', 'deposit(uint256,address)',
       'mint(uint256,address)', 'withdraw(uint256,address,address)', 'redeem(uint256,address,address)',
