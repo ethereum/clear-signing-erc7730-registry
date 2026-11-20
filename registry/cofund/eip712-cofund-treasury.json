@@ -5,7 +5,8 @@
     "eip712": {
       "deployments": [
         { "chainId": 1, "address": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0" },
-        { "chainId": 4663, "address": "0xF3B43952BcC2560789be8076529df8F908cEf535" }
+        { "chainId": 4663, "address": "0xF3B43952BcC2560789be8076529df8F908cEf535" },
+        { "chainId": 8453, "address": "0xD59eFC1803Fb72231Db0B6A872a9c22D8A0102C0" }
       ],
       "domain": { "name": "Cofund", "version": "1" }
     }
@@ -188,8 +189,17 @@
           { "path": "messageType", "label": "Policy type", "format": "raw", "visible": "always" },
           { "path": "authId", "label": "Authorization ID", "format": "raw", "visible": "never" }
         ]
+      },
+      "SignMessage(string company,string message,uint256 deadline)": {
+        "$id": "sign-message",
+        "intent": "Sign in",
+        "fields": [
+          { "path": "company", "label": "Company", "format": "raw", "visible": "always" },
+          { "path": "message", "label": "Message", "format": "raw", "visible": "always" },
+          { "path": "deadline", "label": "Valid until", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" }
+        ]
       }
     }
   },
-  "$comment": "Cofund protocol v1: member, policy and vault authorizations share the State domain. Transaction binds wrapper instructions by hash; Transfer amount is principal and excludes fees. Empty policy recipients are unrestricted. Schema is ERC-7730 v2."
+  "$comment": "Cofund protocol v1: member, policy and vault authorizations, and v1.1 vault logins (SignMessage, checked by the vault for ERC-1271), share the State domain. Transaction binds wrapper instructions by hash; Transfer amount is principal and excludes fees. Empty policy recipients are unrestricted. Schema is ERC-7730 v2."
 }
