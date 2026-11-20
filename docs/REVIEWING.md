@@ -27,7 +27,15 @@ One quick human pass over `display.formats` — minutes of work that catches the
 
 This is a plausibility read, not verification against the contract source — that remains the auditors' job.
 
-### 4. One entity per PR
+### 4. Standard functions
+
+CI enforces the [standard functions requirement](../README.md#pull-request-content-requirements): the check "Descriptors cover the standards of their contract" fails when the contract implements ERC-20, ERC-4626, ERC-721, ERC-7540 or a permit, and the descriptor does not cover it. These things stay for the reviewer:
+
+- **Plain token descriptors.** The check warns when a descriptor has only standard token functions. Ask the author to remove the descriptor, unless it adds a function that is not in the `ercs/` template or changes the display of a standard function for a clear reason. A clear reason is a behaviour that the template shows wrong: a fee on transfer, a rebasing amount, a `transfer` with another meaning. Other labels, another intent or a token constant equal to `@.to` are not clear reasons.
+- **Own formats for a standard function.** The check warns when a descriptor writes the formats of a standard itself, without the `ercs/` include. Accept it only for a clear reason, as above. Otherwise ask for the include.
+- **Exceptions.** A change to [`.github/standard-coverage-exceptions.json`](../.github/standard-coverage-exceptions.json) needs a reason that a reviewer can verify, for example "the contract reverts on `transfer`".
+
+### 5. One entity per PR
 
 A PR should only touch files inside a single `registry/<entity_name>/` folder. Be suspicious of PRs that modify or delete files of a _different_ entity than the one they claim to change — CI validates naming and index consistency, but not whose folder a PR touches.
 

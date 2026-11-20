@@ -1,17 +1,58 @@
 {
   "$schema": "../specs/erc7730-v2.schema.json",
+  "includes": "calldata-erc20-tokens.json",
   "context": { "contract": {} },
   "metadata": { "constants": { "underlyingToken": "0x0" } },
   "display": {
     "formats": {
-      "redeem(uint256 shares, address receiver, address controller)": {
-        "intent": "Claim redemption",
+      "deposit(uint256 assets, address receiver)": {
+        "intent": "Deposit",
         "fields": [
           {
+            "path": "assets",
+            "label": "Deposit asset",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
+          },
+          { "label": "Share ticker", "format": "raw", "value": "$.metadata.constants.vaultTicker" },
+          {
+            "path": "receiver",
+            "label": "Send shares to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "mint(uint256 shares, address receiver)": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "format": "raw", "value": "$.metadata.constants.underlyingTicker" },
+          {
             "path": "shares",
-            "label": "Amount of shares to finalize redemption for",
+            "label": "Minted shares",
             "format": "tokenAmount",
             "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "Mint shares to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdraw(uint256 assets, address receiver, address controller)": {
+        "intent": "Claim withdrawal",
+        "fields": [
+          {
+            "path": "assets",
+            "label": "Assets to claim",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
             "visible": "always"
           },
           {
@@ -30,15 +71,14 @@
           }
         ]
       },
-      "withdraw(uint256 assets, address receiver, address controller)": {
-        "intent": "Withdraw",
+      "redeem(uint256 shares, address receiver, address controller)": {
+        "intent": "Claim redemption",
         "fields": [
-          { "label": "Claim withdrawal", "format": "raw", "value": "$.metadata.constants.underlyingTicker" },
           {
-            "path": "assets",
-            "label": "Amount of assets to receive",
+            "path": "shares",
+            "label": "Shares to claim",
             "format": "tokenAmount",
-            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "params": { "tokenPath": "@.to" },
             "visible": "always"
           },
           {
