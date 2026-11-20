@@ -1,0 +1,46 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "0x Settler",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xaddc26a3854feabfd20d6bf658254088d83a425a" },
+        { "chainId": 10, "address": "0x11b9a527dfd522888a366c511a7bfd08c7d54df0" },
+        { "chainId": 56, "address": "0xd52e8e422a352ac1afdc2bd6ec533d41b20acb7b" },
+        { "chainId": 100, "address": "0xc4709f3d83c716a64a0f77e50b11be98620b110d" },
+        { "chainId": 137, "address": "0x73dae2fdf839af5f6bc62890f65a4357937ccf04" },
+        { "chainId": 8453, "address": "0x103502909141f7025a94b7b99a276dcd128e21a8" },
+        { "chainId": 42161, "address": "0xf41429fc96ff446b8118359ba16854e07c393591" },
+        { "chainId": 43114, "address": "0x584a4e93f11331d318165b04099e53708b1fa915" },
+        { "chainId": 11155111, "address": "0x99ee99e75ee5a81da98a28c361a2fed1fe6de439" }
+      ]
+    }
+  },
+  "metadata": { "owner": "0x", "contractName": "Settler", "info": { "url": "https://0x.org" } },
+  "display": {
+    "formats": {
+      "execute((address recipient, address buyToken, uint256 minAmountOut) slippage, bytes[] actions, bytes32 zid)": {
+        "intent": "Swap",
+        "fields": [
+          { "path": "@.value", "label": "ETH sent", "format": "amount", "visible": { "ifNotIn": ["0"] } },
+          {
+            "path": "slippage.minAmountOut",
+            "label": "Receive at least",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "slippage.buyToken", "nativeCurrencyAddress": ["0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"] },
+            "visible": "always"
+          },
+          {
+            "path": "slippage.recipient",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "actions.[]", "label": "Route", "format": "raw", "visible": "never" },
+          { "path": "zid", "label": "Tag", "format": "raw", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
