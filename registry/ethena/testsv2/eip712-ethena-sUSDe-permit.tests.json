@@ -1,0 +1,85 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-ethena-sUSDe-permit.json",
+  "dataProvider": { "tokens": { "0x9d39a5de30e57443bff2a8307a4256c8797a3497": { "symbol": "sUSDe", "decimals": 18, "name": "Staked USDe" } } },
+  "tests": [
+    {
+      "description": "Permit sUSDe spending (synthetic)",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Permit": [
+            { "name": "owner", "type": "address" },
+            { "name": "spender", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": { "name": "sUSDe", "version": "1", "chainId": 1, "verifyingContract": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497" },
+        "message": {
+          "owner": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "spender": "0x1111111254EEB25477B68fb85Ed929f73A960582",
+          "value": "2500000000000000000000",
+          "nonce": "0",
+          "deadline": "1776739200"
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of tokens",
+        "owner": "Ethena",
+        "fields": [
+          { "label": "Spender", "value": "0x1111111254EEB25477B68fb85Ed929f73A960582" },
+          { "label": "Max spending amount", "value": "2500 sUSDe" },
+          { "label": "Valid until", "value": "2026-04-21 02:40:00Z" },
+          { "label": "Owner", "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" }
+        ]
+      }
+    },
+    {
+      "description": "Permit unlimited sUSDe spending (synthetic)",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Permit": [
+            { "name": "owner", "type": "address" },
+            { "name": "spender", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": { "name": "sUSDe", "version": "1", "chainId": 1, "verifyingContract": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497" },
+        "message": {
+          "owner": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "spender": "0x1111111254EEB25477B68fb85Ed929f73A960582",
+          "value": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+          "nonce": "0",
+          "deadline": "1776739200"
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of tokens",
+        "owner": "Ethena",
+        "fields": [
+          { "label": "Spender", "value": "0x1111111254EEB25477B68fb85Ed929f73A960582" },
+          { "label": "Max spending amount", "value": "Unlimited sUSDe" },
+          { "label": "Valid until", "value": "2026-04-21 02:40:00Z" },
+          { "label": "Owner", "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" }
+        ]
+      }
+    }
+  ]
+}
