@@ -1,19 +1,106 @@
 {
   "$schema": "../../../specs/erc7730-tests-v2.schema.json",
   "descriptor": "../calldata-weth.json",
-  "dataProvider": { "tokens": { "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" } } },
+  "dataProvider": {
+    "tokens": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "Wrapped Ether"
+      },
+      "0x4200000000000000000000000000000000000006": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "Wrapped Ether"
+      }
+    }
+  },
   "tests": [
     {
       "description": "Wrap - chain 1",
       "rawTx": "0x02f5018202098477359400848c45e4d782798994c02aaa39b223fe8d0a0e5c4f27ead9083c756cc28706a4c14dbae00085d0e30db076c0",
       "txHash": "0xc9d812ab4580595365ad3f90f34ed16973472458b0aeb7be3d318523e8083042",
-      "expected": { "intent": "Wrap", "owner": "WETH", "fields": [{ "label": "Amount", "value": "0.00187 ETH" }] }
+      "expected": {
+        "intent": "Wrap",
+        "owner": "WETH",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "0.00187 ETH"
+          }
+        ]
+      }
     },
     {
       "description": "Unwrap - chain 1",
       "rawTx": "0x02f84b012d8423ea7c748430de1c0a82d4a294c02aaa39b223fe8d0a0e5c4f27ead9083c756cc280a42e1a7d4d000000000000000000000000000000000000000000000000008f5b92dcf4b000c0",
       "txHash": "0xdfdce65121e70d930328ccd8dbf449832bd9a2afd528c97f4b395a99d21b6810",
-      "expected": { "intent": "Unwrap", "owner": "WETH", "fields": [{ "label": "Amount", "value": "0.040351608 WETH" }] }
+      "expected": {
+        "intent": "Unwrap",
+        "owner": "WETH",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "0.040351608 WETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Unwrap - chain 8453 (tx 0xbfe69ab2188772408580d4720a35e1b03560705403e6da080856b3641d93beda)",
+      "rawTx": "0x02f891822105823502839896808401c9c38082ea6094420000000000000000000000000000000000000680a42e1a7d4d0000000000000000000000000000000000000000000000000000136165a25054c080a0e37c53bdfe992a2248d53a52db7b6360628a26459e98297c424ded1021cfc599a06c6b8b854e6efa49f34a93a8b04b19e57b74e64ae49f59393d0fb9d58f239e4c",
+      "expected": {
+        "intent": "Unwrap",
+        "owner": "WETH",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "0.000021309037891668 WETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Wrap - chain 8453 (tx 0x74def8d4ebc9b2aecc5e93a3ee9bfff988130358af4c001aa5fb0f5c18015850)",
+      "rawTx": "0xf871820a1c83989680826dd0944200000000000000000000000000000000000006874a7b8f6daa72cb84d0e30db082422ea00b218ca98b9c6eaf9b21d9b34e28f9f3eb4e295b4763363e28376eb432490b75a0419cebbc5b2cac8f7faa1bfca5071ba47f7194fee2076473ce18adb3becbfafd",
+      "expected": {
+        "intent": "Wrap",
+        "owner": "WETH",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "0.020965004227015371 ETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Wrap - chain 10 (tx 0xf171977ad84c3b3a447e19fcdcbcd254772d85e6681b9274cbe9c1f78d42b70e)",
+      "rawTx": "0x02f8730a0b830f4240830f579c82c26a9442000000000000000000000000000000000000068701cc97281091b684d0e30db0c001a0f133ddbb62d46c8a4333bad8fa1af3de730f28e2ab0763d71caeab05ea2ff9a1a009a3f1c18cf0672827a30a148794c7798139e6bfe6adbdf4f2d5f620ab91ec2a",
+      "expected": {
+        "intent": "Wrap",
+        "owner": "WETH",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "0.000506424561013174 ETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Unwrap - chain 10 (tx 0xcbd0254f4f3f380921736eb0a6c4362a4ef94f78aed82e9561020fa886c4ef39)",
+      "rawTx": "0xf888828e24820ef48301d4c094420000000000000000000000000000000000000680a42e1a7d4d00000000000000000000000000000000000000000000000000004970048fafdb38a03f7cb5895dd3e9a5579f4d8eadd363e30b724bfb6181e03a009bee23e03ae21da070d3602e07b1d1b4828061c1bf13f98219deda0733a47d4eb23ce607c559f99a",
+      "expected": {
+        "intent": "Unwrap",
+        "owner": "WETH",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "0.000080745461690331 WETH"
+          }
+        ]
+      }
     }
   ]
 }
