@@ -1,0 +1,117 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "42 FTAdaptor",
+    "contract": {
+      "deployments": [
+        { "chainId": 56, "address": "0xC07Edb0d2C998267fB8472CB48A2398ee7ACC183" },
+        { "chainId": 56, "address": "0xdd4c2690266Ed697a3ab1d11BF9DBbBCCe64AfC7" }
+      ]
+    }
+  },
+  "metadata": { "owner": "42", "contractName": "FTAdaptor", "info": { "url": "https://42.space" } },
+  "display": {
+    "formats": {
+      "deployMarket((uint96 timestampEnd,string title,bytes ancillaryData,string imageUri,string[] outcomeNames,string[] outcomeImageUris) paramsQuestion,(uint256 parentTokenId,address collateral,address curve,uint96 timestampStart) paramsMarket,uint256 otSeed)": {
+        "intent": "Create market",
+        "interpolatedIntent": "Create {paramsQuestion.title}",
+        "fields": [
+          { "path": "#.paramsQuestion.title", "label": "Title", "format": "raw" },
+          { "path": "#.paramsQuestion.outcomeNames.[]", "label": "Outcome", "format": "raw" },
+          { "path": "#.paramsMarket.timestampStart", "label": "Trading start", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "#.paramsQuestion.timestampEnd", "label": "End", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "#.paramsMarket.collateral", "label": "Collateral", "format": "addressName", "params": { "types": ["token"] } },
+          { "path": "#.paramsMarket.curve", "label": "Curve", "format": "addressName", "params": { "types": ["contract"] } },
+          { "path": "#.paramsMarket.parentTokenId", "label": "Parent token ID", "format": "raw" },
+          { "path": "#.otSeed", "label": "Seed per outcome", "format": "unit", "params": { "base": "OT", "decimals": 18 } },
+          { "path": "#.paramsQuestion.ancillaryData", "label": "Ancillary data", "visible": "never" },
+          { "path": "#.paramsQuestion.imageUri", "label": "Image URI", "visible": "never" },
+          { "path": "#.paramsQuestion.outcomeImageUris.[]", "label": "Outcome image URI", "visible": "never" }
+        ]
+      },
+      "seedLiquidity(address market,uint256[] tokenIds,uint256[] otAmounts)": {
+        "intent": "Seed liquidity",
+        "interpolatedIntent": "Seed liquidity in {market}",
+        "fields": [
+          { "path": "#.market", "label": "Market", "format": "addressName", "params": { "types": ["contract"] } },
+          { "path": "#.tokenIds.[]", "label": "Outcome token ID", "format": "raw" },
+          { "path": "#.otAmounts.[]", "label": "Seed", "format": "unit", "params": { "base": "OT", "decimals": 18 } }
+        ]
+      },
+      "addOutcome(bytes32 questionId,string[] names,string[] imageUris)": {
+        "intent": "Add outcomes",
+        "interpolatedIntent": "Add outcomes to {questionId}",
+        "fields": [
+          { "path": "#.questionId", "label": "Question ID", "format": "raw" },
+          { "path": "#.names.[]", "label": "New outcome", "format": "raw" },
+          { "path": "#.imageUris.[]", "label": "Outcome image URI", "visible": "never" }
+        ]
+      },
+      "addOutcomeWithSeed(bytes32 questionId,string[] names,string[] imageUris,address[] markets,uint256[] otAmounts)": {
+        "intent": "Add seeded outcomes",
+        "interpolatedIntent": "Seed outcomes on {questionId}",
+        "fields": [
+          { "path": "#.questionId", "label": "Question ID", "format": "raw" },
+          { "path": "#.names.[]", "label": "New outcome", "format": "raw" },
+          { "path": "#.markets.[]", "label": "Market", "format": "addressName", "params": { "types": ["contract"] } },
+          { "path": "#.otAmounts.[]", "label": "Seed", "format": "unit", "params": { "base": "OT", "decimals": 18 } },
+          { "path": "#.imageUris.[]", "label": "Outcome image URI", "visible": "never" }
+        ]
+      },
+      "modifyTimestampEnd(bytes32 questionId,uint128 timestampEndNew)": {
+        "intent": "Change end time",
+        "interpolatedIntent": "Move end to {timestampEndNew}",
+        "fields": [
+          { "path": "#.questionId", "label": "Question ID", "format": "raw" },
+          { "path": "#.timestampEndNew", "label": "New end", "format": "date", "params": { "encoding": "timestamp" } }
+        ]
+      },
+      "postUpdate(bytes32 questionId,bytes data)": {
+        "intent": "Post market update",
+        "interpolatedIntent": "Post update to {questionId}",
+        "fields": [
+          { "path": "#.questionId", "label": "Question ID", "format": "raw" },
+          { "path": "#.data", "label": "Update data", "format": "raw" }
+        ]
+      },
+      "setImageUri(bytes32 questionId,string imageUri)": {
+        "intent": "Change market image",
+        "interpolatedIntent": "Change image of {questionId}",
+        "fields": [
+          { "path": "#.questionId", "label": "Question ID", "format": "raw" },
+          { "path": "#.imageUri", "label": "Image URI", "visible": "never" }
+        ]
+      },
+      "setOutcomeImageUri(bytes32 questionId,uint256 indexOutcome,string imageUri)": {
+        "intent": "Change outcome image",
+        "interpolatedIntent": "Outcome {indexOutcome} image",
+        "fields": [
+          { "path": "#.questionId", "label": "Question ID", "format": "raw" },
+          { "path": "#.indexOutcome", "label": "Outcome index", "format": "raw" },
+          { "path": "#.imageUri", "label": "Image URI", "visible": "never" }
+        ]
+      },
+      "resolveOutcome(bytes32 questionId,uint256 answer)": {
+        "intent": "Resolve market",
+        "interpolatedIntent": "Resolve as {answer}",
+        "fields": [
+          { "path": "#.questionId", "label": "Question ID", "format": "raw" },
+          { "path": "#.answer", "label": "Answer (outcome bitmap)", "format": "raw" }
+        ]
+      },
+      "unresolveOutcome(bytes32 questionId)": {
+        "intent": "Clear resolution",
+        "interpolatedIntent": "Unresolve {questionId}",
+        "fields": [{ "path": "#.questionId", "label": "Question ID", "format": "raw" }]
+      },
+      "finaliseOutcome(bytes32 questionId,uint256 answerChallenge)": {
+        "intent": "Finalise market",
+        "interpolatedIntent": "Finalise as {answerChallenge}",
+        "fields": [
+          { "path": "#.questionId", "label": "Question ID", "format": "raw" },
+          { "path": "#.answerChallenge", "label": "Answer (outcome bitmap)", "format": "raw" }
+        ]
+      }
+    }
+  }
+}
