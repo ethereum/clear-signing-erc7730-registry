@@ -2,7 +2,7 @@
 /**
  * Checks that a calldata descriptor covers the token and vault standards that
  * its contract implements (Rule 1), and warns about a descriptor for a plain
- * token (Rule 2). See the "Standard functions" section of README.md.
+ * token (Rule 2). See "Pull Request content requirements" in README.md.
  *
  * For each deployment of a calldata descriptor, the script gets the verified
  * ABI from Sourcify, and the ABI of each implementation when the contract is
@@ -48,7 +48,7 @@ const SOURCIFY_TOKEN = process.env.SOURCIFY_TOKEN || '';
 const EXCEPTIONS_FILE = '.github/standard-coverage-exceptions.json';
 const EXCLUDED_DIRS = new Set(['tests', 'testsv2', 'sigs']);
 
-const HELP = `See "Standard functions" in README.md. For a real exception, add an entry to ${EXCEPTIONS_FILE} in a separate pull request.`;
+const HELP = `See "Pull Request content requirements" in README.md. For a real exception, add an entry to ${EXCEPTIONS_FILE} in a separate pull request.`;
 const rel = (abs) => path.relative(repoRoot, abs).split(path.sep).join('/');
 const ercs = (name) => path.join(repoRoot, 'ercs', name);
 
@@ -302,7 +302,7 @@ async function checkDescriptor(abs, ctx) {
   const rule2 = !ctx.changed || ctx.changed.has(descriptor);
   if (rule2 && selectors.size > 0 && [...selectors.keys()].every((s) => TOKEN_SELECTORS.has(s))) {
     warnings.push(
-      'This descriptor has only standard token functions. The registry does not take descriptors for plain ERC-20 or ERC-721 tokens: wallets build them on the fly from their trusted token list (sourcifyeth/clear-signing#16). Keep it only if it changes the display of a standard function for a clear reason. See "Standard functions" in README.md.',
+      'This descriptor has only standard token functions. The registry does not take descriptors for plain ERC-20 or ERC-721 tokens: wallets build them on the fly from their trusted token list (sourcifyeth/clear-signing#16). Keep it only if it changes the display of a standard function for a clear reason. See "Pull Request content requirements" in README.md.',
     );
   }
 

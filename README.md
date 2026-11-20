@@ -55,46 +55,9 @@ ercs/
 - Do not use the `calldata` or `eip712` prefixes for common files which are included by the ERC-7730 files and placed at the top level of the entity folder. Name them `common-*.json` instead.
 - Each descriptor added or changed is accompanied by a test file so descriptors can be verified against the formatter implementations. For a calldata descriptor, the test file has at least one test case for every function in `display.formats`: CI derives the selector of each format and looks for it in the calldata of the test cases. See [Reference test cases](#reference-test-cases).
 - To change a descriptor that has an attestation, delete its attestation file(s) from `sigs/` in the same PR. For now this is the only way, because the [index](#index-files) allows only one descriptor per deployment.
-- A calldata descriptor covers the standard functions of its contract (ERC-20, ERC-4626, ERC-721, ERC-7540), preferably with an include of the related `ercs/` file. A token with an ERC-2612 permit also gets an `eip712-*.json` descriptor for its `Permit` message. See [Standard functions](#standard-functions).
-- Do not submit a descriptor for a plain ERC-20 or ERC-721 token. Wallets build token descriptors on the fly from their list of trusted tokens ([sourcifyeth/clear-signing#16](https://github.com/sourcifyeth/clear-signing/issues/16)). See [Standard functions](#standard-functions).
+- A calldata descriptor covers the standard functions of its contract: it includes the matching `ercs/` file (ERC-20, ERC-4626 with `calldata-erc4626-erc20-vaults.json`, ERC-721, ERC-7540), directly or through a `common-*.json` file. A token with an ERC-2612 permit also gets an `eip712-*.json` file that includes `ercs/eip712-erc2612-permit.json`. Do not submit a descriptor for a plain ERC-20 or ERC-721 token: wallets build it on the fly ([sourcifyeth/clear-signing#16](https://github.com/sourcifyeth/clear-signing/issues/16)). CI checks this against the verified ABI; a real exception goes in [`.github/standard-coverage-exceptions.json`](.github/standard-coverage-exceptions.json), in a separate PR.
 
 Reviewers check each PR against the [review guidelines](docs/REVIEWING.md).
-
-## Standard functions
-
-Users sign the standard functions of a token or a vault, such as `transfer`, `approve`, `deposit` and `redeem`. The libraries build a token descriptor on the fly only when the registry has **no** descriptor for the address. Thus a registry descriptor that does not cover the standard functions makes them blind-signed.
-
-### Rule 1: a descriptor covers the standards of its contract
-
-If the contract implements a standard, the descriptor (after `includes`) has a format for each function of the related file in `ercs/`:
-
-| The contract implements | Include                                                                             |
-| ----------------------- | ----------------------------------------------------------------------------------- |
-| ERC-20                  | `ercs/calldata-erc20-tokens.json`                                                   |
-| ERC-4626 (and ERC-20)   | `ercs/calldata-erc4626-erc20-vaults.json`                                           |
-| ERC-721                 | `ercs/calldata-erc721-nfts.json`                                                    |
-| ERC-7540, async deposit | `ercs/calldata-erc7540Deposit-vaults.json`                                          |
-| ERC-7540, async redeem  | `ercs/calldata-erc7540Redeem-vaults.json`                                           |
-| ERC-7540, both          | `ercs/calldata-erc7540-vaults.json`                                                 |
-| ERC-2612 permit         | a separate `eip712-*.json` file that includes `ercs/eip712-erc2612-permit.json`     |
-| DAI permit              | a separate `eip712-*.json` file that includes `registry/permit/common-dai-permit.json` |
-
-- `includes` takes one file. If your entity has a `common-*.json` file, let the common file include the `ercs/` file.
-- The ERC-4626 and ERC-7540 files include the ERC-20 formats for the vault shares. `ercs/calldata-erc4626-vaults.json` has no ERC-20 formats. It stays for the descriptors that include it today, because a change to it would remove their attestations. A new vault uses `ercs/calldata-erc4626-erc20-vaults.json`.
-- ERC-7540 gives `deposit`, `mint`, `withdraw` and `redeem` another meaning: they claim a request. The ERC-7540 files override these formats with claim formats. An ERC-7540 vault must not show them with the ERC-4626 formats.
-- An ERC-2612 permit is a typed message, not calldata. A calldata descriptor cannot include `ercs/eip712-erc2612-permit.json`. Add an `eip712-*.json` file in the same entity folder that lists the token address in `context.eip712.deployments` and sets the EIP-712 `domain` of the token.
-- A descriptor can write a standard function itself, for example with other labels or another intent, when there is a clear reason.
-
-The CI check "Descriptors cover the standards of their contract" ([`check-standard-coverage.js`](.github/scripts/check-standard-coverage.js)) enforces this rule. It gets the verified ABI of each deployment (and of its implementation, for a proxy) from Sourcify. It requires a standard only when the ABI has the full function set of the standard. If Sourcify has no ABI, the check requires nothing. For a real exception, add an entry with the descriptor, the missing items and the reason to [`.github/standard-coverage-exceptions.json`](.github/standard-coverage-exceptions.json), in a separate PR before the descriptor.
-
-### Rule 2: no descriptors for plain tokens
-
-The registry does not take a descriptor for an ERC-20 or ERC-721 token that only adds its deployments and its token metadata to the standard functions. The wallet gives the library a list of trusted tokens, and the library builds the descriptor from the `ercs/` template ([sourcifyeth/clear-signing#16](https://github.com/sourcifyeth/clear-signing/issues/16)). A token descriptor is accepted only if it:
-
-- adds a function that is not in the `ercs/` template, or
-- changes the display of a standard function for a clear reason, for example for a token with a non-standard `transfer`.
-
-Rule 2 does not apply to vaults (ERC-4626, ERC-7540) and to EIP-712 permit descriptors. The CI check gives a warning for a descriptor that has only standard token functions. The reviewer decides.
 
 ## How to validate
 
