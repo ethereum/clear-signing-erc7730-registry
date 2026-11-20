@@ -1,0 +1,32 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "MetaMask MetaSwap",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x881d40237659c251811cec9c364ef91dc08d300c" }] }
+  },
+  "metadata": { "owner": "MetaMask", "contractName": "MetaSwap", "info": { "url": "https://metamask.io" } },
+  "display": {
+    "formats": {
+      "swap(string aggregatorId, address tokenFrom, uint256 amount, bytes data)": {
+        "intent": "Swap",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenFrom", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] },
+            "visible": "always"
+          },
+          {
+            "path": "data.[96:128]",
+            "label": "Receive at least",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "data.[44:64]", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] },
+            "visible": "always"
+          },
+          { "path": "aggregatorId", "label": "Route", "format": "raw", "visible": "always" }
+        ]
+      }
+    }
+  }
+}
