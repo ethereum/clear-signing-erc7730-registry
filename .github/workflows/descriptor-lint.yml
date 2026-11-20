@@ -159,6 +159,15 @@ jobs:
             registry/**/sigs/**
             registry/**/*.tests.json
 
+      - name: Keep the registry files of the base
+        timeout-minutes: 5
+        if: steps.changed-descriptor-files.outputs.any_changed == 'true'
+        env:
+          BASE_SHA: ${{ github.event.merge_group.base_sha || github.sha }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE_SHA"
+          mkdir base-tree && git archive FETCH_HEAD registry ercs | tar -x -C base-tree
+
       - name: Use the registry files of the pull request
         timeout-minutes: 5
         if: github.event_name == 'pull_request_target'
@@ -186,6 +195,8 @@ jobs:
         env:
           CHANGED_FILES: ${{ steps.changed-descriptor-files.outputs.all_changed_files }}
           DELETED_FILES: ${{ steps.changed-descriptor-files.outputs.deleted_files }}
+          # A format-only change of a shared file is not a change.
+          BASE_ROOT: base-tree
         run: |
           RESULT=$(CHANGED_FILES="$CHANGED_FILES $DELETED_FILES" \
             node .github/scripts/list-affected-descriptors.js)
@@ -213,5 +224,6 @@ jobs:
           AFFECTED_FILES: ${{ steps.affected-descriptors.outputs.descriptors }}
           # Rule 2 looks only at the descriptors that the pull request changes.
           CHANGED_FILES: ${{ steps.changed-descriptor-files.outputs.all_changed_files }}
+          BASE_ROOT: base-tree
           SOURCIFY_TOKEN: ${{ secrets.SOURCIFY_TOKEN_CLEAR_SIGNING_CI }}
         run: node .github/scripts/check-standard-coverage.js $AFFECTED_FILES

@@ -30,6 +30,8 @@
  *   SOURCIFY_URL     default https://sourcify.dev/server
  *   CHANGED_FILES    optional, whitespace-separated repo-relative paths. When
  *                    set, Rule 2 looks only at the descriptors in the list.
+ *   BASE_ROOT        optional, a directory with the registry/ and ercs/ trees
+ *                    of the base. Rule 2 skips a file with the same JSON there.
  *
  * Exceptions are in .github/standard-coverage-exceptions.json. Prints GitHub
  * Actions annotations, and exits 1 when a descriptor has an error.
@@ -40,7 +42,7 @@ const path = require('path');
 const { isDeepStrictEqual } = require('util');
 const { resolveDescriptor } = require('./resolve-erc7730-includes');
 const { selectorOf, reason } = require('./check-selector-coverage');
-const { includeClosure } = require('./list-affected-descriptors');
+const { includeClosure, normalizeJson } = require('./list-affected-descriptors');
 
 const repoRoot = process.cwd();
 const SOURCIFY_URL = (process.env.SOURCIFY_URL || 'https://sourcify.dev/server').replace(/\/$/, '');
@@ -151,6 +153,7 @@ function loadTemplates() {
       aliases: (s.aliases ?? []).map((a) => rel(ercs(a))),
       own: selectorMap(formatsOf(readJson(abs))),
       ownKeys: Object.keys(formatsOf(readJson(abs))),
+      ownFormats: formatsOf(readJson(abs)),
       resolved: formatsOf(resolveDescriptor(abs)),
     };
   }
@@ -264,10 +267,46 @@ function collect(target, out, pattern = /^calldata-.*\.json$/) {
   return out;
 }
 
+/** The exceptions with a descriptor, a list of missing items and a reason. */
 function loadExceptions() {
   const file = path.join(repoRoot, EXCEPTIONS_FILE);
   if (!fs.existsSync(file)) return [];
-  return readJson(file).exceptions ?? [];
+  const all = readJson(file).exceptions ?? [];
+  const valid = all.filter(
+    (e) => typeof e.descriptor === 'string' && Array.isArray(e.missing) && typeof e.reason === 'string' && e.reason.trim() !== '',
+  );
+  if (valid.length < all.length) {
+    console.log(`::warning file=${EXCEPTIONS_FILE},line=1::${all.length - valid.length} exception(s) have no "descriptor", "missing" or "reason", and are not used.`);
+  }
+  return valid;
+}
+
+/** The ercs/ file to include for a vault, from the vault standards that were found. */
+function vaultFile(found, templates) {
+  const deposit = found.has('ERC-7540 deposit');
+  const redeem = found.has('ERC-7540 redeem');
+  if (deposit && redeem) return rel(ercs('calldata-erc7540-vaults.json'));
+  if (deposit) return templates['ERC-7540 deposit'].file;
+  if (redeem) return templates['ERC-7540 redeem'].file;
+  if (found.has('ERC-4626')) return templates['ERC-4626'].file;
+  return null;
+}
+
+const CHAIN_ID = (v) => Number.isSafeInteger(v) && v > 0;
+const ADDRESS = /^0x[0-9a-fA-F]{40}$/;
+
+/**
+ * True when BASE_ROOT holds the same JSON for the file: "erc7730 format"
+ * changes only the layout, and that is not a change for Rule 2.
+ */
+function sameAsBase(file) {
+  if (!process.env.BASE_ROOT) return false;
+  try {
+    const read = (root) => normalizeJson(fs.readFileSync(path.join(root, file), 'utf8'));
+    return read(repoRoot) === read(process.env.BASE_ROOT);
+  } catch {
+    return false;
+  }
 }
 
 /** True when the exceptions file allows this missing item for this descriptor. */
@@ -299,7 +338,7 @@ async function checkDescriptor(abs, ctx) {
   const closure = includeClosure(abs);
 
   // Rule 2: only standard token functions. Vaults have other functions.
-  const rule2 = !ctx.changed || ctx.changed.has(descriptor);
+  const rule2 = !ctx.changed || (ctx.changed.has(descriptor) && !sameAsBase(descriptor));
   if (rule2 && selectors.size > 0 && [...selectors.keys()].every((s) => TOKEN_SELECTORS.has(s))) {
     warnings.push(
       'This descriptor has only standard token functions. The registry does not take descriptors for plain ERC-20 or ERC-721 tokens: wallets build them on the fly from their trusted token list (sourcifyeth/clear-signing#16). Keep it only if it changes the display of a standard function for a clear reason. See "Pull Request content requirements" in README.md.',
@@ -309,6 +348,11 @@ async function checkDescriptor(abs, ctx) {
   const found = new Map(); // standard id -> deployments that implement it
   let checked = 0;
   for (const { chainId, address } of deployments) {
+    // The values come from the pull request: they go into a URL and into annotations.
+    if (!CHAIN_ID(chainId) || typeof address !== 'string' || !ADDRESS.test(address)) {
+      notices.push('A deployment has an invalid chainId or address. The check requires no standard for it.');
+      continue;
+    }
     const where = `${chainId}:${address}`;
     let functions;
     try {
@@ -337,10 +381,10 @@ async function checkDescriptor(abs, ctx) {
     const missing = [...template.own].filter(([selector]) => !selectors.has(selector));
     const missingNow = missing.filter(([, key]) => !excepted(ctx.exceptions, descriptor, normalize(key)));
     if (missingNow.length > 0) {
-      // A vault gets ERC-20 from the vault file, not from the token file.
-      const vault = found.has('ERC-4626') && s.id === 'ERC-20' ? ctx.templates['ERC-4626'].file : null;
+      // A vault gets ERC-20 from its vault file, not from the token file.
+      const include = (s.id === 'ERC-721' ? null : vaultFile(found, ctx.templates)) ?? template.file;
       errors.push(
-        `The contract implements ${s.id} (${where.join(', ')}), but the descriptor has no format for: ${missingNow.map(([sel, key]) => `${normalize(key)} (${sel})`).join(', ')}. Include ${vault ?? template.file}, or include it through your common file. ${HELP}`,
+        `The contract implements ${s.id} (${where.join(', ')}), but the descriptor has no format for: ${missingNow.map(([sel, key]) => `${normalize(key)} (${sel})`).join(', ')}. Include ${include}, or include it through your common file. ${HELP}`,
       );
     }
     for (const claim of s.claims ?? []) {
@@ -350,7 +394,7 @@ async function checkDescriptor(abs, ctx) {
       if (key && plainKey && isDeepStrictEqual(formats[key], ctx.templates.plain4626[plainKey])
           && !excepted(ctx.exceptions, descriptor, claim)) {
         errors.push(
-          `The contract implements ${s.id} (${where.join(', ')}), and ${claim} claims a request there. The descriptor shows it with the ERC-4626 format, which does not say that. Include ${template.file}, or override the format. ${HELP}`,
+          `The contract implements ${s.id} (${where.join(', ')}), and ${claim} claims a request there. The descriptor shows it with the ERC-4626 format, which does not say that. Include ${vaultFile(found, ctx.templates)}, or override the format. ${HELP}`,
         );
       }
     }
@@ -359,6 +403,25 @@ async function checkDescriptor(abs, ctx) {
       warnings.push(
         `The descriptor writes the ${s.id} formats itself, but does not include ${template.file}. Include the file unless the formats change the display for a clear reason.`,
       );
+    }
+  }
+
+  // The inverse: a vault without the asynchronous flow that shows its
+  // ERC-4626 functions as claims of a request.
+  const vaultWhere = found.get('ERC-4626');
+  for (const s of STANDARDS.filter((x) => x.claims && !found.has(x.id))) {
+    if (!vaultWhere) continue;
+    const template = ctx.templates[s.id];
+    for (const claim of s.claims) {
+      const selector = selectorOf(claim);
+      const key = selectors.get(selector);
+      const claimKey = template.ownKeys.find((k) => selectorOf(k) === selector);
+      if (key && claimKey && isDeepStrictEqual(formats[key], template.ownFormats[claimKey])
+          && !excepted(ctx.exceptions, descriptor, claim)) {
+        errors.push(
+          `The contract has no ${s.id} functions (${vaultWhere.join(', ')}), but the descriptor shows ${claim} as the claim of a request. Include ${vaultFile(found, ctx.templates)}. ${HELP}`,
+        );
+      }
     }
   }
 
