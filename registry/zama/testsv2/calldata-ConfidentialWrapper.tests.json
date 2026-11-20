@@ -2,31 +2,65 @@
   "$schema": "../../../specs/erc7730-tests-v2.schema.json",
   "descriptor": "../calldata-ConfidentialWrapper.json",
   "dataProvider": {
-    "tokens": { "0xe978f22157048e5db8e5d07971376e86671672b2": { "symbol": "cUSDC", "decimals": 6, "name": "Confidential USDC" } }
+    "tokens": {
+      "0xe978f22157048e5db8e5d07971376e86671672b2": { "symbol": "cUSDC", "decimals": 6, "name": "Confidential USDC" },
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" },
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" },
+      "0x9b5cd13b8efbb58dc25a05cf411d8056058adfff": { "symbol": "USDC", "decimals": 6, "name": "USD Coin (Mock)" },
+      "0xdc1c0534109e2db74fe800c84096547541607859": { "symbol": "nvHOME", "decimals": 12, "name": "nvHOME" },
+      "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": { "symbol": "WBTC", "decimals": 8, "name": "Wrapped BTC" }
+    }
   },
   "tests": [
     {
-      "description": "Shield 1000000 underlying tokens to a receiver",
+      "description": "Shield 1 USDC on cUSDC, underlying resolved through metadata.maps",
       "rawTx": "0x02f8b10180843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b844bf376c7a00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c800000000000000000000000000000000000000000000000000000000000f4240c080a009fc03631f131224cd33a4b5923163684ca6ee6bdadee120841cb7190e27df06a007f3ba28c8356d07f8413c9f9aebf00541f5b5e7e5daa629a9835b0b80529f8e",
       "expected": {
         "intent": "Shield",
-        "interpolatedIntent": "Shield 1000000 underlying units to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "interpolatedIntent": "Shield 1 USDC to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "fields": [{ "label": "Amount", "value": "1 USDC" }, { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }]
+      }
+    },
+    {
+      "description": "Shield 150000 USDC on cUSDC (amount of the publicly reported mainnet wrap)",
+      "rawTx": "0x02f8b10180843b9aca008506fc23ac008303d09094e978f22157048e5db8e5d07971376e86671672b280b844bf376c7a00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c800000000000000000000000000000000000000000000000000000022ecb25c00c080a009fc03631f131224cd33a4b5923163684ca6ee6bdadee120841cb7190e27df06a007f3ba28c8356d07f8413c9f9aebf00541f5b5e7e5daa629a9835b0b80529f8e",
+      "expected": {
+        "intent": "Shield",
+        "interpolatedIntent": "Shield 150000 USDC to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
         "fields": [
-          { "label": "Amount (underlying units)", "value": "1000000" },
+          { "label": "Amount", "value": "150000 USDC" },
           { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
         ]
       }
     },
     {
-      "description": "Shield 1 WETH on cWETH, whose underlying has 18 decimals",
+      "description": "Shield 1 WETH on cWETH, resolved through metadata.maps to an 18-decimal underlying",
       "rawTx": "0x02f8b10180843b9aca008506fc23ac008303d09094da9396b82634ea99243ce51258b6a5ae512d489380b844bf376c7a00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000000000000000000000000000000de0b6b3a7640000c080a01111111111111111111111111111111111111111111111111111111111111111a02222222222222222222222222222222222222222222222222222222222222222",
       "expected": {
         "intent": "Shield",
-        "interpolatedIntent": "Shield 1000000000000000000 underlying units to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "interpolatedIntent": "Shield 1 WETH to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "fields": [{ "label": "Amount", "value": "1 WETH" }, { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }]
+      }
+    },
+    {
+      "description": "Shield 1234.5 nvHOME on cnvHOME, whose underlying has 12 decimals",
+      "rawTx": "0x02f8b10180843b9aca008506fc23ac008303d09094fcabd11434e98cedb57e4b3416189f600a509e2e80b844bf376c7a00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8000000000000000000000000000000000000000000000000000462c56df9a800c080a009fc03631f131224cd33a4b5923163684ca6ee6bdadee120841cb7190e27df06a007f3ba28c8356d07f8413c9f9aebf00541f5b5e7e5daa629a9835b0b80529f8e",
+      "expected": {
+        "intent": "Shield",
+        "interpolatedIntent": "Shield 1234.5 nvHOME to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
         "fields": [
-          { "label": "Amount (underlying units)", "value": "1000000000000000000" },
+          { "label": "Amount", "value": "1234.5 nvHOME" },
           { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
         ]
+      }
+    },
+    {
+      "description": "Shield 0.5 WBTC on cWBTC, whose underlying has 8 decimals",
+      "rawTx": "0x02f8b10180843b9aca008506fc23ac008303d09094d86ae89c089b380f064fe01899b4071f1eb6bb3d80b844bf376c7a00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000000000000000000000000000000000000002faf080c080a009fc03631f131224cd33a4b5923163684ca6ee6bdadee120841cb7190e27df06a007f3ba28c8356d07f8413c9f9aebf00541f5b5e7e5daa629a9835b0b80529f8e",
+      "expected": {
+        "intent": "Shield",
+        "interpolatedIntent": "Shield 0.5 WBTC to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "fields": [{ "label": "Amount", "value": "0.5 WBTC" }, { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }]
       }
     },
     {
@@ -214,11 +248,8 @@
       "rawTx": "0x02f8b483aa36a780843b9aca008506fc23ac008303d090947c5bf43b851c1dff1a4fee8db225b87f2c22363980b844bf376c7a00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c800000000000000000000000000000000000000000000000000000000002625a0c001a0fce3d9c5a84421797157964ec6a4499ba658b87eece3233badd46c2f5fc66611a0406eae8d09ee171ffb10cdce0250a66f24a294f1f7e2642ff13c8e37f0ce5848",
       "expected": {
         "intent": "Shield",
-        "interpolatedIntent": "Shield 2500000 underlying units to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        "fields": [
-          { "label": "Amount (underlying units)", "value": "2500000" },
-          { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }
-        ]
+        "interpolatedIntent": "Shield 2.5 USDC to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "fields": [{ "label": "Amount", "value": "2.5 USDC" }, { "label": "Receiver", "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" }]
       }
     }
   ]
