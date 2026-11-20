@@ -1,0 +1,145 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-L1BlastBridge.json",
+  "dataProvider": {
+    "tokens": {
+      "0x4300000000000000000000000000000000000003": { "name": "USDB", "symbol": "USDB", "decimals": 18 },
+      "0xae7ab96520de3a18e5e111b5eaab095312d7fe84": { "name": "Liquid staked Ether 2.0", "symbol": "stETH", "decimals": 18 },
+      "0xdac17f958d2ee523a2206206994597c13d831ec7": { "name": "Tether USD", "symbol": "USDT", "decimals": 6 },
+      "0x6b175474e89094c44da98b954eedeac495271d0f": { "name": "Dai Stablecoin", "symbol": "DAI", "decimals": 18 }
+    },
+    "addressNames": {
+      "0x5d4472f31bd9385709ec61305afc749f0fa8e9d0": "L1CrossDomainMessenger",
+      "0x697402166fbf2f22e970df8a6486ef171dbfc524": "L1StandardBridge",
+      "0x3a05e5d33d7ab3864d53aaec93c8301c1fa49115": "L1BlastBridge",
+      "0x4200000000000000000000000000000000000007": "L2CrossDomainMessenger",
+      "0x4200000000000000000000000000000000000010": "L2StandardBridge",
+      "0x4300000000000000000000000000000000000005": "L2BlastBridge",
+      "0x0ec68c5b10f21effb74f2a5c61dfe6b08c0db6cb": "OptimismPortal"
+    }
+  },
+  "tests": [
+    {
+      "description": "bridgeERC20-steth - chain 1",
+      "rawTx": "0x02f8e501808080830f4240943a05e5d33d7ab3864d53aaec93c8301c1fa4911580b8c487087623000000000000000000000000ae7ab96520de3a18e5e111b5eaab095312d7fe8400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000026224e92c0f24600000000000000000000000000000000000000000000000000000000000c350000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x0927bA4B9E7176efDb6FF254f5Fdc84D5dF87f84",
+      "txHash": "0xb966f45e16607eedeccd8a8df17a0c3146de05f943ff19872c67aff612728c8a",
+      "expected": {
+        "intent": "Bridge token to Blast",
+        "interpolatedIntent": "Bridge 0.01073376997991687 stETH as 0x0000000000000000000000000000000000000000 to your address on Blast",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Amount", "value": "0.01073376997991687 stETH" },
+          { "label": "Token on Blast (zero address = ETH)", "value": "0x0000000000000000000000000000000000000000" },
+          { "label": "Min DAI if USDC/USDT", "value": "0 DAI" }
+        ]
+      }
+    },
+    {
+      "description": "bridgeERC20-usdt - chain 1",
+      "rawTx": "0x02f9010501808080830f4240943a05e5d33d7ab3864d53aaec93c8301c1fa4911580b8e487087623000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec700000000000000000000000043000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000005f5e10000000000000000000000000000000000000000000000000000000000000c350000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000569f36d34deac60dac0",
+      "from": "0x959F0f29D2a20E84c0a61aE9bfA562D3BAc86D6e",
+      "txHash": "0x7062475eeaaef725a69e44529ab34fc8aadbb5196cd2df4864340710764956de",
+      "expected": {
+        "intent": "Bridge token to Blast",
+        "interpolatedIntent": "Bridge 100 USDT as USDB to your address on Blast",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Amount", "value": "100 USDT" },
+          { "label": "Token on Blast (zero address = ETH)", "value": "USDB" },
+          { "label": "Min DAI if USDC/USDT", "value": "99.868286235712446682 DAI" }
+        ]
+      }
+    },
+    {
+      "description": "bridgeERC20 - chain 1",
+      "rawTx": "0x02f8e501808080830f4240943a05e5d33d7ab3864d53aaec93c8301c1fa4911580b8c4870876230000000000000000000000006b175474e89094c44da98b954eedeac495271d0f00000000000000000000000043000000000000000000000000000000000000030000000000000000000000000000000000000000000000667504da59d048000000000000000000000000000000000000000000000000000000000000000c350000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x8D1b878509562Fe8C097536e6E8DA5Bdeed05D1b",
+      "txHash": "0x040026829366234acc0452d57389a565ca463e66b78547391f5da6860ed4f841",
+      "expected": {
+        "intent": "Bridge token to Blast",
+        "interpolatedIntent": "Bridge 1890 DAI as USDB to your address on Blast",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Amount", "value": "1890 DAI" },
+          { "label": "Token on Blast (zero address = ETH)", "value": "USDB" },
+          { "label": "Min DAI if USDC/USDT", "value": "0 DAI" }
+        ]
+      }
+    },
+    {
+      "description": "bridgeERC20To - chain 1",
+      "rawTx": "0x02f9012601808080830f4240943a05e5d33d7ab3864d53aaec93c8301c1fa4911580b90104540abf73000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec700000000000000000000000043000000000000000000000000000000000000030000000000000000000000002e903d666b07e26dfb73382a068b5c7c9392132c0000000000000000000000000000000000000000000000000000000005f5e100000000000000000000000000000000000000000000000000000000000007a12000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000569f36d34deac60dac0",
+      "from": "0x959F0f29D2a20E84c0a61aE9bfA562D3BAc86D6e",
+      "expected": {
+        "intent": "Bridge token to Blast",
+        "interpolatedIntent": "Bridge 100 USDT as USDB to 0x2E903d666b07E26Dfb73382a068b5C7c9392132c on Blast",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Amount", "value": "100 USDT" },
+          { "label": "Blast Recipient", "value": "0x2E903d666b07E26Dfb73382a068b5C7c9392132c" },
+          { "label": "Token on Blast (zero address = ETH)", "value": "USDB" },
+          { "label": "Min DAI if USDC/USDT", "value": "99.868286235712446682 DAI" }
+        ]
+      }
+    },
+    {
+      "description": "bridgeETH - chain 1",
+      "rawTx": "0x02f88c01808080830f4240943a05e5d33d7ab3864d53aaec93c8301c1fa4911587038d7ea4c68000b86409fc88430000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x073b0636435dDe1649d85750Cd353F7E63768393",
+      "txHash": "0xa24c31e4758ab47780e0bc7ccdc5e0d5f77915c31d3b5bd0386518264aa34594",
+      "expected": {
+        "intent": "Bridge ETH to Blast",
+        "interpolatedIntent": "Bridge 0.001 ETH to your address on Blast",
+        "owner": "Blast",
+        "fields": [{ "label": "Amount", "value": "0.001 ETH" }]
+      }
+    },
+    {
+      "description": "bridgeETHTo - chain 1",
+      "rawTx": "0x02f8ab01808080830f4240943a05e5d33d7ab3864d53aaec93c8301c1fa4911586b5e620f48000b884e11013dd0000000000000000000000002e903d666b07e26dfb73382a068b5c7c9392132c0000000000000000000000000000000000000000000000000000000000030d4000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x2E903d666b07E26Dfb73382a068b5C7c9392132c",
+      "txHash": "0xf8c265eb7e259bbc8adac23747f3849a6bbe1427edc768a40fb93e51d9d626fe",
+      "expected": {
+        "intent": "Bridge ETH to Blast",
+        "interpolatedIntent": "Bridge 0.0002 ETH to 0x2E903d666b07E26Dfb73382a068b5C7c9392132c on Blast",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Amount", "value": "0.0002 ETH" },
+          { "label": "Blast Recipient", "value": "0x2E903d666b07E26Dfb73382a068b5C7c9392132c" }
+        ]
+      }
+    },
+    {
+      "description": "finalizeBridgeERC20 - chain 1",
+      "rawTx": "0x02f9010501808080830f4240943a05e5d33d7ab3864d53aaec93c8301c1fa4911580b8e40166a07a0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f0000000000000000000000004300000000000000000000000000000000000003000000000000000000000000f81c8e81dc92ad04bfadba7411d38bd7a5106f58000000000000000000000000f81c8e81dc92ad04bfadba7411d38bd7a5106f5800000000000000000000000000000000000000000000000759d3f98f76f8000000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x5D4472f31Bd9385709ec61305AFc749F0fA8e9d0",
+      "expected": {
+        "intent": "Queue DAI claim for Blast USDB",
+        "interpolatedIntent": "Queue a claim of up to 135.6 DAI for 0xF81c8E81dC92ad04bfaDbA7411d38BD7a5106F58, withdrawn by 0xF81c8E81dC92ad04bfaDbA7411d38BD7a5106F58",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Maximum Amount", "value": "135.6 DAI" },
+          { "label": "Claimable By", "value": "0xF81c8E81dC92ad04bfaDbA7411d38BD7a5106F58" },
+          { "label": "Withdrawn By", "value": "0xF81c8E81dC92ad04bfaDbA7411d38BD7a5106F58" }
+        ]
+      }
+    },
+    {
+      "description": "finalizeBridgeETH - chain 1",
+      "rawTx": "0x02f8cc01808080830f4240943a05e5d33d7ab3864d53aaec93c8301c1fa491158703baf82d03a000b8a41635f5fd0000000000000000000000006f679511ae1d42bd4de72f4270024ecc0b5fb5c50000000000000000000000006f679511ae1d42bd4de72f4270024ecc0b5fb5c50000000000000000000000000000000000000000000000000003baf82d03a00000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x5D4472f31Bd9385709ec61305AFc749F0fA8e9d0",
+      "expected": {
+        "intent": "Pay out Blast ETH withdrawal",
+        "interpolatedIntent": "Pay up to 0.00105 ETH withdrawn by 0x6F679511ae1D42BD4de72F4270024ECC0B5fB5c5 to 0x6F679511ae1D42BD4de72F4270024ECC0B5fB5c5",
+        "owner": "Blast",
+        "fields": [
+          { "label": "Maximum Amount", "value": "0.00105 ETH" },
+          { "label": "Paid To", "value": "0x6F679511ae1D42BD4de72F4270024ECC0B5fB5c5" },
+          { "label": "Withdrawn By", "value": "0x6F679511ae1D42BD4de72F4270024ECC0B5fB5c5" },
+          { "label": "Max ETH Attached", "value": "0.00105 ETH" }
+        ]
+      }
+    }
+  ]
+}

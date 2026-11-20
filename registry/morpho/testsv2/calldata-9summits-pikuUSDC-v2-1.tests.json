@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-9summits-pikuUSDC-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0xc30c60de46dec551b96326cbd05592c9245773ef": { "decimals": 18, "name": "9Summits Piku Ecosystem USDC", "symbol": "pikuUSDC" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d010184010541bc8404ad025c8305b81294c30c60de46dec551b96326cbd05592c9245773ef80b8446e553f65000000000000000000000000000000000000000000000000000000012a102112000000000000000000000000655a0e83dfdcf770c1084de0df0d54abfa159c1ac0",
+      "txHash": "0x7f264ed673d7680b4da6ead8964fd6aa234da60ee544286d4c097f65a2ed6784",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "5000.66741 USDC" },
+          { "label": "Share ticker", "value": "pikuUSDC" },
+          { "label": "Send shares to", "value": "0x655A0e83dfDcF770c1084De0df0D54aBfA159c1a" }
+        ],
+        "interpolatedIntent": "Deposit 5000.66741 USDC for 0x655A0e83dfDcF770c1084De0df0D54aBfA159c1a",
+        "owner": "9Summits"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0xf89382020d8403dfd2408307d3e494c30c60de46dec551b96326cbd05592c9245773ef80b86cb460af9400000000000000000000000000000000000000000000000000000006fc23ac0000000000000000000000000087da46a9220bf4cace763242b7ef7d0bca59842f00000000000000000000000087da46a9220bf4cace763242b7ef7d0bca59842f6aaba8862222da44018080",
+      "txHash": "0x1d6cc3a2b750badb8fb108e8ccb602401aff1f72ab76be88c46717d856676ed3",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "30000 USDC" },
+          { "label": "To", "value": "0x87DA46a9220bf4CaCE763242B7Ef7d0bCA59842F" },
+          { "label": "Owner", "value": "0x87DA46a9220bf4CaCE763242B7Ef7d0bCA59842F" }
+        ],
+        "interpolatedIntent": "Withdraw 30000 USDC to 0x87DA46a9220bf4CaCE763242B7Ef7d0bCA59842F",
+        "owner": "9Summits"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0xf893820186840411545f8305538194c30c60de46dec551b96326cbd05592c9245773ef80b86cba08765200000000000000000000000000000000000000000000000100fd002e7face8c30000000000000000000000006d57cc3bcb92427931617e94416cda462a734d040000000000000000000000006d57cc3bcb92427931617e94416cda462a734d046aa8e7b22222da44018080",
+      "txHash": "0x6b3228cfcd776f2e6529b5affb64e166da3409dc21e8de0788ba4fb9c1758751",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "18.517957442527881411 pikuUSDC" },
+          { "label": "To", "value": "0x6D57cC3BCb92427931617E94416Cda462a734D04" },
+          { "label": "Owner", "value": "0x6D57cC3BCb92427931617E94416Cda462a734D04" }
+        ],
+        "interpolatedIntent": "Redeem 18.517957442527881411 pikuUSDC to 0x6D57cC3BCb92427931617E94416Cda462a734D04",
+        "owner": "9Summits"
+      }
+    }
+  ]
+}

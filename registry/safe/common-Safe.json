@@ -57,7 +57,7 @@
               "tokenPath": "paymentToken",
               "nativeCurrencyAddress": "$.metadata.constants.addressAsNull"
             },
-            "visible": "always"
+            "visible": { "ifNotIn": [0, "0"] }
           },
           {
             "path": "paymentReceiver",
@@ -70,11 +70,22 @@
                 "contract"
               ]
             },
-            "visible": "always"
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "path": "to",
+            "label": "Delegate call to",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "contract"
+              ]
+            },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
           },
           {
             "path": "data",
-            "label": "Module",
+            "label": "Setup delegate call",
             "format": "calldata",
             "params": {
               "calleePath": "to"
@@ -115,6 +126,31 @@
                 "eoa"
               ]
             }
+          },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "value",
+            "label": "Amount",
+            "format": "amount",
+            "visible": "always"
+          },
+          {
+            "path": "@.value",
+            "label": "Value sent",
+            "format": "amount",
+            "visible": { "ifNotIn": [0, "0"] }
           },
           {
             "path": "data",

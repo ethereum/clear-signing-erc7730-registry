@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-re7_labs-re7frxUSD-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xcacd6fd266af91b8aed52accc382b4e165586e29": { "decimals": 18, "name": "frxUSD", "symbol": "frxUSD" },
+      "0x07ecd7e0c348d526902258e3b1c4f2898057e611": { "decimals": 18, "name": "Frax USDai Ecosystem", "symbol": "re7frxUSD" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e01819a84026d0f55843f29772f83032edf9407ecd7e0c348d526902258e3b1c4f2898057e61180b8446e553f65000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x9b173035fa6e4514995bc83c34f6dc4019698a71e0ecfac9edcfc2c7b9fe7e67",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.000000001 frxUSD" },
+          { "label": "Share ticker", "value": "re7frxUSD" },
+          { "label": "Send shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Deposit 0.000000001 frxUSD for 0x000000000000000000000000000000000000dEaD",
+        "owner": "RE7 Labs"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88d0181d78310c8e08407e79f4b8306febb9407ecd7e0c348d526902258e3b1c4f2898057e61180b864b460af940000000000000000000000000000000000000000000010f0cf064dd5920000000000000000000000000000005afe2414f865cbc5ff4e25979996c5b1252e00020000000000000000000000005afe2414f865cbc5ff4e25979996c5b1252e0002c0",
+      "txHash": "0x9178a08744c17dff384d86733babf9a9ded9da5089e80736911d2a56c4b56793",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "80000 frxUSD" },
+          { "label": "To", "value": "0x5AFE2414f865CbC5fF4E25979996c5B1252e0002" },
+          { "label": "Owner", "value": "0x5AFE2414f865CbC5fF4E25979996c5B1252e0002" }
+        ],
+        "interpolatedIntent": "Withdraw 80000 frxUSD to 0x5AFE2414f865CbC5fF4E25979996c5B1252e0002",
+        "owner": "RE7 Labs"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88f018209768408f0d18084129bcb408306fbe19407ecd7e0c348d526902258e3b1c4f2898057e61180b864ba087652000000000000000000000000000000000000000000000332c68291905de8206d0000000000000000000000002fcb3fef0bf57fd3f1428d00d91e50aeff0ca48c0000000000000000000000002fcb3fef0bf57fd3f1428d00d91e50aeff0ca48cc0",
+      "txHash": "0x713222523af6b45f4af8d0a81ec522e7b98f7aeebdd5f5c99a46c4c7f02c74dd",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "15103.740807710132150381 re7frxUSD" },
+          { "label": "To", "value": "0x2fCb3FeF0BF57FD3f1428D00d91E50aeFf0CA48c" },
+          { "label": "Owner", "value": "0x2fCb3FeF0BF57FD3f1428D00d91E50aeFf0CA48c" }
+        ],
+        "interpolatedIntent": "Redeem 15103.740807710132150381 re7frxUSD to 0x2fCb3FeF0BF57FD3f1428D00d91E50aeFf0CA48c",
+        "owner": "RE7 Labs"
+      }
+    }
+  ]
+}

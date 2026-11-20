@@ -1,0 +1,96 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "includes": "common-gondi.json",
+  "context": {
+    "eip712": {
+      "domain": { "name": "GONDI_MULTI_SOURCE_LOAN", "version": "3.2" },
+      "deployments": [{ "chainId": 1, "address": "0xE365fF3cad44d19cb7aBa81df8ffd6818A66Ac0a" }]
+    }
+  },
+  "display": {
+    "formats": {
+      "LoanOffer(uint256 offerId,address lender,uint256 fee,uint256 capacity,address nftCollateralAddress,uint256 nftCollateralTokenId,address principalAddress,uint256 principalAmount,uint256 aprBps,uint256 expirationTime,uint256 duration,uint256 maxSeniorRepayment,OfferValidator[] validators,bool lenderRefinanceDisabled,address borrower)OfferValidator(address validator,bytes arguments)": {
+        "intent": "Make loan offer",
+        "interpolatedIntent": "Lend {principalAmount}",
+        "fields": [
+          {
+            "path": "nftCollateralAddress",
+            "label": "Collection",
+            "format": "addressName",
+            "params": { "types": ["collection"], "sources": ["local"] },
+            "visible": "always"
+          },
+          {
+            "path": "nftCollateralTokenId",
+            "label": "Token",
+            "format": "nftName",
+            "params": { "collectionPath": "nftCollateralAddress" },
+            "visible": { "ifNotIn": ["0"] }
+          },
+          {
+            "path": "principalAmount",
+            "label": "Loan amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "principalAddress" },
+            "visible": "always"
+          },
+          { "path": "aprBps", "label": "APR", "format": "unit", "params": { "base": "%", "decimals": 2 }, "visible": "always" },
+          { "path": "duration", "label": "Duration", "format": "duration", "visible": "always" },
+          {
+            "path": "fee",
+            "label": "Origination fee",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "capacity",
+            "label": "Total capacity",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "principalAddress" },
+            "visible": { "ifNotIn": ["0"] }
+          },
+          {
+            "path": "maxSeniorRepayment",
+            "label": "Max senior debt",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "principalAddress" },
+            "visible": "always"
+          },
+          {
+            "path": "lender",
+            "label": "Lender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "expirationTime",
+            "label": "Offer expires",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "lenderRefinanceDisabled", "label": "No lender refinance", "format": "raw", "visible": "always" },
+          {
+            "path": "borrower",
+            "label": "Borrower",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "validators.[].validator",
+            "label": "Validator",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "visible": "always"
+          },
+          { "path": "validators.[].arguments", "label": "Validator args", "visible": "never" },
+          { "path": "offerId", "label": "Offer ID", "visible": "never" },
+          { "path": "principalAddress", "label": "Currency", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "EnsoRouter",
+    "contract": { "deployments": [{ "chainId": 137, "address": "0xF75584eF6673aD213a685a1B58Cc0330B8eA22Cf" }] }
+  },
+  "metadata": { "owner": "Enso", "contractName": "EnsoRouter", "info": { "url": "https://www.enso.build" } },
+  "display": {
+    "formats": {
+      "safeRouteSingle((uint8 tokenType,bytes data) tokenIn,(uint8 tokenType,bytes data) tokenOut,address receiver,bytes data)": {
+        "$id": "safeRouteSingle",
+        "intent": "Route tokens via Enso",
+        "interpolatedIntent": "Route {#.tokenIn.data.[32:64]} via Enso, at least {#.tokenOut.data.[32:64]} to {#.receiver}",
+        "fields": [
+          {
+            "path": "#.tokenIn.data.[32:64]",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.tokenIn.data.[12:32]" },
+            "visible": "always"
+          },
+          { "path": "#.tokenIn.tokenType", "label": "Token type", "format": "raw", "visible": { "mustMatch": [1] } },
+          {
+            "path": "#.tokenOut.data.[32:64]",
+            "label": "Minimum received",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.tokenOut.data.[12:32]" },
+            "visible": "always"
+          },
+          { "path": "#.tokenOut.tokenType", "label": "Token type", "format": "raw", "visible": { "mustMatch": [1] } },
+          {
+            "path": "#.receiver",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] },
+            "visible": "always"
+          },
+          { "path": "#.data", "label": "Route", "visible": "never" }
+        ]
+      },
+      "safeRouteMulti((uint8 tokenType,bytes data)[] tokensIn,(uint8 tokenType,bytes data)[] tokensOut,address receiver,bytes data)": {
+        "$id": "safeRouteMulti",
+        "intent": "Route tokens via Enso",
+        "interpolatedIntent": "Route {#.tokensIn.[].data.[32:64]} via Enso, at least {#.tokensOut.[].data.[32:64]} to {#.receiver}",
+        "fields": [
+          {
+            "path": "#.tokensIn.[].data.[32:64]",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.tokensIn.[].data.[12:32]" },
+            "visible": "always"
+          },
+          { "path": "#.tokensIn.[].tokenType", "label": "Token type", "format": "raw", "visible": { "mustMatch": [1] } },
+          {
+            "path": "#.tokensOut.[].data.[32:64]",
+            "label": "Minimum received",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.tokensOut.[].data.[12:32]" },
+            "visible": "always"
+          },
+          { "path": "#.tokensOut.[].tokenType", "label": "Token type", "format": "raw", "visible": { "mustMatch": [1] } },
+          {
+            "path": "#.receiver",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] },
+            "visible": "always"
+          },
+          { "path": "#.data", "label": "Route", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-api3-Api3CoreUSDC-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0xe2221aa07ec3266da87763e2b1e28d07a8a4e53b": { "decimals": 18, "name": "Api3 Core USDC", "symbol": "Api3CoreUSDC" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e0181948477359400847946691b830b5d4a94e2221aa07ec3266da87763e2b1e28d07a8a4e53b80b8446e553f6500000000000000000000000000000000000000000000000000000000000f42400000000000000000000000009f0566f2e8ff51901dd0c0e7aad937a94931f75cc0",
+      "txHash": "0xd8c23839c33320ae9e3781ea7c79c419a6c9ed2d3d9b61495673593309836979",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "1 USDC" },
+          { "label": "Share ticker", "value": "Api3CoreUSDC" },
+          { "label": "Send shares to", "value": "0x9f0566F2E8Ff51901DD0C0E7aad937A94931f75C" }
+        ],
+        "interpolatedIntent": "Deposit 1 USDC for 0x9f0566F2E8Ff51901DD0C0E7aad937A94931f75C",
+        "owner": "Api3"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f86e01819384773594008479760e098303b94194e2221aa07ec3266da87763e2b1e28d07a8a4e53b80b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x116779a14529e854fb6bac2c03a7e79abfd86df2c5e9c00f87c266640115e657",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "USDC" },
+          { "label": "Minted shares", "value": "0.000000001 Api3CoreUSDC" },
+          { "label": "Mint shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Mint 0.000000001 Api3CoreUSDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Api3"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0xf891438491ac7b00830f514794e2221aa07ec3266da87763e2b1e28d07a8a4e53b80b86cb460af9400000000000000000000000000000000000000000000000000000000000186a00000000000000000000000001878ea9134d500a3cef3e89589eca3656eecf48f0000000000000000000000001878ea9134d500a3cef3e89589eca3656eecf48f69b80ea422223333018080",
+      "txHash": "0x3e14d98cf91857e6d57143ab2892623499b49e0c2b91df7c9b85c6512d74be0c",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "0.1 USDC" },
+          { "label": "To", "value": "0x1878EA9134D500A3cEF3E89589ECA3656EECf48f" },
+          { "label": "Owner", "value": "0x1878EA9134D500A3cEF3E89589ECA3656EECf48f" }
+        ],
+        "interpolatedIntent": "Withdraw 0.1 USDC to 0x1878EA9134D500A3cEF3E89589ECA3656EECf48f",
+        "owner": "Api3"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f895014c8402faf0808405dc3e80830ea90e94e2221aa07ec3266da87763e2b1e28d07a8a4e53b80b86cba08765200000000000000000000000000000000000000000000001b14b1012ead43a9c2000000000000000000000000f4eb52cf9d31a3a909116ccfd0d1663d78dddee9000000000000000000000000f4eb52cf9d31a3a909116ccfd0d1663d78dddee9699355b62222da44c0",
+      "txHash": "0xf059bb38dd9f523dc15ef01a624d1310d756d26adedce33f09fc00d3d22d046b",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "499.553064241781254594 Api3CoreUSDC" },
+          { "label": "To", "value": "0xF4EB52Cf9D31a3A909116CCFd0d1663d78ddDEE9" },
+          { "label": "Owner", "value": "0xF4EB52Cf9D31a3A909116CCFd0d1663d78ddDEE9" }
+        ],
+        "interpolatedIntent": "Redeem 499.553064241781254594 Api3CoreUSDC to 0xF4EB52Cf9D31a3A909116CCFd0d1663d78ddDEE9",
+        "owner": "Api3"
+      }
+    }
+  ]
+}

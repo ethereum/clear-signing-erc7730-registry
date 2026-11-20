@@ -11,33 +11,6 @@
   },
   "display": {
     "formats": {
-      "exactInput((bytes path, address recipient, uint256 amountIn, uint256 amountOutMinimum) params)": {
-        "$id": "exactInput",
-        "intent": "Swap",
-        "fields": [
-          {
-            "path": "params.amountIn",
-            "label": "Amount to Send",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "params.path.[0:20]" },
-            "visible": "always"
-          },
-          {
-            "path": "params.amountOutMinimum",
-            "label": "Minimum to Receive",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "params.path.[-20:]" },
-            "visible": "always"
-          },
-          {
-            "path": "params.recipient",
-            "label": "Beneficiary",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          }
-        ]
-      },
       "exactInputSingle((address tokenIn, address tokenOut, uint24 fee, address recipient, uint256 amountIn, uint256 amountOutMinimum, uint160 sqrtPriceLimitX96) params)": {
         "$id": "exactInputSingle",
         "intent": "swap",
@@ -69,38 +42,8 @@
             "format": "addressName",
             "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
             "visible": "always"
-          }
-        ]
-      },
-      "exactOutput((bytes path, address recipient, uint256 amountOut, uint256 amountInMaximum) params)": {
-        "$id": "exactOutput",
-        "intent": "Swap",
-        "fields": [
-          {
-            "path": "params.amountInMaximum",
-            "label": "Maximum Amount In",
-            "format": "tokenAmount",
-            "params": {
-              "tokenPath": "params.path.[-20:]",
-              "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000",
-              "message": "Unlimited"
-            },
-            "visible": "always"
           },
-          {
-            "path": "params.amountOut",
-            "label": "Amount to Receive",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "params.path.[0:20]" },
-            "visible": "always"
-          },
-          {
-            "path": "params.recipient",
-            "label": "Beneficiary",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
-            "visible": "always"
-          }
+          { "path": "params.sqrtPriceLimitX96", "label": "Price Limit", "format": "raw", "visible": { "mustMatch": [0] } }
         ]
       },
       "exactOutputSingle((address tokenIn, address tokenOut, uint24 fee, address recipient, uint256 amountOut, uint256 amountInMaximum, uint160 sqrtPriceLimitX96) params)": {
@@ -129,7 +72,8 @@
             "label": "Beneficiary",
             "format": "addressName",
             "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
-          }
+          },
+          { "path": "params.sqrtPriceLimitX96", "label": "Price Limit", "format": "raw", "visible": { "mustMatch": [0] } }
         ]
       },
       "swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to)": {

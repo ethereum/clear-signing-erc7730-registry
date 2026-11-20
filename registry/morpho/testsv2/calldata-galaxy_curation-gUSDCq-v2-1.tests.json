@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-galaxy_curation-gUSDCq-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "decimals": 6, "name": "USDC", "symbol": "USDC" },
+      "0x91600e31fbedc72433d4a57f16639cfe661be7d8": { "decimals": 18, "name": "Galaxy USDC Quality", "symbol": "gUSDCq" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e0182045d83041557840363c749830af55e9491600e31fbedc72433d4a57f16639cfe661be7d880b8446e553f6500000000000000000000000000000000000000000000000000000000000f4240000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x4c393bf14055f818d17725d558e854b8c39c7036ace66bcaa9a49db05d460ced",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "1 USDC" },
+          { "label": "Share ticker", "value": "gUSDCq" },
+          { "label": "Send shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Deposit 1 USDC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Galaxy Curation"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8960182065583052aea8412530bdc830632f49491600e31fbedc72433d4a57f16639cfe661be7d880b86cb460af94000000000000000000000000000000000000000000000000000012309ce54000000000000000000000000000d48573cda0fed7144f2455c5270ffa16be389d04000000000000000000000000d48573cda0fed7144f2455c5270ffa16be389d0469e13d1b2222da44c0",
+      "txHash": "0x254dc6c504bbfa0f7ee4fbbf2d2c27fb897fed8102c76c47a8c76f63a4faef48",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "20000000 USDC" },
+          { "label": "To", "value": "0xD48573cDA0fed7144f2455c5270FFa16Be389d04" },
+          { "label": "Owner", "value": "0xD48573cDA0fed7144f2455c5270FFa16Be389d04" }
+        ],
+        "interpolatedIntent": "Withdraw 20000000 USDC to 0xD48573cDA0fed7144f2455c5270FFa16Be389d04",
+        "owner": "Galaxy Curation"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8950181fd831e8480840f64e67e8307aff99491600e31fbedc72433d4a57f16639cfe661be7d880b86cba087652000000000000000000000000000000000000000000000624170aa0e1665454f1000000000000000000000000f50623b782fb0c7cd3966b20f6ecb7d791a36ec6000000000000000000000000f50623b782fb0c7cd3966b20f6ecb7d791a36ec669e13e352222da44c0",
+      "txHash": "0x3af087c9b3209a5595b1454fdd18367332f5a1de172997d6acda69c78d08631d",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "28999.942000173999478001 gUSDCq" },
+          { "label": "To", "value": "0xF50623b782FB0C7CD3966b20F6EcB7D791a36ec6" },
+          { "label": "Owner", "value": "0xF50623b782FB0C7CD3966b20F6EcB7D791a36ec6" }
+        ],
+        "interpolatedIntent": "Redeem 28999.942000173999478001 gUSDCq to 0xF50623b782FB0C7CD3966b20F6EcB7D791a36ec6",
+        "owner": "Galaxy Curation"
+      }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xc1d13492285eb664951E201BF7C80c7c6318a1b5" },
+        { "chainId": 10, "address": "0xc1d13492285eb664951E201BF7C80c7c6318a1b5" },
+        { "chainId": 56, "address": "0xc1d13492285eb664951E201BF7C80c7c6318a1b5" },
+        { "chainId": 137, "address": "0xc1d13492285eb664951E201BF7C80c7c6318a1b5" },
+        { "chainId": 42161, "address": "0xc1d13492285eb664951E201BF7C80c7c6318a1b5" },
+        { "chainId": 43114, "address": "0xc1d13492285eb664951E201BF7C80c7c6318a1b5" }
+      ]
+    }
+  },
+  "metadata": { "owner": "SWFT", "contractName": "SwftSwap", "info": { "url": "https://www.swft.pro/" } },
+  "display": {
+    "formats": {
+      "swap(address fromToken,string toToken,string destination,uint256 fromAmount,uint256 minReturnAmount)": {
+        "intent": "Send to SWFT for swap",
+        "fields": [
+          { "label": "Note", "value": "Paid out off-chain by SWFT. The minimum is not enforced on-chain.", "format": "raw" },
+          { "path": "fromAmount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "fromToken" } },
+          { "path": "toToken", "label": "Order Details", "format": "raw" },
+          { "path": "destination", "label": "Payout Address", "format": "raw" },
+          { "path": "minReturnAmount", "label": "Requested Min (raw)", "format": "raw" },
+          { "path": "fromToken", "label": "From Token", "visible": "never" }
+        ],
+        "interpolatedIntent": "Send {fromAmount} to SWFT to swap for {toToken}, paid to {destination}, requested minimum {minReturnAmount} (raw units)"
+      },
+      "swapEth(string toToken,string destination,uint256 minReturnAmount)": {
+        "intent": "Send to SWFT for swap",
+        "fields": [
+          { "label": "Note", "value": "Paid out off-chain by SWFT. The minimum is not enforced on-chain.", "format": "raw" },
+          { "path": "@.value", "label": "Amount", "format": "amount" },
+          { "path": "toToken", "label": "Order Details", "format": "raw" },
+          { "path": "destination", "label": "Payout Address", "format": "raw" },
+          { "path": "minReturnAmount", "label": "Requested Min (raw)", "format": "raw" }
+        ],
+        "interpolatedIntent": "Send {@.value} to SWFT to swap for {toToken}, paid to {destination}, requested minimum {minReturnAmount} (raw units)"
+      }
+    }
+  }
+}

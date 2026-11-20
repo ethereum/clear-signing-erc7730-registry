@@ -1,0 +1,38 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0xAC4c6e212A361c968F1725b4d055b47E63F80b75" }] } },
+  "metadata": {
+    "owner": "Sushi",
+    "contractName": "RedSnwapper",
+    "constants": { "safeExecutor": "0xAD27827C312Cd5E71311d68e180a9872d42dE23D" },
+    "info": { "url": "https://www.sushi.com" }
+  },
+  "display": {
+    "formats": {
+      "snwap(address tokenIn,uint256 amountIn,address recipient,address tokenOut,uint256 amountOutMin,address executor,bytes executorData)": {
+        "intent": "Swap",
+        "fields": [
+          { "path": "amountIn", "label": "Amount to Send", "format": "tokenAmount", "params": { "tokenPath": "tokenIn" } },
+          {
+            "path": "amountOutMin",
+            "label": "Minimum to Receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenOut", "nativeCurrencyAddress": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" }
+          },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "mustMatch": [0] } },
+          { "path": "tokenIn", "label": "Token In", "visible": "never" },
+          { "path": "tokenOut", "label": "Token Out", "visible": "never" },
+          { "path": "executor", "label": "Executor", "visible": "never" },
+          { "path": "executorData", "label": "Executor Data", "visible": "never" }
+        ],
+        "interpolatedIntent": "Swap {amountIn} for at least {amountOutMin} to {recipient}"
+      }
+    }
+  }
+}

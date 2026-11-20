@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-sharpbyte-sbUSDT-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xdac17f958d2ee523a2206206994597c13d831ec7": { "decimals": 6, "name": "USDT", "symbol": "USDT" },
+      "0x65a6334c0e2b5f7640c2a6b9ce615e162b1e909b": { "decimals": 18, "name": "SharpByte USDT Prime", "symbol": "sbUSDT" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f0182017e841dcd65008423a648208302b0349465a6334c0e2b5f7640c2a6b9ce615e162b1e909b80b8446e553f650000000000000000000000000000000000000000000000000000000000989680000000000000000000000000e20450bb3b91aacda5917d68a247b78c07e774efc0",
+      "txHash": "0xa2dcaa2c866419e69442be6af98c6ec8f0041d309bc5f040f1abad1065637399",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "10 USDT" },
+          { "label": "Share ticker", "value": "sbUSDT" },
+          { "label": "Send shares to", "value": "0xE20450Bb3B91aacdA5917D68a247b78C07e774Ef" }
+        ],
+        "interpolatedIntent": "Deposit 10 USDT for 0xE20450Bb3B91aacdA5917D68a247b78C07e774Ef",
+        "owner": "SharpByte"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88d01068423c346008427b875008302ce7c9465a6334c0e2b5f7640c2a6b9ce615e162b1e909b80b864b460af9400000000000000000000000000000000000000000000000000000000000f43040000000000000000000000001bef65cab478e857033da8fd7a936e959cabcf2b0000000000000000000000001bef65cab478e857033da8fd7a936e959cabcf2bc0",
+      "txHash": "0x136c2230b017ef8ff86ca1669737817463011f26f6478aad64944bffebb9157c",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "1.000196 USDT" },
+          { "label": "To", "value": "0x1BEF65Cab478E857033da8Fd7a936E959CabCf2b" },
+          { "label": "Owner", "value": "0x1BEF65Cab478E857033da8Fd7a936E959CabCf2b" }
+        ],
+        "interpolatedIntent": "Withdraw 1.000196 USDT to 0x1BEF65Cab478E857033da8Fd7a936E959CabCf2b",
+        "owner": "SharpByte"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88f018201fd8423c34600842a1020a08305ecad9465a6334c0e2b5f7640c2a6b9ce615e162b1e909b80b864ba0876520000000000000000000000000000000000000000000000008ac7230489e80000000000000000000000000000e20450bb3b91aacda5917d68a247b78c07e774ef000000000000000000000000e20450bb3b91aacda5917d68a247b78c07e774efc0",
+      "txHash": "0x723e85ce4b0bca942c59a976e22a1d96750b291e616ee45c3c4dc3e0437b702e",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "10 sbUSDT" },
+          { "label": "To", "value": "0xE20450Bb3B91aacdA5917D68a247b78C07e774Ef" },
+          { "label": "Owner", "value": "0xE20450Bb3B91aacdA5917D68a247b78C07e774Ef" }
+        ],
+        "interpolatedIntent": "Redeem 10 sbUSDT to 0xE20450Bb3B91aacdA5917D68a247b78C07e774Ef",
+        "owner": "SharpByte"
+      }
+    }
+  ]
+}

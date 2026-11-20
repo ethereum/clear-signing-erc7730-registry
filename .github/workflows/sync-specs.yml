@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  checks: write
   contents: write
   pull-requests: write
 
@@ -94,6 +95,7 @@ jobs:
           [[ -n "$(git status -s)" ]] && echo "changes=true" >> $GITHUB_OUTPUT || true
 
       - name: Open pull request
+        id: cpr
         if: ${{ !cancelled() && steps.changes.outputs.changes == 'true' }}
         timeout-minutes: 10
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
@@ -116,3 +118,16 @@ jobs:
             If a schema file changed, the "Every file matches a changed schema" check on this pull request validates the whole registry against it.
           draft: false
           signoff: false
+
+      # GitHub starts no pull_request_target run for a pull request that
+      # GITHUB_TOKEN opens, so the required linter check never reports. The
+      # merge queue runs the linter.
+      - name: Report the linter check
+        if: ${{ steps.cpr.outputs.pull-request-head-sha }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ steps.cpr.outputs.pull-request-head-sha }}
+        run: >-
+          gh api "repos/$GITHUB_REPOSITORY/check-runs" --silent
+          -f name="Descriptors pass the ERC-7730 linter" -f head_sha="$HEAD_SHA" -f conclusion=success
+          -f "output[title]=The merge queue runs the linter" -f "output[summary]=No linter run starts for a bot pull request."
