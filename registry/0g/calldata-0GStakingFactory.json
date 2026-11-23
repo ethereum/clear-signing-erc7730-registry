@@ -1,0 +1,75 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "0GStakingFactory",
+    "contract": { "deployments": [{ "chainId": 16661, "address": "0xea224dBB52F57752044c0C86aD50930091F561B9" }] }
+  },
+  "metadata": {
+    "owner": "0G",
+    "contractName": "0GStakingFactory",
+    "info": { "url": "https://0g.ai" },
+    "constants": { "nativeTokenTicker": "0G", "nativeDecimals": 18 }
+  },
+  "display": {
+    "formats": {
+      "createValidator(bytes pubkey)": {
+        "intent": "Create validator",
+        "fields": [{ "path": "#.pubkey", "label": "Validator public key", "format": "raw", "visible": "always" }]
+      },
+      "initializeValidator((string moniker,string identity,string website,string securityContact,string details) description, uint32 commissionRate, uint96 withdrawalFeeInGwei, bytes pubkey, bytes signature)": {
+        "intent": "Configure validator",
+        "fields": [
+          { "path": "#.description.moniker", "label": "Validator name", "format": "raw", "visible": "always" },
+          { "path": "#.description.identity", "label": "Identity", "format": "raw", "visible": "always" },
+          { "path": "#.description.website", "label": "Website", "format": "raw", "visible": "always" },
+          { "path": "#.description.securityContact", "label": "Security contact", "format": "raw", "visible": "always" },
+          { "path": "#.description.details", "label": "Details", "format": "raw", "visible": "always" },
+          {
+            "path": "#.commissionRate",
+            "label": "Commission rate",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 4 },
+            "visible": "always"
+          },
+          {
+            "path": "#.withdrawalFeeInGwei",
+            "label": "Validator fees",
+            "format": "unit",
+            "params": { "base": "0G", "decimals": 9 },
+            "visible": "always"
+          },
+          { "path": "#.pubkey", "label": "Validator public key", "format": "raw", "visible": "always" },
+          { "path": "#.signature", "label": "Signature", "format": "raw", "visible": "always" },
+          { "path": "@.value", "label": "Self-stake amount", "format": "amount", "visible": "always" }
+        ]
+      },
+      "createAndInitializeValidatorIfNecessary((string moniker,string identity,string website,string securityContact,string details) description, uint32 commissionRate, uint96 withdrawalFeeInGwei, bytes pubkey, bytes signature)": {
+        "intent": "Register new validator",
+        "fields": [
+          { "path": "#.description.moniker", "label": "Validator name", "format": "raw", "visible": "always" },
+          { "path": "#.description.identity", "label": "Identity", "format": "raw", "visible": "always" },
+          { "path": "#.description.website", "label": "Website", "format": "raw", "visible": "always" },
+          { "path": "#.description.securityContact", "label": "Security contact", "format": "raw", "visible": "always" },
+          { "path": "#.description.details", "label": "Details", "format": "raw", "visible": "always" },
+          {
+            "path": "#.commissionRate",
+            "label": "Commission rate",
+            "format": "unit",
+            "params": { "base": "%", "decimals": 4 },
+            "visible": "always"
+          },
+          {
+            "path": "#.withdrawalFeeInGwei",
+            "label": "Validator fees",
+            "format": "unit",
+            "params": { "base": "0G", "decimals": 9 },
+            "visible": "always"
+          },
+          { "path": "#.pubkey", "label": "Validator public key", "format": "raw", "visible": "always" },
+          { "path": "#.signature", "label": "Signature", "format": "raw", "visible": "always" },
+          { "path": "@.value", "label": "Self-stake amount", "format": "amount", "visible": "always" }
+        ]
+      }
+    }
+  }
+}

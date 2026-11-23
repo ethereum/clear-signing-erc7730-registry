@@ -1,0 +1,31 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Stader MaticX Polygon ChildPool",
+    "contract": { "deployments": [{ "chainId": 137, "address": "0xfd225c9e6601c9d38d8f98d8731bf59efcf8c0e3" }] }
+  },
+  "metadata": {
+    "owner": "Stader Labs",
+    "info": { "url": "https://staderlabs.com/" },
+    "contractName": "Stader MaticX Child Pool",
+    "constants": { "MaticX": "0xfa68fb4628dff1028cfec22b4162fccd0d45efb6" }
+  },
+  "display": {
+    "formats": {
+      "swapMaticForMaticXViaInstantPool()": { "intent": "Stake POL", "fields": [{ "path": "@.value", "label": "Amount", "format": "amount", "visible": "always" }] },
+      "requestMaticXSwap(uint256 _amount)": {
+        "intent": "Unstake MaticX",
+        "fields": [
+          {
+            "path": "#._amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.MaticX" },
+            "visible": "always"
+          }
+        ]
+      },
+      "claimMaticXSwap(uint256 _idx)": { "intent": "Claim POL", "fields": [{ "path": "#._idx", "label": "Request id", "format": "raw", "visible": "always" }] }
+    }
+  }
+}

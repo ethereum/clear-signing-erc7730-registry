@@ -1,0 +1,64 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Ribbon APE Theta Vault",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xc0cf10dd710aefb209d9dc67bc746510ffd98a53" }] }
+  },
+  "metadata": {
+    "owner": "Ribbon Finance",
+    "info": { "url": "https://ribbon.finance" },
+    "contractName": "RibbonThetaVault",
+    "constants": { "asset": "0x4d224452801aced8b2f0aebe155379bb5d594381" }
+  },
+  "display": {
+    "definitions": {
+      "shares": { "label": "Shares", "format": "unit", "params": { "base": "shares", "decimals": 18 } },
+      "assetAmount": { "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.asset" } },
+      "creditor": {
+        "label": "Beneficiary",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      }
+    },
+    "formats": {
+      "deposit(uint256 amount)": {
+        "intent": "Deposit",
+        "fields": [
+          { "value": "Ribbon APE Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.amount", "$ref": "$.display.definitions.assetAmount" }
+        ]
+      },
+      "depositFor(uint256 amount, address creditor)": {
+        "intent": "Deposit",
+        "fields": [
+          { "value": "Ribbon APE Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.amount", "$ref": "$.display.definitions.assetAmount" },
+          { "path": "#.creditor", "$ref": "$.display.definitions.creditor" }
+        ]
+      },
+      "withdrawInstantly(uint256 amount)": {
+        "intent": "Instant Withdraw",
+        "fields": [
+          { "value": "Ribbon APE Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.amount", "$ref": "$.display.definitions.assetAmount" }
+        ]
+      },
+      "initiateWithdraw(uint256 numShares)": {
+        "intent": "Initiate Withdraw",
+        "fields": [
+          { "value": "Ribbon APE Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.numShares", "$ref": "$.display.definitions.shares" }
+        ]
+      },
+      "completeWithdraw()": { "intent": "Complete Withdraw", "fields": [{ "value": "Ribbon APE Theta Vault", "label": "Vault", "format": "raw" }] },
+      "redeem(uint256 numShares)": {
+        "intent": "Redeem shares",
+        "fields": [
+          { "value": "Ribbon APE Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.numShares", "$ref": "$.display.definitions.shares" }
+        ]
+      },
+      "maxRedeem()": { "intent": "Redeem all shares", "fields": [{ "value": "Ribbon APE Theta Vault", "label": "Vault", "format": "raw" }] }
+    }
+  }
+}

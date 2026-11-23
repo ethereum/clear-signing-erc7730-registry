@@ -1,0 +1,220 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "$comment": "allowFailure=true rejected: a silently skipped call would leave the displayed action unexecuted. Call has no spender: the sub-calls run from RelayRouterV3, but a single spender for an array of calls is rejected by Ethereum app releases up to 1.22.x (one value per call required).",
+  "context": {
+    "$id": "RelayApprovalProxyV3",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 10, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 56, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 100, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 130, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 137, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 146, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 480, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 999, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 2741, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 4663, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 8453, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 33139, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 42161, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 42220, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 43114, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 80094, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" },
+        { "chainId": 81457, "address": "0xccC88A9d1b4eD6B0eaBA998850414b24F1C315Be" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Relay",
+    "info": { "url": "https://relay.link" },
+    "contractName": "RelayApprovalProxyV3"
+  },
+  "display": {
+    "formats": {
+      "transferAndMulticall(address[] tokens, uint256[] amounts, (address target, bool allowFailure, uint256 value, bytes callData)[] calls, address refundTo, address nftRecipient, bytes metadata)": {
+        "$id": "transferAndMulticall",
+        "intent": "Transfer and execute via Relay",
+        "fields": [
+          {
+            "path": "amounts.[]",
+            "label": "Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokens.[]" },
+            "visible": "always"
+          },
+          { "path": "@.value", "label": "Native sent", "format": "amount", "visible": "always" },
+          {
+            "path": "calls.[].callData",
+            "label": "Call",
+            "format": "calldata",
+            "params": { "calleePath": "calls.[].target", "amountPath": "calls.[].value" },
+            "visible": "always"
+          },
+          {
+            "path": "refundTo",
+            "label": "Native refund to",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "nftRecipient",
+            "label": "NFT recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "calls.[].allowFailure", "label": "Allow failure", "format": "raw", "visible": { "mustMatch": [false] } },
+          { "path": "metadata", "label": "Metadata", "format": "raw", "visible": "never" }
+        ]
+      },
+      "permitTransferAndMulticall((address token, address owner, uint256 value, uint256 nonce, uint256 deadline, uint8 v, bytes32 r, bytes32 s)[] permits, (address target, bool allowFailure, uint256 value, bytes callData)[] calls, address refundTo, address nftRecipient, bytes metadata)": {
+        "$id": "permitTransferAndMulticall",
+        "intent": "Permit & execute via Relay",
+        "fields": [
+          {
+            "path": "permits.[].value",
+            "label": "Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "permits.[].token" },
+            "visible": "always"
+          },
+          { "path": "@.value", "label": "Native sent", "format": "amount", "visible": "always" },
+          {
+            "path": "calls.[].callData",
+            "label": "Call",
+            "format": "calldata",
+            "params": { "calleePath": "calls.[].target", "amountPath": "calls.[].value" },
+            "visible": "always"
+          },
+          {
+            "path": "refundTo",
+            "label": "Native refund to",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "nftRecipient",
+            "label": "NFT recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "calls.[].allowFailure", "label": "Allow failure", "format": "raw", "visible": { "mustMatch": [false] } },
+          { "path": "metadata", "label": "Metadata", "format": "raw", "visible": "never" },
+          { "path": "permits.[].owner", "label": "Owner", "format": "raw", "visible": "never" },
+          { "path": "permits.[].nonce", "label": "Nonce", "format": "raw", "visible": "never" },
+          { "path": "permits.[].deadline", "label": "Deadline", "format": "raw", "visible": "never" },
+          { "path": "permits.[].v", "label": "v", "format": "raw", "visible": "never" },
+          { "path": "permits.[].r", "label": "r", "format": "raw", "visible": "never" },
+          { "path": "permits.[].s", "label": "s", "format": "raw", "visible": "never" }
+        ]
+      },
+      "permit2TransferAndMulticall(address user, ((address token, uint256 amount)[] permitted, uint256 nonce, uint256 deadline) permit, (address target, bool allowFailure, uint256 value, bytes callData)[] calls, address refundTo, address nftRecipient, bytes metadata, bytes permitSignature)": {
+        "$id": "permit2TransferAndMulticall",
+        "intent": "Permit2 & execute via Relay",
+        "fields": [
+          {
+            "path": "user",
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "permit.permitted.[].amount",
+            "label": "Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "permit.permitted.[].token" },
+            "visible": "always"
+          },
+          {
+            "path": "permit.deadline",
+            "label": "Permit deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "@.value", "label": "Native sent", "format": "amount", "visible": "always" },
+          {
+            "path": "calls.[].callData",
+            "label": "Call",
+            "format": "calldata",
+            "params": { "calleePath": "calls.[].target", "amountPath": "calls.[].value" },
+            "visible": "always"
+          },
+          {
+            "path": "refundTo",
+            "label": "Native refund to",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "nftRecipient",
+            "label": "NFT recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "calls.[].allowFailure", "label": "Allow failure", "format": "raw", "visible": { "mustMatch": [false] } },
+          { "path": "metadata", "label": "Metadata", "format": "raw", "visible": "never" },
+          { "path": "permit.nonce", "label": "Nonce", "format": "raw", "visible": "never" },
+          { "path": "permitSignature", "label": "Signature", "format": "raw", "visible": "never" }
+        ]
+      },
+      "permit3009TransferAndMulticall((address from, uint256 value, uint256 validAfter, uint256 validBefore, uint8 v, bytes32 r, bytes32 s)[] permits, address[] tokens, (address target, bool allowFailure, uint256 value, bytes callData)[] calls, address refundTo, address nftRecipient, bytes metadata)": {
+        "$id": "permit3009TransferAndMulticall",
+        "intent": "Authorize & execute via Relay",
+        "fields": [
+          {
+            "path": "permits.[].from",
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "permits.[].value",
+            "label": "Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokens.[]" },
+            "visible": "always"
+          },
+          { "path": "@.value", "label": "Native sent", "format": "amount", "visible": "always" },
+          {
+            "path": "calls.[].callData",
+            "label": "Call",
+            "format": "calldata",
+            "params": { "calleePath": "calls.[].target", "amountPath": "calls.[].value" },
+            "visible": "always"
+          },
+          {
+            "path": "refundTo",
+            "label": "Native refund to",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "nftRecipient",
+            "label": "NFT recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "calls.[].allowFailure", "label": "Allow failure", "format": "raw", "visible": { "mustMatch": [false] } },
+          { "path": "metadata", "label": "Metadata", "format": "raw", "visible": "never" },
+          { "path": "permits.[].validAfter", "label": "Valid after", "format": "raw", "visible": "never" },
+          { "path": "permits.[].validBefore", "label": "Valid before", "format": "raw", "visible": "never" },
+          { "path": "permits.[].v", "label": "v", "format": "raw", "visible": "never" },
+          { "path": "permits.[].r", "label": "r", "format": "raw", "visible": "never" },
+          { "path": "permits.[].s", "label": "s", "format": "raw", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

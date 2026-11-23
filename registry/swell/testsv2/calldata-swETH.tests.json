@@ -1,0 +1,278 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-swETH.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0xf951e335afb289353dc249e82926178eac7ded78": {
+        "symbol": "swETH",
+        "decimals": 18,
+        "name": "swETH"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Stake ETH on chain 1 #1",
+      "rawTx": "0x02f874010283c939878405b6d7278302328094f951e335afb289353dc249e82926178eac7ded7886095c69904e4984d0e30db0c001a04bf5afb4be28120588f2464c981cc0223cbae0947147b7ac51e07bc5283a03f6a06bc7970c446e5b39f910a15848dc429718324af80a9649d9bd65cc39c580a453",
+      "txHash": "0x70218cea8682a4b80d9a813e9e0ccc961c12660157634b70c3bd1bbd12b29afb",
+      "expected": {
+        "intent": "Stake ETH",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "0.000010292512706121 ETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Stake ETH on chain 1 #2",
+      "rawTx": "0x02f8580180843b9aca008506fc23ac00830493e094f951e335afb289353dc249e82926178eac7ded788806f05b59d3b20000a4c18d7cb70000000000000000000000001b61c2307b179087669758dcfb71c53e9819fc9bc0800101",
+      "expected": {
+        "intent": "Stake ETH",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "0.5 ETH"
+          },
+          {
+            "label": "Referral",
+            "value": "0x1b61c2307b179087669758DCfb71C53e9819FC9b"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Increase allowance on chain 1 #3",
+      "rawTx": "0x02f8b001728408f0d180840f7314008301426a94f951e335afb289353dc249e82926178eac7ded7880b8443950935100000000000000000000000073d9b293dadfa49fe440bc4ecac3d39254a230caffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc001a0e9027a957cfd3d89443f95f4db5078f9803db74742c95f0050f802a9702b28d6a002e336ec339bdbec7b404b4353b70d55fcb7df803704adf0b4ba41e57049fa66",
+      "txHash": "0x942254fe84ba44333231e6700adf3c93d566c6f84bb060cfbd2d524d80f7d5c1",
+      "expected": {
+        "intent": "Increase allowance",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x73D9b293DAdfa49FE440Bc4ECac3d39254A230cA"
+          },
+          {
+            "label": "Added Value",
+            "value": "Unlimited swETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Decrease allowance on chain 1 #4",
+      "rawTx": "0x02f8710180843b9aca008506fc23ac00830493e094f951e335afb289353dc249e82926178eac7ded7880b844a457c2d700000000000000000000000071c7656ec7ab88b098defb751b7401b5f6d8976f0000000000000000000000000000000000000000000000000de0b6b3a7640000c0800101",
+      "expected": {
+        "intent": "Decrease allowance",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+          },
+          {
+            "label": "Subtracted Value",
+            "value": "1 swETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Transfer From on chain 1 #5",
+      "rawTx": "0x02f8910180843b9aca008506fc23ac00830493e094f951e335afb289353dc249e82926178eac7ded7880b86423b872dd0000000000000000000000001b61c2307b179087669758dcfb71c53e9819fc9b00000000000000000000000071c7656ec7ab88b098defb751b7401b5f6d8976f0000000000000000000000000000000000000000000000001bc16d674ec80000c0800101",
+      "expected": {
+        "intent": "Transfer From",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "From",
+            "value": "0x1b61c2307b179087669758DCfb71C53e9819FC9b"
+          },
+          {
+            "label": "To",
+            "value": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+          },
+          {
+            "label": "Amount",
+            "value": "2 swETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Burn swETH on chain 1 #6",
+      "rawTx": "0x02f8500180843b9aca008506fc23ac00830493e094f951e335afb289353dc249e82926178eac7ded7880a442966c6800000000000000000000000000000000000000000000000029a2241af62c0000c0800101",
+      "expected": {
+        "intent": "Burn swETH",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "3 swETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw ERC20 tokens on chain 1 #7",
+      "rawTx": "0x02f8500180843b9aca008506fc23ac00830493e094f951e335afb289353dc249e82926178eac7ded7880a4f4f3b200000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48c0800101",
+      "expected": {
+        "intent": "Withdraw ERC20 tokens",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Token",
+            "value": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Initialize on chain 1 #8",
+      "rawTx": "0x02f8500180843b9aca008506fc23ac00830493e094f951e335afb289353dc249e82926178eac7ded7880a4c4d66de8000000000000000000000000625087d72c762254a72cb22cc2ecb22ddb8b7b3dc0800101",
+      "expected": {
+        "intent": "Initialize",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Control manager",
+            "value": "0x625087d72c762254a72CB22CC2ECb22Ddb8b7b3d"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Add to whitelist on chain 1 #9",
+      "rawTx": "0x02f8500180843b9aca008506fc23ac00830493e094f951e335afb289353dc249e82926178eac7ded7880a4e43252d700000000000000000000000071c7656ec7ab88b098defb751b7401b5f6d8976fc0800101",
+      "expected": {
+        "intent": "Add to whitelist",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Address",
+            "value": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Unwhitelist on chain 1 #10",
+      "rawTx": "0x02f8500180843b9aca008506fc23ac00830493e094f951e335afb289353dc249e82926178eac7ded7880a48ab1d68100000000000000000000000071c7656ec7ab88b098defb751b7401b5f6d8976fc0800101",
+      "expected": {
+        "intent": "Unwhitelist",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Address",
+            "value": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Add to whitelist on chain 1 #11",
+      "rawTx": "0x02f8b10180843b9aca008506fc23ac00830493e094f951e335afb289353dc249e82926178eac7ded7880b8842db6fa360000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000071c7656ec7ab88b098defb751b7401b5f6d8976f0000000000000000000000001b61c2307b179087669758dcfb71c53e9819fc9bc0800101",
+      "expected": {
+        "intent": "Add to whitelist",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Addresses",
+            "value": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+          },
+          {
+            "label": "Addresses",
+            "value": "0x1b61c2307b179087669758DCfb71C53e9819FC9b"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Remove addresses on chain 1 #12",
+      "rawTx": "0x02f8b10180843b9aca008506fc23ac00830493e094f951e335afb289353dc249e82926178eac7ded7880b884045fb8880000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000071c7656ec7ab88b098defb751b7401b5f6d8976f0000000000000000000000001b61c2307b179087669758dcfb71c53e9819fc9bc0800101",
+      "expected": {
+        "intent": "Remove addresses",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Addresses",
+            "value": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+          },
+          {
+            "label": "Addresses",
+            "value": "0x1b61c2307b179087669758DCfb71C53e9819FC9b"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Reprice on chain 1 #13",
+      "rawTx": "0x02f8910180843b9aca008506fc23ac00830493e094f951e335afb289353dc249e82926178eac7ded7880b8647342bbd400000000000000000000000000000000000000000000152d02c7e14af6800000000000000000000000000000000000000000000000000000a688906bd8b0000000000000000000000000000000000000000000000000130ee8e7179044400000c0800101",
+      "expected": {
+        "intent": "Reprice",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Pre Reward Reserves",
+            "value": "100000 ETH"
+          },
+          {
+            "label": "New ETH Rewards",
+            "value": "12 ETH"
+          },
+          {
+            "label": "swETH Total Supply",
+            "value": "90000 swETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Approve spender on chain 1 #14",
+      "rawTx": "0x02f8b0010c84040212c6840938a58083013ed894f951e335afb289353dc249e82926178eac7ded7880b844095ea7b3000000000000000000000000000000000022d473030f116ddee9f6b43ac78ba3000000000000000000000000000000000000000000000000043e90a225579652c080a053e29cb12895d0896cc1674ac8ebdde90ab6c7c4019758221cdec541c6dc67efa0776b2da112c3370f77c10ed644cd264d5eb612faea6ee5f4cd15cf733ce23947",
+      "txHash": "0xfa8d5c93ac79888a006c4d2517317fdbba2c0d46dac92851a6a079c29423c3a8",
+      "expected": {
+        "intent": "Approve spender",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x000000000022D473030F116dDEE9F6B43aC78BA3"
+          },
+          {
+            "label": "Amount",
+            "value": "0.305840850793371218 swETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Transfer Tokens on chain 1 #15",
+      "rawTx": "0x02f8b20182037a8408f0d180841c1d922083015d0794f951e335afb289353dc249e82926178eac7ded7880b844a9059cbb00000000000000000000000050f2f272ea14fab8706e07beedc280f07642450000000000000000000000000000000000000000000000000006f05b59d3b20000c001a01c9e1e55dccdfe0958e05a1fe655cf7205a75aaae9fb205f205ce5b24b8b8193a02c7e6149e88d18f14dc53e03483ab99c091c912a1daa9d604e574db7f5a805cc",
+      "txHash": "0xb39982fc168ee6531067b245fe96cdb123502a7fca69c2a7887dc1542ccefd2e",
+      "expected": {
+        "intent": "Transfer Tokens",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "To",
+            "value": "0x50F2F272ea14fab8706E07BEedc280F076424500"
+          },
+          {
+            "label": "Amount",
+            "value": "0.5 swETH"
+          }
+        ]
+      }
+    }
+  ]
+}

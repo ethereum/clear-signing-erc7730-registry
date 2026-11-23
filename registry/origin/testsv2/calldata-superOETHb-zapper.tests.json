@@ -1,0 +1,70 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-superOETHb-zapper.json",
+  "dataProvider": {
+    "tokens": {
+      "0x4200000000000000000000000000000000000006": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "Wrapped Ether"
+      },
+      "0x7fcd174e80f264448ebee8c88a7c4476aaf58ea6": {
+        "symbol": "wsupOETHb",
+        "decimals": 18,
+        "name": "Wrapped Super OETH"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit on chain 8453 #1",
+      "rawTx": "0x02f83a82210580843b9aca008504a817c800830493e0943b56c09543d3068f8488ed34e6f383c3854d2bc1880de0b6b3a764000084d0e30db0c0800101",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Origin Protocol",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "1 ETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deposit (synthetic) on chain 8453 #2",
+      "rawTx": "0x02f85782210580843b9aca008504a817c8008307a120943b56c09543d3068f8488ed34e6f383c3854d2bc188016345785d8a0000a47b9c0f9100000000000000000000000000000000000000000000005150ae84a8cdf00000c0",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Origin Protocol",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "0.1 ETH"
+          },
+          {
+            "label": "Minimum Received",
+            "value": "1500 wsupOETHb"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deposit (synthetic) on chain 8453 #3",
+      "rawTx": "0x02f87082210580843b9aca008504a817c8008307a120943b56c09543d3068f8488ed34e6f383c3854d2bc180b844e9d3556a00000000000000000000000000000000000000000000005150ae84a8cdf0000000000000000000000000000000000000000000000000005150ae84a8cdf00000c0",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Origin Protocol",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "1500 WETH"
+          },
+          {
+            "label": "Minimum Received",
+            "value": "1500 wsupOETHb"
+          }
+        ]
+      }
+    }
+  ]
+}

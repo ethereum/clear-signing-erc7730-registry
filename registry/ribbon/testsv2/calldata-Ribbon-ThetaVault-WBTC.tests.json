@@ -1,0 +1,174 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-Ribbon-ThetaVault-WBTC.json",
+  "dataProvider": {
+    "tokens": {
+      "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
+        "symbol": "WBTC",
+        "decimals": 8,
+        "name": "Wrapped Bitcoin"
+      },
+      "0x65a833afdc250d9d38f8cd9bc2b1e3132db13b2f": {
+        "decimals": 8,
+        "name": "Ribbon BTC Theta Vault",
+        "symbol": "rBTC-THETA"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit on chain 1 #1",
+      "rawTx": "0x02f89101820376847735940084858115d6830167469465a833afdc250d9d38f8cd9bc2b1e3132db13b2f80a4b6b55f250000000000000000000000000000000000000000000000000000000000002611c001a018583c16ae0c15e1b1e9b250b34a0fc93aa5e3ac3de33b429c9cc8465629b10ca0604c43f32fa7baaae938a79125b221a3f609e72b415261bb8dfbe2fa5de92506",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon BTC Theta Vault"
+          },
+          {
+            "label": "Amount",
+            "value": "0.00009745 WBTC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deposit on chain 1 #2",
+      "rawTx": "0x02f8710180843b9aca008506fc23ac0083061a809465a833afdc250d9d38f8cd9bc2b1e3132db13b2f80b84436efd16f0000000000000000000000000000000000000000000000000000000008f0d1800000000000000000000000008bda12496bf61cd2ea89ad32562670bcdfdc5404c0800101",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon BTC Theta Vault"
+          },
+          {
+            "label": "Amount",
+            "value": "1.5 WBTC"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0x8bDA12496BF61cd2ea89AD32562670BcdFDc5404"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Instant Withdraw on chain 1 #3",
+      "rawTx": "0x02f8910182037784773594008482078b57830165579465a833afdc250d9d38f8cd9bc2b1e3132db13b2f80a42775d01c0000000000000000000000000000000000000000000000000000000000002611c001a0ec1296672c682c45619ab6783caad857d90e2ff782c158778f40c33ca15b3ccaa042ebb91e54099c6c37612abc8778eb6c268bd4df7bd0adc1435e6f4a6b6ef31b",
+      "expected": {
+        "intent": "Instant Withdraw",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon BTC Theta Vault"
+          },
+          {
+            "label": "Amount",
+            "value": "0.00009745 WBTC"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Initiate Withdraw on chain 1 #4",
+      "rawTx": "0x02f891018208138423c34600843f4cd5808301882b9465a833afdc250d9d38f8cd9bc2b1e3132db13b2f80a47e108d5200000000000000000000000000000000000000000000000000000000000007edc080a01743426a014ebb84ceeb995ddbc2c0c26c68ce6c968d6ecbc3675fb3203e5a9ba00cded54fdca44828314ae6b3b0c996676df13eadf95a4e3f0a321b5b438e0a70",
+      "expected": {
+        "intent": "Initiate Withdraw",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon BTC Theta Vault"
+          },
+          {
+            "label": "Shares",
+            "value": "0.00002029shares"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Complete Withdraw on chain 1 #5",
+      "rawTx": "0x02f87101820a038423c34600842668c380830228539465a833afdc250d9d38f8cd9bc2b1e3132db13b2f8084f756fa21c001a078d3b56d076e6ab1063afc2b281a5813f955dd23d208862233fb65197f4990f9a07cd2e696ef799c278895d8e96a9e642ae47637cdc6342d2a7bad21de92cbde76",
+      "expected": {
+        "intent": "Complete Withdraw",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon BTC Theta Vault"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem shares on chain 1 #6",
+      "rawTx": "0x02f8500180843b9aca008506fc23ac0083061a809465a833afdc250d9d38f8cd9bc2b1e3132db13b2f80a4db006a750000000000000000000000000000000000000000000000000000000008f0d180c0800101",
+      "expected": {
+        "intent": "Redeem shares",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon BTC Theta Vault"
+          },
+          {
+            "label": "Shares",
+            "value": "1.5shares"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem all shares on chain 1 #7",
+      "rawTx": "0x02f8700181ab8406c22fc9841a9a34c6830109599465a833afdc250d9d38f8cd9bc2b1e3132db13b2f80846f31ab34c080a09f9c7368b79854b3d825218a69ec7f939f0a23b49098ae6f38539f0caa9ef6eda01ffd8aa89321b1602a71351acd4c985723badd41995dfa820fe50c786363ac1b",
+      "expected": {
+        "intent": "Redeem all shares",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon BTC Theta Vault"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Stake shares on chain 1 #8",
+      "rawTx": "0x02f89201820129840a8ed62c850397a481b88307a1209465a833afdc250d9d38f8cd9bc2b1e3132db13b2f80a4a694fc3a000000000000000000000000000000000000000000000000000000000377eb9ec080a06c98a14510968901c86ed461767234d84563e36dcbe8cdf99c6e7154766216c0a0638ec390673cec3946d07b1a93b2094642a2d5c7e911f26fe4a3ae60d9caff6a",
+      "expected": {
+        "intent": "Stake shares",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon BTC Theta Vault"
+          },
+          {
+            "label": "Shares",
+            "value": "0.5819075shares"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Pause position on chain 1 #9",
+      "rawTx": "0x02f8700154847735940085055ae826008302bb439465a833afdc250d9d38f8cd9bc2b1e3132db13b2f8084ca594094c080a01b28eef56da29b09f26f6823e1297255f3027135f3fce798374fab3fd0902fe6a039d980448dd73b6033a7557419fa6ed1049fb605dd10488ffbfab4055e384eb2",
+      "expected": {
+        "intent": "Pause position",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon BTC Theta Vault"
+          }
+        ]
+      }
+    }
+  ]
+}

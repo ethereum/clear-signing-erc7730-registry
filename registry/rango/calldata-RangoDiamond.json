@@ -1,0 +1,291 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "$comment": "Known gaps (by design). onChainSwaps: feeFromInputToken=false rejected, since fees would be in toToken and v2 cannot pick tokenPath from a bool; needsTransferFromUser=true rejected, since it is a hidden extra pull from the user; calls[] not shown, since output is enforced by minimumAmountExpected + receiver. genericBridge: recipient/dstChainId not shown, since they are event-only and never enforced (the destination comes from the sub-call). Facet bridges (CCTP, SWFT): the destination shown is the field passed to the bridge protocol (CCTP domain, SWFT toToken); the facets' own destinationChainId is event-only and not shown. Fees are pulled on top of the amount and always shown. *SwapAndBridge reuse the onChainSwaps pins; feeFromInputToken is pinned per selector to the value used by most past traffic: true for CCTP, false for SWFT (fees shown in toToken). ETH sent to cctpBridge is rejected (it would be lost). Non-EVM recipients are shown raw, as are CCTP domains. Not covered: genericSwapAndBridge, which overwrites the amount inside the bridge calldata; Across, ChainFlip and StargateV2 functions, which need their message/composeMsg pinned to empty (otherwise the shown recipient is a Rango forwarding contract and the real destination is hidden in opaque bytes), and the Ethereum app cannot match an empty bytes constraint yet. Deployments: only chains whose facets are verified identical to mainnet. Not every facet is routed on every chain (the call reverts there): CCTP is absent on 56/100/146/59144, SWFT on 100.",
+  "context": {
+    "$id": "Rango Diamond",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x69460570c93f9de5e2edbc3052bf10125f0ca22d" },
+        { "chainId": 10, "address": "0x69460570c93f9de5e2edbc3052bf10125f0ca22d" },
+        { "chainId": 56, "address": "0x69460570c93f9de5e2edbc3052bf10125f0ca22d" },
+        { "chainId": 100, "address": "0x69460570c93f9de5e2edbc3052bf10125f0ca22d" },
+        { "chainId": 137, "address": "0x69460570c93f9de5e2edbc3052bf10125f0ca22d" },
+        { "chainId": 146, "address": "0x69460570c93f9de5e2edbc3052bf10125f0ca22d" },
+        { "chainId": 8453, "address": "0x69460570c93f9de5e2edbc3052bf10125f0ca22d" },
+        { "chainId": 42161, "address": "0x69460570c93f9de5e2edbc3052bf10125f0ca22d" },
+        { "chainId": 43114, "address": "0x69460570c93f9de5e2edbc3052bf10125f0ca22d" },
+        { "chainId": 59144, "address": "0x69460570c93f9de5e2edbc3052bf10125f0ca22d" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Rango Exchange",
+    "info": { "url": "https://rango.exchange" },
+    "contractName": "Rango Diamond",
+    "constants": { "nativeToken": "0x0000000000000000000000000000000000000000" }
+  },
+  "display": {
+    "definitions": {
+      "swapFee": {
+        "format": "tokenAmount",
+        "params": { "tokenPath": "request.fromToken", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" }
+      },
+      "bridgeTokenAmount": {
+        "format": "tokenAmount",
+        "params": { "tokenPath": "#.request.token", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" }
+      },
+      "swftBridgeTokenAmount": {
+        "format": "tokenAmount",
+        "params": { "tokenPath": "#.bridgeRequest.token", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" }
+      },
+      "swapOutputFee": {
+        "format": "tokenAmount",
+        "params": { "tokenPath": "#.request.toToken", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" }
+      }
+    },
+    "formats": {
+      "onChainSwaps((address requestId, address fromToken, address toToken, uint256 amountIn, uint256 platformFee, uint256 destinationExecutorFee, uint256 affiliateFee, address affiliatorAddress, uint256 minimumAmountExpected, bool feeFromInputToken, uint16 dAppTag, string dAppName) request, (address spender, address target, address swapFromToken, address swapToToken, bool needsTransferFromUser, uint256 amount, bytes callData)[] calls, address receiver)": {
+        "$id": "onChainSwaps",
+        "intent": "Swap",
+        "fields": [
+          {
+            "path": "request.amountIn",
+            "label": "Amount to send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "request.fromToken", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" },
+            "visible": "always"
+          },
+          {
+            "path": "request.minimumAmountExpected",
+            "label": "Minimum to receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "request.toToken", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "request.platformFee", "label": "Rango fee", "$ref": "$.display.definitions.swapFee", "visible": "always" },
+          {
+            "path": "request.destinationExecutorFee",
+            "label": "Executor fee",
+            "$ref": "$.display.definitions.swapFee",
+            "visible": "always"
+          },
+          { "path": "request.affiliateFee", "label": "Affiliate fee", "$ref": "$.display.definitions.swapFee", "visible": "always" },
+          {
+            "path": "request.affiliatorAddress",
+            "label": "Affiliate address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "request.feeFromInputToken", "label": "Fee on input", "format": "raw", "visible": { "mustMatch": [true] } },
+          { "path": "calls.[].needsTransferFromUser", "label": "Extra user pull", "format": "raw", "visible": { "mustMatch": [false] } }
+        ]
+      },
+      "genericBridge((uint8 bridgeId, (address target, address spender, bytes data, uint256 startIndexForAmount, uint256 nativeValueToSend, bool valueIsBridgeAmount)[] calls, address recipient, uint256 dstChainId, bool hasInterchainMessage, bool hasDestinationSwap, uint256 extraFee, uint256 extraERC20Fee) bridgeRequest, (address requestId, address token, uint256 amount, (address affiliatorAddress, uint256 amount, uint8 feeType)[] affiliateFees, uint256 totalAffiliateFee, uint16 dAppTag, string dAppName) request)": {
+        "$id": "genericBridge",
+        "intent": "Bridge",
+        "fields": [
+          {
+            "path": "request.amount",
+            "label": "Amount to bridge",
+            "$ref": "$.display.definitions.bridgeTokenAmount",
+            "visible": "always"
+          },
+          {
+            "path": "request.totalAffiliateFee",
+            "label": "Total fees",
+            "$ref": "$.display.definitions.bridgeTokenAmount",
+            "visible": "always"
+          },
+          {
+            "path": "bridgeRequest.calls.[].data",
+            "label": "Bridge call",
+            "format": "calldata",
+            "params": {
+              "calleePath": "bridgeRequest.calls.[].target",
+              "amountPath": "bridgeRequest.calls.[].nativeValueToSend",
+              "spenderPath": "@.to"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "cctpBridge((uint32 destinationDomainId, bytes32 recipient, uint256 destinationChainId) request, (address requestId, address token, uint256 amount, uint256 platformFee, uint256 affiliateFee, address affiliatorAddress, uint256 destinationExecutorFee, uint16 dAppTag, string dAppName) bridgeRequest)": {
+        "$id": "cctpBridge",
+        "intent": "Bridge",
+        "fields": [
+          {
+            "path": "bridgeRequest.amount",
+            "label": "Amount to bridge",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "bridgeRequest.token", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" },
+            "visible": "always"
+          },
+          { "path": "request.destinationDomainId", "label": "Destination domain", "format": "raw", "visible": "always" },
+          { "path": "request.recipient", "label": "Recipient", "format": "raw", "visible": "always" },
+          {
+            "path": "bridgeRequest.platformFee",
+            "label": "Rango fee",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "bridgeRequest.token", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" },
+            "visible": "always"
+          },
+          {
+            "path": "bridgeRequest.destinationExecutorFee",
+            "label": "Executor fee",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "bridgeRequest.token", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" },
+            "visible": "always"
+          },
+          {
+            "path": "bridgeRequest.affiliateFee",
+            "label": "Affiliate fee",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "bridgeRequest.token", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" },
+            "visible": "always"
+          },
+          {
+            "path": "bridgeRequest.affiliatorAddress",
+            "label": "Affiliate address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "@.value", "label": "Native value", "format": "raw", "visible": { "mustMatch": [0] } }
+        ]
+      },
+      "cctpSwapAndBridge((address requestId, address fromToken, address toToken, uint256 amountIn, uint256 platformFee, uint256 destinationExecutorFee, uint256 affiliateFee, address affiliatorAddress, uint256 minimumAmountExpected, bool feeFromInputToken, uint16 dAppTag, string dAppName) request, (address spender, address target, address swapFromToken, address swapToToken, bool needsTransferFromUser, uint256 amount, bytes callData)[] calls, (uint32 destinationDomainId, bytes32 recipient, uint256 destinationChainId) bridgeRequest)": {
+        "$id": "cctpSwapAndBridge",
+        "intent": "Swap and bridge",
+        "fields": [
+          {
+            "path": "request.amountIn",
+            "label": "Amount to send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "request.fromToken", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" },
+            "visible": "always"
+          },
+          {
+            "path": "request.minimumAmountExpected",
+            "label": "Minimum to bridge",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "request.toToken", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" },
+            "visible": "always"
+          },
+          { "path": "bridgeRequest.destinationDomainId", "label": "Destination domain", "format": "raw", "visible": "always" },
+          { "path": "bridgeRequest.recipient", "label": "Recipient", "format": "raw", "visible": "always" },
+          { "path": "request.platformFee", "label": "Rango fee", "$ref": "$.display.definitions.swapFee", "visible": "always" },
+          {
+            "path": "request.destinationExecutorFee",
+            "label": "Executor fee",
+            "$ref": "$.display.definitions.swapFee",
+            "visible": "always"
+          },
+          { "path": "request.affiliateFee", "label": "Affiliate fee", "$ref": "$.display.definitions.swapFee", "visible": "always" },
+          {
+            "path": "request.affiliatorAddress",
+            "label": "Affiliate address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "@.value", "label": "Native value", "format": "amount", "visible": "always" },
+          { "path": "request.feeFromInputToken", "label": "Fee on input", "format": "raw", "visible": { "mustMatch": [true] } },
+          { "path": "calls.[].needsTransferFromUser", "label": "Extra user pull", "format": "raw", "visible": { "mustMatch": [false] } }
+        ]
+      },
+      "swftBridge((string toToken, string destination, uint256 minReturnAmount) request, (address requestId, address token, uint256 amount, uint256 platformFee, uint256 affiliateFee, address affiliatorAddress, uint256 destinationExecutorFee, uint16 dAppTag, string dAppName) bridgeRequest)": {
+        "$id": "swftBridge",
+        "intent": "Bridge",
+        "fields": [
+          {
+            "path": "bridgeRequest.amount",
+            "label": "Amount to bridge",
+            "$ref": "$.display.definitions.swftBridgeTokenAmount",
+            "visible": "always"
+          },
+          { "path": "request.toToken", "label": "Destination asset", "format": "raw", "visible": "always" },
+          { "path": "request.destination", "label": "Recipient", "format": "raw", "visible": "always" },
+          { "path": "request.minReturnAmount", "label": "Min. received (raw)", "format": "raw", "visible": "always" },
+          {
+            "path": "bridgeRequest.platformFee",
+            "label": "Rango fee",
+            "$ref": "$.display.definitions.swftBridgeTokenAmount",
+            "visible": "always"
+          },
+          {
+            "path": "bridgeRequest.destinationExecutorFee",
+            "label": "Executor fee",
+            "$ref": "$.display.definitions.swftBridgeTokenAmount",
+            "visible": "always"
+          },
+          {
+            "path": "bridgeRequest.affiliateFee",
+            "label": "Affiliate fee",
+            "$ref": "$.display.definitions.swftBridgeTokenAmount",
+            "visible": "always"
+          },
+          {
+            "path": "bridgeRequest.affiliatorAddress",
+            "label": "Affiliate address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          }
+        ]
+      },
+      "swftSwapAndBridge((address requestId, address fromToken, address toToken, uint256 amountIn, uint256 platformFee, uint256 destinationExecutorFee, uint256 affiliateFee, address affiliatorAddress, uint256 minimumAmountExpected, bool feeFromInputToken, uint16 dAppTag, string dAppName) request, (address spender, address target, address swapFromToken, address swapToToken, bool needsTransferFromUser, uint256 amount, bytes callData)[] calls, (string toToken, string destination, uint256 minReturnAmount) bridgeRequest)": {
+        "$id": "swftSwapAndBridge",
+        "intent": "Swap and bridge",
+        "fields": [
+          {
+            "path": "request.amountIn",
+            "label": "Amount to send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "request.fromToken", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" },
+            "visible": "always"
+          },
+          {
+            "path": "request.minimumAmountExpected",
+            "label": "Minimum to bridge",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "request.toToken", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" },
+            "visible": "always"
+          },
+          { "path": "bridgeRequest.toToken", "label": "Destination asset", "format": "raw", "visible": "always" },
+          { "path": "bridgeRequest.destination", "label": "Recipient", "format": "raw", "visible": "always" },
+          { "path": "bridgeRequest.minReturnAmount", "label": "Min. received (raw)", "format": "raw", "visible": "always" },
+          { "path": "request.platformFee", "label": "Rango fee", "$ref": "$.display.definitions.swapOutputFee", "visible": "always" },
+          {
+            "path": "request.destinationExecutorFee",
+            "label": "Executor fee",
+            "$ref": "$.display.definitions.swapOutputFee",
+            "visible": "always"
+          },
+          {
+            "path": "request.affiliateFee",
+            "label": "Affiliate fee",
+            "$ref": "$.display.definitions.swapOutputFee",
+            "visible": "always"
+          },
+          {
+            "path": "request.affiliatorAddress",
+            "label": "Affiliate address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "request.feeFromInputToken", "label": "Fee on input", "format": "raw", "visible": { "mustMatch": [false] } },
+          { "path": "calls.[].needsTransferFromUser", "label": "Extra user pull", "format": "raw", "visible": { "mustMatch": [false] } }
+        ]
+      }
+    }
+  }
+}

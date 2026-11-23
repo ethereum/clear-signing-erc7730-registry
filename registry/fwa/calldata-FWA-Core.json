@@ -1,0 +1,164 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "FWA Core",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xb276f62db0ce8ca2ca5bc522695be604521eac1c" }] }
+  },
+  "metadata": {
+    "owner": "Fake World Assets",
+    "info": { "url": "https://www.fwa.fun/" },
+    "contractName": "FWA Core",
+    "constants": { "fwaToken": "0xa0df17b5ac76ababa36e1450e2cbcd18a620c845" }
+  },
+  "display": {
+    "definitions": {
+      "listingId": { "label": "Listing ID", "format": "raw" },
+      "acquisitionPaid": { "label": "Amount to pay", "format": "amount" },
+      "maxAcquisitionFee": { "label": "Max acquisition fee", "format": "amount" },
+      "minWeightedValue": { "label": "Min pool EV basis", "format": "raw" },
+      "maxNegativeSlippage": { "label": "Max neg. slippage", "format": "unit", "params": { "base": "bps" } }
+    },
+    "formats": {
+      "listNFT(address collection, uint256 tokenId)": {
+        "intent": "List NFT with ETH backing",
+        "fields": [
+          {
+            "path": "collection",
+            "label": "Collection",
+            "format": "addressName",
+            "params": { "types": ["collection", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "tokenId",
+            "label": "NFT",
+            "format": "nftName",
+            "params": { "collectionPath": "collection" },
+            "visible": "always"
+          },
+          { "path": "@.value", "label": "ETH backing", "format": "amount", "visible": "always" }
+        ]
+      },
+      "relistNFT(uint256 listingId)": {
+        "intent": "Keep NFT and relist it",
+        "fields": [
+          { "path": "listingId", "$ref": "$.display.definitions.listingId", "visible": "always" },
+          { "path": "@.value", "label": "New ETH backing", "format": "amount", "visible": "always" }
+        ]
+      },
+      "updateBacking(uint256 listingId, uint256 newBacking)": {
+        "intent": "Update listing backing",
+        "fields": [
+          { "path": "listingId", "$ref": "$.display.definitions.listingId", "visible": "always" },
+          { "path": "newBacking", "label": "New ETH backing", "format": "amount", "visible": "always" },
+          { "path": "@.value", "label": "ETH sent", "format": "amount", "visible": "always" }
+        ]
+      },
+      "withdrawListing(uint256 listingId)": {
+        "intent": "Withdraw listing and backing",
+        "fields": [{ "path": "listingId", "$ref": "$.display.definitions.listingId", "visible": "always" }]
+      },
+      "claimTopSpot(uint256 listingId)": {
+        "intent": "Claim top listing spot",
+        "fields": [{ "path": "listingId", "$ref": "$.display.definitions.listingId", "visible": "always" }]
+      },
+      "claimListingFees(uint256[] listingIds)": {
+        "intent": "Claim listing fees",
+        "fields": [{ "path": "listingIds.[]", "$ref": "$.display.definitions.listingId", "visible": "always" }]
+      },
+      "acquire(uint256 maxAcquisitionFee, uint256 minWeightedValue)": {
+        "intent": "Acquire a random NFT",
+        "fields": [
+          { "path": "@.value", "$ref": "$.display.definitions.acquisitionPaid", "visible": "always" },
+          { "path": "maxAcquisitionFee", "$ref": "$.display.definitions.maxAcquisitionFee", "visible": "always" },
+          { "path": "minWeightedValue", "$ref": "$.display.definitions.minWeightedValue", "visible": "always" }
+        ]
+      },
+      "acquire(uint256 maxAcquisitionFee, uint256 minWeightedValue, uint256 maxNegativeSlippageBps)": {
+        "intent": "Acquire a random NFT",
+        "fields": [
+          { "path": "@.value", "$ref": "$.display.definitions.acquisitionPaid", "visible": "always" },
+          { "path": "maxAcquisitionFee", "$ref": "$.display.definitions.maxAcquisitionFee", "visible": "always" },
+          {
+            "path": "maxNegativeSlippageBps",
+            "$ref": "$.display.definitions.maxNegativeSlippage",
+            "visible": "always"
+          },
+          { "path": "minWeightedValue", "$ref": "$.display.definitions.minWeightedValue", "visible": "always" }
+        ]
+      },
+      "acquireBatch(uint256 count, uint256 maxAcquisitionFee, uint256 minWeightedValue)": {
+        "intent": "Acquire random NFTs",
+        "fields": [
+          { "path": "count", "label": "Number of NFTs", "format": "raw", "visible": "always" },
+          { "path": "@.value", "$ref": "$.display.definitions.acquisitionPaid", "visible": "always" },
+          { "path": "maxAcquisitionFee", "label": "Max fee per NFT", "format": "amount", "visible": "always" },
+          { "path": "minWeightedValue", "$ref": "$.display.definitions.minWeightedValue", "visible": "always" }
+        ]
+      },
+      "acquireBatch(uint256 count, uint256 maxAcquisitionFee, uint256 minWeightedValue, uint256 maxNegativeSlippageBps)": {
+        "intent": "Acquire random NFTs",
+        "fields": [
+          { "path": "count", "label": "Number of NFTs", "format": "raw", "visible": "always" },
+          { "path": "@.value", "$ref": "$.display.definitions.acquisitionPaid", "visible": "always" },
+          { "path": "maxAcquisitionFee", "label": "Max fee per NFT", "format": "amount", "visible": "always" },
+          {
+            "path": "maxNegativeSlippageBps",
+            "$ref": "$.display.definitions.maxNegativeSlippage",
+            "visible": "always"
+          },
+          { "path": "minWeightedValue", "$ref": "$.display.definitions.minWeightedValue", "visible": "always" }
+        ]
+      },
+      "keepNFT(uint256 listingId)": {
+        "intent": "Keep acquired NFT",
+        "fields": [{ "path": "listingId", "$ref": "$.display.definitions.listingId", "visible": "always" }]
+      },
+      "acceptDepositorBid(uint256 listingId)": {
+        "intent": "Return NFT and take ETH bid",
+        "fields": [{ "path": "listingId", "$ref": "$.display.definitions.listingId", "visible": "always" }]
+      },
+      "acceptBidAsTokens(uint256 listingId, uint256 minOut)": {
+        "intent": "Return NFT and take bid in FWA",
+        "fields": [
+          { "path": "listingId", "$ref": "$.display.definitions.listingId", "visible": "always" },
+          {
+            "path": "minOut",
+            "label": "Minimum received",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.fwaToken" },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdrawAcquisitionRefund()": { "intent": "Withdraw acquisition refund", "fields": [] },
+      "withdrawEarnings()": { "intent": "Withdraw earnings", "fields": [] },
+      "depositorReclaimBacking(uint256 listingId)": {
+        "intent": "Reclaim backing ETH",
+        "fields": [{ "path": "listingId", "$ref": "$.display.definitions.listingId", "visible": "always" }]
+      },
+      "depositorReclaimNFT(uint256 listingId)": {
+        "intent": "Reclaim NFT",
+        "fields": [{ "path": "listingId", "$ref": "$.display.definitions.listingId", "visible": "always" }]
+      },
+      "recoverStuckNFT(uint256 listingId)": {
+        "intent": "Recover stuck NFT",
+        "fields": [{ "path": "listingId", "$ref": "$.display.definitions.listingId", "visible": "always" }]
+      },
+      "finalizeUnsettled(uint256 listingId)": {
+        "intent": "Finalize unsettled listing",
+        "fields": [{ "path": "listingId", "$ref": "$.display.definitions.listingId", "visible": "always" }]
+      },
+      "activateListings(uint256 maxCount)": {
+        "intent": "Activate pending listings",
+        "fields": [{ "path": "maxCount", "label": "Max listings", "format": "raw", "visible": "always" }]
+      },
+      "processAcquisitions(uint256 maxCount)": {
+        "intent": "Process pending acquisitions",
+        "fields": [{ "path": "maxCount", "label": "Max acquisitions", "format": "raw", "visible": "always" }]
+      },
+      "payoutFees()": { "intent": "Pay out protocol fees", "fields": [] },
+      "reconcileUnfulfilledVrfCount()": { "intent": "Reconcile VRF requests", "fields": [] }
+    }
+  }
+}

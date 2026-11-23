@@ -1,0 +1,49 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Rocket Pool SwapRouter",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x16d5a408e807db8ef7c578279beeee6b228f1c1c" }] }
+  },
+  "metadata": {
+    "owner": "Rocket Pool",
+    "info": { "url": "https://rocketpool.net/" },
+    "contractName": "Rocket Pool Swap Router",
+    "constants": { "rETH": "0xae78736cd615f374d3085123a210448e74fc6393" }
+  },
+  "display": {
+    "formats": {
+      "swapTo(uint256 _uniswapPortion, uint256 _balancerPortion, uint256 _minTokensOut, uint256 _idealTokensOut)": {
+        "intent": "Swap ETH for rETH",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount", "visible": "always" },
+          {
+            "path": "#._minTokensOut",
+            "label": "Minimum to receive",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.rETH" },
+            "visible": "always"
+          },
+          { "path": "#._uniswapPortion", "label": "Uniswap portion", "visible": "never" },
+          { "path": "#._balancerPortion", "label": "Balancer portion", "visible": "never" },
+          { "path": "#._idealTokensOut", "label": "Ideal amount out", "visible": "never" }
+        ]
+      },
+      "swapFrom(uint256 _uniswapPortion, uint256 _balancerPortion, uint256 _minTokensOut, uint256 _idealTokensOut, uint256 _tokensIn)": {
+        "intent": "Swap rETH for ETH",
+        "fields": [
+          {
+            "path": "#._tokensIn",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.rETH" },
+            "visible": "always"
+          },
+          { "path": "#._minTokensOut", "label": "Minimum to receive", "format": "amount", "visible": "always" },
+          { "path": "#._uniswapPortion", "label": "Uniswap portion", "visible": "never" },
+          { "path": "#._balancerPortion", "label": "Balancer portion", "visible": "never" },
+          { "path": "#._idealTokensOut", "label": "Ideal amount out", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "$comment": "allowFailure=true rejected: a silently skipped call would leave the displayed action unexecuted. cleanup* amount 0 means the whole balance. multicall and cleanupErc20sViaCall Call fields have no spender: a single spender for an array of calls is rejected by Ethereum app releases up to 1.22.x.",
+  "context": {
+    "$id": "RelayRouterV3",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 10, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 56, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 100, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 130, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 137, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 143, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 146, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 480, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 999, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 2741, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 4326, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 4663, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 8453, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 33139, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 42161, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 42220, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 43114, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 80094, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" },
+        { "chainId": 81457, "address": "0xB92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Relay", "info": { "url": "https://relay.link" }, "contractName": "RelayRouterV3" },
+  "display": {
+    "formats": {
+      "multicall((address target, bool allowFailure, uint256 value, bytes callData)[] calls, address refundTo, address nftRecipient, bytes metadata)": {
+        "$id": "multicall",
+        "intent": "Execute via Relay",
+        "fields": [
+          { "path": "@.value", "label": "Native sent", "format": "amount", "visible": "always" },
+          {
+            "path": "calls.[].callData",
+            "label": "Call",
+            "format": "calldata",
+            "params": { "calleePath": "calls.[].target", "amountPath": "calls.[].value" },
+            "visible": "always"
+          },
+          {
+            "path": "refundTo",
+            "label": "Native refund to",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "nftRecipient",
+            "label": "NFT recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "calls.[].allowFailure", "label": "Allow failure", "format": "raw", "visible": { "mustMatch": [false] } },
+          { "path": "metadata", "label": "Metadata", "format": "raw", "visible": "never" }
+        ]
+      },
+      "cleanupErc20s(address[] tokens, address[] recipients, uint256[] amounts, bytes metadata)": {
+        "$id": "cleanupErc20s",
+        "intent": "Send router token balance",
+        "fields": [
+          {
+            "path": "amounts.[]",
+            "label": "Amount (0 = all)",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokens.[]" },
+            "visible": "always"
+          },
+          {
+            "path": "recipients.[]",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "metadata", "label": "Metadata", "format": "raw", "visible": "never" }
+        ]
+      },
+      "cleanupErc20sViaCall(address[] tokens, address[] tos, bytes[] datas, uint256[] amounts)": {
+        "$id": "cleanupErc20sViaCall",
+        "intent": "Forward router token balance",
+        "fields": [
+          {
+            "path": "amounts.[]",
+            "label": "Amount (0 = all)",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokens.[]" },
+            "visible": "always"
+          },
+          {
+            "path": "datas.[]",
+            "label": "Call",
+            "format": "calldata",
+            "params": { "calleePath": "tos.[]" },
+            "visible": "always"
+          }
+        ]
+      },
+      "cleanupNative(uint256 amount, address recipient, bytes metadata)": {
+        "$id": "cleanupNative",
+        "intent": "Send router native balance",
+        "fields": [
+          { "path": "amount", "label": "Amount (0 = all)", "format": "amount", "visible": "always" },
+          {
+            "path": "recipient",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "metadata", "label": "Metadata", "format": "raw", "visible": "never" }
+        ]
+      },
+      "cleanupNativeViaCall(uint256 amount, address to, bytes data)": {
+        "$id": "cleanupNativeViaCall",
+        "intent": "Forward router native balance",
+        "fields": [
+          { "path": "amount", "label": "Amount (0 = all)", "format": "amount", "visible": "always" },
+          {
+            "path": "data",
+            "label": "Call",
+            "format": "calldata",
+            "params": { "calleePath": "to", "amountPath": "amount", "spenderPath": "@.to" },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

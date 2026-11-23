@@ -1,0 +1,74 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-morpho-authorization.json",
+  "dataProvider": {
+    "tokens": {}
+  },
+  "tests": [
+    {
+      "description": "Morpho set authorization (synthetic) on chain 1 #1",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "Authorization": [
+            {
+              "type": "address",
+              "name": "authorizer"
+            },
+            {
+              "type": "address",
+              "name": "authorized"
+            },
+            {
+              "type": "bool",
+              "name": "isAuthorized"
+            },
+            {
+              "type": "uint256",
+              "name": "nonce"
+            },
+            {
+              "type": "uint256",
+              "name": "deadline"
+            }
+          ]
+        },
+        "primaryType": "Authorization",
+        "domain": {
+          "chainId": 1,
+          "verifyingContract": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb"
+        },
+        "message": {
+          "authorizer": "0x1234567890abcdef1234567890abcdef12345678",
+          "authorized": "0x1234567890abcdef1234567890abcdef12345678",
+          "isAuthorized": true,
+          "nonce": "1000",
+          "deadline": "1767225600"
+        }
+      },
+      "expected": {
+        "intent": "Morpho set authorization",
+        "owner": "Morpho DAO",
+        "fields": [
+          {
+            "label": "Authorize",
+            "value": "true"
+          },
+          {
+            "label": "Deadline",
+            "value": "2026-01-01 00:00:00Z"
+          }
+        ]
+      }
+    }
+  ]
+}

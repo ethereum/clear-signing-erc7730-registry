@@ -1,0 +1,114 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ENS Public Resolver",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xF29100983E058B709F3D539b0c765937B804AC15" },
+        { "chainId": 1, "address": "0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63" }
+      ]
+    }
+  },
+  "metadata": { "owner": "ENS", "info": { "url": "https://ens.domains" }, "contractName": "PublicResolver" },
+  "display": {
+    "formats": {
+      "setText(bytes32 node,string key,string value)": {
+        "intent": "Set text record",
+        "fields": [
+          { "path": "#.node", "label": "Node", "format": "raw" },
+          { "path": "#.key", "label": "Key", "format": "raw" },
+          { "path": "#.value", "label": "Value", "format": "raw" }
+        ]
+      },
+      "setAddr(bytes32 node,address _addr)": {
+        "intent": "Set ETH address",
+        "fields": [
+          { "path": "#.node", "label": "Node", "format": "raw" },
+          {
+            "path": "#._addr",
+            "label": "Address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "setAddr(bytes32 node,uint256 coinType,bytes addressBytes)": {
+        "intent": "Set address record",
+        "fields": [
+          { "path": "#.node", "label": "Node", "format": "raw" },
+          { "path": "#.coinType", "label": "Coin type", "format": "raw" },
+          { "path": "#.addressBytes", "label": "Address", "format": "raw" }
+        ]
+      },
+      "setContenthash(bytes32 node,bytes hash)": {
+        "intent": "Set content hash",
+        "fields": [{ "path": "#.node", "label": "Node", "format": "raw" }, { "path": "#.hash", "label": "Content hash", "format": "raw" }]
+      },
+      "setName(bytes32 node,string newName)": {
+        "intent": "Set name record",
+        "fields": [{ "path": "#.node", "label": "Node", "format": "raw" }, { "path": "#.newName", "label": "Name", "format": "raw" }]
+      },
+      "setABI(bytes32 node,uint256 contentType,bytes data)": {
+        "intent": "Set ABI record",
+        "fields": [
+          { "path": "#.node", "label": "Node", "format": "raw" },
+          { "path": "#.contentType", "label": "Content type", "format": "raw" },
+          { "path": "#.data", "label": "ABI", "format": "raw" }
+        ]
+      },
+      "setPubkey(bytes32 node,bytes32 x,bytes32 y)": {
+        "intent": "Set public key",
+        "fields": [
+          { "path": "#.node", "label": "Node", "format": "raw" },
+          { "path": "#.x", "label": "X", "format": "raw" },
+          { "path": "#.y", "label": "Y", "format": "raw" }
+        ]
+      },
+      "setDNSRecords(bytes32 node,bytes data)": {
+        "intent": "Set DNS records",
+        "fields": [{ "path": "#.node", "label": "Node", "format": "raw" }, { "path": "#.data", "label": "Records", "format": "raw" }]
+      },
+      "setZonehash(bytes32 node,bytes hash)": {
+        "intent": "Set zone hash",
+        "fields": [{ "path": "#.node", "label": "Node", "format": "raw" }, { "path": "#.hash", "label": "Zone hash", "format": "raw" }]
+      },
+      "clearRecords(bytes32 node)": { "intent": "Clear all records", "fields": [{ "path": "#.node", "label": "Node", "format": "raw" }] },
+      "approve(bytes32 node,address delegate,bool approved)": {
+        "intent": "Approve delegate",
+        "fields": [
+          { "path": "#.node", "label": "Node", "format": "raw" },
+          {
+            "path": "#.delegate",
+            "label": "Delegate",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.approved", "label": "Approved", "format": "raw" }
+        ]
+      },
+      "setApprovalForAll(address operator,bool approved)": {
+        "intent": "Approve operator",
+        "fields": [
+          {
+            "path": "#.operator",
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.approved", "label": "Approved", "format": "raw" }
+        ]
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Update records",
+        "fields": [{ "path": "#.data.[]", "label": "Record update", "format": "calldata", "params": { "calleePath": "@.to" } }]
+      },
+      "multicallWithNodeCheck(bytes32 nodehash,bytes[] data)": {
+        "intent": "Update records",
+        "fields": [
+          { "path": "#.nodehash", "label": "Node", "format": "raw" },
+          { "path": "#.data.[]", "label": "Record update", "format": "calldata", "params": { "calleePath": "@.to" } }
+        ]
+      }
+    }
+  }
+}

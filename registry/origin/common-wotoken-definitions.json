@@ -1,0 +1,89 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {}
+  },
+  "metadata": {
+    "owner": "Origin Protocol",
+    "info": {
+      "url": "https://www.originprotocol.com"
+    },
+    "constants": {
+      "underlyingToken": "0x0000000000000000000000000000000000000000",
+      "vaultTicker": "wToken"
+    }
+  },
+  "display": {
+    "formats": {
+      "deposit(uint256 assets, address receiver)": {
+        "intent": "Wrap",
+        "fields": [
+          {
+            "path": "assets",
+            "label": "Deposit",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken"
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Receive",
+            "format": "raw",
+            "value": "$.metadata.constants.vaultTicker"
+          },
+          {
+            "path": "receiver",
+            "label": "Send shares to",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "redeem(uint256 shares, address receiver, address owner)": {
+        "intent": "Unwrap",
+        "fields": [
+          {
+            "path": "shares",
+            "label": "Redeem",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "@.to"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "To",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "contract"
+              ]
+            },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

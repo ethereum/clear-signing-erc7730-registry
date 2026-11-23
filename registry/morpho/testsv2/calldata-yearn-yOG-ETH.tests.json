@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-yearn-yOG-ETH.json",
+  "dataProvider": {
+    "tokens": {
+      "0xee7d8bcfb72bc1880d0cf19822eb0a2e6577ab62": {
+        "symbol": "vbETH",
+        "decimals": 18,
+        "name": "Vault Bridge ETH"
+      },
+      "0xfade0c546f44e33c134c4036207b314ac643dc2e": {
+        "decimals": 18,
+        "name": "Yearn OG ETH",
+        "symbol": "yOG-ETH"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit (synthetic) on chain 747474 #1",
+      "rawTx": "0x02f871830b67d280843b9aca008504a817c8008307a12094fade0c546f44e33c134c4036207b314ac643dc2e80b8446e553f6500000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Yearn",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "1500 vbETH"
+          },
+          {
+            "label": "Share ticker",
+            "value": "yOG-ETH"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint (synthetic) on chain 747474 #2",
+      "rawTx": "0x02f871830b67d280843b9aca008504a817c8008307a12094fade0c546f44e33c134c4036207b314ac643dc2e80b84494bf804d00000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Yearn",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "vbETH"
+          },
+          {
+            "label": "Minted shares",
+            "value": "1500 yOG-ETH"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw (synthetic) on chain 747474 #3",
+      "rawTx": "0x02f891830b67d280843b9aca008504a817c8008307a12094fade0c546f44e33c134c4036207b314ac643dc2e80b864b460af9400000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Yearn",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "1500 vbETH"
+          },
+          {
+            "label": "To",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem (synthetic) on chain 747474 #4",
+      "rawTx": "0x02f891830b67d280843b9aca008504a817c8008307a12094fade0c546f44e33c134c4036207b314ac643dc2e80b864ba08765200000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Yearn",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "1500 yOG-ETH"
+          },
+          {
+            "label": "To",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    }
+  ]
+}

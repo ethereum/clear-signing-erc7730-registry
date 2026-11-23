@@ -1,0 +1,39 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ENS Default Reverse Registrar",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x283F227c4Bd38ecE252C4Ae7ECE650B0e913f1f9" }] }
+  },
+  "metadata": { "owner": "ENS", "info": { "url": "https://ens.domains" }, "contractName": "DefaultReverseRegistrar" },
+  "display": {
+    "formats": {
+      "setName(string name)": { "intent": "Set default primary name", "fields": [{ "path": "#.name", "label": "Name", "format": "raw" }] },
+      "setNameForAddr(address addr,string name)": {
+        "intent": "Set default primary name",
+        "fields": [
+          {
+            "path": "#.addr",
+            "label": "For address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.name", "label": "Name", "format": "raw" }
+        ]
+      },
+      "setNameForAddrWithSignature(address addr,uint256 signatureExpiry,string name,bytes signature)": {
+        "intent": "Set default primary name",
+        "fields": [
+          {
+            "path": "#.addr",
+            "label": "For address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.name", "label": "Name", "format": "raw" },
+          { "path": "#.signatureExpiry", "label": "Signature expiry", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "#.signature", "label": "Signature", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-hyperithm-hyperUSDT0.json",
+  "dataProvider": {
+    "tokens": {
+      "0xb8ce59fc3717ada4c02eadf9682a9e934f625ebb": {
+        "symbol": "USD_0",
+        "decimals": 6,
+        "name": "USD₮0"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit (synthetic) on chain 999 #1",
+      "rawTx": "0x02f8708203e780843b9aca008504a817c8008307a12094e5add96840f0b908ddeb3bd144c0283ac5ca7ca080b8446e553f650000000000000000000000000000000000000000000000000000000059682f000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Hyperithm",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "1500 USD_0"
+          },
+          {
+            "label": "Share ticker",
+            "value": "hyperUSDT0"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint (synthetic) on chain 999 #2",
+      "rawTx": "0x02f8708203e780843b9aca008504a817c8008307a12094e5add96840f0b908ddeb3bd144c0283ac5ca7ca080b84494bf804d00000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Hyperithm",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USD₮0"
+          },
+          {
+            "label": "Minted shares",
+            "value": "1500000000000000000000"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw (synthetic) on chain 999 #3",
+      "rawTx": "0x02f8908203e780843b9aca008504a817c8008307a12094e5add96840f0b908ddeb3bd144c0283ac5ca7ca080b864b460af940000000000000000000000000000000000000000000000000000000059682f000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Hyperithm",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "1500 USD_0"
+          },
+          {
+            "label": "To",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem (synthetic) on chain 999 #4",
+      "rawTx": "0x02f8908203e780843b9aca008504a817c8008307a12094e5add96840f0b908ddeb3bd144c0283ac5ca7ca080b864ba08765200000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Hyperithm",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "1500000000000000000000"
+          },
+          {
+            "label": "To",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x63898b3b6ef3d39332082178656e9862bee45c57"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Origin Protocol",
+    "info": {
+      "url": "https://www.originprotocol.com"
+    },
+    "constants": {
+      "ognAddress": "0x8207c1FfC5B6804F6024322CcF34F29c3541Ae26"
+    }
+  },
+  "display": {
+    "formats": {
+      "collectRewards()": {
+        "intent": "Collect Rewards",
+        "fields": []
+      },
+      "stake(uint256 amountIn, uint256 duration, address to, bool stakeRewards, int256 lockupId)": {
+        "intent": "Stake",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "amountIn",
+            "params": {
+              "token": "$.metadata.constants.ognAddress"
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Duration",
+            "format": "duration",
+            "path": "duration",
+            "visible": "always"
+          },
+          {
+            "label": "To",
+            "format": "addressName",
+            "path": "to",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Lockup ID",
+            "format": "raw",
+            "path": "lockupId",
+            "visible": "always"
+          }
+        ]
+      },
+      "unstake(uint256 lockupId)": {
+        "intent": "Unstake",
+        "fields": [
+          {
+            "label": "Lockup ID",
+            "format": "raw",
+            "path": "lockupId",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

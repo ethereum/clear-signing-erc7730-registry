@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-PublicAllocator.json",
+  "dataProvider": {
+    "tokens": {
+      "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
+        "symbol": "WBTC",
+        "decimals": 8,
+        "name": "Wrapped Bitcoin"
+      },
+      "0x83f20f44975d03b1b09e64809b757c47f942beea": {
+        "symbol": "sDAI",
+        "decimals": 18,
+        "name": "Savings Dai"
+      },
+      "0x8eb67a509616cd6a7c1b3c8c21d48ff57df3d458": {
+        "symbol": "gtUSDCcore",
+        "decimals": 18,
+        "name": "Gauntlet USDC Core"
+      },
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Reallocate vault liquidity on chain 1 #1",
+      "rawTx": "0x02f902340182028b840a71980985058322f2058303d73c94fd32fa2ca22c76dd6e550706ad913fc6ce91c75d80b901c4833947fd0000000000000000000000008eb67a509616cd6a7c1b3c8c21d48ff57df3d45800000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000083f20f44975d03b1b09e64809b757c47f942beea000000000000000000000000d6361d441ea8fd285f7cd8b7d406b424e50c5429000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc0000000000000000000000000000000000000000000000000d645e63204080000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599000000000000000000000000dddd770badd886df3864029e4b377b5f6a2b6b83000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc0000000000000000000000000000000000000000000000000bef55718ad600000000000000000000000000000000000000000000000000000000000ba43b7400c001a00d416bf179a2de147863159d78631a382a056231673eaa305c2a217d53442a09a02913584f2bb6e87788c0fa55da037514ddf8e0b611ec2b25c85b9d1029d156b1",
+      "txHash": "0xfae82af6b9f3526fb1bdb153a713007eee20cd75e7788b2606d1be9c007dd0a2",
+      "expected": {
+        "intent": "Reallocate vault liquidity",
+        "owner": "Morpho",
+        "fields": [
+          {
+            "label": "Reallocation fee",
+            "value": "0 ETH"
+          },
+          {
+            "label": "Vault",
+            "value": "0x8eB67A509616cd6A7c1B3c8C21D48FF57df3d458"
+          },
+          {
+            "label": "Supply loan token",
+            "value": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+          },
+          {
+            "label": "Supply collateral",
+            "value": "0x83F20F44975D03b1b09e64809B757c47f942BEeA"
+          }
+        ]
+      }
+    }
+  ]
+}

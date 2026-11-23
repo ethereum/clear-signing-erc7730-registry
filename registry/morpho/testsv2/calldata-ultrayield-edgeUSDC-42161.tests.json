@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-ultrayield-edgeUSDC-42161.json",
+  "dataProvider": {
+    "tokens": {
+      "0x2d91466bcc6946b58869fe2ae521a856737c3f6e": {
+        "symbol": "edgeUSDC",
+        "decimals": 18,
+        "name": "Edge UltraYield USDC"
+      },
+      "0xaf88d065e77c8cc2239327c5edb3a432268e5831": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit (synthetic) on chain 42161 #1",
+      "rawTx": "0x02f87082a4b180843b9aca008504a817c8008307a120942d91466bcc6946b58869fe2ae521a856737c3f6e80b8446e553f650000000000000000000000000000000000000000000000000000000059682f000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "UltraYield",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "1500 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "edgeUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint (synthetic) on chain 42161 #2",
+      "rawTx": "0x02f87082a4b180843b9aca008504a817c8008307a120942d91466bcc6946b58869fe2ae521a856737c3f6e80b84494bf804d00000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Mint",
+        "owner": "UltraYield",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "1500 edgeUSDC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw (synthetic) on chain 42161 #3",
+      "rawTx": "0x02f89082a4b180843b9aca008504a817c8008307a120942d91466bcc6946b58869fe2ae521a856737c3f6e80b864b460af940000000000000000000000000000000000000000000000000000000059682f000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "UltraYield",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "1500 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem (synthetic) on chain 42161 #4",
+      "rawTx": "0x02f89082a4b180843b9aca008504a817c8008307a120942d91466bcc6946b58869fe2ae521a856737c3f6e80b864ba08765200000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "UltraYield",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "1500 edgeUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    }
+  ]
+}

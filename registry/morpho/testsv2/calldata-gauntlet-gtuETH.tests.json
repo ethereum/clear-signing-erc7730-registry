@@ -1,0 +1,103 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-gtuETH.json",
+  "dataProvider": {
+    "tokens": {
+      "0xbe6727b535545c67d5caa73dea54865b92cf7907": {
+        "symbol": "UETH",
+        "decimals": 18,
+        "name": "Unit Ethereum"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit (synthetic) on chain 999 #1",
+      "rawTx": "0x02f8708203e780843b9aca008504a817c8008307a120940571362ba5ea9784a97605f57483f865a37dbeaa80b8446e553f6500000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Gauntlet",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "1500 UETH"
+          },
+          {
+            "label": "Share ticker",
+            "value": "gtuETH"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint (synthetic) on chain 999 #2",
+      "rawTx": "0x02f8708203e780843b9aca008504a817c8008307a120940571362ba5ea9784a97605f57483f865a37dbeaa80b84494bf804d00000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Gauntlet",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "UETH"
+          },
+          {
+            "label": "Minted shares",
+            "value": "1500000000000000000000"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw (synthetic) on chain 999 #3",
+      "rawTx": "0x02f8908203e780843b9aca008504a817c8008307a120940571362ba5ea9784a97605f57483f865a37dbeaa80b864b460af9400000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Gauntlet",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "1500 UETH"
+          },
+          {
+            "label": "To",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem (synthetic) on chain 999 #4",
+      "rawTx": "0x02f8908203e780843b9aca008504a817c8008307a120940571362ba5ea9784a97605f57483f865a37dbeaa80b864ba08765200000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Gauntlet",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "1500000000000000000000"
+          },
+          {
+            "label": "To",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    }
+  ]
+}

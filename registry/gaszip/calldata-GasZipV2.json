@@ -1,0 +1,67 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "$comment": "chains shown raw: it is a uint256 packing several 16-bit Gas.zip IDs, and the Ethereum app rejects enums on non-uint8 fields. bytes32 recipients must be zero-padded EVM addresses: non-EVM recipients are rejected, not shown truncated.",
+  "context": {
+    "$id": "GasZipV2",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 10, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 56, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 100, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 130, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 137, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 146, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 252, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 999, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 5000, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 8453, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 33139, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 42161, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 43114, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 80094, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 81457, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" },
+        { "chainId": 167000, "address": "0x2a37d63eadfe4b4682a3c28c1c2cd4f109cc2762" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Gas.zip", "info": { "url": "https://www.gas.zip/" }, "contractName": "GasZipV2" },
+  "display": {
+    "formats": {
+      "deposit(uint256 chains, bytes32 to)": {
+        "intent": "Bridge gas with Gas.zip",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount", "visible": "always" },
+          { "path": "chains", "label": "Dest. Gas.zip ID", "format": "raw", "visible": "always" },
+          {
+            "path": "to.[0:20]",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "to.[20:32]",
+            "label": "Recipient padding",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x000000000000000000000000"] }
+          }
+        ]
+      },
+      "deposit(uint256 chains, address to)": {
+        "intent": "Bridge gas with Gas.zip",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount", "visible": "always" },
+          { "path": "chains", "label": "Dest. Gas.zip ID", "format": "raw", "visible": "always" },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

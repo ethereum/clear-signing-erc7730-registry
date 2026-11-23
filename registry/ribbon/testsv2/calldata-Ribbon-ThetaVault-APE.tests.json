@@ -1,0 +1,142 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-Ribbon-ThetaVault-APE.json",
+  "dataProvider": {
+    "tokens": {
+      "0x4d224452801aced8b2f0aebe155379bb5d594381": {
+        "symbol": "APE",
+        "decimals": 18,
+        "name": "ApeCoin"
+      },
+      "0xc0cf10dd710aefb209d9dc67bc746510ffd98a53": {
+        "decimals": 18,
+        "name": "Ribbon APE Theta Vault",
+        "symbol": "rAPE-THETA"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit on chain 1 #1",
+      "rawTx": "0x02f8900101843b9aca00850a0eebb0008302635594c0cf10dd710aefb209d9dc67bc746510ffd98a5380a4b6b55f25000000000000000000000000000000000000000000000000a51c00aafd4b0400c001a09397e5ac3bdcf6c842aba7216319062c77b2cdd1121833c867a01769293e054ca01c440a13f6189bd0947afe470d58e2292ac6a2e67ebd751931903c46c46c4fb5",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon APE Theta Vault"
+          },
+          {
+            "label": "Amount",
+            "value": "11.89738505 APE"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Deposit on chain 1 #2",
+      "rawTx": "0x02f8710180843b9aca008506fc23ac0083061a8094c0cf10dd710aefb209d9dc67bc746510ffd98a5380b84436efd16f00000000000000000000000000000000000000000000000014d1120d7b1600000000000000000000000000008bda12496bf61cd2ea89ad32562670bcdfdc5404c0800101",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon APE Theta Vault"
+          },
+          {
+            "label": "Amount",
+            "value": "1.5 APE"
+          },
+          {
+            "label": "Beneficiary",
+            "value": "0x8bDA12496BF61cd2ea89AD32562670BcdFDc5404"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Instant Withdraw on chain 1 #3",
+      "rawTx": "0x02f89001188459682f0085051b0c5549830157f494c0cf10dd710aefb209d9dc67bc746510ffd98a5380a42775d01c0000000000000000000000000000000000000000000000016fc2e998d3da0000c001a0e7f3ada1260b7c7991c1165273bcb8a0da01065fc7b67f16d7ac16be951eb5d4a0218ce626b4464c46424d4002451f5b1c2271586447d532191bb01c434a5b8405",
+      "expected": {
+        "intent": "Instant Withdraw",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon APE Theta Vault"
+          },
+          {
+            "label": "Amount",
+            "value": "26.5 APE"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Initiate Withdraw on chain 1 #4",
+      "rawTx": "0x02f8900135843b9aca0085017a9274178301c45894c0cf10dd710aefb209d9dc67bc746510ffd98a5380a47e108d520000000000000000000000000000000000000000000000001b9157d29c36d79cc080a02d332d365bfcf6ab6e459a939fbdf0713cbaeb93d8d52fbea095a0f77465dc0ea0063605b1e3eb5b41560a7840a46e0d4e217974fe8a16a6be91ac726743df04c2",
+      "expected": {
+        "intent": "Initiate Withdraw",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon APE Theta Vault"
+          },
+          {
+            "label": "Shares",
+            "value": "1.9864654727226879shares"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Complete Withdraw on chain 1 #5",
+      "rawTx": "0x02f870010e8405f5e10085060528da808301a67a94c0cf10dd710aefb209d9dc67bc746510ffd98a538084f756fa21c001a027e98a983bb6a92bf7f41291144494aec4ec5b0b7a3d899349c2490e6f448a17a04b7bf5fefa982672a07744c774944d60de6dc6ada9852d766c5ace72526af9cb",
+      "expected": {
+        "intent": "Complete Withdraw",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon APE Theta Vault"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem shares on chain 1 #6",
+      "rawTx": "0x02f8500180843b9aca008506fc23ac0083061a8094c0cf10dd710aefb209d9dc67bc746510ffd98a5380a4db006a7500000000000000000000000000000000000000000000000014d1120d7b160000c0800101",
+      "expected": {
+        "intent": "Redeem shares",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon APE Theta Vault"
+          },
+          {
+            "label": "Shares",
+            "value": "1.5shares"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem all shares on chain 1 #7",
+      "rawTx": "0x02f8700104843b9aca0085029503bd7a83010d2994c0cf10dd710aefb209d9dc67bc746510ffd98a5380846f31ab34c080a0b0c5d4ca8a2bb874cc5891f9a50c18198150f549f5e4e53a61e3c69684709e20a01ad1aaa338e55131e00a7f5b912664b3acae99bd799bb2d096c6d85df9662acd",
+      "expected": {
+        "intent": "Redeem all shares",
+        "owner": "Ribbon Finance",
+        "fields": [
+          {
+            "label": "Vault",
+            "value": "Ribbon APE Theta Vault"
+          }
+        ]
+      }
+    }
+  ]
+}

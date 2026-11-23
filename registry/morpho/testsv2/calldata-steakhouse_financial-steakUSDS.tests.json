@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-steakUSDS.json",
+  "dataProvider": {
+    "tokens": {
+      "0xbeefda19bc6114633fc17e6d074a6a2b472c756f": {
+        "decimals": 18,
+        "name": "Steakhouse USDS",
+        "symbol": "steakUSDS"
+      },
+      "0xdc035d45d973e3ec169d2276ddab16f1e407384f": {
+        "symbol": "USDS",
+        "decimals": 18,
+        "name": "USDS Stablecoin"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit on chain 1 #1",
+      "rawTx": "0x02f8710180843b9aca008504a817c80083030d4094beefda19bc6114633fc17e6d074a6a2b472c756f80b8446e553f650000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000001c0800101",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Steakhouse Financial",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "100 USDS"
+          },
+          {
+            "label": "Share ticker",
+            "value": "steakUSDS"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x0000000000000000000000000000000000000001"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint (synthetic) on chain 1 #2",
+      "rawTx": "0x02f86e0180843b9aca008504a817c8008307a12094beefda19bc6114633fc17e6d074a6a2b472c756f80b84494bf804d00000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Steakhouse Financial",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDS"
+          },
+          {
+            "label": "Minted shares",
+            "value": "1500 steakUSDS"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw (synthetic) on chain 1 #3",
+      "rawTx": "0x02f88e0180843b9aca008504a817c8008307a12094beefda19bc6114633fc17e6d074a6a2b472c756f80b864b460af9400000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Steakhouse Financial",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "1500 USDS"
+          },
+          {
+            "label": "To",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem (synthetic) on chain 1 #4",
+      "rawTx": "0x02f88e0180843b9aca008504a817c8008307a12094beefda19bc6114633fc17e6d074a6a2b472c756f80b864ba08765200000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Steakhouse Financial",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "1500 steakUSDS"
+          },
+          {
+            "label": "To",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    }
+  ]
+}

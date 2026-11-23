@@ -1,0 +1,56 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "cBridge OriginalTokenVault",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xb37d31b2a74029b5951a2778f959282e2d518595" },
+        { "chainId": 137, "address": "0xc1a2d967dfaa6a10f3461bc21864c23c1dd51eea" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Celer Network", "info": { "url": "https://celer.network/" }, "contractName": "OriginalTokenVault" },
+  "display": {
+    "formats": {
+      "deposit(address _token, uint256 _amount, uint64 _mintChainId, address _mintAccount, uint64 _nonce)": {
+        "intent": "Bridge",
+        "fields": [
+          { "path": "#._amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "#._token" } },
+          { "path": "#._mintChainId", "label": "Destination chain ID", "format": "raw" },
+          {
+            "path": "#._mintAccount",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#._token", "label": "Token", "visible": "never" },
+          { "path": "#._nonce", "label": "Nonce", "visible": "never" }
+        ]
+      },
+      "depositNative(uint256 _amount, uint64 _mintChainId, address _mintAccount, uint64 _nonce)": {
+        "intent": "Bridge",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount" },
+          { "path": "#._mintChainId", "label": "Destination chain ID", "format": "raw" },
+          {
+            "path": "#._mintAccount",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#._amount", "label": "Amount", "visible": "never" },
+          { "path": "#._nonce", "label": "Nonce", "visible": "never" }
+        ]
+      },
+      "withdraw(bytes _request, bytes[] _sigs, address[] _signers, uint256[] _powers)": {
+        "intent": "Withdraw from cBridge",
+        "fields": [
+          { "path": "#._request", "label": "Withdrawal request", "visible": "never" },
+          { "path": "#._sigs.[]", "label": "Signatures", "visible": "never" },
+          { "path": "#._signers.[]", "label": "Signers", "visible": "never" },
+          { "path": "#._powers.[]", "label": "Powers", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x9858e47BCbBe6fBAC040519B02d7cd4B2C470C66"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Origin Protocol",
+    "info": {
+      "url": "https://www.originprotocol.com"
+    },
+    "constants": {
+      "sfrxETH": "0xac3E018457B222d93114458476f3E3416Abbe38F",
+      "oeth": "0x856c4Efb76C1D1AE02e20CEB03A2A6a08b0b8dC3"
+    }
+  },
+  "display": {
+    "formats": {
+      "deposit()": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "amount",
+            "path": "@.value",
+            "visible": "always"
+          }
+        ]
+      },
+      "depositSFRXETH(uint256 amount, uint256 minOETH)": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "amount",
+            "params": {
+              "token": "$.metadata.constants.sfrxETH"
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Minimum Received",
+            "format": "tokenAmount",
+            "path": "minOETH",
+            "params": {
+              "token": "$.metadata.constants.oeth"
+            },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

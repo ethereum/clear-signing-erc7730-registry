@@ -1,0 +1,43 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xfd32fA2ca22c76dD6E550706Ad913FC6CE91c75D" },
+        { "chainId": 8453, "address": "0xA090dD1a701408Df1d4d0B85b716c87565f90467" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Morpho", "info": { "url": "https://morpho.org/" } },
+  "display": {
+    "formats": {
+      "reallocateTo(address vault,((address loanToken,address collateralToken,address oracle,address irm,uint256 lltv) marketParams,uint128 amount)[] withdrawals,(address loanToken,address collateralToken,address oracle,address irm,uint256 lltv) supplyMarketParams)": {
+        "intent": "Reallocate vault liquidity",
+        "fields": [
+          { "path": "@.value", "label": "Reallocation fee", "format": "amount", "visible": "always" },
+          {
+            "path": "vault",
+            "label": "Vault",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "supplyMarketParams.loanToken",
+            "label": "Supply loan token",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "supplyMarketParams.collateralToken",
+            "label": "Supply collateral",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

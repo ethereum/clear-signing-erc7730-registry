@@ -1,0 +1,58 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {}
+  },
+  "metadata": {
+    "owner": "Origin Protocol",
+    "info": {
+      "url": "https://www.originprotocol.com"
+    },
+    "constants": {
+      "underlyingToken": "0x0000000000000000000000000000000000000000"
+    }
+  },
+  "display": {
+    "formats": {
+      "claimRedeem(uint256 requestId)": {
+        "intent": "Claim request",
+        "fields": [
+          {
+            "label": "Request Id",
+            "format": "raw",
+            "path": "requestId",
+            "visible": "always"
+          }
+        ]
+      },
+      "deposit(uint256 assets)": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "assets",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "requestRedeem(uint256 shares)": {
+        "intent": "Request redemption",
+        "fields": [
+          {
+            "label": "Amount of shares",
+            "format": "tokenAmount",
+            "path": "shares",
+            "params": {
+              "tokenPath": "@.to"
+            },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

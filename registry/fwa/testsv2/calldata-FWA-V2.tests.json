@@ -1,0 +1,398 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-FWA-V2.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0df17b5ac76ababa36e1450e2cbcd18a620c845": {
+        "symbol": "FWA",
+        "decimals": 18,
+        "name": "Fake World Assets"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "List NFT with ETH backing on chain 1 #1",
+      "rawTx": "0x02f8ba018209378408f0d180840c675aa0831d86bf94958c41181182e76f221331b2755b77d9e1426a98880a0181ae130e8000b8443c61c7aa000000000000000000000000387c41b0b2f1128de44db1bcf8baad085f26392c00000000000000000000000000000000000000000000000000000000000007dfc080a003e932732126f059c757eaedb2b322e0ae6afe6193ef15b55d8bd20e5f0b1240a071b7f76d9ecebbc3319f5cce6aff0644717caca735c62f50ef6aa55959c5da8f",
+      "txHash": "0x7a6821eec49a76234aadb226fa9cb13f64e3ac256f98fda4b8ddb538fa409b7c",
+      "expected": {
+        "intent": "List NFT with ETH backing",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Collection",
+            "value": "0x387C41B0B2F1128dE44dB1Bcf8baad085f26392C"
+          },
+          {
+            "label": "NFT",
+            "value": "2015"
+          },
+          {
+            "label": "ETH backing",
+            "value": "0.721 ETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Keep NFT and relist it on chain 1 #2",
+      "rawTx": "0x02f898018203448419fa5cf4842b040b50830f303d94958c41181182e76f221331b2755b77d9e1426a988783734dd0b08000a47d4b4a6f000000000000000000000000000000000000000000000000000000000000000fc001a0a5841f37367e1da7e235ff22b42a5327d8b575b35fed9619e41c1d7f03e64397a07552b9868a678c763e5f222449ada366a07bf4b61c25ddc44f15713c93500b8f",
+      "txHash": "0x4f6864e50046c1e9849411f37ba691c4bc1d6c2bb1cdcfcd5e03350ac0a708bd",
+      "expected": {
+        "intent": "Keep NFT and relist it",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Listing ID",
+            "value": "15"
+          },
+          {
+            "label": "New ETH backing",
+            "value": "0.037 ETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Update listing backing on chain 1 #3",
+      "rawTx": "0x02f8ba018209bf8408f0d180840d6012808306cb4994958c41181182e76f221331b2755b77d9e1426a9888010a741a46278000b844c622bfcf0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000016345785d8a0000c080a0d43d56278a4786a3ab8721015effb3ad828f87af68dd7d46360482855a2f0e72a04aa0e85ef02cb7b6137578c08166b7e34408fbf74063702975e450a8d87753fe",
+      "txHash": "0x5885d4ff1b5392461b91e9b181a1923c1a89f211e6e72c91d1e7cc9dfabe2a16",
+      "expected": {
+        "intent": "Update listing backing",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Listing ID",
+            "value": "4"
+          },
+          {
+            "label": "New ETH backing",
+            "value": "0.1 ETH"
+          },
+          {
+            "label": "ETH sent",
+            "value": "0.075 ETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw listing and backing on chain 1 #4",
+      "rawTx": "0x02f88f018219118279918404f0027f83066aba94958c41181182e76f221331b2755b77d9e1426a9880a4aec6e2730000000000000000000000000000000000000000000000000000000000000020c080a03a305db44fdbc5610825f24918dfa4aea03addb9566c92188f8b83b6f46aeef4a04dc016c11253b14a0a29ec1c2dd0b0d26635af6eb835288059d5e5b34358a647",
+      "txHash": "0x273971ac805ce9463675337cec8e226f313706c913a65d90e206560c6749eeaa",
+      "expected": {
+        "intent": "Withdraw listing and backing",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Listing ID",
+            "value": "32"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim top listing spot on chain 1 #5",
+      "rawTx": "0x02f8500180843b9aca008504a817c80083030d4094958c41181182e76f221331b2755b77d9e1426a9880a40986a5a10000000000000000000000000000000000000000000000000000000000001073c0800101",
+      "expected": {
+        "intent": "Claim top listing spot",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Listing ID",
+            "value": "4211"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim listing fees on chain 1 #6",
+      "rawTx": "0x02f90253018205ec8402faf080841c38b0728308525694958c41181182e76f221331b2755b77d9e1426a9880b901e4b840cf360000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000d00000000000000000000000000000000000000000000000000000000000002c600000000000000000000000000000000000000000000000000000000000002c700000000000000000000000000000000000000000000000000000000000002c800000000000000000000000000000000000000000000000000000000000002c900000000000000000000000000000000000000000000000000000000000002ca00000000000000000000000000000000000000000000000000000000000002cb00000000000000000000000000000000000000000000000000000000000002cd00000000000000000000000000000000000000000000000000000000000002ce00000000000000000000000000000000000000000000000000000000000002cf00000000000000000000000000000000000000000000000000000000000002d000000000000000000000000000000000000000000000000000000000000002d100000000000000000000000000000000000000000000000000000000000002d20000000000000000000000000000000000000000000000000000000000000388c080a0588d4ca871af781dbd606c594c961003afff325b53d84c93dfde91bd20fb418aa0164951dd6bf34d1dd08682b74689adcb9d80f780fbe5e774c065ba633183abe1",
+      "txHash": "0xe72cacf3d6976f1704490c316a5653eef54a6cf34ed8e30380ca2461cdf2ca19",
+      "expected": {
+        "intent": "Claim listing fees",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Listing ID",
+            "value": "710"
+          },
+          {
+            "label": "Listing ID",
+            "value": "711"
+          },
+          {
+            "label": "Listing ID",
+            "value": "712"
+          },
+          {
+            "label": "Listing ID",
+            "value": "713"
+          },
+          {
+            "label": "Listing ID",
+            "value": "714"
+          },
+          {
+            "label": "Listing ID",
+            "value": "715"
+          },
+          {
+            "label": "Listing ID",
+            "value": "717"
+          },
+          {
+            "label": "Listing ID",
+            "value": "718"
+          },
+          {
+            "label": "Listing ID",
+            "value": "719"
+          },
+          {
+            "label": "Listing ID",
+            "value": "720"
+          },
+          {
+            "label": "Listing ID",
+            "value": "721"
+          },
+          {
+            "label": "Listing ID",
+            "value": "722"
+          },
+          {
+            "label": "Listing ID",
+            "value": "904"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Acquire random NFTs on chain 1 #7",
+      "rawTx": "0x02f9011a018203ea840da3271a842047a1d6831b450694958c41181182e76f221331b2755b77d9e1426a988804518c161a937a49b8a4f6cb85110000000000000000000000006330cdfe9ab3b9f9600f61f9ef5c06477bfd8d58000000000000000000000000000000000000000000000000000000000000000500000000000000000000000000000000000000000000000000dbfaa31631e43400000000000000000000000000000002675b7096cef4fc8c8803fd17a1c1100000000000000000000000000000000000000000000000000000000000000003e8c001a074c08c3e56d36e25ced35f7288c532e9daf6bd3fcf6990aa2ef807df9497f2e5a0257dccc084b3ce04f386ccaf59089954313a148d9f68a267f03f494bdce9966f",
+      "txHash": "0x314ec242d780400f0b2a6e9f75c795043fa1b606451271ecb256a903d61427bf",
+      "expected": {
+        "intent": "Acquire random NFTs",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Purchaser",
+            "value": "0x6330cdfe9Ab3B9F9600F61f9ef5c06477BfD8d58"
+          },
+          {
+            "label": "Number of NFTs",
+            "value": "5"
+          },
+          {
+            "label": "Amount to pay",
+            "value": "0.311183875828316745 ETH"
+          },
+          {
+            "label": "Max fee per NFT",
+            "value": "0.061918598258615348 ETH"
+          },
+          {
+            "label": "Max neg. slippage",
+            "value": "1000bps"
+          },
+          {
+            "label": "Min pool EV basis",
+            "value": "817949999999999999828657601000000000000"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Keep acquired NFT on chain 1 #8",
+      "rawTx": "0x02f891018203428420eca798843189fc688309d45f94958c41181182e76f221331b2755b77d9e1426a9880a449cfb71000000000000000000000000000000000000000000000000000000000000000d3c001a06a186b6238ec972f41480adf4135a395bccbaa75de0ba823fa5469983a207ceea07d33f014d984f28dc663c0b3df410ee5f6eec9d03d61cc1b3d88c4ce459358b2",
+      "txHash": "0x2947e354ddafc7aa7629e0dc91bc5d98cc5409074c8351c77476fe575c936640",
+      "expected": {
+        "intent": "Keep acquired NFT",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Listing ID",
+            "value": "211"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Return NFT and take ETH bid on chain 1 #9",
+      "rawTx": "0x02f891018213828405f5e1008413d784c98308b42694958c41181182e76f221331b2755b77d9e1426a9880a435390e9600000000000000000000000000000000000000000000000000000000000001a6c001a0d938dda74aabf7a40576d7ad6431c1fcb571cce4cf4f5f26b25633d6757215cba04dcc595a82d8cd263b7249bb2ee4afe3cd74d0755490b1d7a238ce829271a6de",
+      "txHash": "0xc1cbd2fc0432358f664a6db96a6bdf9e5e10e8a1113ed3b111b7f45f5acdce26",
+      "expected": {
+        "intent": "Return NFT and take ETH bid",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Listing ID",
+            "value": "422"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Return NFT and take bid in FWA on chain 1 #10",
+      "rawTx": "0x02f8b2018209458408f0d1808418ab9ce0830f14a694958c41181182e76f221331b2755b77d9e1426a9880b84420bd63ba000000000000000000000000000000000000000000000000000000000000002b000000000000000000000000000000000000000000000201edecc09b5ca02ef4c001a0c55fd2b5d7d8cc6cbe0aaaace8d7c70a356632406c55a4b01bd99d37c06c71f6a0346330b2cce43c53ce01cd3c63182d6f458796986d3a5f6bb5362ad73e526099",
+      "txHash": "0xb67ee4314d3bb5fbbb8c16901a5396a71eb882995b2b29e0258d132d4d7fe015",
+      "expected": {
+        "intent": "Return NFT and take bid in FWA",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Listing ID",
+            "value": "43"
+          },
+          {
+            "label": "Minimum received",
+            "value": "9480.32399946799908018 FWA"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw acquisition refund on chain 1 #11",
+      "rawTx": "0x02f8710182142d84773594008488c9bca483012a0294958c41181182e76f221331b2755b77d9e1426a9880846e658d1ac001a0b55eef1feafcedc18429c69cba27f05172f953ea5f52907831fca02369d67d9ea01a0d5d53df7761bfd25ac1ef8c00cb3164c62d376d0714c7fc7180625b201d80",
+      "txHash": "0x09fd13bb7b946745c2e5d89cc596e38503e6afe4e7d5773dff065dca0c088592",
+      "expected": {
+        "intent": "Withdraw acquisition refund",
+        "owner": "Fake World Assets",
+        "fields": []
+      }
+    },
+    {
+      "description": "Withdraw earnings on chain 1 #12",
+      "rawTx": "0x02f870018205eb8402faf080841bd2409282dda794958c41181182e76f221331b2755b77d9e1426a988084b73c6ce9c080a07280a54cb140f1e00315743d084ed68b3e101cb049acad0a37ed0624bb9118bba049eb38a2c12c6c24900e749f9260045b0e76ef51b923026d69175c488767c076",
+      "txHash": "0x6cc8711b8dcb08ce7ece418b4347d609bc2d2934ffd5c66fa3dc37e2e69d0dd3",
+      "expected": {
+        "intent": "Withdraw earnings",
+        "owner": "Fake World Assets",
+        "fields": []
+      }
+    },
+    {
+      "description": "Reclaim backing ETH on chain 1 #13",
+      "rawTx": "0x02f8910182babb8408f0d1808426b69560830a3e1894958c41181182e76f221331b2755b77d9e1426a9880a40793e5fd000000000000000000000000000000000000000000000000000000000000075fc001a042f2498291e7461d5dd5c093b720d7654d9461b92fddc80bef72db3e8062f87ba06d58660bb19eb635bf264ba60d0f78b0a888df6a25a08fcf3ec6988986f7990d",
+      "txHash": "0xf69ae57d962387507dec14e1219f530b5c65e65b1544cc1726cbd10d0eb63320",
+      "expected": {
+        "intent": "Reclaim backing ETH",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Listing ID",
+            "value": "1887"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Reclaim NFT on chain 1 #14",
+      "rawTx": "0x02f8910182083784773594008493d0c11d8307e7d994958c41181182e76f221331b2755b77d9e1426a9880a4db9584ce000000000000000000000000000000000000000000000000000000000000027ec001a04334a233fbad6b65dd009259a79f1c5da17b0fe022acb6042f9db46b7105c7e2a036c1dc59183d0d1deea2ab6240cccddc45517aab692edfc57c614a1f3920655b",
+      "txHash": "0xeed5350585290b79137da49ad21d1ca59eb9fe58d0b4d217c1e2e714db081003",
+      "expected": {
+        "intent": "Reclaim NFT",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Listing ID",
+            "value": "638"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Recover stuck NFT on chain 1 #15",
+      "rawTx": "0x02f89001821b1683019bdb840dbe95f28302a98e94958c41181182e76f221331b2755b77d9e1426a9880a48ca141050000000000000000000000000000000000000000000000000000000000000043c080a00a2af69644d6f60fee415431fb63c8b48b05c8db86c079a626ddea608486006aa01454fe76558a48f1638c959afb3da7f930e0b732a2f4b6630d5acd7a8b9f81b6",
+      "txHash": "0xdb2f5a481af704bccdeae12be9a13ca4e2ae8289f71374794f4d3a0d570e2c5a",
+      "expected": {
+        "intent": "Recover stuck NFT",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Listing ID",
+            "value": "67"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Finalize unsettled listing on chain 1 #16",
+      "rawTx": "0x02f8500180843b9aca008504a817c80083030d4094958c41181182e76f221331b2755b77d9e1426a9880a49eb609210000000000000000000000000000000000000000000000000000000000000b8ac0800101",
+      "expected": {
+        "intent": "Finalize unsettled listing",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Listing ID",
+            "value": "2954"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Kick overpriced listing on chain 1 #17",
+      "rawTx": "0x02f8500180843b9aca008504a817c80083030d4094958c41181182e76f221331b2755b77d9e1426a9880a461e02d6e0000000000000000000000000000000000000000000000000000000000000f25c0800101",
+      "expected": {
+        "intent": "Kick overpriced listing",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Listing ID",
+            "value": "3877"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Activate pending listings on chain 1 #18",
+      "rawTx": "0x02f89001821c4383989680840ee6b280832647e194958c41181182e76f221331b2755b77d9e1426a9880a42c8bea330000000000000000000000000000000000000000000000000000000000000006c080a0f329f92f698be5c6b7521cc03bbe262d4dfe8d093684a17d171c8a69a6f5e158a02d50c6868c0ee2a3ca924c838aecd682421e9e3e47d923f642f5ac4b951f10af",
+      "txHash": "0x852a9e633c7d68c8eccd1ed4bf52e3d1e047d9c1dadb3e6b151c5b825a7dfbc2",
+      "expected": {
+        "intent": "Activate pending listings",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Max listings",
+            "value": "6"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Process pending acquisitions on chain 1 #19",
+      "rawTx": "0x02f8910182b2a68405f5e1008420cce1948328dfe494958c41181182e76f221331b2755b77d9e1426a9880a4ea502b3f0000000000000000000000000000000000000000000000000000000000000005c001a05031bd25754de20a7ed3bb277a82a110aba16c82e178f8db46bb60b071d19833a07d9b1903f0521f5c3dc0bd779e58ae3b58ac8f4e5e18620385dffdfe9db233ca",
+      "txHash": "0x435144c95f3f661d0b59861a222e9bccf0a6ab70afbba98354fdb1f99aa4e633",
+      "expected": {
+        "intent": "Process pending acquisitions",
+        "owner": "Fake World Assets",
+        "fields": [
+          {
+            "label": "Max acquisitions",
+            "value": "5"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Pay out protocol fees on chain 1 #20",
+      "rawTx": "0x02f8710182094c8408f0d1808422d3b5e08301682a94958c41181182e76f221331b2755b77d9e1426a9880844c5b2bebc001a08bab8fba7dad8b25a2019a613fc7477caefae1680000c2ac9e9a1bb3f1900af0a01b12e40a90701115755defd37fd350bbfbb6f7da8191acb3eb1fe33e082f623d",
+      "txHash": "0x7e75f9c399f469f78800b16c4420ca74b02cfa5c76d6758145d8b71acee968a7",
+      "expected": {
+        "intent": "Pay out protocol fees",
+        "owner": "Fake World Assets",
+        "fields": []
+      }
+    },
+    {
+      "description": "Reconcile VRF requests on chain 1 #21",
+      "rawTx": "0x02f00180843b9aca008504a817c80083030d4094958c41181182e76f221331b2755b77d9e1426a988084ead06b1bc0800101",
+      "expected": {
+        "intent": "Reconcile VRF requests",
+        "owner": "Fake World Assets",
+        "fields": []
+      }
+    }
+  ]
+}

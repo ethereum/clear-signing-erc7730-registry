@@ -1,0 +1,71 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "$comment": "route() is an unconditional transfer to destination (no swap): shown as Send.",
+  "context": {
+    "$id": "RangoRouter",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xb8cf3cdbc390180257295bf08cfdeca80dca9e8a" },
+        { "chainId": 10, "address": "0xb8cf3cdbc390180257295bf08cfdeca80dca9e8a" },
+        { "chainId": 56, "address": "0xb8cf3cdbc390180257295bf08cfdeca80dca9e8a" },
+        { "chainId": 100, "address": "0xb8cf3cdbc390180257295bf08cfdeca80dca9e8a" },
+        { "chainId": 137, "address": "0xb8cf3cdbc390180257295bf08cfdeca80dca9e8a" },
+        { "chainId": 146, "address": "0xb8cf3cdbc390180257295bf08cfdeca80dca9e8a" },
+        { "chainId": 8453, "address": "0xb8cf3cdbc390180257295bf08cfdeca80dca9e8a" },
+        { "chainId": 42161, "address": "0xb8cf3cdbc390180257295bf08cfdeca80dca9e8a" },
+        { "chainId": 43114, "address": "0xb8cf3cdbc390180257295bf08cfdeca80dca9e8a" },
+        { "chainId": 59144, "address": "0xb8cf3cdbc390180257295bf08cfdeca80dca9e8a" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Rango Exchange",
+    "info": { "url": "https://rango.exchange" },
+    "contractName": "RangoRouter",
+    "constants": { "nativeToken": "0x0000000000000000000000000000000000000000" }
+  },
+  "display": {
+    "formats": {
+      "route(address token, address destination, uint256 amount)": {
+        "$id": "route",
+        "intent": "Send",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "token", "nativeCurrencyAddress": "$.metadata.constants.nativeToken" },
+            "visible": "always"
+          },
+          { "path": "@.value", "label": "Native amount sent", "format": "amount", "visible": "always" },
+          {
+            "path": "destination",
+            "label": "Destination",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "callGarden(address token, address destination, bytes data)": {
+        "$id": "callGarden",
+        "intent": "Call Garden HTLC",
+        "fields": [
+          {
+            "path": "token",
+            "label": "Token",
+            "format": "tokenTicker",
+            "visible": "always"
+          },
+          {
+            "path": "data",
+            "label": "HTLC call",
+            "format": "calldata",
+            "params": { "calleePath": "destination", "amountPath": "@.value", "spenderPath": "@.to" },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

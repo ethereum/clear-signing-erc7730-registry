@@ -1,0 +1,64 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-wOETH.json",
+  "dataProvider": {
+    "tokens": {
+      "0x856c4efb76c1d1ae02e20ceb03a2a6a08b0b8dc3": {
+        "symbol": "OETH",
+        "decimals": 18,
+        "name": "Origin Ether"
+      },
+      "0xdcee70654261af21c44c093c300ed3bb97b78192": {
+        "symbol": "WOETH",
+        "decimals": 18,
+        "name": "Wrapped OETH"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Wrap on chain 1 #1",
+      "rawTx": "0x02f8710180843b9aca008504a817c800830493e094dcee70654261af21c44c093c300ed3bb97b7819280b8446e553f650000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000000000000000001c0800101",
+      "expected": {
+        "intent": "Wrap",
+        "owner": "Origin Protocol",
+        "fields": [
+          {
+            "label": "Deposit",
+            "value": "1 OETH"
+          },
+          {
+            "label": "Receive",
+            "value": "wOETH"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x0000000000000000000000000000000000000001"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Unwrap (synthetic) on chain 1 #2",
+      "rawTx": "0x02f88e0180843b9aca008504a817c8008307a12094dcee70654261af21c44c093c300ed3bb97b7819280b864ba08765200000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Unwrap",
+        "owner": "Origin Protocol",
+        "fields": [
+          {
+            "label": "Redeem",
+            "value": "1500 WOETH"
+          },
+          {
+            "label": "To",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Kelp LRTWithdrawalManager",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x62de59c08eb5dae4b7e6f7a8cad3006d6965ec16" }] }
+  },
+  "metadata": {
+    "owner": "Kelp DAO",
+    "info": { "url": "https://kelpdao.xyz/" },
+    "contractName": "Kelp LRT Withdrawal Manager",
+    "constants": { "rsETH": "0xa1290d69c65a6fe4df752f95823fae25cb99e5a7", "nativeEth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" }
+  },
+  "display": {
+    "definitions": {
+      "rsETHUnstaked": { "label": "rsETH to unstake", "format": "tokenAmount", "params": { "token": "$.metadata.constants.rsETH" } },
+      "assetExpected": {
+        "label": "Asset expected",
+        "format": "tokenAmount",
+        "params": {
+          "tokenPath": "#.asset",
+          "nativeCurrencyAddress": "$.metadata.constants.nativeEth",
+          "threshold": "0x01",
+          "message": "Paid in"
+        }
+      }
+    },
+    "formats": {
+      "initiateWithdrawal(address asset, uint256 rsETHUnstaked, string referralId)": {
+        "intent": "Unstake rsETH",
+        "fields": [
+          { "path": "#.rsETHUnstaked", "$ref": "$.display.definitions.rsETHUnstaked", "visible": "always" },
+          { "path": "#.rsETHUnstaked", "$ref": "$.display.definitions.assetExpected", "visible": "always" },
+          { "path": "#.asset", "label": "Asset", "visible": "never" },
+          { "path": "#.referralId", "label": "Referral id", "visible": "never" }
+        ]
+      },
+      "instantWithdrawal(address asset, uint256 rsETHUnstaked, string referralId)": {
+        "intent": "Instant unstake rsETH",
+        "fields": [
+          { "path": "#.rsETHUnstaked", "$ref": "$.display.definitions.rsETHUnstaked", "visible": "always" },
+          { "path": "#.rsETHUnstaked", "$ref": "$.display.definitions.assetExpected", "visible": "always" },
+          { "path": "#.asset", "label": "Asset", "visible": "never" },
+          { "path": "#.referralId", "label": "Referral id", "visible": "never" }
+        ]
+      },
+      "completeWithdrawal(address asset, string referralId)": {
+        "intent": "Claim withdrawal",
+        "fields": [
+          { "path": "#.asset", "$ref": "$.display.definitions.assetExpected", "label": "Asset", "visible": "always" },
+          { "path": "#.referralId", "label": "Referral id", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

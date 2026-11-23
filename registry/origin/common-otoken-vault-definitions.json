@@ -1,0 +1,89 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {}
+  },
+  "metadata": {
+    "owner": "Origin Protocol",
+    "info": {
+      "url": "https://www.originprotocol.com"
+    },
+    "constants": {
+      "underlyingToken": "0x0000000000000000000000000000000000000000"
+    }
+  },
+  "display": {
+    "formats": {
+      "claimWithdrawal(uint256 _requestId)": {
+        "intent": "Claim withdrawal request",
+        "fields": [
+          {
+            "label": "Request Id",
+            "format": "raw",
+            "path": "_requestId",
+            "visible": "always"
+          }
+        ]
+      },
+      "claimWithdrawals(uint256[] _requestIds)": {
+        "intent": "Claim withdrawal requests",
+        "fields": [
+          {
+            "label": "Request Ids",
+            "format": "raw",
+            "path": "_requestIds.[]",
+            "visible": "always"
+          }
+        ]
+      },
+      "mint(address _asset, uint256 _amount, uint256 _minimumOusdAmount)": {
+        "intent": "Mint",
+        "fields": [
+          {
+            "label": "Asset",
+            "format": "addressName",
+            "path": "_asset",
+            "params": {
+              "types": [
+                "token"
+              ]
+            },
+            "visible": "never"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "_amount",
+            "params": {
+              "tokenPath": "_asset"
+            },
+            "visible": "always"
+          },
+          {
+            "label": "Minimum Received",
+            "format": "tokenAmount",
+            "path": "_minimumOusdAmount",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "requestWithdrawal(uint256 _amount)": {
+        "intent": "Request withdrawal",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "_amount",
+            "visible": "always",
+            "params": {
+              "token": "$.metadata.constants.underlyingToken"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

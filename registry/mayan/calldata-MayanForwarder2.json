@@ -1,0 +1,127 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "$comment": "swapAndForward*: the inner Mayan amount is overwritten at execution, so minMiddleAmount is the enforced floor; the swap step is blind unless swapProtocol has a descriptor (Mayan's own swap contracts have none). Gnosis not listed: not deployed.",
+  "context": {
+    "$id": "MayanForwarder2",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x337685fdab40d39bd02028545a4ffa7d287cc3e2" },
+        { "chainId": 10, "address": "0x337685fdab40d39bd02028545a4ffa7d287cc3e2" },
+        { "chainId": 56, "address": "0x337685fdab40d39bd02028545a4ffa7d287cc3e2" },
+        { "chainId": 137, "address": "0x337685fdab40d39bd02028545a4ffa7d287cc3e2" },
+        { "chainId": 146, "address": "0x337685fdab40d39bd02028545a4ffa7d287cc3e2" },
+        { "chainId": 8453, "address": "0x337685fdab40d39bd02028545a4ffa7d287cc3e2" },
+        { "chainId": 42161, "address": "0x337685fdab40d39bd02028545a4ffa7d287cc3e2" },
+        { "chainId": 43114, "address": "0x337685fdab40d39bd02028545a4ffa7d287cc3e2" },
+        { "chainId": 59144, "address": "0x337685fdab40d39bd02028545a4ffa7d287cc3e2" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Mayan Finance",
+    "info": { "url": "https://mayan.finance" },
+    "contractName": "MayanForwarder2",
+    "constants": { "addressAsNull": "0x0000000000000000000000000000000000000000" }
+  },
+  "display": {
+    "formats": {
+      "forwardEth(address mayanProtocol, bytes protocolData)": {
+        "$id": "forwardEth",
+        "intent": "Bridge via Mayan",
+        "fields": [
+          {
+            "path": "protocolData",
+            "label": "Bridge",
+            "format": "calldata",
+            "params": { "calleePath": "mayanProtocol", "amountPath": "@.value", "spenderPath": "@.to" },
+            "visible": "always"
+          }
+        ]
+      },
+      "forwardERC20(address tokenIn, uint256 amountIn, (uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) permitParams, address mayanProtocol, bytes protocolData)": {
+        "$id": "forwardERC20",
+        "intent": "Bridge via Mayan",
+        "fields": [
+          {
+            "path": "amountIn",
+            "label": "Amount sent",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenIn", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
+            "visible": "always"
+          },
+          {
+            "path": "protocolData",
+            "label": "Bridge",
+            "format": "calldata",
+            "params": { "calleePath": "mayanProtocol", "amountPath": "@.value", "spenderPath": "@.to" },
+            "visible": "always"
+          },
+          { "path": "permitParams", "label": "Permit", "visible": "never" }
+        ]
+      },
+      "swapAndForwardEth(uint256 amountIn, address swapProtocol, bytes swapData, address middleToken, uint256 minMiddleAmount, address mayanProtocol, bytes mayanData)": {
+        "$id": "swapAndForwardEth",
+        "intent": "Swap and bridge via Mayan",
+        "fields": [
+          { "path": "amountIn", "label": "Amount sent", "format": "amount", "visible": "always" },
+          {
+            "path": "swapData",
+            "label": "Swap",
+            "format": "calldata",
+            "params": { "calleePath": "swapProtocol", "amountPath": "amountIn", "spenderPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "minMiddleAmount",
+            "label": "Min bridged amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "middleToken", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
+            "visible": "always"
+          },
+          {
+            "path": "mayanData",
+            "label": "Bridge",
+            "format": "calldata",
+            "params": { "calleePath": "mayanProtocol", "spenderPath": "@.to" },
+            "visible": "always"
+          }
+        ]
+      },
+      "swapAndForwardERC20(address tokenIn, uint256 amountIn, (uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) permitParams, address swapProtocol, bytes swapData, address middleToken, uint256 minMiddleAmount, address mayanProtocol, bytes mayanData)": {
+        "$id": "swapAndForwardERC20",
+        "intent": "Swap and bridge via Mayan",
+        "fields": [
+          {
+            "path": "amountIn",
+            "label": "Amount sent",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenIn", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
+            "visible": "always"
+          },
+          {
+            "path": "swapData",
+            "label": "Swap",
+            "format": "calldata",
+            "params": { "calleePath": "swapProtocol", "spenderPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "minMiddleAmount",
+            "label": "Min bridged amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "middleToken", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
+            "visible": "always"
+          },
+          {
+            "path": "mayanData",
+            "label": "Bridge",
+            "format": "calldata",
+            "params": { "calleePath": "mayanProtocol", "spenderPath": "@.to" },
+            "visible": "always"
+          },
+          { "path": "permitParams", "label": "Permit", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

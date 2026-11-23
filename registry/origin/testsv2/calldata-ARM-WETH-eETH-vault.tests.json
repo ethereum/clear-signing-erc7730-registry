@@ -1,0 +1,62 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-ARM-WETH-eETH-vault.json",
+  "dataProvider": {
+    "tokens": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "WETH"
+      },
+      "0xfb0a3cf9b019bfd8827443d131b235b3e0fc58d2": {
+        "symbol": "ARM-WETH-eETH",
+        "decimals": 18,
+        "name": "Ether.fi ARM"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit on chain 1 #1",
+      "rawTx": "0x02f8500180843b9aca008504a817c800830493e094fb0a3cf9b019bfd8827443d131b235b3e0fc58d280a4b6b55f250000000000000000000000000000000000000000000000000de0b6b3a7640000c0800101",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Origin Protocol",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "1 WETH"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim request (synthetic) on chain 1 #2",
+      "rawTx": "0x02f84d0180843b9aca008504a817c8008307a12094fb0a3cf9b019bfd8827443d131b235b3e0fc58d280a4e46cf74700000000000000000000000000000000000000000000000000000000000003e8c0",
+      "expected": {
+        "intent": "Claim request",
+        "owner": "Origin Protocol",
+        "fields": [
+          {
+            "label": "Request Id",
+            "value": "1000"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Request redemption (synthetic) on chain 1 #3",
+      "rawTx": "0x02f84d0180843b9aca008504a817c8008307a12094fb0a3cf9b019bfd8827443d131b235b3e0fc58d280a4aa2f892d00000000000000000000000000000000000000000000005150ae84a8cdf00000c0",
+      "expected": {
+        "intent": "Request redemption",
+        "owner": "Origin Protocol",
+        "fields": [
+          {
+            "label": "Amount of shares",
+            "value": "1500 ARM-WETH-eETH"
+          }
+        ]
+      }
+    }
+  ]
+}

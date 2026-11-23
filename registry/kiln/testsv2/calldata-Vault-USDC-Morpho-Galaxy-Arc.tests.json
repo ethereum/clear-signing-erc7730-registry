@@ -1,0 +1,126 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-Vault-USDC-Morpho-Galaxy-Arc.json",
+  "dataProvider": {
+    "tokens": {
+      "0x184bdf39f9380a9d41c457803c965dde67554d5b": {
+        "symbol": "mglarcUSDC",
+        "decimals": 6,
+        "name": "Yield Bearing Galaxy Morpho USDC"
+      },
+      "0x3600000000000000000000000000000000000000": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit (synthetic) on chain 5042 #1",
+      "rawTx": "0x02f8708213b280843b9aca008504a817c8008307a12094184bdf39f9380a9d41c457803c965dde67554d5b80b8446e553f650000000000000000000000000000000000000000000000000000000059682f000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Kiln",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "1500 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "mglarcUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Mint (synthetic) on chain 5042 #2",
+      "rawTx": "0x02f8708213b280843b9aca008504a817c8008307a12094184bdf39f9380a9d41c457803c965dde67554d5b80b84494bf804d0000000000000000000000000000000000000000000000000000000059682f000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Kiln",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "USDC"
+          },
+          {
+            "label": "Minted shares",
+            "value": "1500 mglarcUSDC"
+          },
+          {
+            "label": "Mint shares to",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw (synthetic) on chain 5042 #3",
+      "rawTx": "0x02f8908213b280843b9aca008504a817c8008307a12094184bdf39f9380a9d41c457803c965dde67554d5b80b864b460af940000000000000000000000000000000000000000000000000000000059682f000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Kiln",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "1500 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem (synthetic) on chain 5042 #4",
+      "rawTx": "0x02f8908213b280843b9aca008504a817c8008307a12094184bdf39f9380a9d41c457803c965dde67554d5b80b864ba0876520000000000000000000000000000000000000000000000000000000059682f000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Kiln",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "1500 mglarcUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          },
+          {
+            "label": "Owner",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Approve (synthetic) on chain 5042 #5",
+      "rawTx": "0x02f8708213b280843b9aca008504a817c8008307a12094184bdf39f9380a9d41c457803c965dde67554d5b80b844095ea7b30000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000000000000000000000000000000000000059682f00c0",
+      "expected": {
+        "intent": "Approve",
+        "owner": "Kiln",
+        "fields": [
+          {
+            "label": "Spender",
+            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
+          },
+          {
+            "label": "Amount",
+            "value": "1500 mglarcUSDC"
+          }
+        ]
+      }
+    }
+  ]
+}

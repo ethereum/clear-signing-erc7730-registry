@@ -1,0 +1,61 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Kelp agETH",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xe1b4d34e8754600962cd944b535180bd758e6c2e" }] }
+  },
+  "metadata": {
+    "owner": "Kelp DAO",
+    "info": { "url": "https://kelpdao.xyz/" },
+    "contractName": "Kelp Gain agETH",
+    "constants": { "rsETH": "0xa1290d69c65a6fe4df752f95823fae25cb99e5a7" }
+  },
+  "display": {
+    "definitions": {
+      "receiver": {
+        "label": "Receiver",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      }
+    },
+    "formats": {
+      "deposit(uint256 assets, address receiver)": {
+        "intent": "Deposit rsETH to Kelp Gain",
+        "fields": [
+          {
+            "path": "#.assets",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.rsETH" },
+            "visible": "always"
+          },
+          { "path": "#.receiver", "$ref": "$.display.definitions.receiver", "visible": "always" }
+        ]
+      },
+      "requestRedeem(uint256 shares, address receiverAddr, address holderAddr)": {
+        "intent": "Redeem agETH for rsETH",
+        "fields": [
+          { "path": "#.shares", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "@.to" }, "visible": "always" },
+          { "path": "#.receiverAddr", "$ref": "$.display.definitions.receiver", "visible": "always" },
+          { "path": "#.holderAddr", "$ref": "$.display.definitions.receiver", "label": "Holder", "visible": "always" },
+          {
+            "path": "#.shares",
+            "label": "Asset expected",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.rsETH", "threshold": "0x01", "message": "Paid in" },
+            "visible": "always"
+          }
+        ]
+      },
+      "claim(uint256 year, uint256 month, uint256 day, address receiverAddr)": {
+        "intent": "Claim rsETH from Kelp Gain",
+        "fields": [
+          { "path": "#.year", "label": "Claim year", "format": "raw", "visible": "always" },
+          { "path": "#.month", "label": "Claim month", "format": "raw", "visible": "always" },
+          { "path": "#.day", "label": "Claim day", "format": "raw", "visible": "always" },
+          { "path": "#.receiverAddr", "$ref": "$.display.definitions.receiver", "visible": "always" }
+        ]
+      }
+    }
+  }
+}

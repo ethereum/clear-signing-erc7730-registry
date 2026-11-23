@@ -1,0 +1,62 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-ARM-sUSDe-USDe-vault.json",
+  "dataProvider": {
+    "tokens": {
+      "0x4c9edd5852cd905f086c759e8383e09bff1e68b3": {
+        "symbol": "USDe",
+        "decimals": 18,
+        "name": "USDe"
+      },
+      "0xceda2d856238aa0d12f6329de20b9115f07c366d": {
+        "symbol": "ARM-sUSDe-USDe",
+        "decimals": 18,
+        "name": "Ethena Staked USDe ARM"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit on chain 1 #1",
+      "rawTx": "0x02f8500180843b9aca008504a817c800830493e094ceda2d856238aa0d12f6329de20b9115f07c366d80a4b6b55f250000000000000000000000000000000000000000000000056bc75e2d63100000c0800101",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Origin Protocol",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "100 USDe"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Claim request (synthetic) on chain 1 #2",
+      "rawTx": "0x02f84d0180843b9aca008504a817c8008307a12094ceda2d856238aa0d12f6329de20b9115f07c366d80a4e46cf74700000000000000000000000000000000000000000000000000000000000003e8c0",
+      "expected": {
+        "intent": "Claim request",
+        "owner": "Origin Protocol",
+        "fields": [
+          {
+            "label": "Request Id",
+            "value": "1000"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Request redemption (synthetic) on chain 1 #3",
+      "rawTx": "0x02f84d0180843b9aca008504a817c8008307a12094ceda2d856238aa0d12f6329de20b9115f07c366d80a4aa2f892d00000000000000000000000000000000000000000000005150ae84a8cdf00000c0",
+      "expected": {
+        "intent": "Request redemption",
+        "owner": "Origin Protocol",
+        "fields": [
+          {
+            "label": "Amount of shares",
+            "value": "1500 ARM-sUSDe-USDe"
+          }
+        ]
+      }
+    }
+  ]
+}

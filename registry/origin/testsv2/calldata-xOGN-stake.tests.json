@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-xOGN-stake.json",
+  "dataProvider": {
+    "tokens": {
+      "0x63898b3b6ef3d39332082178656e9862bee45c57": {
+        "symbol": "xOGN",
+        "decimals": 18,
+        "name": "Staked OGN"
+      },
+      "0x8207c1ffc5b6804f6024322ccf34f29c3541ae26": {
+        "symbol": "OGN",
+        "decimals": 18,
+        "name": "OriginToken"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Stake on chain 1 #1",
+      "rawTx": "0x02f8d10180843b9aca008504a817c800830493e09463898b3b6ef3d39332082178656e9862bee45c5780b8a45cd42a920000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000001e1338000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0800101",
+      "expected": {
+        "intent": "Stake",
+        "owner": "Origin Protocol",
+        "fields": [
+          {
+            "label": "Amount",
+            "value": "100 OGN"
+          },
+          {
+            "label": "Duration",
+            "value": "8760:00:00"
+          },
+          {
+            "label": "To",
+            "value": "0x0000000000000000000000000000000000000001"
+          },
+          {
+            "label": "Lockup ID",
+            "value": "-1"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Collect Rewards (synthetic) on chain 1 #2",
+      "rawTx": "0x02ed0180843b9aca008504a817c8008307a1209463898b3b6ef3d39332082178656e9862bee45c57808470bb45b3c0",
+      "expected": {
+        "intent": "Collect Rewards",
+        "owner": "Origin Protocol",
+        "fields": []
+      }
+    },
+    {
+      "description": "Unstake (synthetic) on chain 1 #3",
+      "rawTx": "0x02f84d0180843b9aca008504a817c8008307a1209463898b3b6ef3d39332082178656e9862bee45c5780a42e17de7800000000000000000000000000000000000000000000000000000000000003e8c0",
+      "expected": {
+        "intent": "Unstake",
+        "owner": "Origin Protocol",
+        "fields": [
+          {
+            "label": "Lockup ID",
+            "value": "1000"
+          }
+        ]
+      }
+    }
+  ]
+}
