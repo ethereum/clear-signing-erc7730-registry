@@ -1,0 +1,130 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-SocialRecovery-14d.json",
+  "tests": [
+    {
+      "description": "Add guardian (a Safe's call, from tx 0x0e2a123b) - chain 8453",
+      "rawTx": "0x02f86e82210580830f4240843b9aca0083030d40949bacd92f4687db306d7ded5d4513a51ea05df25b80b844be0e54d70000000000000000000000001d693a4425bf7ed10fe7775e2b65b072019ffceb0000000000000000000000000000000000000000000000000000000000000001c0",
+      "from": "0xcBbd63c2B0225A9681e48Ce903f8EAD154DECdB4",
+      "expected": {
+        "intent": "Add recovery guardian",
+        "interpolatedIntent": "Add 0x1D693a4425bf7eD10FE7775E2b65b072019FFceb as a recovery guardian. Guardians needed to replace this Safe's owners: 1",
+        "owner": "Candide",
+        "fields": [
+          { "label": "Guardian", "value": "0x1D693a4425bf7eD10FE7775E2b65b072019FFceb" },
+          { "label": "Guardians needed", "value": "1" },
+          { "label": "Wait before takeover", "value": "14 days" }
+        ]
+      }
+    },
+    {
+      "description": "Remove guardian (a Safe's call, from tx 0xb4601241) (calldata from the 7-day module; synthetic) - chain 8453",
+      "rawTx": "0x02f88e82210580830f4240843b9aca0083030d40949bacd92f4687db306d7ded5d4513a51ea05df25b80b864936f7d860000000000000000000000000000000000000000000000000000000000000001000000000000000000000000ef899e80aa814ab8d8e232f9ed6403a633c727ec0000000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x0DbAD10F703d9BaaE9075453A34F81AA23aD4221",
+      "expected": {
+        "intent": "Remove recovery guardian",
+        "interpolatedIntent": "Remove 0xeF899e80aA814ab8D8e232f9Ed6403A633C727ec as a recovery guardian. Guardians needed after this: 0",
+        "owner": "Candide",
+        "fields": [
+          { "label": "Guardian", "value": "0xeF899e80aA814ab8D8e232f9Ed6403A633C727ec" },
+          { "label": "Guardians needed", "value": "0" }
+        ]
+      }
+    },
+    {
+      "description": "Cancel recovery (a Safe's call, from tx 0xd99cc529) (calldata from the 7-day module; synthetic) - chain 1",
+      "rawTx": "0x02eb0180830f4240843b9aca0083030d40949bacd92f4687db306d7ded5d4513a51ea05df25b80840ba234d6c0",
+      "from": "0xfeA475015a1170fB5F0bFE51b02731939c3f9346",
+      "expected": {
+        "intent": "Cancel recovery",
+        "interpolatedIntent": "Stop the recovery waiting on this Safe",
+        "owner": "Candide",
+        "fields": []
+      }
+    },
+    {
+      "description": "Change guardians needed to 2 (synthetic) - chain 8453",
+      "rawTx": "0x02f84d82210580830f4240843b9aca0083030d40949bacd92f4687db306d7ded5d4513a51ea05df25b80a4694e80c30000000000000000000000000000000000000000000000000000000000000002c0",
+      "from": "0x0DbAD10F703d9BaaE9075453A34F81AA23aD4221",
+      "expected": {
+        "intent": "Change guardians needed",
+        "interpolatedIntent": "Guardians needed to replace this Safe's owners: 2",
+        "owner": "Candide",
+        "fields": [{ "label": "Guardians needed", "value": "2" }]
+      }
+    },
+    {
+      "description": "Void guardian votes (synthetic) - chain 8453",
+      "rawTx": "0x02ed82210580830f4240843b9aca0083030d40949bacd92f4687db306d7ded5d4513a51ea05df25b80845a57b46fc0",
+      "from": "0x0DbAD10F703d9BaaE9075453A34F81AA23aD4221",
+      "expected": {
+        "intent": "Void guardian votes",
+        "interpolatedIntent": "Void the recovery votes not used yet. A recovery already waiting keeps going",
+        "owner": "Candide",
+        "fields": []
+      }
+    },
+    {
+      "description": "Submit guardian votes and start the wait (calldata from the 7-day module; synthetic) - chain 1",
+      "rawTx": "0x02f9020d0180830f4240843b9aca0083030d40949bacd92f4687db306d7ded5d4513a51ea05df25b80b901e40728e1e7000000000000000000000000ff33cd67f880d02a051e8944d5b9b733457c201000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000007e51332e1c96ec3088c1a300cbb402c894d313f000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000f3a53c0666c5356600802a7422ca9344b9869fd600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000041a0e90d5d3525a2a599cde9056fe89efc00009dde2d9204e95d2959fc06471fe15a6795db52e7353851ddf4c09bd894ad35c837a0692a03ace5b65d8c597b84d31c00000000000000000000000000000000000000000000000000000000000000c0",
+      "from": "0x90846A12EbB097f3c9f038623a06028856B9cad9",
+      "expected": {
+        "intent": "Submit recovery votes",
+        "interpolatedIntent": "Submit guardian votes to make 0x7e51332e1c96eC3088c1a300cBb402c894D313f0 the only owners of 0xff33cd67F880d02A051e8944D5B9b733457C2010",
+        "owner": "Candide",
+        "fields": [
+          { "label": "Safe", "value": "0xff33cd67F880d02A051e8944D5B9b733457C2010" },
+          { "label": "New owners", "value": "0x7e51332e1c96eC3088c1a300cBb402c894D313f0" },
+          { "label": "Owner sigs needed", "value": "1" },
+          { "label": "Guardian voting", "value": "0xf3a53C0666c5356600802A7422CA9344B9869FD6" },
+          { "label": "Start the wait", "value": "Yes" },
+          { "label": "Wait before takeover", "value": "14 days" }
+        ]
+      }
+    },
+    {
+      "description": "Finish recovery (calldata from the 7-day module; synthetic) - chain 1",
+      "rawTx": "0x02f84b0180830f4240843b9aca0083030d40949bacd92f4687db306d7ded5d4513a51ea05df25b80a4315a7af3000000000000000000000000ff33cd67f880d02a051e8944d5b9b733457c2010c0",
+      "from": "0x90846A12EbB097f3c9f038623a06028856B9cad9",
+      "expected": {
+        "intent": "Finish recovery",
+        "interpolatedIntent": "Remove every owner of 0xff33cd67F880d02A051e8944D5B9b733457C2010 and add the owners the guardians voted for",
+        "owner": "Candide",
+        "fields": [{ "label": "Safe", "value": "0xff33cd67F880d02A051e8944D5B9b733457C2010" }]
+      }
+    },
+    {
+      "description": "One guardian votes, no start (synthetic, votes of tx 0xb7af8ecd) - chain 1",
+      "rawTx": "0x02f8ec0180830f4240843b9aca0083030d40949bacd92f4687db306d7ded5d4513a51ea05df25b80b8c4064e2d0e000000000000000000000000ff33cd67f880d02a051e8944d5b9b733457c201000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000007e51332e1c96ec3088c1a300cbb402c894d313f0c0",
+      "from": "0xf3a53C0666c5356600802A7422CA9344B9869FD6",
+      "expected": {
+        "intent": "Vote to recover Safe",
+        "interpolatedIntent": "Vote to make 0x7e51332e1c96eC3088c1a300cBb402c894D313f0 the only owners of 0xff33cd67F880d02A051e8944D5B9b733457C2010",
+        "owner": "Candide",
+        "fields": [
+          { "label": "Safe", "value": "0xff33cd67F880d02A051e8944D5B9b733457C2010" },
+          { "label": "New owners", "value": "0x7e51332e1c96eC3088c1a300cBb402c894D313f0" },
+          { "label": "Owner sigs needed", "value": "1" },
+          { "label": "Start the wait", "value": "No" },
+          { "label": "Wait before takeover", "value": "14 days" }
+        ]
+      }
+    },
+    {
+      "description": "Start the wait (synthetic, votes of tx 0xb7af8ecd) - chain 1",
+      "rawTx": "0x02f8cc0180830f4240843b9aca0083030d40949bacd92f4687db306d7ded5d4513a51ea05df25b80b8a4b1f85f69000000000000000000000000ff33cd67f880d02a051e8944d5b9b733457c20100000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000007e51332e1c96ec3088c1a300cbb402c894d313f0c0",
+      "from": "0xf3a53C0666c5356600802A7422CA9344B9869FD6",
+      "expected": {
+        "intent": "Start recovery wait",
+        "interpolatedIntent": "Start the wait to make 0x7e51332e1c96eC3088c1a300cBb402c894D313f0 the only owners of 0xff33cd67F880d02A051e8944D5B9b733457C2010",
+        "owner": "Candide",
+        "fields": [
+          { "label": "Safe", "value": "0xff33cd67F880d02A051e8944D5B9b733457C2010" },
+          { "label": "New owners", "value": "0x7e51332e1c96eC3088c1a300cBb402c894D313f0" },
+          { "label": "Owner sigs needed", "value": "1" },
+          { "label": "Wait before takeover", "value": "14 days" }
+        ]
+      }
+    }
+  ]
+}
