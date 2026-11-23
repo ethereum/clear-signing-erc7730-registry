@@ -1,0 +1,251 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "CleaveCrossChainRouterV3",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x30809f82f8Df91e976B02F09dc64E0da8eFB1e92" },
+        { "chainId": 10, "address": "0x34FCCA283211224877F89F814eeA0a3a912fd354" },
+        { "chainId": 56, "address": "0x02ED7CD8D60768797328B098ce0df2fa99db6f23" },
+        { "chainId": 137, "address": "0xEa0E8caE2dba07D3BC828f42fd6219fF93ddCe97" },
+        { "chainId": 8453, "address": "0x545fef65c37ECEE32309d879ABafaa959E9F114C" },
+        { "chainId": 42161, "address": "0xEa0E8caE2dba07D3BC828f42fd6219fF93ddCe97" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Cleave",
+    "contractName": "CleaveCrossChainRouterV3",
+    "info": { "url": "https://cleave.fi" },
+    "enums": {
+      "destination": {
+        "0": "Ethereum (CCTP)",
+        "1": "Ethereum (Across)",
+        "2": "Optimism (CCTP)",
+        "3": "Arbitrum (CCTP)",
+        "6": "Base (CCTP)",
+        "7": "Polygon (CCTP)",
+        "10": "Optimism (Across)",
+        "56": "BNB Chain (Across)",
+        "137": "Polygon (Across)",
+        "8453": "Base (Across)",
+        "30101": "Ethereum (Stargate)",
+        "30102": "BNB Chain (Stargate)",
+        "30109": "Polygon (Stargate)",
+        "30110": "Arbitrum (Stargate)",
+        "30111": "Optimism (Stargate)",
+        "30184": "Base (Stargate)",
+        "42161": "Arbitrum (Across)"
+      }
+    }
+  },
+  "display": {
+    "definitions": {
+      "destination": { "label": "Destination", "format": "enum", "params": { "$ref": "$.metadata.enums.destination" } },
+      "recipient": {
+        "label": "Dest. recipient",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      },
+      "refundRecipient": {
+        "label": "Refund to (Across: can edit deposit)",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      },
+      "deadline": { "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+      "nativeValue": { "label": "Native value sent", "format": "amount" }
+    },
+    "formats": {
+      "crossChainSwap((address tokenIn,address tokenOut,uint256 amountIn,uint256 minAmountOut,uint256 deadline,address recipient,address referrer,uint16 referralFeeBps,bool wethAsErc20) p,(uint256 maxDebit,uint256 minGrossOut) bounds,bytes srcBlob,bytes32 railId,uint256 dstId,address recipient,address refundRecipient,uint256 dstMinAmountOut,bytes railData,bytes message)": {
+        "$id": "crossChainSwap",
+        "intent": "Cross-chain swap",
+        "interpolatedIntent": "Swap {p.amountIn} to {dstId}",
+        "fields": [
+          { "path": "p.amountIn", "label": "Amount in", "format": "tokenAmount", "params": { "tokenPath": "p.tokenIn" } },
+          { "path": "bounds.maxDebit", "label": "Max amount in", "format": "tokenAmount", "params": { "tokenPath": "p.tokenIn" } },
+          { "path": "dstMinAmountOut", "label": "Minimum bridged", "format": "tokenAmount", "params": { "tokenPath": "p.tokenOut" } },
+          { "path": "dstId", "$ref": "$.display.definitions.destination" },
+          { "path": "recipient", "$ref": "$.display.definitions.recipient" },
+          { "path": "refundRecipient", "$ref": "$.display.definitions.refundRecipient" },
+          { "path": "p.deadline", "$ref": "$.display.definitions.deadline" },
+          { "path": "p.referralFeeBps", "label": "Referral fee", "format": "unit", "params": { "base": "%", "decimals": 2 } },
+          {
+            "path": "p.referrer",
+            "label": "Referral recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] }
+          },
+          { "path": "@.value", "$ref": "$.display.definitions.nativeValue" },
+          { "path": "p.tokenIn", "label": "Token in", "visible": "never" },
+          { "path": "p.tokenOut", "label": "Bridge token", "visible": "never" },
+          { "path": "p.minAmountOut", "label": "Source swap minimum", "visible": "never" },
+          { "path": "p.recipient", "label": "Swap recipient", "visible": "never" },
+          { "path": "p.wethAsErc20", "label": "WETH as ERC-20", "visible": "never" },
+          { "path": "bounds.minGrossOut", "label": "Minimum gross output", "visible": "never" },
+          { "path": "srcBlob", "label": "Route", "visible": "never" },
+          { "path": "railId", "label": "Bridge rail", "visible": "never" },
+          { "path": "railData", "label": "Bridge data", "visible": "never" },
+          { "path": "message", "label": "Destination message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ]
+      },
+      "crossChainSwapNative((address tokenIn,address tokenOut,uint256 amountIn,uint256 minAmountOut,uint256 deadline,address recipient,address referrer,uint16 referralFeeBps,bool wethAsErc20) p,(uint256 maxDebit,uint256 minGrossOut) bounds,bytes srcBlob,bytes32 railId,uint256 dstId,address recipient,address refundRecipient,uint256 dstMinAmountOut,bytes railData,bytes message)": {
+        "$id": "crossChainSwapNative",
+        "intent": "Cross-chain swap",
+        "interpolatedIntent": "Swap {p.amountIn} to {dstId}",
+        "fields": [
+          {
+            "path": "p.amountIn",
+            "label": "Amount in",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "p.tokenIn",
+              "nativeCurrencyAddress": [
+                "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+                "0x4200000000000000000000000000000000000006",
+                "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+                "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+                "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"
+              ]
+            }
+          },
+          { "path": "dstMinAmountOut", "label": "Minimum bridged", "format": "tokenAmount", "params": { "tokenPath": "p.tokenOut" } },
+          { "path": "dstId", "$ref": "$.display.definitions.destination" },
+          { "path": "recipient", "$ref": "$.display.definitions.recipient" },
+          { "path": "refundRecipient", "$ref": "$.display.definitions.refundRecipient" },
+          { "path": "p.deadline", "$ref": "$.display.definitions.deadline" },
+          { "path": "p.referralFeeBps", "label": "Referral fee", "format": "unit", "params": { "base": "%", "decimals": 2 } },
+          {
+            "path": "p.referrer",
+            "label": "Referral recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] }
+          },
+          { "path": "@.value", "$ref": "$.display.definitions.nativeValue" },
+          { "path": "p.tokenIn", "label": "Token in", "visible": "never" },
+          { "path": "p.tokenOut", "label": "Bridge token", "visible": "never" },
+          { "path": "p.minAmountOut", "label": "Source swap minimum", "visible": "never" },
+          { "path": "p.recipient", "label": "Swap recipient", "visible": "never" },
+          { "path": "p.wethAsErc20", "label": "WETH as ERC-20", "visible": "never" },
+          { "path": "bounds.maxDebit", "label": "Max amount in", "visible": "never" },
+          { "path": "bounds.minGrossOut", "label": "Minimum gross output", "visible": "never" },
+          { "path": "srcBlob", "label": "Route", "visible": "never" },
+          { "path": "railId", "label": "Bridge rail", "visible": "never" },
+          { "path": "railData", "label": "Bridge data", "visible": "never" },
+          { "path": "message", "label": "Destination message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ]
+      },
+      "crossChainSwapWithPermit2((address tokenIn,address tokenOut,uint256 amountIn,uint256 minAmountOut,uint256 deadline,address recipient,address referrer,uint16 referralFeeBps,bool wethAsErc20) p,(uint256 maxDebit,uint256 minGrossOut) bounds,bytes srcBlob,bytes32 railId,uint256 dstId,address recipient,address refundRecipient,uint256 dstMinAmountOut,bytes railData,bytes message,((address token,uint160 amount,uint48 expiration,uint48 nonce) details,address spender,uint256 sigDeadline) permitSingle,bytes signature)": {
+        "$id": "crossChainSwapWithPermit2",
+        "intent": "Cross-chain swap, Permit2",
+        "interpolatedIntent": "Swap {p.amountIn} to {dstId}",
+        "fields": [
+          { "path": "p.amountIn", "label": "Amount in", "format": "tokenAmount", "params": { "tokenPath": "p.tokenIn" } },
+          { "path": "bounds.maxDebit", "label": "Max amount in", "format": "tokenAmount", "params": { "tokenPath": "p.tokenIn" } },
+          { "path": "dstMinAmountOut", "label": "Minimum bridged", "format": "tokenAmount", "params": { "tokenPath": "p.tokenOut" } },
+          { "path": "dstId", "$ref": "$.display.definitions.destination" },
+          { "path": "recipient", "$ref": "$.display.definitions.recipient" },
+          { "path": "refundRecipient", "$ref": "$.display.definitions.refundRecipient" },
+          { "path": "p.deadline", "$ref": "$.display.definitions.deadline" },
+          {
+            "path": "permitSingle.details.amount",
+            "label": "Requested allowance",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "permitSingle.details.token" }
+          },
+          {
+            "path": "permitSingle.details.expiration",
+            "label": "Requested expiry",
+            "format": "date",
+            "params": { "encoding": "timestamp" }
+          },
+          { "path": "permitSingle.sigDeadline", "label": "Signature deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "p.referralFeeBps", "label": "Referral fee", "format": "unit", "params": { "base": "%", "decimals": 2 } },
+          {
+            "path": "p.referrer",
+            "label": "Referral recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] }
+          },
+          { "path": "@.value", "$ref": "$.display.definitions.nativeValue" },
+          { "path": "permitSingle.spender", "label": "Permit2 spender", "visible": "never" },
+          { "path": "p.tokenIn", "label": "Token in", "visible": "never" },
+          { "path": "p.tokenOut", "label": "Bridge token", "visible": "never" },
+          { "path": "p.minAmountOut", "label": "Source swap minimum", "visible": "never" },
+          { "path": "p.recipient", "label": "Swap recipient", "visible": "never" },
+          { "path": "p.wethAsErc20", "label": "WETH as ERC-20", "visible": "never" },
+          { "path": "bounds.minGrossOut", "label": "Minimum gross output", "visible": "never" },
+          { "path": "srcBlob", "label": "Route", "visible": "never" },
+          { "path": "railId", "label": "Bridge rail", "visible": "never" },
+          { "path": "railData", "label": "Bridge data", "visible": "never" },
+          { "path": "message", "label": "Destination message", "format": "raw", "visible": { "mustMatch": ["0x"] } },
+          { "path": "permitSingle.details.token", "label": "Permit2 token", "visible": "never" },
+          { "path": "permitSingle.details.nonce", "label": "Permit2 nonce", "visible": "never" },
+          { "path": "signature", "label": "Permit2 signature", "visible": "never" }
+        ]
+      },
+      "bridgeToken(address token,uint256 amount,bytes32 railId,uint256 dstId,address recipient,address refundRecipient,uint256 dstMinAmountOut,address referrer,uint16 referralFeeBps,bytes railData,bytes message)": {
+        "$id": "bridgeToken",
+        "intent": "Bridge",
+        "interpolatedIntent": "Bridge {amount} to {dstId}",
+        "fields": [
+          { "path": "amount", "label": "Amount in", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "dstMinAmountOut", "label": "Minimum bridged", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "dstId", "$ref": "$.display.definitions.destination" },
+          { "path": "recipient", "$ref": "$.display.definitions.recipient" },
+          { "path": "refundRecipient", "$ref": "$.display.definitions.refundRecipient" },
+          { "path": "referralFeeBps", "label": "Referral fee", "format": "unit", "params": { "base": "%", "decimals": 2 } },
+          {
+            "path": "referrer",
+            "label": "Referral recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] }
+          },
+          { "path": "@.value", "$ref": "$.display.definitions.nativeValue" },
+          { "path": "token", "label": "Token", "visible": "never" },
+          { "path": "railId", "label": "Bridge rail", "visible": "never" },
+          { "path": "railData", "label": "Bridge data", "visible": "never" },
+          { "path": "message", "label": "Destination message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ]
+      },
+      "bridgeTokenWithPermit2(address token,uint256 amount,bytes32 railId,uint256 dstId,address recipient,address refundRecipient,uint256 dstMinAmountOut,address referrer,uint16 referralFeeBps,bytes railData,bytes message,(((address token,uint256 amount) permitted,uint256 nonce,uint256 deadline) permit,bytes signature) permitData)": {
+        "$id": "bridgeTokenWithPermit2",
+        "intent": "Bridge with Permit2",
+        "interpolatedIntent": "Bridge {amount} to {dstId}",
+        "fields": [
+          { "path": "amount", "label": "Amount in", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "dstMinAmountOut", "label": "Minimum bridged", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "dstId", "$ref": "$.display.definitions.destination" },
+          { "path": "recipient", "$ref": "$.display.definitions.recipient" },
+          { "path": "refundRecipient", "$ref": "$.display.definitions.refundRecipient" },
+          {
+            "path": "permitData.permit.permitted.amount",
+            "label": "Permit2 amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "permitData.permit.permitted.token" }
+          },
+          {
+            "path": "permitData.permit.deadline",
+            "label": "Signature deadline",
+            "format": "date",
+            "params": { "encoding": "timestamp" }
+          },
+          { "path": "referralFeeBps", "label": "Referral fee", "format": "unit", "params": { "base": "%", "decimals": 2 } },
+          {
+            "path": "referrer",
+            "label": "Referral recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"] }
+          },
+          { "path": "@.value", "$ref": "$.display.definitions.nativeValue" },
+          { "path": "token", "label": "Token", "visible": "never" },
+          { "path": "railId", "label": "Bridge rail", "visible": "never" },
+          { "path": "railData", "label": "Bridge data", "visible": "never" },
+          { "path": "message", "label": "Destination message", "format": "raw", "visible": { "mustMatch": ["0x"] } },
+          { "path": "permitData.permit.permitted.token", "label": "Permit2 token", "visible": "never" },
+          { "path": "permitData.permit.nonce", "label": "Permit2 nonce", "visible": "never" },
+          { "path": "permitData.signature", "label": "Permit2 signature", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
