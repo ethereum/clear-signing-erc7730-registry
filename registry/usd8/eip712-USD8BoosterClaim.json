@@ -1,0 +1,79 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "USD8 Booster Claim",
+    "eip712": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0x6f74Ce39Bb1D75C56E2fe5f349a6A5f51ce6f12d"
+        }
+      ],
+      "domain": {
+        "name": "USD8Booster",
+        "version": "1",
+        "chainId": 1,
+        "verifyingContract": "0x6f74Ce39Bb1D75C56E2fe5f349a6A5f51ce6f12d"
+      }
+    }
+  },
+  "metadata": {
+    "owner": "USD8",
+    "info": {
+      "url": "https://usd8.fi"
+    },
+    "enums": {
+      "tokenId": {
+        "1": "1% Cover Booster"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "Claim(address receiver,uint256 nonce,uint256 tokenId,uint256 amount)": {
+        "intent": "Authorize Booster Claim",
+        "interpolatedIntent": "Authorize {receiver} to claim {amount} {tokenId}",
+        "fields": [
+          {
+            "path": "receiver",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "visible": "always"
+          },
+          {
+            "path": "tokenId",
+            "label": "Booster Type",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.tokenId"
+            },
+            "visible": "always"
+          },
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "raw",
+            "visible": "always"
+          },
+          {
+            "path": "nonce",
+            "label": "Nonce",
+            "format": "raw",
+            "visible": "optional"
+          }
+        ]
+      }
+    }
+  }
+}
