@@ -3,26 +3,10 @@
   "descriptor": "../calldata-RelayApprovalProxyV3.json",
   "dataProvider": {
     "tokens": {
-      "0x4200000000000000000000000000000000000006": {
-        "symbol": "WETH",
-        "decimals": 18,
-        "name": "Wrapped Ether"
-      },
-      "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": {
-        "symbol": "USDC",
-        "decimals": 6,
-        "name": "USD Coin"
-      },
-      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
-        "symbol": "USDC",
-        "decimals": 6,
-        "name": "USD Coin"
-      },
-      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": {
-        "symbol": "WETH",
-        "decimals": 18,
-        "name": "WETH"
-      }
+      "0x4200000000000000000000000000000000000006": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" },
+      "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" },
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" },
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "WETH" }
     }
   },
   "tests": [
@@ -34,38 +18,42 @@
         "intent": "Transfer and execute via Relay",
         "owner": "Relay",
         "fields": [
-          {
-            "label": "Send",
-            "value": "0.003221775 WETH"
-          },
-          {
-            "label": "Native sent",
-            "value": "0 ETH"
-          },
+          { "label": "Send", "value": "0.003221775 WETH" },
+          { "label": "Native sent", "value": "0 ETH" },
           {
             "label": "Call",
             "value": "0x095ea7b3000000000000000000000000b92fe925dc43a0ecde6c8b1a2709c170ec4fff4f000000000000000000000000000000000000000000000000000b722ff26bd600"
           },
           {
             "label": "Call",
-            "value": "0x2e1a7d4d000000000000000000000000000000000000000000000000000b722ff26bd600"
+            "value": { "intent": "Unwrap", "fields": [{ "label": "Amount", "value": "0.003221775 WETH" }], "owner": "WETH" }
           },
+          { "label": "Call", "value": "0x" },
           {
             "label": "Call",
-            "value": "0x"
+            "value": {
+              "intent": "Forward router native balance",
+              "fields": [
+                { "label": "Amount (0 = all)", "value": "0 ETH" },
+                {
+                  "label": "Call",
+                  "value": {
+                    "intent": "Deposit to Relay",
+                    "fields": [
+                      { "label": "Amount", "value": "0 ETH" },
+                      { "label": "Credited To", "value": "0x3ae48bcdcE533864Da514aDe1a6050a8cE999889" },
+                      { "label": "Relay Order ID", "value": "0xd74cc8d2e3b8518b3684c9b757a0da6f8e4610948e0767405fbf46b8da8669b5" }
+                    ],
+                    "interpolatedIntent": "Deposit 0 ETH for 0x3ae48bcdcE533864Da514aDe1a6050a8cE999889",
+                    "owner": "Relay"
+                  }
+                }
+              ],
+              "owner": "Relay"
+            }
           },
-          {
-            "label": "Call",
-            "value": "0x5d1fe6a200000000000000000000000000000000000000000000000000000000000000000000000000000000000000004cd00e387622c35bddb9b4c962c136462338bc310000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000004449290c1c0000000000000000000000003ae48bcdce533864da514ade1a6050a8ce999889d74cc8d2e3b8518b3684c9b757a0da6f8e4610948e0767405fbf46b8da8669b500000000000000000000000000000000000000000000000000000000"
-          },
-          {
-            "label": "Native refund to",
-            "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF"
-          },
-          {
-            "label": "NFT recipient",
-            "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF"
-          }
+          { "label": "Native refund to", "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF" },
+          { "label": "NFT recipient", "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF" }
         ]
       }
     },
@@ -77,38 +65,33 @@
         "intent": "Transfer and execute via Relay",
         "owner": "Relay",
         "fields": [
-          {
-            "label": "Send",
-            "value": "0.034743759072222501 WETH"
-          },
-          {
-            "label": "Native sent",
-            "value": "0 ETH"
-          },
+          { "label": "Send", "value": "0.034743759072222501 WETH" },
+          { "label": "Native sent", "value": "0 ETH" },
           {
             "label": "Call",
             "value": "0x095ea7b3000000000000000000000000b92fe925dc43a0ecde6c8b1a2709c170ec4fff4f000000000000000000000000000000000000000000000000007b6f43c9a95d25"
           },
           {
             "label": "Call",
-            "value": "0x2e1a7d4d000000000000000000000000000000000000000000000000007b6f43c9a95d25"
+            "value": { "intent": "Unwrap", "fields": [{ "label": "Amount", "value": "0.034743759072222501 WETH" }], "owner": "WETH" }
           },
+          { "label": "Call", "value": "0x" },
           {
             "label": "Call",
-            "value": "0x"
+            "value": {
+              "intent": "Forward router native balance",
+              "fields": [
+                { "label": "Amount (0 = all)", "value": "0 ETH" },
+                {
+                  "label": "Call",
+                  "value": "0x49290c1c00000000000000000000000027181ead1d4647e85329430483bbfe6bc4261f6cf5639446383c73c861039778903c894e32722dd343e9fd067569f999b81c1581"
+                }
+              ],
+              "owner": "Relay"
+            }
           },
-          {
-            "label": "Call",
-            "value": "0x5d1fe6a200000000000000000000000000000000000000000000000000000000000000000000000000000000000000004cd00e387622c35bddb9b4c962c136462338bc310000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000004449290c1c00000000000000000000000027181ead1d4647e85329430483bbfe6bc4261f6cf5639446383c73c861039778903c894e32722dd343e9fd067569f999b81c158100000000000000000000000000000000000000000000000000000000"
-          },
-          {
-            "label": "Native refund to",
-            "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF"
-          },
-          {
-            "label": "NFT recipient",
-            "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF"
-          }
+          { "label": "Native refund to", "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF" },
+          { "label": "NFT recipient", "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF" }
         ]
       }
     },
@@ -120,38 +103,24 @@
         "intent": "Permit2 & execute via Relay",
         "owner": "Relay",
         "fields": [
-          {
-            "label": "From",
-            "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF"
-          },
-          {
-            "label": "Send",
-            "value": "304.802267 USDC"
-          },
-          {
-            "label": "Permit deadline",
-            "value": "2026-09-28 14:36:12Z"
-          },
-          {
-            "label": "Native sent",
-            "value": "0.000744768922484681 ETH"
-          },
+          { "label": "From", "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF" },
+          { "label": "Send", "value": "304.802267 USDC" },
+          { "label": "Permit deadline", "value": "2026-09-28 14:36:12Z" },
+          { "label": "Native sent", "value": "0.000744768922484681 ETH" },
+          { "label": "Call", "value": "0x" },
           {
             "label": "Call",
-            "value": "0x"
+            "value": {
+              "intent": "Send router token balance",
+              "fields": [
+                { "label": "Amount (0 = all)", "value": "0 USDC" },
+                { "label": "Recipient", "value": "0xEcC6e6c88f658760E3CBc9328697A04612952637" }
+              ],
+              "owner": "Relay"
+            }
           },
-          {
-            "label": "Call",
-            "value": "0x9bb43718000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000001000000000000000000000000ecc6e6c88f658760e3cbc9328697a046129526370000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000213e20e972c28b320bf60e9c40bb886c756fd7f4689e9dc66fc00ef256520609710000000000000000000000000000000000000000000000000000000000000000"
-          },
-          {
-            "label": "Native refund to",
-            "value": "0xEcC6e6c88f658760E3CBc9328697A04612952637"
-          },
-          {
-            "label": "NFT recipient",
-            "value": "0xEcC6e6c88f658760E3CBc9328697A04612952637"
-          }
+          { "label": "Native refund to", "value": "0xEcC6e6c88f658760E3CBc9328697A04612952637" },
+          { "label": "NFT recipient", "value": "0xEcC6e6c88f658760E3CBc9328697A04612952637" }
         ]
       }
     },
@@ -163,38 +132,24 @@
         "intent": "Permit2 & execute via Relay",
         "owner": "Relay",
         "fields": [
-          {
-            "label": "From",
-            "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF"
-          },
-          {
-            "label": "Send",
-            "value": "10 USDC"
-          },
-          {
-            "label": "Permit deadline",
-            "value": "2026-09-28 15:09:49Z"
-          },
-          {
-            "label": "Native sent",
-            "value": "0.000037248992370895 ETH"
-          },
+          { "label": "From", "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF" },
+          { "label": "Send", "value": "10 USDC" },
+          { "label": "Permit deadline", "value": "2026-09-28 15:09:49Z" },
+          { "label": "Native sent", "value": "0.000037248992370895 ETH" },
+          { "label": "Call", "value": "0x" },
           {
             "label": "Call",
-            "value": "0x"
+            "value": {
+              "intent": "Send router token balance",
+              "fields": [
+                { "label": "Amount (0 = all)", "value": "0 USDC" },
+                { "label": "Recipient", "value": "0xab9A05551014D8fb9a21c4DBEFC9cf64B46285DA" }
+              ],
+              "owner": "Relay"
+            }
           },
-          {
-            "label": "Call",
-            "value": "0x9bb43718000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000000000000000001000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda029130000000000000000000000000000000000000000000000000000000000000001000000000000000000000000ab9a05551014d8fb9a21c4dbefc9cf64b46285da000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000021aa2fe2fc23645c9e9f5849180d702cd6e1960980670f0631bbe22e96540609710000000000000000000000000000000000000000000000000000000000000000"
-          },
-          {
-            "label": "Native refund to",
-            "value": "0xab9A05551014D8fb9a21c4DBEFC9cf64B46285DA"
-          },
-          {
-            "label": "NFT recipient",
-            "value": "0xab9A05551014D8fb9a21c4DBEFC9cf64B46285DA"
-          }
+          { "label": "Native refund to", "value": "0xab9A05551014D8fb9a21c4DBEFC9cf64B46285DA" },
+          { "label": "NFT recipient", "value": "0xab9A05551014D8fb9a21c4DBEFC9cf64B46285DA" }
         ]
       }
     },
@@ -206,30 +161,34 @@
         "intent": "Authorize & execute via Relay",
         "owner": "Relay",
         "fields": [
-          {
-            "label": "From",
-            "value": "0xE144f04E9162Ab8B0C05B12594097D7c25f97c07"
-          },
-          {
-            "label": "Send",
-            "value": "4.001 USDC"
-          },
-          {
-            "label": "Native sent",
-            "value": "0 ETH"
-          },
+          { "label": "From", "value": "0xE144f04E9162Ab8B0C05B12594097D7c25f97c07" },
+          { "label": "Send", "value": "4.001 USDC" },
+          { "label": "Native sent", "value": "0 ETH" },
           {
             "label": "Call",
-            "value": "0x73b7bb2f000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000000010000000000000000000000004cd00e387622c35bddb9b4c962c136462338bc310000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000645a1ee3ac000000000000000000000000e144f04e9162ab8b0c05b12594097d7c25f97c07000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48a49c3db8b4bc4084e32025d8226845742e59a8b06ef85c88d20cd219f3c135bb0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000"
+            "value": {
+              "intent": "Forward router token balance",
+              "fields": [
+                { "label": "Amount (0 = all)", "value": "0 USDC" },
+                {
+                  "label": "Call",
+                  "value": {
+                    "intent": "Deposit approved amount",
+                    "fields": [
+                      { "label": "Token (all approved)", "value": "USDC" },
+                      { "label": "Credited To", "value": "0xE144f04E9162Ab8B0C05B12594097D7c25f97c07" },
+                      { "label": "Relay Order ID", "value": "0xa49c3db8b4bc4084e32025d8226845742e59a8b06ef85c88d20cd219f3c135bb" }
+                    ],
+                    "interpolatedIntent": "Deposit all approved USDC for 0xE144f04E9162Ab8B0C05B12594097D7c25f97c07",
+                    "owner": "Relay"
+                  }
+                }
+              ],
+              "owner": "Relay"
+            }
           },
-          {
-            "label": "Native refund to",
-            "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF"
-          },
-          {
-            "label": "NFT recipient",
-            "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF"
-          }
+          { "label": "Native refund to", "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF" },
+          { "label": "NFT recipient", "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF" }
         ]
       }
     },
@@ -241,30 +200,25 @@
         "intent": "Authorize & execute via Relay",
         "owner": "Relay",
         "fields": [
-          {
-            "label": "From",
-            "value": "0x9cCA0aC0C04272eD039548C86C808C78A9122CBf"
-          },
-          {
-            "label": "Send",
-            "value": "141.18223 USDC"
-          },
-          {
-            "label": "Native sent",
-            "value": "0 ETH"
-          },
+          { "label": "From", "value": "0x9cCA0aC0C04272eD039548C86C808C78A9122CBf" },
+          { "label": "Send", "value": "141.18223 USDC" },
+          { "label": "Native sent", "value": "0 ETH" },
           {
             "label": "Call",
-            "value": "0x73b7bb2f000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda0291300000000000000000000000000000000000000000000000000000000000000010000000000000000000000004cd00e387622c35bddb9b4c962c136462338bc310000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000645a1ee3ac0000000000000000000000009cca0ac0c04272ed039548c86c808c78a9122cbf000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913a1ab7acf24328e7e75a8d47858cd4076babac3c3103c93957d13ccf5b259f56b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000"
+            "value": {
+              "intent": "Forward router token balance",
+              "fields": [
+                { "label": "Amount (0 = all)", "value": "0 USDC" },
+                {
+                  "label": "Call",
+                  "value": "0x5a1ee3ac0000000000000000000000009cca0ac0c04272ed039548c86c808c78a9122cbf000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913a1ab7acf24328e7e75a8d47858cd4076babac3c3103c93957d13ccf5b259f56b"
+                }
+              ],
+              "owner": "Relay"
+            }
           },
-          {
-            "label": "Native refund to",
-            "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF"
-          },
-          {
-            "label": "NFT recipient",
-            "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF"
-          }
+          { "label": "Native refund to", "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF" },
+          { "label": "NFT recipient", "value": "0xf70da97812CB96acDF810712Aa562db8dfA3dbEF" }
         ]
       }
     },
@@ -275,26 +229,11 @@
         "intent": "Permit & execute via Relay",
         "owner": "Relay",
         "fields": [
-          {
-            "label": "Send",
-            "value": "100000000000 USDC"
-          },
-          {
-            "label": "Native sent",
-            "value": "0.1 ETH"
-          },
-          {
-            "label": "Call",
-            "value": "0x1234"
-          },
-          {
-            "label": "Native refund to",
-            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
-          },
-          {
-            "label": "NFT recipient",
-            "value": "0x1234567890AbcdEF1234567890aBcdef12345678"
-          }
+          { "label": "Send", "value": "100000000000 USDC" },
+          { "label": "Native sent", "value": "0.1 ETH" },
+          { "label": "Call", "value": "0x1234" },
+          { "label": "Native refund to", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" },
+          { "label": "NFT recipient", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
         ]
       }
     }
