@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-gteurcc-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0x1abaea1f7c830bd89acc67ec4af516284b1bc33c": { "decimals": 6, "name": "EURC", "symbol": "EURC" },
+      "0x842a84df61dbe701c5dae345f3f8e64af727e48c": { "decimals": 18, "name": "Gauntlet EURC Core", "symbol": "gteurcc" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86d01478477359400847a8f8405830de62d94842a84df61dbe701c5dae345f3f8e64af727e48c80b8446e553f6500000000000000000000000000000000000000000000000000000000000186a0000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x326ca53023a6943c955d61b2ccf99c273ee83ce73911dabed760c09be6fe5f2c",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.1 EURC" },
+          { "label": "Share ticker", "value": "gteurcc" },
+          { "label": "Send shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Deposit 0.1 EURC for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0xf86b8203f5842d493348831e848094842a84df61dbe701c5dae345f3f8e64af727e48c80b84494bf804d0000000000000000000000000000000000000000000000000c7d713b49da0000000000000000000000000000000000000000000000000000000000000000dead018080",
+      "txHash": "0x33a36461e9ffbd315834358ec93876ebb724e935495c550ff4b1e6bcdd9e55a7",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "EURC" },
+          { "label": "Minted shares", "value": "0.9 gteurcc" },
+          { "label": "Mint shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Mint 0.9 gteurcc for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f895018201c58227108417d78400830dfeac94842a84df61dbe701c5dae345f3f8e64af727e48c80b86cb460af940000000000000000000000000000000000000000000000000000000035a4e900000000000000000000000000ec360d5376afeb218017a9c48d260f7e3e2a8254000000000000000000000000ec360d5376afeb218017a9c48d260f7e3e2a8254697c1ae32222da44c0",
+      "txHash": "0xc0f95a3da20c3144d32e393f870a1e83ace696cf4c27302318de8f126a758737",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "900 EURC" },
+          { "label": "To", "value": "0xec360D5376aFEB218017a9C48D260F7E3e2a8254" },
+          { "label": "Owner", "value": "0xec360D5376aFEB218017a9C48D260F7E3e2a8254" }
+        ],
+        "interpolatedIntent": "Withdraw 900 EURC to 0xec360D5376aFEB218017a9C48D260F7E3e2a8254",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8960182034b830f424084049e8e60830df89594842a84df61dbe701c5dae345f3f8e64af727e48c80b86cba087652000000000000000000000000000000000000000000001c93dc4aeded8e831c74000000000000000000000000272c39c82ca9f10e5338a6ee75927cfe00c82e2c000000000000000000000000272c39c82ca9f10e5338a6ee75927cfe00c82e2c6974d8f92222da44c0",
+      "txHash": "0xe0b94204167e83cff8dd6a25792e7fed72506a7f9c220ce0a58330911be5d72f",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "134953.80666062654479474 gteurcc" },
+          { "label": "To", "value": "0x272C39C82CA9F10e5338A6eE75927cFe00C82e2c" },
+          { "label": "Owner", "value": "0x272C39C82CA9F10e5338A6eE75927cFe00C82e2c" }
+        ],
+        "interpolatedIntent": "Redeem 134953.80666062654479474 gteurcc to 0x272C39C82CA9F10e5338A6eE75927cFe00C82e2c",
+        "owner": "Gauntlet"
+      }
+    }
+  ]
+}

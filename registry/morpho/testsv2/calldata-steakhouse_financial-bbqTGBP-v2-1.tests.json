@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-steakhouse_financial-bbqTGBP-v2-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0x27f6c8289550fce67f6b50bed1f519966afe5287": { "decimals": 18, "name": "tGBP", "symbol": "tGBP" },
+      "0xbeeffabcd0db09589dd21854aa760c52ab4bf04f": { "decimals": 18, "name": "Steakhouse tGBP", "symbol": "bbqTGBP" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86e01825b2a830d010f84b4f94ced8303393294beeffabcd0db09589dd21854aa760c52ab4bf04f80b8446e553f65000000000000000000000000000000000000000000000000002386f26fc10000000000000000000000000000feed46c11f57b7126a773eec6ae9ca7ae1c03c9ac0",
+      "txHash": "0xb929983b091a0870d1b78caf2a12e847e4f0d46dcfb36b8b386f073d4803a3e4",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "0.01 tGBP" },
+          { "label": "Share ticker", "value": "bbqTGBP" },
+          { "label": "Send shares to", "value": "0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a" }
+        ],
+        "interpolatedIntent": "Deposit 0.01 tGBP for 0xfeed46c11F57B7126a773EeC6ae9cA7aE1C03C9a",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f8940120835626d68408f687698309f05694beeffabcd0db09589dd21854aa760c52ab4bf04f80b86cb460af940000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000008a5917277ffe3bd71bb92ce790b1fb6877aad8f00000000000000000000000008a5917277ffe3bd71bb92ce790b1fb6877aad8f06a0f76f32222da44c0",
+      "txHash": "0xbf216eb9d22d8ccb1d949ac48a2c68287c91b481703dea677792e2675ec3ce4e",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "100 tGBP" },
+          { "label": "To", "value": "0x8A5917277Ffe3BD71bb92ce790b1fB6877AAD8f0" },
+          { "label": "Owner", "value": "0x8A5917277Ffe3BD71bb92ce790b1fB6877AAD8f0" }
+        ],
+        "interpolatedIntent": "Withdraw 100 tGBP to 0x8A5917277Ffe3BD71bb92ce790b1fB6877AAD8f0",
+        "owner": "Steakhouse Financial"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f8950121840178223f840893dd6c8309870694beeffabcd0db09589dd21854aa760c52ab4bf04f80b86cba0876520000000000000000000000000000000000000000000000725697bbfebdbfafc50000000000000000000000008a5917277ffe3bd71bb92ce790b1fb6877aad8f00000000000000000000000008a5917277ffe3bd71bb92ce790b1fb6877aad8f06a0f78d22222da44c0",
+      "txHash": "0x4dca24631e34e494cc7b875ec46132676d745ff0dc1daced8664c5dce0585c83",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "2109.168486914413539269 bbqTGBP" },
+          { "label": "To", "value": "0x8A5917277Ffe3BD71bb92ce790b1fB6877AAD8f0" },
+          { "label": "Owner", "value": "0x8A5917277Ffe3BD71bb92ce790b1fB6877AAD8f0" }
+        ],
+        "interpolatedIntent": "Redeem 2109.168486914413539269 bbqTGBP to 0x8A5917277Ffe3BD71bb92ce790b1fB6877AAD8f0",
+        "owner": "Steakhouse Financial"
+      }
+    }
+  ]
+}

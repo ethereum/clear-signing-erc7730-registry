@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-gtusdgp-v2-42161.json",
+  "dataProvider": {
+    "tokens": {
+      "0x004b506865409877c9fa29bfb1eba929984b9bbc": { "decimals": 6, "name": "USDG", "symbol": "USDG" },
+      "0x390c1bb01f3f627144a40617e287d4ce3d5abcfa": { "decimals": 18, "name": "Gauntlet USDG Premium", "symbol": "gtusdgp" }
+    }
+  },
+  "tests": [
+    {
+      "description": "deposit - direct call",
+      "rawTx": "0x02f86f82a4b133808401b4b4e08303913294390c1bb01f3f627144a40617e287d4ce3d5abcfa80b8486e553f6500000000000000000000000000000000000000000000000000000000009896800000000000000000000000007575e4f77ff4f650dda9c89f5573bcc9c145d13f1115098fc0",
+      "txHash": "0xa9c514729368adf6f99645fd884cc5c71ab181db654a628f7b65410f66d0b69f",
+      "expected": {
+        "intent": "Deposit",
+        "fields": [
+          { "label": "Deposit asset", "value": "10 USDG" },
+          { "label": "Share ticker", "value": "gtusdgp" },
+          { "label": "Send shares to", "value": "0x7575e4F77fF4f650DdA9c89F5573bcc9C145D13F" }
+        ],
+        "interpolatedIntent": "Deposit 10 USDG for 0x7575e4F77fF4f650DdA9c89F5573bcc9C145D13F",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "mint - direct call",
+      "rawTx": "0x02f86b82a4b121808403952ce08308ee2e94390c1bb01f3f627144a40617e287d4ce3d5abcfa80b84494bf804d000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000deadc0",
+      "txHash": "0x924d78e3e0c4e441d827f0b6aa0198b00e6dd1aa900ee5a6f06ec58ad37e3755",
+      "expected": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "value": "USDG" },
+          { "label": "Minted shares", "value": "0.000000001 gtusdgp" },
+          { "label": "Mint shares to", "value": "0x000000000000000000000000000000000000dEaD" }
+        ],
+        "interpolatedIntent": "Mint 0.000000001 gtusdgp for 0x000000000000000000000000000000000000dEaD",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "withdraw - direct call",
+      "rawTx": "0x02f88f82a4b134808401b4b4e083031e1e94390c1bb01f3f627144a40617e287d4ce3d5abcfa80b868b460af9400000000000000000000000000000000000000000000000000000000004c4b400000000000000000000000007575e4f77ff4f650dda9c89f5573bcc9c145d13f0000000000000000000000007575e4f77ff4f650dda9c89f5573bcc9c145d13f1115098fc0",
+      "txHash": "0xdcb5d6af4d547e8fc6a9e6738190a0fc9b05d8e5d203e20e0d252ddb902a265f",
+      "expected": {
+        "intent": "Withdraw",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "5 USDG" },
+          { "label": "To", "value": "0x7575e4F77fF4f650DdA9c89F5573bcc9C145D13F" },
+          { "label": "Owner", "value": "0x7575e4F77fF4f650DdA9c89F5573bcc9C145D13F" }
+        ],
+        "interpolatedIntent": "Withdraw 5 USDG to 0x7575e4F77fF4f650DdA9c89F5573bcc9C145D13F",
+        "owner": "Gauntlet"
+      }
+    },
+    {
+      "description": "redeem - direct call",
+      "rawTx": "0x02f88b82a4b1268084016e48c08302cbaa94390c1bb01f3f627144a40617e287d4ce3d5abcfa80b864ba08765200000000000000000000000000000000000000000000000030d9d00d9b1c33de000000000000000000000000b3734002699ac5411f5d81793fc6b4899dc5d50e000000000000000000000000b3734002699ac5411f5d81793fc6b4899dc5d50ec0",
+      "txHash": "0xbc19c5c4dc1203342bcf88d8b93389533a3f9b99418e21efad3be30c17d819bf",
+      "expected": {
+        "intent": "Redeem",
+        "fields": [
+          { "label": "Shares to redeem", "value": "3.520073340622222302 gtusdgp" },
+          { "label": "To", "value": "0xb3734002699aC5411f5D81793FC6b4899DC5d50E" },
+          { "label": "Owner", "value": "0xb3734002699aC5411f5D81793FC6b4899DC5d50E" }
+        ],
+        "interpolatedIntent": "Redeem 3.520073340622222302 gtusdgp to 0xb3734002699aC5411f5D81793FC6b4899DC5d50E",
+        "owner": "Gauntlet"
+      }
+    }
+  ]
+}
