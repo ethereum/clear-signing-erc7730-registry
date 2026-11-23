@@ -1,0 +1,33 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "CryptoartVault",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x69927B032B0502f6edbA5320b80bD6B50A81E654" }] }
+  },
+  "metadata": { "owner": "Cryptoart", "contractName": "CryptoartVault", "info": { "url": "https://cryptoart.com" } },
+  "display": {
+    "formats": {
+      "unlock(uint256 tokenId,bytes32 secret,bytes unlockSignature,uint256 deadline)": {
+        "$id": "unlock",
+        "intent": "Unlock Cryptoart NFT",
+        "fields": [
+          {
+            "path": "tokenId",
+            "label": "Token to unlock",
+            "format": "nftName",
+            "params": { "collection": "0x7553a5cEd41c29FA4833ebE65ec9da6e2a9eFDF0" }
+          },
+          {
+            "path": "@.from",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] }
+          },
+          { "path": "deadline", "label": "Valid until", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "secret", "label": "Unlock secret", "format": "raw", "visible": "never" },
+          { "path": "unlockSignature", "label": "Authorization", "format": "raw", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
