@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-ARM-WS-OS-vault.json",
+  "dataProvider": {
+    "tokens": {
+      "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38": { "symbol": "wS", "decimals": 18, "name": "Wrapped Sonic" },
+      "0x2f872623d1e1af5835b08b0e49aad2d81d649d30": { "symbol": "ARM-WS-OS", "decimals": 18, "name": "Origin ARM" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit on chain 146 #1",
+      "rawTx": "0x02f851819280843b9aca008504a817c800830493e0942f872623d1e1af5835b08b0e49aad2d81d649d3080a4b6b55f250000000000000000000000000000000000000000000000056bc75e2d63100000c0800101",
+      "expected": { "intent": "Deposit", "owner": "Origin Protocol", "fields": [{ "label": "Amount", "value": "100 wS" }] }
+    },
+    {
+      "description": "Claim request (synthetic) on chain 146 #2",
+      "rawTx": "0x02f84e819280843b9aca008504a817c8008307a120942f872623d1e1af5835b08b0e49aad2d81d649d3080a4e46cf74700000000000000000000000000000000000000000000000000000000000003e8c0",
+      "expected": { "intent": "Claim request", "owner": "Origin Protocol", "fields": [{ "label": "Request Id", "value": "1000" }] }
+    },
+    {
+      "description": "Request redemption (synthetic) on chain 146 #3",
+      "rawTx": "0x02f84e819280843b9aca008504a817c8008307a120942f872623d1e1af5835b08b0e49aad2d81d649d3080a4aa2f892d00000000000000000000000000000000000000000000005150ae84a8cdf00000c0",
+      "expected": {
+        "intent": "Request redemption",
+        "owner": "Origin Protocol",
+        "fields": [{ "label": "Amount of shares", "value": "1500 ARM-WS-OS" }]
+      }
+    }
+  ]
+}

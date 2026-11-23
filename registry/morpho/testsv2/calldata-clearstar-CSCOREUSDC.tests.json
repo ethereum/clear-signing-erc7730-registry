@@ -1,0 +1,64 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-clearstar-CSCOREUSDC.json",
+  "dataProvider": {
+    "tokens": {
+      "0x116d4d0932082fb564509eff6e1708d5ac2c5ea4": { "decimals": 18, "name": "Clearstar Core USDC", "symbol": "CSCOREUSDC" },
+      "0x203a662b0bd271a6ed5a60edfbd04bfce608fd36": { "symbol": "vbUSDC", "decimals": 6, "name": "Vault Bridge USDC" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit (synthetic) on chain 747474 #1",
+      "rawTx": "0x02f871830b67d280843b9aca008504a817c8008307a12094116d4d0932082fb564509eff6e1708d5ac2c5ea480b8446e553f650000000000000000000000000000000000000000000000000000000059682f000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Clearstar",
+        "fields": [
+          { "label": "Deposit asset", "value": "1500 vbUSDC" },
+          { "label": "Share ticker", "value": "CSCOREUSDC" },
+          { "label": "Send shares to", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    },
+    {
+      "description": "Mint (synthetic) on chain 747474 #2",
+      "rawTx": "0x02f871830b67d280843b9aca008504a817c8008307a12094116d4d0932082fb564509eff6e1708d5ac2c5ea480b84494bf804d00000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Clearstar",
+        "fields": [
+          { "label": "Deposit asset", "value": "vbUSDC" },
+          { "label": "Minted shares", "value": "1500 CSCOREUSDC" },
+          { "label": "Mint shares to", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw (synthetic) on chain 747474 #3",
+      "rawTx": "0x02f891830b67d280843b9aca008504a817c8008307a12094116d4d0932082fb564509eff6e1708d5ac2c5ea480b864b460af940000000000000000000000000000000000000000000000000000000059682f000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Clearstar",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "1500 vbUSDC" },
+          { "label": "To", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" },
+          { "label": "Owner", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    },
+    {
+      "description": "Redeem (synthetic) on chain 747474 #4",
+      "rawTx": "0x02f891830b67d280843b9aca008504a817c8008307a12094116d4d0932082fb564509eff6e1708d5ac2c5ea480b864ba08765200000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Clearstar",
+        "fields": [
+          { "label": "Shares to redeem", "value": "1500 CSCOREUSDC" },
+          { "label": "To", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" },
+          { "label": "Owner", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    }
+  ]
+}
