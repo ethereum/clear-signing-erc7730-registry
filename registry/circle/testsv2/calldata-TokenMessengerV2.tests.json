@@ -1,7 +1,12 @@
 {
   "$schema": "../../../specs/erc7730-tests-v2.schema.json",
   "descriptor": "../calldata-TokenMessengerV2.json",
-  "dataProvider": { "tokens": { "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" } } },
+  "dataProvider": {
+    "tokens": {
+      "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" },
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" }
+    }
+  },
   "tests": [
     {
       "description": "Fund a Stellar account with 25 USDC from Polygon (CctpForwarder hook)",
@@ -10,7 +15,7 @@
         "intent": "Bridge via CCTP",
         "fields": [
           { "label": "Amount", "value": "25 USDC" },
-          { "label": "CCTP dest. domain", "value": "27" },
+          { "label": "Destination", "value": "Stellar" },
           { "label": "Mint recipient", "value": "0x72bd20ff2f8281801bb05b7c29179026933256fabafeb13e94efd8ddbcfcf291" },
           { "label": "Max fee", "value": "0 USDC" },
           { "label": "Caller (0 = anyone)", "value": "0x72bd20ff2f8281801bb05b7c29179026933256fabafeb13e94efd8ddbcfcf291" },
@@ -19,7 +24,7 @@
             "value": "0x000000000000000000000000000000000000000000000000000000000000003847434e4843324b5933514c4a59584a435459363454574446485a574d4f555952443641474d57555a4f534b3256484b3744354d5955595a41"
           }
         ],
-        "interpolatedIntent": "Bridge 25 USDC to domain 27",
+        "interpolatedIntent": "Bridge 25 USDC to Stellar",
         "owner": "Circle"
       }
     },
@@ -30,13 +35,13 @@
         "intent": "Bridge via CCTP",
         "fields": [
           { "label": "Amount", "value": "1250.5 USDC" },
-          { "label": "CCTP dest. domain", "value": "3" },
+          { "label": "Destination", "value": "Arbitrum" },
           { "label": "Mint recipient", "value": "0x000000000000000000000000dad77910dbdfde764fc21fcd4e74d71bbaca6d8d" },
           { "label": "Max fee", "value": "0.125 USDC" },
           { "label": "Caller (0 = anyone)", "value": "0x0000000000000000000000000000000000000000000000000000000000000000" },
           { "label": "Hook data", "value": "0x1234abcd" }
         ],
-        "interpolatedIntent": "Bridge 1250.5 USDC to domain 3",
+        "interpolatedIntent": "Bridge 1250.5 USDC to Arbitrum",
         "owner": "Circle"
       }
     },
@@ -47,12 +52,12 @@
         "intent": "Bridge via CCTP",
         "fields": [
           { "label": "Amount", "value": "100 USDC" },
-          { "label": "CCTP dest. domain", "value": "6" },
+          { "label": "Destination", "value": "Base" },
           { "label": "Mint recipient", "value": "0x000000000000000000000000dad77910dbdfde764fc21fcd4e74d71bbaca6d8d" },
           { "label": "Max fee", "value": "0 USDC" },
           { "label": "Caller (0 = anyone)", "value": "0x0000000000000000000000000000000000000000000000000000000000000000" }
         ],
-        "interpolatedIntent": "Bridge 100 USDC to domain 6",
+        "interpolatedIntent": "Bridge 100 USDC to Base",
         "owner": "Circle"
       }
     },
@@ -63,12 +68,48 @@
         "intent": "Bridge via CCTP",
         "fields": [
           { "label": "Amount", "value": "42 USDC" },
-          { "label": "CCTP dest. domain", "value": "0" },
+          { "label": "Destination", "value": "Ethereum" },
           { "label": "Mint recipient", "value": "0x000000000000000000000000dad77910dbdfde764fc21fcd4e74d71bbaca6d8d" },
           { "label": "Max fee", "value": "0.0042 USDC" },
           { "label": "Caller (0 = anyone)", "value": "0x0000000000000000000000000000000000000000000000000000000000000000" }
         ],
-        "interpolatedIntent": "Bridge 42 USDC to domain 0",
+        "interpolatedIntent": "Bridge 42 USDC to Ethereum",
+        "owner": "Circle"
+      }
+    },
+    {
+      "description": "Bridge 103,720.049789 USDC from Ethereum, standard transfer - chain 1",
+      "rawTx": "0x02f9010e018204a083214047840bdbfcb28302bd379428b5a0e9c621a5badaa536219b3a228c8168cf5d80b8e48e0250ee0000000000000000000000000000000000000000000000000000001826325c7d0000000000000000000000000000000000000000000000000000000000000013000000000000000000000000fb1898bb5955fdd11704e397104c6a0e0725eb17000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007d0c0",
+      "expected": {
+        "intent": "Bridge via CCTP",
+        "fields": [
+          { "label": "Amount", "value": "103720.049789 USDC" },
+          { "label": "Destination", "value": "HyperEVM" },
+          { "label": "Mint recipient", "value": "0x000000000000000000000000fb1898bb5955fdd11704e397104c6a0e0725eb17" },
+          { "label": "Max fee", "value": "0 USDC" },
+          { "label": "Caller (0 = anyone)", "value": "0x0000000000000000000000000000000000000000000000000000000000000000" }
+        ],
+        "interpolatedIntent": "Bridge 103720.049789 USDC to HyperEVM",
+        "owner": "Circle"
+      }
+    },
+    {
+      "description": "Bridge 9,210.891722 USDC from Ethereum with hook data, fast transfer - chain 1",
+      "rawTx": "0x02f9018c01018235af8413ebd929830269ce9428b5a0e9c621a5badaa536219b3a228c8168cf5d80b90164779b432d0000000000000000000000000000000000000000000000000000000225030dca0000000000000000000000000000000000000000000000000000000000000013000000000000000000000000b21d281dedb17ae5b501f6aa8256fe38c4e45757000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000b21d281dedb17ae5b501f6aa8256fe38c4e45757000000000000000000000000000000000000000000000000000000000011e7ec00000000000000000000000000000000000000000000000000000000000003e800000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000038636374702d666f727761726400000000000000000000000000000000000000183b52efcb7c92d411e7a4db3e204925f097a5b77dffffffff0000000000000000c0",
+      "expected": {
+        "intent": "Bridge via CCTP",
+        "fields": [
+          { "label": "Amount", "value": "9210.891722 USDC" },
+          { "label": "Destination", "value": "HyperEVM" },
+          { "label": "Mint recipient", "value": "0x000000000000000000000000b21d281dedb17ae5b501f6aa8256fe38c4e45757" },
+          { "label": "Max fee", "value": "1.173484 USDC" },
+          { "label": "Caller (0 = anyone)", "value": "0x000000000000000000000000b21d281dedb17ae5b501f6aa8256fe38c4e45757" },
+          {
+            "label": "Hook data",
+            "value": "0x636374702d666f727761726400000000000000000000000000000000000000183b52efcb7c92d411e7a4db3e204925f097a5b77dffffffff"
+          }
+        ],
+        "interpolatedIntent": "Bridge 9210.891722 USDC to HyperEVM",
         "owner": "Circle"
       }
     }

@@ -1,0 +1,282 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {}
+  },
+  "metadata": {
+    "constants": {
+      "RPLaddress": "0x0"
+    }
+  },
+  "display": {
+    "formats": {
+      "stakeRPL(uint256 _amount)": {
+        "intent": "Stake RPL (restarts withdrawal cooldown)",
+        "interpolatedIntent": "Stake {_amount}, restarting the withdrawal cooldown",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#._amount",
+            "params": {
+              "token": "$.metadata.constants.RPLaddress"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "stakeRPLFor(address _nodeAddress, uint256 _amount)": {
+        "intent": "Stake RPL for node (restarts withdrawal cooldown)",
+        "interpolatedIntent": "Stake {_amount} from your wallet for {_nodeAddress}, restarting its withdrawal cooldown",
+        "fields": [
+          {
+            "label": "Node receiving the stake",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#._amount",
+            "params": {
+              "token": "$.metadata.constants.RPLaddress"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "unstakeRPL(uint256 _amount)": {
+        "intent": "Unstake RPL (restarts unstaking period)",
+        "interpolatedIntent": "Unstake {_amount}, restarting the unstaking period",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#._amount",
+            "params": {
+              "token": "$.metadata.constants.RPLaddress"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "unstakeRPLFor(address _nodeAddress, uint256 _amount)": {
+        "intent": "Unstake RPL for node (restarts unstaking period)",
+        "interpolatedIntent": "Unstake {_amount} for {_nodeAddress}, restarting the unstaking period",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#._amount",
+            "params": {
+              "token": "$.metadata.constants.RPLaddress"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "unstakeLegacyRPL(uint256 _amount)": {
+        "intent": "Unstake legacy RPL (restarts unstaking period)",
+        "interpolatedIntent": "Unstake {_amount} from legacy stake, restarting the unstaking period",
+        "fields": [
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#._amount",
+            "params": {
+              "token": "$.metadata.constants.RPLaddress"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "unstakeLegacyRPLFor(address _nodeAddress, uint256 _amount)": {
+        "intent": "Unstake legacy RPL for node (restarts unstaking period)",
+        "interpolatedIntent": "Unstake {_amount} from legacy stake of {_nodeAddress}, restarting the unstaking period",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          {
+            "label": "Amount",
+            "format": "tokenAmount",
+            "path": "#._amount",
+            "params": {
+              "token": "$.metadata.constants.RPLaddress"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdrawRPL()": {
+        "intent": "Withdraw unstaked RPL",
+        "interpolatedIntent": "Withdraw unstaked RPL",
+        "fields": []
+      },
+      "withdrawRPLFor(address _nodeAddress)": {
+        "intent": "Withdraw unstaked RPL for node",
+        "interpolatedIntent": "Withdraw unstaked RPL for {_nodeAddress}",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          }
+        ]
+      },
+      "setStakeRPLForAllowed(address _caller, bool _allowed)": {
+        "intent": "Set RPL staking permission",
+        "interpolatedIntent": "Set RPL staking permission of {_caller} to {_allowed}",
+        "fields": [
+          {
+            "label": "Caller",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._caller",
+            "visible": "always"
+          },
+          {
+            "label": "Allowed",
+            "format": "raw",
+            "path": "#._allowed",
+            "visible": "always"
+          }
+        ]
+      },
+      "setStakeRPLForAllowed(address _nodeAddress, address _caller, bool _allowed)": {
+        "intent": "Set RPL staking permission",
+        "interpolatedIntent": "Set RPL staking permission of {_caller} for {_nodeAddress} to {_allowed}",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          {
+            "label": "Caller",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet",
+                "contract"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._caller",
+            "visible": "always"
+          },
+          {
+            "label": "Allowed",
+            "format": "raw",
+            "path": "#._allowed",
+            "visible": "always"
+          }
+        ]
+      },
+      "setRPLLockingAllowed(address _nodeAddress, bool _allowed)": {
+        "intent": "Set RPL locking permission",
+        "interpolatedIntent": "Set RPL locking permission of {_nodeAddress} to {_allowed}",
+        "fields": [
+          {
+            "label": "Node",
+            "format": "addressName",
+            "params": {
+              "types": [
+                "eoa",
+                "wallet"
+              ],
+              "sources": [
+                "local",
+                "ens"
+              ]
+            },
+            "path": "#._nodeAddress",
+            "visible": "always"
+          },
+          {
+            "label": "Allowed",
+            "format": "raw",
+            "path": "#._allowed",
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}

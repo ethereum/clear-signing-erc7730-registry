@@ -1,0 +1,356 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x0000000000000068F116a894984e2DB1123eB395" }] } },
+  "metadata": {
+    "owner": "OpenSea",
+    "contractName": "Seaport 1.6",
+    "info": { "url": "https://opensea.io" },
+    "enums": {
+      "itemType": { "0": "ETH", "1": "ERC-20", "2": "ERC-721", "3": "ERC-1155", "4": "ERC-721 by criteria", "5": "ERC-1155 by criteria" }
+    }
+  },
+  "display": {
+    "formats": {
+      "cancel((address offerer,address zone,(uint8 itemType,address token,uint256 identifierOrCriteria,uint256 startAmount,uint256 endAmount)[] offer,(uint8 itemType,address token,uint256 identifierOrCriteria,uint256 startAmount,uint256 endAmount,address recipient)[] consideration,uint8 orderType,uint256 startTime,uint256 endTime,bytes32 zoneHash,uint256 salt,bytes32 conduitKey,uint256 counter)[] orders)": {
+        "intent": "Cancel orders",
+        "fields": [
+          { "path": "orders.[]", "label": "Orders", "visible": "never" },
+          {
+            "path": "orders.[].offerer",
+            "label": "Order owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "orders.[].zone", "label": "Zone", "visible": "never" },
+          { "path": "orders.[].offer.[]", "label": "Offered items", "visible": "never" },
+          { "path": "orders.[].consideration.[]", "label": "Asked items", "visible": "never" },
+          { "path": "orders.[].orderType", "label": "Order Type", "visible": "never" },
+          { "path": "orders.[].startTime", "label": "Start Time", "visible": "never" },
+          { "path": "orders.[].endTime", "label": "End Time", "visible": "never" },
+          { "path": "orders.[].zoneHash", "label": "Zone Hash", "visible": "never" },
+          { "path": "orders.[].salt", "label": "Salt", "visible": "never" },
+          { "path": "orders.[].conduitKey", "label": "Conduit Key", "visible": "never" },
+          { "path": "orders.[].counter", "label": "Counter", "visible": "never" }
+        ],
+        "interpolatedIntent": "Cancel the listed Seaport orders"
+      },
+      "fulfillAdvancedOrder(((address offerer,address zone,(uint8 itemType,address token,uint256 identifierOrCriteria,uint256 startAmount,uint256 endAmount)[] offer,(uint8 itemType,address token,uint256 identifierOrCriteria,uint256 startAmount,uint256 endAmount,address recipient)[] consideration,uint8 orderType,uint256 startTime,uint256 endTime,bytes32 zoneHash,uint256 salt,bytes32 conduitKey,uint256 totalOriginalConsiderationItems) parameters,uint120 numerator,uint120 denominator,bytes signature,bytes extraData) arg0,(uint256 orderIndex,uint8 side,uint256 index,uint256 identifier,bytes32[] criteriaProof)[] arg1,bytes32 fulfillerConduitKey,address recipient)": {
+        "intent": "Buy NFT",
+        "fields": [
+          {
+            "label": "NFTs you receive",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "arg0.parameters.offer.[].identifierOrCriteria",
+                "label": "NFT",
+                "format": "nftName",
+                "params": { "collectionPath": "arg0.parameters.offer.[].token" }
+              },
+              { "path": "arg0.parameters.offer.[].startAmount", "label": "Quantity", "format": "raw", "visible": { "ifNotIn": [1] } },
+              { "path": "arg0.parameters.offer.[].endAmount", "label": "Quantity at end", "format": "raw", "visible": { "ifNotIn": [1] } },
+              { "path": "arg0.parameters.offer.[].itemType", "label": "Item type", "format": "raw", "visible": { "mustMatch": [2, 3] } },
+              { "path": "arg0.parameters.offer.[].token", "label": "Token", "visible": "never" }
+            ]
+          },
+          {
+            "label": "You pay",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "arg0.parameters.consideration.[].startAmount",
+                "label": "Payment",
+                "format": "tokenAmount",
+                "params": {
+                  "tokenPath": "arg0.parameters.consideration.[].token",
+                  "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000"
+                }
+              },
+              {
+                "path": "arg0.parameters.consideration.[].endAmount",
+                "label": "Payment at end",
+                "format": "tokenAmount",
+                "params": {
+                  "tokenPath": "arg0.parameters.consideration.[].token",
+                  "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000"
+                }
+              },
+              {
+                "path": "arg0.parameters.consideration.[].recipient",
+                "label": "Paid to",
+                "format": "addressName",
+                "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+              },
+              {
+                "path": "arg0.parameters.consideration.[].itemType",
+                "label": "Item type",
+                "format": "raw",
+                "visible": { "mustMatch": [0, 1] }
+              },
+              { "path": "arg0.parameters.consideration.[].token", "label": "Token", "visible": "never" },
+              { "path": "arg0.parameters.consideration.[].identifierOrCriteria", "label": "Item ID", "visible": "never" }
+            ]
+          },
+          {
+            "path": "arg0.parameters.offerer",
+            "label": "Seller",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "recipient",
+            "label": "NFT recipient",
+            "format": "addressName",
+            "params": {
+              "types": ["eoa", "wallet", "contract"],
+              "sources": ["local", "ens"],
+              "senderAddress": ["0x0000000000000000000000000000000000000000"]
+            }
+          },
+          { "path": "@.value", "label": "Max ETH paid", "format": "amount" },
+          { "path": "arg0.parameters.orderType", "label": "Order type", "format": "raw", "visible": { "mustMatch": [0, 2] } },
+          { "path": "arg0.parameters.zone", "label": "Zone", "visible": "never" },
+          { "path": "arg0.parameters.startTime", "label": "Start Time", "visible": "never" },
+          { "path": "arg0.parameters.endTime", "label": "End Time", "visible": "never" },
+          { "path": "arg0.parameters.zoneHash", "label": "Zone Hash", "visible": "never" },
+          { "path": "arg0.parameters.salt", "label": "Salt", "visible": "never" },
+          { "path": "arg0.parameters.conduitKey", "label": "Conduit Key", "visible": "never" },
+          { "path": "arg0.parameters.totalOriginalConsiderationItems", "label": "Signed item count", "visible": "never" },
+          { "path": "arg0.numerator", "label": "Numerator", "visible": "never" },
+          { "path": "arg0.denominator", "label": "Denominator", "visible": "never" },
+          { "path": "arg0.signature", "label": "Signature", "visible": "never" },
+          { "path": "arg0.extraData", "label": "Extra Data", "visible": "never" },
+          { "path": "arg1", "label": "Criteria resolvers", "visible": "never" },
+          { "path": "fulfillerConduitKey", "label": "Buyer conduit", "visible": "never" }
+        ],
+        "interpolatedIntent": "Buy NFT from {arg0.parameters.offerer}, sent to {recipient}"
+      },
+      "fulfillBasicOrder_efficient_6GL6yc((address considerationToken,uint256 considerationIdentifier,uint256 considerationAmount,address offerer,address zone,address offerToken,uint256 offerIdentifier,uint256 offerAmount,uint8 basicOrderType,uint256 startTime,uint256 endTime,bytes32 zoneHash,uint256 salt,bytes32 offererConduitKey,bytes32 fulfillerConduitKey,uint256 totalOriginalAdditionalRecipients,(uint256 amount,address recipient)[] additionalRecipients,bytes signature) arg0)": {
+        "intent": "Buy NFT",
+        "fields": [
+          { "path": "arg0.offerIdentifier", "label": "NFT", "format": "nftName", "params": { "collectionPath": "arg0.offerToken" } },
+          { "path": "arg0.offerAmount", "label": "Quantity", "format": "raw", "visible": { "ifNotIn": [1] } },
+          {
+            "path": "arg0.considerationAmount",
+            "label": "Price to seller",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "arg0.considerationToken", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" }
+          },
+          {
+            "label": "Fees",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "arg0.additionalRecipients.[].amount",
+                "label": "Fee",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "arg0.considerationToken", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" }
+              },
+              {
+                "path": "arg0.additionalRecipients.[].recipient",
+                "label": "Fee recipient",
+                "format": "addressName",
+                "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+              }
+            ]
+          },
+          {
+            "path": "arg0.offerer",
+            "label": "Seller",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "Max ETH paid", "format": "amount" },
+          {
+            "path": "arg0.basicOrderType",
+            "label": "Order type",
+            "format": "raw",
+            "visible": { "mustMatch": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15
+            ] }
+          },
+          { "path": "arg0.considerationToken", "label": "Consideration Token", "visible": "never" },
+          { "path": "arg0.considerationIdentifier", "label": "Payment ID", "visible": "never" },
+          { "path": "arg0.zone", "label": "Zone", "visible": "never" },
+          { "path": "arg0.offerToken", "label": "Offer Token", "visible": "never" },
+          { "path": "arg0.startTime", "label": "Start Time", "visible": "never" },
+          { "path": "arg0.endTime", "label": "End Time", "visible": "never" },
+          { "path": "arg0.zoneHash", "label": "Zone Hash", "visible": "never" },
+          { "path": "arg0.salt", "label": "Salt", "visible": "never" },
+          { "path": "arg0.offererConduitKey", "label": "Offerer Conduit Key", "visible": "never" },
+          { "path": "arg0.fulfillerConduitKey", "label": "Buyer conduit", "visible": "never" },
+          { "path": "arg0.totalOriginalAdditionalRecipients", "label": "Signed fee count", "visible": "never" },
+          { "path": "arg0.signature", "label": "Signature", "visible": "never" }
+        ],
+        "interpolatedIntent": "Buy {arg0.offerIdentifier} for {arg0.considerationAmount} plus fees"
+      },
+      "fulfillBasicOrder((address considerationToken,uint256 considerationIdentifier,uint256 considerationAmount,address offerer,address zone,address offerToken,uint256 offerIdentifier,uint256 offerAmount,uint8 basicOrderType,uint256 startTime,uint256 endTime,bytes32 zoneHash,uint256 salt,bytes32 offererConduitKey,bytes32 fulfillerConduitKey,uint256 totalOriginalAdditionalRecipients,(uint256 amount,address recipient)[] additionalRecipients,bytes signature) arg0)": {
+        "intent": "Buy NFT",
+        "fields": [
+          { "path": "arg0.offerIdentifier", "label": "NFT", "format": "nftName", "params": { "collectionPath": "arg0.offerToken" } },
+          { "path": "arg0.offerAmount", "label": "Quantity", "format": "raw", "visible": { "ifNotIn": [1] } },
+          {
+            "path": "arg0.considerationAmount",
+            "label": "Price to seller",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "arg0.considerationToken", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" }
+          },
+          {
+            "label": "Fees",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "arg0.additionalRecipients.[].amount",
+                "label": "Fee",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "arg0.considerationToken", "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000" }
+              },
+              {
+                "path": "arg0.additionalRecipients.[].recipient",
+                "label": "Fee recipient",
+                "format": "addressName",
+                "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+              }
+            ]
+          },
+          {
+            "path": "arg0.offerer",
+            "label": "Seller",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "Max ETH paid", "format": "amount" },
+          {
+            "path": "arg0.basicOrderType",
+            "label": "Order type",
+            "format": "raw",
+            "visible": { "mustMatch": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15
+            ] }
+          },
+          { "path": "arg0.considerationToken", "label": "Consideration Token", "visible": "never" },
+          { "path": "arg0.considerationIdentifier", "label": "Payment ID", "visible": "never" },
+          { "path": "arg0.zone", "label": "Zone", "visible": "never" },
+          { "path": "arg0.offerToken", "label": "Offer Token", "visible": "never" },
+          { "path": "arg0.startTime", "label": "Start Time", "visible": "never" },
+          { "path": "arg0.endTime", "label": "End Time", "visible": "never" },
+          { "path": "arg0.zoneHash", "label": "Zone Hash", "visible": "never" },
+          { "path": "arg0.salt", "label": "Salt", "visible": "never" },
+          { "path": "arg0.offererConduitKey", "label": "Offerer Conduit Key", "visible": "never" },
+          { "path": "arg0.fulfillerConduitKey", "label": "Buyer conduit", "visible": "never" },
+          { "path": "arg0.totalOriginalAdditionalRecipients", "label": "Signed fee count", "visible": "never" },
+          { "path": "arg0.signature", "label": "Signature", "visible": "never" }
+        ],
+        "interpolatedIntent": "Buy {arg0.offerIdentifier} for {arg0.considerationAmount} plus fees"
+      },
+      "fulfillOrder(((address offerer,address zone,(uint8 itemType,address token,uint256 identifierOrCriteria,uint256 startAmount,uint256 endAmount)[] offer,(uint8 itemType,address token,uint256 identifierOrCriteria,uint256 startAmount,uint256 endAmount,address recipient)[] consideration,uint8 orderType,uint256 startTime,uint256 endTime,bytes32 zoneHash,uint256 salt,bytes32 conduitKey,uint256 totalOriginalConsiderationItems) parameters,bytes signature) arg0,bytes32 fulfillerConduitKey)": {
+        "intent": "Buy NFT",
+        "fields": [
+          {
+            "label": "NFTs you receive",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "arg0.parameters.offer.[].identifierOrCriteria",
+                "label": "NFT",
+                "format": "nftName",
+                "params": { "collectionPath": "arg0.parameters.offer.[].token" }
+              },
+              { "path": "arg0.parameters.offer.[].startAmount", "label": "Quantity", "format": "raw", "visible": { "ifNotIn": [1] } },
+              { "path": "arg0.parameters.offer.[].endAmount", "label": "Quantity at end", "format": "raw", "visible": { "ifNotIn": [1] } },
+              { "path": "arg0.parameters.offer.[].itemType", "label": "Item type", "format": "raw", "visible": { "mustMatch": [2, 3] } },
+              { "path": "arg0.parameters.offer.[].token", "label": "Token", "visible": "never" }
+            ]
+          },
+          {
+            "label": "You pay",
+            "iteration": "bundled",
+            "fields": [
+              {
+                "path": "arg0.parameters.consideration.[].startAmount",
+                "label": "Payment",
+                "format": "tokenAmount",
+                "params": {
+                  "tokenPath": "arg0.parameters.consideration.[].token",
+                  "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000"
+                }
+              },
+              {
+                "path": "arg0.parameters.consideration.[].endAmount",
+                "label": "Payment at end",
+                "format": "tokenAmount",
+                "params": {
+                  "tokenPath": "arg0.parameters.consideration.[].token",
+                  "nativeCurrencyAddress": "0x0000000000000000000000000000000000000000"
+                }
+              },
+              {
+                "path": "arg0.parameters.consideration.[].recipient",
+                "label": "Paid to",
+                "format": "addressName",
+                "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+              },
+              {
+                "path": "arg0.parameters.consideration.[].itemType",
+                "label": "Item type",
+                "format": "raw",
+                "visible": { "mustMatch": [0, 1] }
+              },
+              { "path": "arg0.parameters.consideration.[].token", "label": "Token", "visible": "never" },
+              { "path": "arg0.parameters.consideration.[].identifierOrCriteria", "label": "Item ID", "visible": "never" }
+            ]
+          },
+          {
+            "path": "arg0.parameters.offerer",
+            "label": "Seller",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "Max ETH paid", "format": "amount" },
+          { "path": "arg0.parameters.orderType", "label": "Order type", "format": "raw", "visible": { "mustMatch": [0, 2] } },
+          { "path": "arg0.parameters.zone", "label": "Zone", "visible": "never" },
+          { "path": "arg0.parameters.startTime", "label": "Start Time", "visible": "never" },
+          { "path": "arg0.parameters.endTime", "label": "End Time", "visible": "never" },
+          { "path": "arg0.parameters.zoneHash", "label": "Zone Hash", "visible": "never" },
+          { "path": "arg0.parameters.salt", "label": "Salt", "visible": "never" },
+          { "path": "arg0.parameters.conduitKey", "label": "Conduit Key", "visible": "never" },
+          { "path": "arg0.parameters.totalOriginalConsiderationItems", "label": "Signed item count", "visible": "never" },
+          { "path": "arg0.signature", "label": "Signature", "visible": "never" },
+          { "path": "fulfillerConduitKey", "label": "Buyer conduit", "visible": "never" }
+        ],
+        "interpolatedIntent": "Buy NFT from {arg0.parameters.offerer}"
+      },
+      "incrementCounter()": { "intent": "Cancel all orders", "fields": [], "interpolatedIntent": "Cancel every Seaport order you signed" }
+    }
+  }
+}
