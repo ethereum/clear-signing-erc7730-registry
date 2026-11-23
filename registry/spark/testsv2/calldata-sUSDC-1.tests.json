@@ -1,0 +1,86 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-sUSDC-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "0xbc65ad17c5c0a2a4d159fa5a503f4992c7b545fe": {
+        "symbol": "sUSDC",
+        "decimals": 18,
+        "name": "Savings USDC"
+      }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit - chain 1",
+      "rawTx": "0x02f8b3018207d48447868c0085031749055e8306ae1b94bc65ad17c5c0a2a4d159fa5a503f4992c7b545fe80b8446e553f65000000000000000000000000000000000000000000000000000000016030502b000000000000000000000000ead566b0f46a63ff3f01f1c7022ad3a822f3daddc080a0609c2d9cd38df96f7ec7719455081ca15e1103d87484e20109f5f85e77f4c7eca00d706abf89d3b4695ed43df9651642f6f2725c37745a8afe7e3df5c690a70671",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Spark",
+        "fields": [
+          {
+            "label": "Deposit asset",
+            "value": "5908.746283 USDC"
+          },
+          {
+            "label": "Share ticker",
+            "value": "sUSDC"
+          },
+          {
+            "label": "Send shares to",
+            "value": "0xEAD566B0f46a63fF3f01F1C7022ad3a822F3Dadd"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Redeem - chain 1",
+      "rawTx": "0x02f8d10181f6847fa5aaa484a546339f8306013294bc65ad17c5c0a2a4d159fa5a503f4992c7b545fe80b864ba0876520000000000000000000000000000000000000000000013a18e60bc5cfd0eb32b0000000000000000000000002e3c3cfb8175b87e62c70f93ec2f84f8cae303350000000000000000000000002e3c3cfb8175b87e62c70f93ec2f84f8cae30335c080a0e23aa627fbf6a7fd7ae7584827fc352089021931d9f323d3aed0ef5547cc3492a063d51bdcb38b2f286454c0ead427ad6de57c687780a098fce880f538a572699d",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Spark",
+        "fields": [
+          {
+            "label": "Shares to redeem",
+            "value": "92705.148377449215472427 sUSDC"
+          },
+          {
+            "label": "To",
+            "value": "0x2E3c3cfb8175B87E62C70F93EC2F84f8caE30335"
+          },
+          {
+            "label": "Owner",
+            "value": "0x2E3c3cfb8175B87E62C70F93EC2F84f8caE30335"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw - chain 1",
+      "rawTx": "0x02f8d20182081c8411e1a30084393725a6830663f794bc65ad17c5c0a2a4d159fa5a503f4992c7b545fe80b864b460af9400000000000000000000000000000000000000000000000000000003442234aa000000000000000000000000ead566b0f46a63ff3f01f1c7022ad3a822f3dadd000000000000000000000000ead566b0f46a63ff3f01f1c7022ad3a822f3daddc001a091af28425357207cd2226a9c2e7ad9ded779a2bb9147244c5bb8b5ab3c875f75a02fac22ea510b0678c8e4c2da22d827a53da161a12be5bcd9eeae1d23fe1788d2",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Spark",
+        "fields": [
+          {
+            "label": "Withdraw exactly",
+            "value": "14027.994282 USDC"
+          },
+          {
+            "label": "To",
+            "value": "0xEAD566B0f46a63fF3f01F1C7022ad3a822F3Dadd"
+          },
+          {
+            "label": "Owner",
+            "value": "0xEAD566B0f46a63fF3f01F1C7022ad3a822F3Dadd"
+          }
+        ]
+      }
+    }
+  ]
+}
