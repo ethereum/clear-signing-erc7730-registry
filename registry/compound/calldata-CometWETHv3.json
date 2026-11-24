@@ -1,0 +1,64 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "cWETHv3",
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 1,
+          "address": "0xa17581a9e3356d9a858b789d68b4d866e593ae94"
+        },
+        {
+          "chainId": 8453,
+          "address": "0x46e6b214b524310239732d51387075e0e70970bf"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Compound",
+    "contractName": "cWETHv3",
+    "info": {
+      "url": "https://compound.finance"
+    },
+    "constants": {
+      "max": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE"
+    }
+  },
+  "display": {
+    "formats": {
+      "supply(address asset, uint256 amount)": {
+        "intent": "Supply",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to supply",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "asset",
+              "threshold": "$.metadata.constants.max",
+              "message": "All you owe"
+            },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdraw(address asset, uint256 amount)": {
+        "intent": "Withdraw or borrow",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount (borrows what you don't have)",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "asset",
+              "threshold": "$.metadata.constants.max",
+              "message": "Max"
+            },
+            "visible": "always"
+          }
+        ]
+      }
+    }
+  }
+}
