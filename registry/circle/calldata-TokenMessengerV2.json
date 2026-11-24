@@ -2,17 +2,61 @@
   "$schema": "../../specs/erc7730-v2.schema.json",
   "context": {
     "$id": "Circle CCTP V2 - TokenMessengerV2",
-    "contract": { "deployments": [{ "chainId": 137, "address": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d" }] }
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d" },
+        { "chainId": 10, "address": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d" },
+        { "chainId": 137, "address": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d" },
+        { "chainId": 8453, "address": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d" },
+        { "chainId": 42161, "address": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d" },
+        { "chainId": 59144, "address": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d" }
+      ]
+    }
   },
   "metadata": {
     "owner": "Circle",
     "contractName": "TokenMessengerV2",
-    "info": { "url": "https://www.circle.com/", "deploymentDate": "2025-06-09T18:45:11Z" }
+    "info": { "url": "https://www.circle.com/", "deploymentDate": "2025-06-09T18:45:11Z" },
+    "enums": {
+      "cctpDomain": {
+        "0": "Ethereum",
+        "1": "Avalanche",
+        "2": "OP Mainnet",
+        "3": "Arbitrum",
+        "5": "Solana",
+        "6": "Base",
+        "7": "Polygon PoS",
+        "8": "Sui",
+        "9": "Aptos",
+        "10": "Unichain",
+        "11": "Linea",
+        "12": "Codex",
+        "13": "Sonic",
+        "14": "World Chain",
+        "15": "Monad",
+        "16": "Sei",
+        "17": "BNB Smart Chain",
+        "18": "XDC",
+        "19": "HyperEVM",
+        "21": "Ink",
+        "22": "Plume",
+        "25": "Starknet",
+        "26": "Arc",
+        "27": "Stellar",
+        "28": "EDGE",
+        "29": "Injective",
+        "30": "Morph",
+        "31": "Pharos",
+        "32": "Cronos",
+        "33": "Plasma",
+        "37": "X Layer"
+      }
+    }
   },
   "display": {
     "definitions": {
       "burnAmount": { "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "burnToken" } },
-      "destination": { "label": "CCTP dest. domain", "format": "raw" },
+      "destination": { "label": "Destination", "format": "enum", "params": { "$ref": "$.metadata.enums.cctpDomain" } },
       "mintRecipient": { "label": "Mint recipient", "format": "raw" },
       "maxFee": { "label": "Max fee", "format": "tokenAmount", "params": { "tokenPath": "burnToken" } },
       "destinationCaller": { "label": "Caller (0 = anyone)", "format": "raw" }
@@ -20,7 +64,7 @@
     "formats": {
       "depositForBurn(uint256 amount, uint32 destinationDomain, bytes32 mintRecipient, address burnToken, bytes32 destinationCaller, uint256 maxFee, uint32 minFinalityThreshold)": {
         "intent": "Bridge via CCTP",
-        "interpolatedIntent": "Bridge {amount} to domain {destinationDomain}",
+        "interpolatedIntent": "Bridge {amount} to {destinationDomain}",
         "fields": [
           { "path": "amount", "$ref": "$.display.definitions.burnAmount", "visible": "always" },
           { "path": "destinationDomain", "$ref": "$.display.definitions.destination", "visible": "always" },
@@ -33,7 +77,7 @@
       },
       "depositForBurnWithHook(uint256 amount, uint32 destinationDomain, bytes32 mintRecipient, address burnToken, bytes32 destinationCaller, uint256 maxFee, uint32 minFinalityThreshold, bytes hookData)": {
         "intent": "Bridge via CCTP",
-        "interpolatedIntent": "Bridge {amount} to domain {destinationDomain}",
+        "interpolatedIntent": "Bridge {amount} to {destinationDomain}",
         "fields": [
           { "path": "amount", "$ref": "$.display.definitions.burnAmount", "visible": "always" },
           { "path": "destinationDomain", "$ref": "$.display.definitions.destination", "visible": "always" },
