@@ -13,7 +13,7 @@
         "format": "tokenAmount",
         "params": { "tokenPath": "orderParams_.tokenOut.[-20:]", "chainIdPath": "orderParams_.destChainId" }
       },
-      "destChain": { "label": "Destination chain ID", "format": "raw" },
+      "destChain": { "label": "Destination chain", "format": "chainId" },
       "recipient": { "label": "Recipient", "format": "raw" },
       "fillDeadline": { "label": "Order expires", "format": "date", "params": { "encoding": "timestamp" } },
       "refundTo": { "label": "Refund address", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
@@ -21,7 +21,7 @@
     "formats": {
       "openOrder((uint32 destChainId,uint32 fillDeadline,address tokenIn,bytes32 tokenOut,uint128 amountIn,uint128 amountOut,bytes32 recipient,bytes32 solver,address sender) orderParams_)": {
         "intent": "Open limit order",
-        "interpolatedIntent": "Offer {orderParams_.amountIn} for {orderParams_.amountOut} on chain {orderParams_.destChainId}, valid until {orderParams_.fillDeadline}",
+        "interpolatedIntent": "Offer {orderParams_.amountIn} for {orderParams_.amountOut} on {orderParams_.destChainId}, valid until {orderParams_.fillDeadline}",
         "fields": [
           { "path": "orderParams_.amountIn", "$ref": "$.display.definitions.amountIn" },
           { "path": "orderParams_.amountOut", "$ref": "$.display.definitions.amountOut" },
@@ -29,14 +29,24 @@
           { "path": "orderParams_.recipient", "$ref": "$.display.definitions.recipient" },
           { "path": "orderParams_.fillDeadline", "$ref": "$.display.definitions.fillDeadline" },
           { "path": "orderParams_.sender", "$ref": "$.display.definitions.refundTo" },
-          { "path": "orderParams_.solver", "label": "Exclusive solver", "visible": "never" },
+          {
+            "path": "orderParams_.solver",
+            "label": "Exclusive solver",
+            "format": "raw",
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000000000000000000000000000"] }
+          },
           { "path": "orderParams_.tokenIn", "label": "Token to send", "visible": "never" },
-          { "path": "orderParams_.tokenOut", "label": "Token to receive", "visible": "never" }
+          {
+            "path": "orderParams_.tokenOut.[-20:]",
+            "label": "Token to receive",
+            "format": "addressName",
+            "params": { "types": ["token"] }
+          }
         ]
       },
       "openOrderWithPermit((uint32 destChainId,uint32 fillDeadline,address tokenIn,bytes32 tokenOut,uint128 amountIn,uint128 amountOut,bytes32 recipient,bytes32 solver,address sender) orderParams_,uint256 deadline_,bytes permitSignature_)": {
         "intent": "Open limit order",
-        "interpolatedIntent": "Offer {orderParams_.amountIn} for {orderParams_.amountOut} on chain {orderParams_.destChainId}, valid until {orderParams_.fillDeadline}",
+        "interpolatedIntent": "Offer {orderParams_.amountIn} for {orderParams_.amountOut} on {orderParams_.destChainId}, valid until {orderParams_.fillDeadline}",
         "fields": [
           { "path": "orderParams_.amountIn", "$ref": "$.display.definitions.amountIn" },
           { "path": "orderParams_.amountOut", "$ref": "$.display.definitions.amountOut" },
@@ -45,15 +55,25 @@
           { "path": "orderParams_.fillDeadline", "$ref": "$.display.definitions.fillDeadline" },
           { "path": "orderParams_.sender", "$ref": "$.display.definitions.refundTo" },
           { "path": "deadline_", "label": "Permit deadline", "format": "date", "params": { "encoding": "timestamp" } },
-          { "path": "orderParams_.solver", "label": "Exclusive solver", "visible": "never" },
+          {
+            "path": "orderParams_.solver",
+            "label": "Exclusive solver",
+            "format": "raw",
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000000000000000000000000000"] }
+          },
           { "path": "orderParams_.tokenIn", "label": "Token to send", "visible": "never" },
-          { "path": "orderParams_.tokenOut", "label": "Token to receive", "visible": "never" },
+          {
+            "path": "orderParams_.tokenOut.[-20:]",
+            "label": "Token to receive",
+            "format": "addressName",
+            "params": { "types": ["token"] }
+          },
           { "path": "permitSignature_", "label": "Permit signature", "visible": "never" }
         ]
       },
       "cancelOrder(bytes32 orderId_,(uint16 version,bytes32 sender,uint64 nonce,uint32 originChainId,uint32 destChainId,uint64 createdAt,uint64 fillDeadline,bytes32 tokenIn,bytes32 tokenOut,uint128 amountIn,uint128 amountOut,bytes32 recipient,bytes32 solver) orderData_)": {
         "intent": "Cancel limit order",
-        "interpolatedIntent": "Cancel the order and refund the part of {orderData_.amountIn} that is not filled",
+        "interpolatedIntent": "Cancel the order and refund the unfilled part of {orderData_.amountIn} on {orderData_.originChainId}",
         "fields": [
           {
             "path": "orderData_.amountIn",
@@ -66,7 +86,7 @@
           { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
           { "path": "orderData_.version", "label": "Version", "visible": "never" },
           { "path": "orderData_.nonce", "label": "Nonce", "visible": "never" },
-          { "path": "orderData_.originChainId", "label": "Origin chain ID", "visible": "never" },
+          { "path": "orderData_.originChainId", "label": "Refund chain", "format": "chainId" },
           { "path": "orderData_.destChainId", "label": "Destination chain ID", "visible": "never" },
           { "path": "orderData_.createdAt", "label": "Created at", "visible": "never" },
           { "path": "orderData_.fillDeadline", "label": "Order expires", "visible": "never" },
