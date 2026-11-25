@@ -8,13 +8,14 @@
     "owner": "Nami",
     "contractName": "Nami CL Positions",
     "info": { "url": "https://nami.fi" },
-    "enums": { "access": { "true": "Grant", "false": "Revoke" } }
+    "enums": { "access": { "true": "Grant", "false": "Revoke" } },
+    "constants": { "wNativeToken": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" }
   },
   "display": {
     "definitions": {
       "position": { "label": "Position ID", "format": "raw" },
       "deadline": { "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
-      "ethSent": { "label": "ETH Sent", "format": "amount" },
+      "ethSent": { "label": "ETH Sent (whole tx)", "format": "amount" },
       "recipient": { "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
       "operator": { "label": "Operator", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
     },
@@ -89,12 +90,12 @@
       },
       "collect((uint256 tokenId,address recipient,uint128 amount0Max,uint128 amount1Max) params)": {
         "intent": "Collect from position",
-        "interpolatedIntent": "Collect up to {params.amount0Max} token0 and up to {params.amount1Max} token1 (raw units) owed to position {params.tokenId}, sent to {params.recipient}",
+        "interpolatedIntent": "Collect up to {params.amount0Max} token0 and up to {params.amount1Max} token1 (raw units) owed to position {params.tokenId}, sent to {params.recipient}. The zero address keeps them in this contract, where any caller can sweep them",
         "fields": [
           { "path": "params.tokenId", "$ref": "$.display.definitions.position" },
           { "path": "params.amount0Max", "label": "Max Token0 (raw)", "format": "raw" },
           { "path": "params.amount1Max", "label": "Max Token1 (raw)", "format": "raw" },
-          { "path": "params.recipient", "$ref": "$.display.definitions.recipient" },
+          { "path": "params.recipient", "$ref": "$.display.definitions.recipient", "label": "To (zero = contract)" },
           { "path": "@.value", "$ref": "$.display.definitions.ethSent" }
         ]
       },
@@ -105,6 +106,43 @@
           { "path": "tokenId", "$ref": "$.display.definitions.position" },
           { "path": "approve", "label": "Farming Access", "format": "enum", "params": { "$ref": "$.metadata.enums.access" } },
           { "path": "farmingAddress", "label": "Farming Center", "format": "addressName", "params": { "types": ["contract"] } },
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent" }
+        ]
+      },
+      "unwrapWNativeToken(uint256 amountMinimum,address recipient)": {
+        "intent": "Unwrap WETH to ETH",
+        "interpolatedIntent": "Unwrap the WETH held by this contract, at least {amountMinimum}, and send the ETH to {recipient}",
+        "fields": [
+          {
+            "path": "amountMinimum",
+            "label": "Minimum to Unwrap",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.wNativeToken" }
+          },
+          { "path": "recipient", "$ref": "$.display.definitions.recipient" },
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent" }
+        ]
+      },
+      "sweepToken(address token,uint256 amountMinimum,address recipient)": {
+        "intent": "Sweep leftover tokens",
+        "interpolatedIntent": "Send the whole token balance held by this contract, at least {amountMinimum}, to {recipient}",
+        "fields": [
+          { "path": "amountMinimum", "label": "Minimum to Sweep", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "recipient", "$ref": "$.display.definitions.recipient" },
+          { "path": "token", "label": "Token", "visible": "never" },
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent" }
+        ]
+      },
+      "refundNativeToken()": {
+        "intent": "Refund leftover ETH",
+        "interpolatedIntent": "Send the ETH held by this contract to you",
+        "fields": [{ "path": "@.value", "$ref": "$.display.definitions.ethSent" }]
+      },
+      "burn(uint256 tokenId)": {
+        "intent": "Burn empty position NFT",
+        "interpolatedIntent": "Burn empty position NFT {tokenId}",
+        "fields": [
+          { "path": "tokenId", "$ref": "$.display.definitions.position" },
           { "path": "@.value", "$ref": "$.display.definitions.ethSent" }
         ]
       },
