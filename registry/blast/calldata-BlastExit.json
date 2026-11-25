@@ -1,0 +1,34 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Blast Fund Recovery",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x23eA8c6ACEb5673BBd712137cE2Aa33db36CB513" },
+        { "chainId": 1, "address": "0x9D31771458B421C7EA8A06CB8D12663E91617869" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Blast",
+    "contractName": "Blast Fund Recovery",
+    "info": { "url": "https://blast.io" },
+    "constants": { "DAI": "0x6B175474E89094C44Da98b954EedeAC495271d0F" }
+  },
+  "display": {
+    "formats": {
+      "claim(address user,uint256 ethAmount,uint256 usdAmount,address[] _redeemers,bytes32[] proof,bytes32 root)": {
+        "intent": "Claim Blast funds",
+        "interpolatedIntent": "Claim {ethAmount} and {usdAmount} that {user} held on Blast, to your wallet",
+        "fields": [
+          { "path": "ethAmount", "label": "ETH to claim", "format": "amount" },
+          { "path": "usdAmount", "label": "DAI to claim", "format": "tokenAmount", "params": { "token": "$.metadata.constants.DAI" } },
+          { "path": "user", "label": "Blast account", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "_redeemers", "label": "Approved claimers", "visible": "never" },
+          { "path": "proof", "label": "Merkle proof", "visible": "never" },
+          { "path": "root", "label": "Merkle root", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

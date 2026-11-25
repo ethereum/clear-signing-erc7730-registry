@@ -1,0 +1,50 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "RAILGUN Smart Wallet",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xFA7093CDD9EE6932B4eb2c9e1cde7CE00B1FA4b9" }] }
+  },
+  "metadata": {
+    "owner": "RAILGUN",
+    "contractName": "RAILGUN Smart Wallet",
+    "info": { "url": "https://www.railgun.org/" },
+    "enums": { "tokenType": { "0": "ERC-20", "1": "ERC-721", "2": "ERC-1155" } }
+  },
+  "display": {
+    "formats": {
+      "shield(((bytes32 npk,(uint8 tokenType,address tokenAddress,uint256 tokenSubID) token,uint120 value) preimage,(bytes32[3] encryptedBundle,bytes32 shieldKey) ciphertext)[] _shieldRequests)": {
+        "intent": "Shield Tokens",
+        "fields": [
+          {
+            "path": "_shieldRequests.[]",
+            "fields": [
+              {
+                "path": "preimage.value",
+                "separator": "Shield request {index}",
+                "label": "Amount, fee included",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "preimage.token.tokenAddress" }
+              },
+              {
+                "path": "preimage.token.tokenType",
+                "label": "Token Type",
+                "format": "enum",
+                "params": { "$ref": "$.metadata.enums.tokenType" }
+              },
+              {
+                "path": "preimage.token.tokenAddress",
+                "label": "Token Contract",
+                "format": "addressName",
+                "params": { "types": ["token", "collection"] }
+              },
+              { "path": "preimage.token.tokenSubID", "label": "NFT ID, ERC-721 only", "format": "raw" },
+              { "path": "preimage.npk", "label": "0zk Recipient Key", "format": "raw" },
+              { "path": "ciphertext.encryptedBundle", "label": "Encrypted Note Data", "visible": "never" },
+              { "path": "ciphertext.shieldKey", "label": "Shield Key", "visible": "never" }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

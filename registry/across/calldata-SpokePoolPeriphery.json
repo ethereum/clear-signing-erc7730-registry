@@ -1,0 +1,98 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0x97CCDBea4632140639aD5eA9b944aa034eb15fD4" }] } },
+  "metadata": {
+    "owner": "Across Protocol",
+    "contractName": "SpokePoolPeriphery",
+    "info": { "url": "https://across.to/" },
+    "enums": {
+      "destinationChainOverride": {
+        "130": "Unichain",
+        "143": "Monad",
+        "480": "World Chain",
+        "999": "HyperEVM",
+        "1868": "Soneium",
+        "4217": "Tempo Mainnet Presto",
+        "4326": "MegaETH Mainnet",
+        "4663": "Robinhood Chain",
+        "5042": "Arc",
+        "9745": "Plasma Mainnet",
+        "57073": "Ink",
+        "81457": "Blast",
+        "728126428": "Tron Mainnet",
+        "34268394551451": "Solana"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "depositNative(address spokePool,address depositor,bytes32 recipient,address inputToken,uint256 inputAmount,bytes32 outputToken,uint256 outputAmount,uint256 destinationChainId,bytes32 exclusiveRelayer,uint32 quoteTimestamp,uint32 fillDeadline,uint32 exclusivityParameter,bytes message)": {
+        "intent": "Bridge tokens",
+        "interpolatedIntent": "Bridge {@.value} to {recipient} on the destination chain; the relayer must send {outputAmount}; depositor {depositor}",
+        "fields": [
+          { "path": "inputAmount", "label": "Amount to Bridge", "format": "tokenAmount", "params": { "tokenPath": "inputToken" } },
+          { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "chainId",
+            "visible": { "ifNotIn": [
+              130,
+              143,
+              480,
+              999,
+              1868,
+              4217,
+              4326,
+              4663,
+              5042,
+              9745,
+              57073,
+              81457,
+              728126428,
+              34268394551451
+            ] }
+          },
+          {
+            "path": "destinationChainId",
+            "label": "Destination Chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.destinationChainOverride" },
+            "visible": { "ifNotIn": [1, 10, 56, 137, 324, 8453, 42161, 43114, 59144] }
+          },
+          { "path": "recipient", "label": "Recipient", "format": "raw" },
+          {
+            "path": "outputAmount",
+            "label": "Relayer Must Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "outputToken.[12:32]", "chainIdPath": "#.destinationChainId" }
+          },
+          {
+            "path": "outputToken",
+            "label": "Output Token (dest.)",
+            "format": "tokenTicker",
+            "params": { "chainIdPath": "#.destinationChainId" }
+          },
+          {
+            "path": "depositor",
+            "label": "Depositor (gets refund, can change recipient and amount)",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "fillDeadline", "label": "Fill Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          {
+            "path": "spokePool",
+            "label": "Spoke Pool",
+            "format": "raw",
+            "visible": { "mustMatch": ["0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5"] }
+          },
+          { "path": "inputToken", "label": "Input Token", "visible": "never" },
+          { "path": "quoteTimestamp", "label": "Quote Timestamp", "visible": "never" },
+          { "path": "exclusiveRelayer", "label": "Exclusive Relayer", "visible": "never" },
+          { "path": "exclusivityParameter", "label": "Exclusivity Param", "visible": "never" },
+          { "path": "message", "label": "Message", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ]
+      }
+    }
+  }
+}

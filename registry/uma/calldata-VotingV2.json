@@ -1,0 +1,84 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "UMA VotingV2",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x004395edb43EFca9885CEdad51EC9fAf93Bd34ac" }] }
+  },
+  "metadata": {
+    "owner": "UMA",
+    "contractName": "VotingV2",
+    "info": { "url": "https://uma.xyz" },
+    "constants": { "uma": "0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828" }
+  },
+  "display": {
+    "definitions": {
+      "identifier": { "label": "Identifier", "format": "raw" },
+      "time": { "label": "Request time", "format": "date", "params": { "encoding": "timestamp" } },
+      "ancillaryData": { "label": "Ancillary data", "format": "raw" },
+      "hash": { "label": "Vote commitment", "format": "raw" }
+    },
+    "formats": {
+      "stake(uint128 amount)": {
+        "intent": "Stake UMA",
+        "interpolatedIntent": "Stake {amount} in the UMA voting contract",
+        "fields": [{ "path": "amount", "label": "Amount to stake", "format": "tokenAmount", "params": { "token": "$.metadata.constants.uma" } }]
+      },
+      "requestUnstake(uint128 amount)": {
+        "intent": "Request UMA unstake",
+        "interpolatedIntent": "Request to unstake {amount}; you can claim the tokens after the cooldown period",
+        "fields": [
+          { "path": "amount", "label": "Amount to unstake", "format": "tokenAmount", "params": { "token": "$.metadata.constants.uma" } }
+        ]
+      },
+      "executeUnstake()": {
+        "intent": "Claim unstaked UMA",
+        "interpolatedIntent": "Claim the UMA tokens of your unstake request to your wallet",
+        "fields": []
+      },
+      "withdrawRewards()": { "intent": "Claim rewards to wallet", "interpolatedIntent": "Claim your UMA voting rewards to your wallet", "fields": [] },
+      "withdrawAndRestake()": { "intent": "Claim and stake rewards", "interpolatedIntent": "Claim the UMA voting rewards and stake them", "fields": [] },
+      "setDelegate(address delegate)": {
+        "intent": "Set delegate wallet",
+        "interpolatedIntent": "Let {delegate} vote with your staked UMA and restake your rewards; its votes can slash your stake; the zero address removes the delegate",
+        "fields": [{ "path": "delegate", "label": "Delegate wallet", "format": "addressName", "params": { "types": ["eoa", "contract"] } }]
+      },
+      "commitVote(bytes32 identifier,uint256 time,bytes ancillaryData,bytes32 hash)": {
+        "intent": "Commit vote",
+        "interpolatedIntent": "Commit a hidden vote on the UMA request of {time}",
+        "fields": [
+          { "path": "identifier", "$ref": "$.display.definitions.identifier" },
+          { "path": "time", "$ref": "$.display.definitions.time" },
+          { "path": "hash", "$ref": "$.display.definitions.hash" },
+          { "path": "ancillaryData", "$ref": "$.display.definitions.ancillaryData" }
+        ]
+      },
+      "commitAndEmitEncryptedVote(bytes32 identifier,uint256 time,bytes ancillaryData,bytes32 hash,bytes encryptedVote)": {
+        "intent": "Commit vote",
+        "interpolatedIntent": "Commit a hidden vote on the UMA request of {time}",
+        "fields": [
+          { "path": "identifier", "$ref": "$.display.definitions.identifier" },
+          { "path": "time", "$ref": "$.display.definitions.time" },
+          { "path": "hash", "$ref": "$.display.definitions.hash" },
+          { "path": "ancillaryData", "$ref": "$.display.definitions.ancillaryData" },
+          { "path": "encryptedVote", "label": "Encrypted vote", "visible": "never" }
+        ]
+      },
+      "revealVote(bytes32 identifier,uint256 time,int256 price,bytes ancillaryData,int256 salt)": {
+        "intent": "Reveal vote",
+        "interpolatedIntent": "Reveal the vote {price} on the UMA request of {time}",
+        "fields": [
+          { "path": "identifier", "$ref": "$.display.definitions.identifier" },
+          { "path": "time", "$ref": "$.display.definitions.time" },
+          { "path": "price", "label": "Vote (raw price)", "format": "raw" },
+          { "path": "ancillaryData", "$ref": "$.display.definitions.ancillaryData" },
+          { "path": "salt", "label": "Salt", "visible": "never" }
+        ]
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Batch voting actions",
+        "interpolatedIntent": "Run every action below in one transaction; if one action fails, the whole transaction reverts",
+        "fields": [{ "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to" } }]
+      }
+    }
+  }
+}
