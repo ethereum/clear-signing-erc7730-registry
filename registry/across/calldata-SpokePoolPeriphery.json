@@ -28,7 +28,7 @@
     "formats": {
       "depositNative(address spokePool,address depositor,bytes32 recipient,address inputToken,uint256 inputAmount,bytes32 outputToken,uint256 outputAmount,uint256 destinationChainId,bytes32 exclusiveRelayer,uint32 quoteTimestamp,uint32 fillDeadline,uint32 exclusivityParameter,bytes message)": {
         "intent": "Bridge tokens",
-        "interpolatedIntent": "Bridge {inputAmount} to {recipient} on the destination chain; the relayer must send {outputAmount}; depositor {depositor}",
+        "interpolatedIntent": "Bridge {@.value} to {recipient} on the destination chain; the relayer must send {outputAmount}; depositor {depositor}",
         "fields": [
           { "path": "inputAmount", "label": "Amount to Bridge", "format": "tokenAmount", "params": { "tokenPath": "inputToken" } },
           { "path": "@.value", "label": "Native Value Sent", "format": "amount" },
@@ -67,7 +67,12 @@
             "format": "tokenAmount",
             "params": { "tokenPath": "outputToken.[12:32]", "chainIdPath": "#.destinationChainId" }
           },
-          { "path": "outputToken", "label": "Output Token (dest.)", "format": "raw" },
+          {
+            "path": "outputToken",
+            "label": "Output Token (dest.)",
+            "format": "tokenTicker",
+            "params": { "chainIdPath": "#.destinationChainId" }
+          },
           {
             "path": "depositor",
             "label": "Depositor (gets refund, can change recipient and amount)",
