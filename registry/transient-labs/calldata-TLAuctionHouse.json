@@ -23,7 +23,7 @@
     },
     "formats": {
       "list(address nftAddress,uint256 tokenId,uint8 type_,address payoutReceiver,address currencyAddress,uint256 openTime,uint256 reservePrice,uint256 auctionDuration,uint256 buyNowPrice)": {
-        "intent": "List for Sale",
+        "intent": "List NFT (moves to escrow)",
         "fields": [
           { "path": "nftAddress", "$ref": "$.display.definitions.collection" },
           { "path": "tokenId", "$ref": "$.display.definitions.tokenId" },
@@ -32,7 +32,12 @@
           { "path": "buyNowPrice", "label": "Buy Now Price", "$ref": "$.display.definitions.price" },
           { "path": "openTime", "label": "Start Time", "format": "date", "params": { "encoding": "timestamp" } },
           { "path": "auctionDuration", "label": "Duration", "format": "duration" },
-          { "path": "payoutReceiver", "label": "Payout Address", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          {
+            "path": "payoutReceiver",
+            "label": "Payout (after fees)",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          },
           { "path": "currencyAddress", "label": "Currency", "visible": "never" }
         ]
       },
