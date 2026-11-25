@@ -96,6 +96,33 @@
           { "path": "orderData_.recipient", "label": "Recipient", "visible": "never" },
           { "path": "orderData_.solver", "label": "Exclusive solver", "visible": "never" }
         ]
+      },
+      "cancelOrder(bytes32 orderId_,(uint16 version,bytes32 sender,uint64 nonce,uint32 originChainId,uint32 destChainId,uint64 createdAt,uint64 fillDeadline,bytes32 tokenIn,bytes32 tokenOut,uint128 amountIn,uint128 amountOut,bytes32 recipient,bytes32 solver) orderData_,bytes bridgeAdapterArgs_)": {
+        "intent": "Cancel limit order",
+        "interpolatedIntent": "Cancel the order and refund the unfilled part of {orderData_.amountIn} on {orderData_.originChainId}",
+        "fields": [
+          {
+            "path": "orderData_.amountIn",
+            "label": "Order amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "orderData_.tokenIn.[-20:]", "chainIdPath": "orderData_.originChainId" }
+          },
+          { "path": "orderData_.sender", "label": "Refund address", "format": "raw" },
+          { "path": "orderId_", "label": "Order ID", "format": "raw" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
+          { "path": "orderData_.version", "label": "Version", "visible": "never" },
+          { "path": "orderData_.nonce", "label": "Nonce", "visible": "never" },
+          { "path": "orderData_.originChainId", "label": "Refund chain", "format": "chainId" },
+          { "path": "orderData_.destChainId", "label": "Destination chain ID", "visible": "never" },
+          { "path": "orderData_.createdAt", "label": "Created at", "visible": "never" },
+          { "path": "orderData_.fillDeadline", "label": "Order expires", "visible": "never" },
+          { "path": "orderData_.tokenIn", "label": "Token sent", "visible": "never" },
+          { "path": "orderData_.tokenOut", "label": "Token to receive", "visible": "never" },
+          { "path": "orderData_.amountOut", "label": "Amount to receive", "visible": "never" },
+          { "path": "orderData_.recipient", "label": "Recipient", "visible": "never" },
+          { "path": "orderData_.solver", "label": "Exclusive solver", "visible": "never" },
+          { "path": "bridgeAdapterArgs_", "label": "Bridge adapter data", "visible": "never" }
+        ]
       }
     }
   }
