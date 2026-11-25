@@ -1,6 +1,13 @@
 {
   "$schema": "../../../specs/erc7730-tests-v2.schema.json",
   "descriptor": "../calldata-Outbox.json",
+  "dataProvider": {
+    "tokens": {
+      "0x518b63da813d46556fea041a88b52e3caa8c16a8": { "symbol": "ATF", "decimals": 18, "name": "Antfarm Token" },
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" },
+      "0xeabb8996ea1662cad2f7fb715127852cd3262ae9": { "symbol": "CNFI", "decimals": 18, "name": "Connect Financial" }
+    }
+  },
   "tests": [
     {
       "description": "executeTransaction ETH withdrawal of 0.000523442551900332 ETH - chain 1",
@@ -42,7 +49,16 @@
           { "label": "Sender on Arbitrum", "value": "0x09e9222E96E7B4AE2a407B98d48e330053351EEe" },
           {
             "label": "Call on destination",
-            "value": "0x2e567b36000000000000000000000000518b63da813d46556fea041a88b52e3caa8c16a80000000000000000000000007e1252e762c8b72e0553b0291a5814efb21b628f0000000000000000000000007e1252e762c8b72e0553b0291a5814efb21b628f000000000000000000000000000000000000000000000003c48199c5f1a6000000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000b65000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000"
+            "value": {
+              "intent": "Release bridged token",
+              "fields": [
+                { "label": "Amount", "value": "69.5 ATF" },
+                { "label": "Recipient", "value": "0x7E1252E762c8b72E0553b0291a5814eFb21B628F" },
+                { "label": "Sender on Arbitrum", "value": "0x7E1252E762c8b72E0553b0291a5814eFb21B628F" }
+              ],
+              "interpolatedIntent": "Release 69.5 ATF from the Arbitrum bridge to 0x7E1252E762c8b72E0553b0291a5814eFb21B628F",
+              "owner": "Arbitrum"
+            }
           }
         ]
       }
@@ -60,7 +76,16 @@
           { "label": "Sender on Arbitrum", "value": "0x6c411aD3E74De3E7Bd422b94A27770f5B86C623B" },
           {
             "label": "Call on destination",
-            "value": "0x2e567b36000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000c01528c7e09ce05e7734d915f5009ad40e056886000000000000000000000000c01528c7e09ce05e7734d915f5009ad40e056886000000000000000000000000000000000000000000000000002a161a032ba40000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000"
+            "value": {
+              "intent": "Release bridged token",
+              "fields": [
+                { "label": "Amount", "value": "0.01184625 WETH" },
+                { "label": "Recipient", "value": "0xc01528c7E09Ce05E7734D915f5009ad40E056886" },
+                { "label": "Sender on Arbitrum", "value": "0xc01528c7E09Ce05E7734D915f5009ad40E056886" }
+              ],
+              "interpolatedIntent": "Release 0.01184625 WETH from the Arbitrum bridge to 0xc01528c7E09Ce05E7734D915f5009ad40E056886",
+              "owner": "Arbitrum"
+            }
           }
         ]
       }
@@ -77,7 +102,16 @@
           { "label": "Sender on Arbitrum", "value": "0x096760F208390250649E3e8763348E783AEF5562" },
           {
             "label": "Call on destination",
-            "value": "0x2e567b36000000000000000000000000eabb8996ea1662cad2f7fb715127852cd3262ae900000000000000000000000081004f46e7fda526bd49529b544011dad06cfab900000000000000000000000081004f46e7fda526bd49529b544011dad06cfab90000000000000000000000000000000000000000000003ba11cb98ad06f265e500000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000004f7500000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000"
+            "value": {
+              "intent": "Release bridged token",
+              "fields": [
+                { "label": "Amount", "value": "17599.476132706742592997 CNFI" },
+                { "label": "Recipient", "value": "0x81004f46E7fDA526bD49529b544011DaD06cFab9" },
+                { "label": "Sender on Arbitrum", "value": "0x81004f46E7fDA526bD49529b544011DaD06cFab9" }
+              ],
+              "interpolatedIntent": "Release 17599.476132706742592997 CNFI from the Arbitrum bridge to 0x81004f46E7fDA526bD49529b544011DaD06cFab9",
+              "owner": "Arbitrum"
+            }
           }
         ]
       }
