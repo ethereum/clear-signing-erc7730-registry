@@ -13,8 +13,8 @@
   "display": {
     "definitions": {
       "orderType": { "label": "Order type", "format": "enum", "params": { "$ref": "$.metadata.enums.orderType" } },
-      "yt": { "label": "Yield token (YT)", "format": "addressName", "params": { "types": ["token"] } },
-      "token": { "label": "Input/output token", "format": "addressName", "params": { "types": ["token"] } },
+      "yt": { "label": "Yield token (YT)", "format": "tokenTicker" },
+      "token": { "label": "Input/output token", "format": "tokenTicker" },
       "makingAmount": { "label": "Order amount (raw)", "format": "raw" },
       "expiry": { "label": "Order expiry", "format": "date", "params": { "encoding": "timestamp" } }
     },
@@ -43,7 +43,7 @@
           {
             "path": "orders.[]",
             "fields": [
-              { "path": "orderType", "$ref": "$.display.definitions.orderType" },
+              { "path": "orderType", "$ref": "$.display.definitions.orderType", "separator": "Order {index}" },
               { "path": "YT", "$ref": "$.display.definitions.yt" },
               { "path": "token", "$ref": "$.display.definitions.token" },
               { "path": "makingAmount", "$ref": "$.display.definitions.makingAmount" },
