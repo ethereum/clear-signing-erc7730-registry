@@ -1,0 +1,116 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Transit Swap Router V5",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x07964f135f276412b3182a3B2407b8dd45000000" }] }
+  },
+  "metadata": {
+    "owner": "Transit Swap",
+    "contractName": "Transit Swap Router V5",
+    "info": { "url": "https://transit.finance" },
+    "constants": { "native": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", "zero": "0x0000000000000000000000000000000000000000" }
+  },
+  "display": {
+    "definitions": {
+      "receiver": { "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+      "deadline": { "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } }
+    },
+    "formats": {
+      "aggregate((address srcToken,address dstToken,address dstReceiver,address wrappedToken,uint256 amount,uint256 minReturnAmount,uint256 fee,string channel,bytes signature) desc,(address srcToken,bytes calldatas) callbytesDesc)": {
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {desc.amount}, fee included, for at least {desc.minReturnAmount}, sent to {desc.dstReceiver}",
+        "fields": [
+          {
+            "path": "desc.amount",
+            "label": "Amount, fee included",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "desc.srcToken", "nativeCurrencyAddress": ["$.metadata.constants.native", "$.metadata.constants.zero"] }
+          },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
+          {
+            "path": "desc.minReturnAmount",
+            "label": "Minimum to receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "desc.dstToken", "nativeCurrencyAddress": ["$.metadata.constants.native", "$.metadata.constants.zero"] }
+          },
+          { "path": "desc.dstReceiver", "$ref": "$.display.definitions.receiver" },
+          { "path": "desc.srcToken", "label": "Token to send", "visible": "never" },
+          { "path": "desc.dstToken", "label": "Token to receive", "visible": "never" },
+          { "path": "desc.wrappedToken", "label": "Wrapped token", "visible": "never" },
+          { "path": "desc.fee", "label": "Fee data", "visible": "never" },
+          { "path": "desc.channel", "label": "Channel", "visible": "never" },
+          { "path": "desc.signature", "label": "Fee signature", "visible": "never" },
+          { "path": "callbytesDesc.srcToken", "label": "Route token", "visible": "never" },
+          { "path": "callbytesDesc.calldatas", "label": "Swap route", "visible": "never" }
+        ]
+      },
+      "exactInputV3Swap((address srcToken,address dstToken,address dstReceiver,address wrappedToken,uint256 amount,uint256 minReturnAmount,uint256 fee,uint256 deadline,uint256[] pools,bytes signature,string channel) params)": {
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {params.amount}, fee included, for at least {params.minReturnAmount}, sent to {params.dstReceiver}",
+        "fields": [
+          {
+            "path": "params.amount",
+            "label": "Amount, fee included",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.srcToken", "nativeCurrencyAddress": ["$.metadata.constants.native", "$.metadata.constants.zero"] }
+          },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
+          {
+            "path": "params.minReturnAmount",
+            "label": "Minimum to receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.dstToken", "nativeCurrencyAddress": ["$.metadata.constants.native", "$.metadata.constants.zero"] }
+          },
+          { "path": "params.dstReceiver", "$ref": "$.display.definitions.receiver" },
+          { "path": "params.deadline", "$ref": "$.display.definitions.deadline" },
+          { "path": "params.srcToken", "label": "Token to send", "visible": "never" },
+          { "path": "params.dstToken", "label": "Token to receive", "visible": "never" },
+          { "path": "params.wrappedToken", "label": "Wrapped token", "visible": "never" },
+          { "path": "params.fee", "label": "Fee data", "visible": "never" },
+          { "path": "params.pools", "label": "Swap route", "visible": "never" },
+          { "path": "params.signature", "label": "Fee signature", "visible": "never" },
+          { "path": "params.channel", "label": "Channel", "visible": "never" }
+        ]
+      },
+      "exactInputV2Swap((address dstReceiver,address wrappedToken,uint256 router,uint256 amount,uint256 minReturnAmount,uint256 fee,address[] path,address[] pool,bytes signature,string channel) exactInput,uint256 deadline)": {
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {exactInput.amount}, fee included, for at least {exactInput.minReturnAmount}, sent to {exactInput.dstReceiver}",
+        "fields": [
+          {
+            "path": "exactInput.amount",
+            "label": "Amount, fee included",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "exactInput.path.[0]",
+              "nativeCurrencyAddress": ["$.metadata.constants.native", "$.metadata.constants.zero"]
+            }
+          },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
+          {
+            "path": "exactInput.minReturnAmount",
+            "label": "Minimum to receive",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "exactInput.path.[-1]",
+              "nativeCurrencyAddress": ["$.metadata.constants.native", "$.metadata.constants.zero"]
+            }
+          },
+          { "path": "exactInput.dstReceiver", "$ref": "$.display.definitions.receiver" },
+          { "path": "deadline", "$ref": "$.display.definitions.deadline" },
+          {
+            "path": "exactInput.router",
+            "label": "Router and swap mode",
+            "format": "raw",
+            "visible": { "mustMatch": ["452312848583266388373324160887510303453432363010492966520592108215996663949"] }
+          },
+          { "path": "exactInput.wrappedToken", "label": "Wrapped token", "visible": "never" },
+          { "path": "exactInput.fee", "label": "Fee data", "visible": "never" },
+          { "path": "exactInput.path", "label": "Token path", "visible": "never" },
+          { "path": "exactInput.pool", "label": "Swap route", "visible": "never" },
+          { "path": "exactInput.signature", "label": "Fee signature", "visible": "never" },
+          { "path": "exactInput.channel", "label": "Channel", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

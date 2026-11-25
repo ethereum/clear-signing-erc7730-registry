@@ -1,0 +1,133 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "SuperRare Bazaar",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x6D7c44773C52D396F43c2D511B81aa168E9a7a42" }] }
+  },
+  "metadata": { "owner": "SuperRare", "contractName": "SuperRare Bazaar", "info": { "url": "https://superrare.com/" } },
+  "display": {
+    "definitions": {
+      "collection": { "label": "Collection", "format": "addressName", "params": { "types": ["collection"] } },
+      "tokenId": { "label": "Token ID", "format": "raw" },
+      "price": {
+        "format": "tokenAmount",
+        "params": { "tokenPath": "_currencyAddress", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+      },
+      "ethSent": { "label": "ETH Sent (with fee)", "format": "amount" },
+      "splitRecipient": { "label": "Split Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+      "splitShare": { "label": "Split Share", "format": "unit", "params": { "base": "%" } }
+    },
+    "formats": {
+      "configureAuction(bytes32 _auctionType,address _originContract,uint256 _tokenId,uint256 _startingAmount,address _currencyAddress,uint256 _lengthOfAuction,uint256 _startTime,address[] _splitAddresses,uint8[] _splitRatios)": {
+        "intent": "Create Auction",
+        "fields": [
+          { "path": "_originContract", "$ref": "$.display.definitions.collection" },
+          { "path": "_tokenId", "$ref": "$.display.definitions.tokenId" },
+          { "path": "_auctionType", "label": "Auction Type (hex)", "format": "raw" },
+          { "path": "_startingAmount", "label": "Reserve / Min Bid", "$ref": "$.display.definitions.price" },
+          { "path": "_lengthOfAuction", "label": "Duration", "format": "duration" },
+          {
+            "path": "_startTime",
+            "label": "Start Time",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": { "ifNotIn": [0, "0"] }
+          },
+          {
+            "iteration": "bundled",
+            "fields": [
+              { "path": "_splitAddresses.[]", "$ref": "$.display.definitions.splitRecipient" },
+              { "path": "_splitRatios.[]", "$ref": "$.display.definitions.splitShare" }
+            ]
+          },
+          { "path": "_currencyAddress", "label": "Currency", "visible": "never" }
+        ]
+      },
+      "cancelAuction(address _originContract,uint256 _tokenId)": {
+        "intent": "Cancel Auction",
+        "interpolatedIntent": "Cancel the auction of token {_tokenId} of {_originContract}",
+        "fields": [
+          { "path": "_originContract", "$ref": "$.display.definitions.collection" },
+          { "path": "_tokenId", "$ref": "$.display.definitions.tokenId" }
+        ]
+      },
+      "bid(address _originContract,uint256 _tokenId,address _currencyAddress,uint256 _amount)": {
+        "intent": "Place Bid",
+        "fields": [
+          { "path": "_originContract", "$ref": "$.display.definitions.collection" },
+          { "path": "_tokenId", "$ref": "$.display.definitions.tokenId" },
+          { "path": "_amount", "label": "Bid (before fee)", "$ref": "$.display.definitions.price" },
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent", "visible": { "ifNotIn": [0, "0"] } },
+          { "path": "_currencyAddress", "label": "Currency", "visible": "never" }
+        ]
+      },
+      "settleAuction(address _originContract,uint256 _tokenId)": {
+        "intent": "Settle Auction",
+        "interpolatedIntent": "Settle the auction of token {_tokenId} of {_originContract}",
+        "fields": [
+          { "path": "_originContract", "$ref": "$.display.definitions.collection" },
+          { "path": "_tokenId", "$ref": "$.display.definitions.tokenId" }
+        ]
+      },
+      "setSalePrice(address _originContract,uint256 _tokenId,address _currencyAddress,uint256 _listPrice,address _target,address[] _splitAddresses,uint8[] _splitRatios)": {
+        "intent": "Set Buy Now Price",
+        "fields": [
+          { "path": "_originContract", "$ref": "$.display.definitions.collection" },
+          { "path": "_tokenId", "$ref": "$.display.definitions.tokenId" },
+          { "path": "_listPrice", "label": "Buy Now Price", "$ref": "$.display.definitions.price" },
+          {
+            "path": "_target",
+            "label": "Only for Buyer",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "iteration": "bundled",
+            "fields": [
+              { "path": "_splitAddresses.[]", "$ref": "$.display.definitions.splitRecipient" },
+              { "path": "_splitRatios.[]", "$ref": "$.display.definitions.splitShare" }
+            ]
+          },
+          { "path": "_currencyAddress", "label": "Currency", "visible": "never" }
+        ]
+      },
+      "removeSalePrice(address _originContract,uint256 _tokenId,address _target)": {
+        "intent": "Remove Buy Now Price",
+        "interpolatedIntent": "Remove the Buy Now price of token {_tokenId} of {_originContract}",
+        "fields": [
+          { "path": "_originContract", "$ref": "$.display.definitions.collection" },
+          { "path": "_tokenId", "$ref": "$.display.definitions.tokenId" },
+          {
+            "path": "_target",
+            "label": "Only for Buyer",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          }
+        ]
+      },
+      "buy(address _originContract,uint256 _tokenId,address _currencyAddress,uint256 _amount)": {
+        "intent": "Buy Now",
+        "fields": [
+          { "path": "_originContract", "$ref": "$.display.definitions.collection" },
+          { "path": "_tokenId", "$ref": "$.display.definitions.tokenId" },
+          { "path": "_amount", "label": "Price (before fee)", "$ref": "$.display.definitions.price" },
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent", "visible": { "ifNotIn": [0, "0"] } },
+          { "path": "_currencyAddress", "label": "Currency", "visible": "never" }
+        ]
+      },
+      "offer(address _originContract,uint256 _tokenId,address _currencyAddress,uint256 _amount,bool _convertible)": {
+        "intent": "Make Offer",
+        "fields": [
+          { "path": "_originContract", "$ref": "$.display.definitions.collection" },
+          { "path": "_tokenId", "$ref": "$.display.definitions.tokenId" },
+          { "path": "_amount", "label": "Offer (before fee)", "$ref": "$.display.definitions.price" },
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent", "visible": { "ifNotIn": [0, "0"] } },
+          { "path": "_currencyAddress", "label": "Currency", "visible": "never" },
+          { "path": "_convertible", "label": "Auction Convertible", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

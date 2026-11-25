@@ -1,0 +1,64 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Pendle Limit Router",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321" }] }
+  },
+  "metadata": {
+    "owner": "Pendle",
+    "contractName": "Pendle Limit Router",
+    "info": { "url": "https://pendle.finance" },
+    "enums": { "orderType": { "0": "Buy PT", "1": "Sell PT", "2": "Buy YT", "3": "Sell YT" } }
+  },
+  "display": {
+    "definitions": {
+      "orderType": { "label": "Order type", "format": "enum", "params": { "$ref": "$.metadata.enums.orderType" } },
+      "yt": { "label": "Yield token (YT)", "format": "tokenTicker" },
+      "token": { "label": "Input/output token", "format": "tokenTicker" },
+      "makingAmount": { "label": "Order amount (raw)", "format": "raw" },
+      "expiry": { "label": "Order expiry", "format": "date", "params": { "encoding": "timestamp" } }
+    },
+    "formats": {
+      "cancelSingle((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit) order)": {
+        "intent": "Cancel limit order",
+        "interpolatedIntent": "Cancel your {order.orderType} limit order on Pendle",
+        "fields": [
+          { "path": "order.orderType", "$ref": "$.display.definitions.orderType" },
+          { "path": "order.YT", "$ref": "$.display.definitions.yt" },
+          { "path": "order.token", "$ref": "$.display.definitions.token" },
+          { "path": "order.makingAmount", "$ref": "$.display.definitions.makingAmount" },
+          { "path": "order.expiry", "$ref": "$.display.definitions.expiry" },
+          { "path": "order.maker", "label": "Maker", "visible": "never" },
+          { "path": "order.receiver", "label": "Receiver", "visible": "never" },
+          { "path": "order.lnImpliedRate", "label": "Implied rate (ln)", "visible": "never" },
+          { "path": "order.failSafeRate", "label": "Fail-safe rate", "visible": "never" },
+          { "path": "order.salt", "label": "Salt", "visible": "never" },
+          { "path": "order.nonce", "label": "Nonce", "visible": "never" },
+          { "path": "order.permit", "label": "Permit", "visible": "never" }
+        ]
+      },
+      "cancelBatch((uint256 salt,uint256 expiry,uint256 nonce,uint8 orderType,address token,address YT,address maker,address receiver,uint256 makingAmount,uint256 lnImpliedRate,uint256 failSafeRate,bytes permit)[] orders)": {
+        "intent": "Cancel limit orders",
+        "fields": [
+          {
+            "path": "orders.[]",
+            "fields": [
+              { "path": "orderType", "$ref": "$.display.definitions.orderType", "separator": "Order {index}" },
+              { "path": "YT", "$ref": "$.display.definitions.yt" },
+              { "path": "token", "$ref": "$.display.definitions.token" },
+              { "path": "makingAmount", "$ref": "$.display.definitions.makingAmount" },
+              { "path": "expiry", "$ref": "$.display.definitions.expiry" },
+              { "path": "maker", "label": "Maker", "visible": "never" },
+              { "path": "receiver", "label": "Receiver", "visible": "never" },
+              { "path": "lnImpliedRate", "label": "Implied rate (ln)", "visible": "never" },
+              { "path": "failSafeRate", "label": "Fail-safe rate", "visible": "never" },
+              { "path": "salt", "label": "Salt", "visible": "never" },
+              { "path": "nonce", "label": "Nonce", "visible": "never" },
+              { "path": "permit", "label": "Permit", "visible": "never" }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
