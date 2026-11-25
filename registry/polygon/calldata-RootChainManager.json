@@ -1,0 +1,49 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Polygon PoS RootChainManager",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xA0c68C638235ee32657e8f720a23ceC1bFc77C77" }] }
+  },
+  "metadata": { "owner": "Polygon", "contractName": "Polygon PoS RootChainManager", "info": { "url": "https://polygon.technology/" } },
+  "display": {
+    "formats": {
+      "depositEtherFor(address user)": {
+        "intent": "Deposit ETH as WETH on Polygon",
+        "interpolatedIntent": "Deposit {@.value} to {user} on Polygon PoS as WETH",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount" },
+          {
+            "path": "user",
+            "label": "WETH recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "depositFor(address user,address rootToken,bytes depositData)": {
+        "intent": "Deposit token to Polygon PoS",
+        "fields": [
+          {
+            "path": "depositData.[0:32]",
+            "label": "Amount (ERC-20 only)",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "rootToken" }
+          },
+          {
+            "path": "rootToken",
+            "label": "Token",
+            "format": "addressName",
+            "params": { "types": ["token", "collection"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "user",
+            "label": "Recipient on Polygon",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "depositData", "label": "Deposit data", "format": "raw" }
+        ]
+      }
+    }
+  }
+}
