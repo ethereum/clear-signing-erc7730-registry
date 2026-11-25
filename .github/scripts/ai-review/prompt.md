@@ -185,7 +185,7 @@ A finding is one block, worst first inside its section:
 <the exact code, or the descriptor text, the finding rests on; at most 15 lines>
 ```
 
-- **Fix:** <the change to the descriptor or the tests; as a JSON snippet in a fenced block when it is a descriptor change, with the keys of the descriptor as they are. A label or an intent you propose holds for every transaction: no number that comes from storage, such as a fee rate the owner can change. An `intent` you propose has at most 50 characters. A fix that adds a field or makes one visible also says whether `interpolatedIntent` should mention it. Leave the line out when there is none.>
+- **Fix:** <the change to the descriptor or the tests; as a JSON snippet in a fenced block when it is a descriptor change, with the keys of the descriptor as they are. A label or an intent you propose holds for every transaction: no number that comes from storage, such as a fee rate the owner can change. An `intent` you propose has at most 50 characters, and a `label` at most 20: a hardware wallet cuts a longer label. A fix that adds a field or makes one visible also says whether `interpolatedIntent` should mention it. Leave the line out when there is none.>
 ````
 
 Rules:
@@ -206,5 +206,5 @@ Read your findings once more and apply these, in order:
 3. Delete any finding about a missing test file or an empty case list of a calldata format, about `unit.deployments` being fewer than the descriptor's, about `context.contract.abi`, about a runner rendering differently from the expected rendering, or about the source being unverified.
 4. Check every constant address, ticker or token in the descriptor against every chain of `unit.deployments`: a mainnet token address used on another chain is a critical even without source.
 5. Delete any finding whose Gap says nothing differs and that has no Fix, and any block that says it is not a finding or belongs in another section: move it or drop it.
-6. Read each title as the only line a reviewer may read: it names the function and says what is wrong in one sentence. Read each sentence against the language rules: one topic, at most 20 words, active voice. Check that every `intent` you propose has at most 50 characters.
+6. Read each title as the only line a reviewer may read: it names the function and says what is wrong in one sentence. Read each sentence against the language rules: one topic, at most 20 words, active voice. Check that every `intent` you propose has at most 50 characters and every `label` at most 20.
 </before_answering>
