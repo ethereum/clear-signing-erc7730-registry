@@ -1,0 +1,81 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Transient Labs Auction House",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x6f66b95a0C512f3497FB46660E0BC3B94B989F8d" }] }
+  },
+  "metadata": {
+    "owner": "Transient Labs",
+    "contractName": "TL Auction House",
+    "info": { "url": "https://www.transient.xyz/" },
+    "enums": {
+      "listingType": { "1": "Scheduled Auction", "2": "Reserve Auction", "3": "Reserve Auction with Buy Now", "4": "Fixed Price" }
+    }
+  },
+  "display": {
+    "definitions": {
+      "collection": { "label": "Collection", "format": "addressName", "params": { "types": ["collection"] } },
+      "tokenId": { "label": "Token ID", "format": "raw" },
+      "price": {
+        "format": "tokenAmount",
+        "params": { "tokenPath": "currencyAddress", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+      }
+    },
+    "formats": {
+      "list(address nftAddress,uint256 tokenId,uint8 type_,address payoutReceiver,address currencyAddress,uint256 openTime,uint256 reservePrice,uint256 auctionDuration,uint256 buyNowPrice)": {
+        "intent": "List NFT (moves to escrow)",
+        "fields": [
+          { "path": "nftAddress", "$ref": "$.display.definitions.collection" },
+          { "path": "tokenId", "$ref": "$.display.definitions.tokenId" },
+          { "path": "type_", "label": "Listing Type", "format": "enum", "params": { "$ref": "$.metadata.enums.listingType" } },
+          { "path": "reservePrice", "label": "Reserve Price", "$ref": "$.display.definitions.price" },
+          { "path": "buyNowPrice", "label": "Buy Now Price", "$ref": "$.display.definitions.price" },
+          { "path": "openTime", "label": "Start Time", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "auctionDuration", "label": "Duration", "format": "duration" },
+          {
+            "path": "payoutReceiver",
+            "label": "Payout (after fees)",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          },
+          { "path": "currencyAddress", "label": "Currency", "visible": "never" }
+        ]
+      },
+      "delist(address nftAddress,uint256 tokenId)": {
+        "intent": "End Sale",
+        "interpolatedIntent": "End the sale of token {tokenId} of {nftAddress} and take the NFT back",
+        "fields": [
+          { "path": "nftAddress", "$ref": "$.display.definitions.collection" },
+          { "path": "tokenId", "$ref": "$.display.definitions.tokenId" }
+        ]
+      },
+      "bid(address nftAddress,uint256 tokenId,address recipient,uint256 amount)": {
+        "intent": "Place Bid",
+        "fields": [
+          { "path": "nftAddress", "$ref": "$.display.definitions.collection" },
+          { "path": "tokenId", "$ref": "$.display.definitions.tokenId" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
+          { "path": "amount", "label": "Bid (smallest unit)", "format": "raw" },
+          { "path": "recipient", "label": "NFT Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
+        ]
+      },
+      "buyNow(address nftAddress,uint256 tokenId,address recipient)": {
+        "intent": "Buy Now",
+        "fields": [
+          { "path": "nftAddress", "$ref": "$.display.definitions.collection" },
+          { "path": "tokenId", "$ref": "$.display.definitions.tokenId" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
+          { "path": "recipient", "label": "NFT Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
+        ]
+      },
+      "settleAuction(address nftAddress,uint256 tokenId)": {
+        "intent": "Settle Auction",
+        "interpolatedIntent": "Settle the auction of token {tokenId} of {nftAddress}",
+        "fields": [
+          { "path": "nftAddress", "$ref": "$.display.definitions.collection" },
+          { "path": "tokenId", "$ref": "$.display.definitions.tokenId" }
+        ]
+      }
+    }
+  }
+}
