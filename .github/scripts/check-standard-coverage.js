@@ -199,7 +199,7 @@ async function fetchContract(chainId, address) {
       pauseUntil = Date.now() + 2000 * 2 ** attempt;
       continue;
     }
-    if (!res.ok) return null;
+    if (!res.ok) throw new Error(`Sourcify answered ${res.status}`);
     return res.json();
   }
   throw new Error(`no answer from Sourcify for ${chainId}:${address}`);
