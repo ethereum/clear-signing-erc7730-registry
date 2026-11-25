@@ -1,0 +1,126 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-PortfolioTokenLimitOrder.json",
+  "dataProvider": {
+    "tokens": {
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" },
+      "0x55d398326f99059fF775485246999027B3197955": { "symbol": "USDT", "decimals": 18, "name": "Tether USD" },
+      "0xEE69f45715bfa6A4cffe2bB7e0D71093B9D58705": { "symbol": "MAG7Xon", "decimals": 18, "name": "Ondo Magnificent 7 and Crypto Portfolio" },
+      "0x787769d6Fc857169F5243ef66d3f0a954149d3BA": { "symbol": "BLKHIon", "decimals": 18, "name": "Ondo High Income Powered by BlackRock" },
+      "0x0574e53f8214d0402C8388B4402113a74354d1b0": { "symbol": "BRAINon", "decimals": 18, "name": "Ondo AI Leaders Portfolio" },
+      "0xbA4530bf12EE2741154685D857B99FEe2B9b538B": { "symbol": "BIG5on", "decimals": 18, "name": "Ondo Big 5 Core Allocation Portfolio" }
+    },
+    "addressNames": {
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "USDC",
+      "0x55d398326f99059fF775485246999027B3197955": "USDT",
+      "0xEE69f45715bfa6A4cffe2bB7e0D71093B9D58705": "MAG7Xon",
+      "0x787769d6Fc857169F5243ef66d3f0a954149d3BA": "BLKHIon",
+      "0x0574e53f8214d0402C8388B4402113a74354d1b0": "BRAINon",
+      "0xbA4530bf12EE2741154685D857B99FEe2B9b538B": "BIG5on"
+    }
+  },
+  "tests": [
+    {
+      "description": "Limit buy (Exact In) MAG7Xon for up to 2494.523419 USDC at max 4.88524986409882958USD on Ethereum",
+      "rawTx": "0x02f8cd010d840e692ec684c96640b8830432da946658f677902e1df805adf42fac015e1124aebfdb80b8a4cda491a1000000000000000000000000ee69f45715bfa6a4cffe2bb7e0d71093b9d58705000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000094af681b00000000000000000000000000000000000000000000000043cbe4de44a2d50c000000000000000000000000000000000000000000000000000000006b04cac7c0",
+      "txHash": "0xb4202aa3a8f05a2efb450f6826fd416ba14b9d5f1c8efb52f0befa1a92288ad1",
+      "expected": {
+        "intent": "Limit Buy Portfolio Token",
+        "interpolatedIntent": "Buy MAG7Xon for up to 2494.523419 USDC at max 4.88524986409882958USD",
+        "owner": "Ondo Finance",
+        "fields": [
+          { "label": "Portfolio Token", "value": "MAG7Xon" },
+          { "label": "Spend Amount", "value": "2494.523419 USDC" },
+          { "label": "Max Price", "value": "4.88524986409882958USD" },
+          { "label": "Order Expires", "value": "2026-11-23 23:22:47Z" }
+        ]
+      }
+    },
+    {
+      "description": "Limit sell (Exact In) 33.593436592015208569 BLKHIon for USDC at min 4.926296473406348742USD on Ethereum",
+      "rawTx": "0x02f8cc016a830f91d0843302708583053ff8946658f677902e1df805adf42fac015e1124aebfdb80b8a4dab2b778000000000000000000000000787769d6fc857169f5243ef66d3f0a954149d3ba000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000001d233dc9843acf079000000000000000000000000000000000000000000000000445db88abba51dc6000000000000000000000000000000000000000000000000000000006b05aab0c0",
+      "txHash": "0x34cda26441ca59d05d74574f8b042b53ad19d6281e8d996c22304de617df900d",
+      "expected": {
+        "intent": "Limit Sell Portfolio Token",
+        "interpolatedIntent": "Sell 33.593436592015208569 BLKHIon for USDC at min 4.926296473406348742USD",
+        "owner": "Ondo Finance",
+        "fields": [
+          { "label": "Amount to Sell", "value": "33.593436592015208569 BLKHIon" },
+          { "label": "Receive Token", "value": "USDC" },
+          { "label": "Min Price", "value": "4.926296473406348742USD" },
+          { "label": "Order Expires", "value": "2026-11-24 15:18:08Z" }
+        ]
+      }
+    },
+    {
+      "description": "Limit buy (Exact In) BRAINon for up to 64.602094999999995904 USDT at max 3.646728917054145399USD on BSC",
+      "rawTx": "0x02f8cd3880843b9aca0084b2d05e00830493e094a2aa93cbb069b4bf246258e4d9cd093b914dcdfe80b8a4cda491a10000000000000000000000000574e53f8214d0402c8388b4402113a74354d1b000000000000000000000000055d398326f99059ff775485246999027b31979550000000000000000000000000000000000000000000000038088bf203d09e000000000000000000000000000000000000000000000000000329bc8a0fd284377000000000000000000000000000000000000000000000000000000006b062da8c0",
+      "expected": {
+        "intent": "Limit Buy Portfolio Token",
+        "interpolatedIntent": "Buy BRAINon for up to 64.602094999999995904 USDT at max 3.646728917054145399USD",
+        "owner": "Ondo Finance",
+        "fields": [
+          { "label": "Portfolio Token", "value": "BRAINon" },
+          { "label": "Spend Amount", "value": "64.602094999999995904 USDT" },
+          { "label": "Max Price", "value": "3.646728917054145399USD" },
+          { "label": "Order Expires", "value": "2026-11-25 00:36:56Z" }
+        ]
+      }
+    },
+    {
+      "description": "Limit sell (Exact In) 0.410265010150920277 BIG5on for USDT at min 23.616271063033089892USD on BSC",
+      "rawTx": "0x02f8cd3880843b9aca0084b2d05e00830493e094a2aa93cbb069b4bf246258e4d9cd093b914dcdfe80b8a4dab2b778000000000000000000000000ba4530bf12ee2741154685d857b99fee2b9b538b00000000000000000000000055d398326f99059ff775485246999027b319795500000000000000000000000000000000000000000000000005b18dda61d1505500000000000000000000000000000000000000000000000147bdd9684f6c8f64000000000000000000000000000000000000000000000000000000006aff0fe5c0",
+      "expected": {
+        "intent": "Limit Sell Portfolio Token",
+        "interpolatedIntent": "Sell 0.410265010150920277 BIG5on for USDT at min 23.616271063033089892USD",
+        "owner": "Ondo Finance",
+        "fields": [
+          { "label": "Amount to Sell", "value": "0.410265010150920277 BIG5on" },
+          { "label": "Receive Token", "value": "USDT" },
+          { "label": "Min Price", "value": "23.616271063033089892USD" },
+          { "label": "Order Expires", "value": "2026-11-19 15:04:05Z" }
+        ]
+      }
+    },
+    {
+      "description": "Limit buy (Exact Out) 100 MAG7Xon with USDC at max 4.9USD on Ethereum",
+      "rawTx": "0x02f8cd0180843b9aca0084b2d05e00830493e0946658f677902e1df805adf42fac015e1124aebfdb80b8a451fc884c000000000000000000000000ee69f45715bfa6a4cffe2bb7e0d71093b9d58705000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000056bc75e2d6310000000000000000000000000000000000000000000000000000044004c09e76a0000000000000000000000000000000000000000000000000000000000006b04d9c0c0",
+      "expected": {
+        "intent": "Limit Buy Portfolio Token",
+        "interpolatedIntent": "Buy 100 MAG7Xon with USDC at max 4.9USD",
+        "owner": "Ondo Finance",
+        "fields": [
+          { "label": "Amount to Buy", "value": "100 MAG7Xon" },
+          { "label": "Pay With", "value": "USDC" },
+          { "label": "Max Price", "value": "4.9USD" },
+          { "label": "Order Expires", "value": "2026-11-24 00:26:40Z" }
+        ]
+      }
+    },
+    {
+      "description": "Limit sell (Exact Out) BLKHIon to receive 500 USDC at min 4.92USD on Ethereum",
+      "rawTx": "0x02f8cd0180843b9aca0084b2d05e00830493e0946658f677902e1df805adf42fac015e1124aebfdb80b8a46468f918000000000000000000000000787769d6fc857169f5243ef66d3f0a954149d3ba000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000001dcd6500000000000000000000000000000000000000000000000000444759eec6ec0000000000000000000000000000000000000000000000000000000000006b05b098c0",
+      "expected": {
+        "intent": "Limit Sell Portfolio Token",
+        "interpolatedIntent": "Sell BLKHIon to receive 500 USDC at min 4.92USD",
+        "owner": "Ondo Finance",
+        "fields": [
+          { "label": "Portfolio Token", "value": "BLKHIon" },
+          { "label": "Receive Amount", "value": "500 USDC" },
+          { "label": "Min Price", "value": "4.92USD" },
+          { "label": "Order Expires", "value": "2026-11-24 15:43:20Z" }
+        ]
+      }
+    },
+    {
+      "description": "Cancel limit order 290 on Ethereum",
+      "rawTx": "0x02f84c0180843b9aca0084b2d05e00830493e0946658f677902e1df805adf42fac015e1124aebfdb80a4514fcac70000000000000000000000000000000000000000000000000000000000000122c0",
+      "expected": {
+        "intent": "Cancel Limit Order",
+        "interpolatedIntent": "Cancel limit order 290",
+        "owner": "Ondo Finance",
+        "fields": [{ "label": "Order ID", "value": "290" }]
+      }
+    }
+  ]
+}
