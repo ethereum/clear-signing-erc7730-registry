@@ -1,0 +1,167 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Nami CL Positions",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x7b4128F23F9d440368340A8FBE1fDE1f99E0153f" }] }
+  },
+  "metadata": {
+    "owner": "Nami",
+    "contractName": "Nami CL Positions",
+    "info": { "url": "https://nami.fi" },
+    "enums": { "access": { "true": "Grant", "false": "Revoke" } },
+    "constants": { "wNativeToken": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" }
+  },
+  "display": {
+    "definitions": {
+      "position": { "label": "Position ID", "format": "raw" },
+      "deadline": { "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+      "ethSent": { "label": "ETH Sent (whole tx)", "format": "amount" },
+      "recipient": { "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+      "operator": { "label": "Operator", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
+    },
+    "formats": {
+      "mint((address token0,address token1,address deployer,int24 tickLower,int24 tickUpper,uint256 amount0Desired,uint256 amount1Desired,uint256 amount0Min,uint256 amount1Min,address recipient,uint256 deadline) params)": {
+        "intent": "Open liquidity position",
+        "interpolatedIntent": "Add up to {params.amount0Desired} and up to {params.amount1Desired} to a new liquidity position for {params.recipient}",
+        "fields": [
+          {
+            "path": "params.amount0Desired",
+            "label": "Maximum to Add",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.token0" }
+          },
+          {
+            "path": "params.amount1Desired",
+            "label": "Maximum to Add",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.token1" }
+          },
+          {
+            "path": "params.amount0Min",
+            "label": "Minimum to Add",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.token0" }
+          },
+          {
+            "path": "params.amount1Min",
+            "label": "Minimum to Add",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.token1" }
+          },
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent" },
+          {
+            "path": "params.recipient",
+            "label": "Position Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          },
+          { "path": "params.tickLower", "label": "Lower Tick", "format": "raw" },
+          { "path": "params.tickUpper", "label": "Upper Tick", "format": "raw" },
+          { "path": "params.deployer", "label": "Custom Pool Deployer", "format": "raw" },
+          { "path": "params.deadline", "$ref": "$.display.definitions.deadline" },
+          { "path": "params.token0", "label": "Token 0", "visible": "never" },
+          { "path": "params.token1", "label": "Token 1", "visible": "never" }
+        ]
+      },
+      "increaseLiquidity((uint256 tokenId,uint256 amount0Desired,uint256 amount1Desired,uint256 amount0Min,uint256 amount1Min,uint256 deadline) params)": {
+        "intent": "Add to liquidity position",
+        "interpolatedIntent": "Add up to {params.amount0Desired} token0 and up to {params.amount1Desired} token1 (raw units) to position {params.tokenId}",
+        "fields": [
+          { "path": "params.tokenId", "$ref": "$.display.definitions.position" },
+          { "path": "params.amount0Desired", "label": "Max Token0 (raw)", "format": "raw" },
+          { "path": "params.amount1Desired", "label": "Max Token1 (raw)", "format": "raw" },
+          { "path": "params.amount0Min", "label": "Min Token0 (raw)", "format": "raw" },
+          { "path": "params.amount1Min", "label": "Min Token1 (raw)", "format": "raw" },
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent" },
+          { "path": "params.deadline", "$ref": "$.display.definitions.deadline" }
+        ]
+      },
+      "decreaseLiquidity((uint256 tokenId,uint128 liquidity,uint256 amount0Min,uint256 amount1Min,uint256 deadline) params)": {
+        "intent": "Decrease liquidity",
+        "interpolatedIntent": "Remove {params.liquidity} liquidity from position {params.tokenId}: at least {params.amount0Min} token0 and {params.amount1Min} token1 (raw units) become owed to the position; nothing is transferred until collect",
+        "fields": [
+          { "path": "params.tokenId", "$ref": "$.display.definitions.position" },
+          { "path": "params.liquidity", "label": "Liquidity to Remove", "format": "raw" },
+          { "path": "params.amount0Min", "label": "Min Token0 Due (raw)", "format": "raw" },
+          { "path": "params.amount1Min", "label": "Min Token1 Due (raw)", "format": "raw" },
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent" },
+          { "path": "params.deadline", "$ref": "$.display.definitions.deadline" }
+        ]
+      },
+      "collect((uint256 tokenId,address recipient,uint128 amount0Max,uint128 amount1Max) params)": {
+        "intent": "Collect from position",
+        "interpolatedIntent": "Collect up to {params.amount0Max} token0 and up to {params.amount1Max} token1 (raw units) owed to position {params.tokenId}, sent to {params.recipient}. The zero address keeps them in this contract, where any caller can sweep them",
+        "fields": [
+          { "path": "params.tokenId", "$ref": "$.display.definitions.position" },
+          { "path": "params.amount0Max", "label": "Max Token0 (raw)", "format": "raw" },
+          { "path": "params.amount1Max", "label": "Max Token1 (raw)", "format": "raw" },
+          { "path": "params.recipient", "$ref": "$.display.definitions.recipient", "label": "To (zero = contract)" },
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent" }
+        ]
+      },
+      "approveForFarming(uint256 tokenId,bool approve,address farmingAddress)": {
+        "intent": "Set farming approval",
+        "interpolatedIntent": "{approve} farming access to position {tokenId} for {farmingAddress}",
+        "fields": [
+          { "path": "tokenId", "$ref": "$.display.definitions.position" },
+          { "path": "approve", "label": "Farming Access", "format": "enum", "params": { "$ref": "$.metadata.enums.access" } },
+          { "path": "farmingAddress", "label": "Farming Center", "format": "addressName", "params": { "types": ["contract"] } },
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent" }
+        ]
+      },
+      "unwrapWNativeToken(uint256 amountMinimum,address recipient)": {
+        "intent": "Unwrap WETH to ETH",
+        "interpolatedIntent": "Unwrap the WETH held by this contract, at least {amountMinimum}, and send the ETH to {recipient}",
+        "fields": [
+          {
+            "path": "amountMinimum",
+            "label": "Minimum to Unwrap",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.wNativeToken" }
+          },
+          { "path": "recipient", "$ref": "$.display.definitions.recipient" },
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent" }
+        ]
+      },
+      "sweepToken(address token,uint256 amountMinimum,address recipient)": {
+        "intent": "Sweep leftover tokens",
+        "interpolatedIntent": "Send the whole token balance held by this contract, at least {amountMinimum}, to {recipient}",
+        "fields": [
+          { "path": "amountMinimum", "label": "Minimum to Sweep", "format": "tokenAmount", "params": { "tokenPath": "token" } },
+          { "path": "recipient", "$ref": "$.display.definitions.recipient" },
+          { "path": "token", "label": "Token", "visible": "never" },
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent" }
+        ]
+      },
+      "refundNativeToken()": {
+        "intent": "Refund leftover ETH",
+        "interpolatedIntent": "Send the ETH held by this contract to you",
+        "fields": [{ "path": "@.value", "$ref": "$.display.definitions.ethSent" }]
+      },
+      "burn(uint256 tokenId)": {
+        "intent": "Burn empty position NFT",
+        "interpolatedIntent": "Burn empty position NFT {tokenId}",
+        "fields": [
+          { "path": "tokenId", "$ref": "$.display.definitions.position" },
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent" }
+        ]
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Batch position actions",
+        "interpolatedIntent": "Send {@.value} and run every action below in one transaction; if one action fails, the whole transaction reverts",
+        "fields": [
+          { "path": "@.value", "$ref": "$.display.definitions.ethSent" },
+          { "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to", "amountPath": "@.value" } }
+        ]
+      },
+      "setApprovalForAll(address operator,bool approved)": {
+        "intent": "Set operator for all NFTs",
+        "interpolatedIntent": "{approved} {operator} access to withdraw and transfer all your position NFTs",
+        "fields": [
+          { "path": "approved", "label": "Access", "format": "enum", "params": { "$ref": "$.metadata.enums.access" } },
+          { "path": "operator", "$ref": "$.display.definitions.operator" }
+        ]
+      }
+    }
+  }
+}
