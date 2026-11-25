@@ -199,6 +199,19 @@
       }
     },
     {
+      "description": "repay all USDT (reserve 8) (encoded; the case above with amount set to type(uint256).max) - chain 1",
+      "rawTx": "0x02f88501808080830f42409494e7a5dcbe816e498b89ab752661904e2f56c48580b864b1e8f8ef0000000000000000000000000000000000000000000000000000000000000008ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000008e28cb9d81bc0d5a201dc23e668367bea2a989dcc0",
+      "expected": {
+        "intent": "Repay",
+        "interpolatedIntent": "Repay up to All USDT of the Aave V4 debt of 0x8e28CB9d81Bc0d5A201Dc23E668367BeA2a989Dc",
+        "owner": "Aave DAO",
+        "fields": [
+          { "label": "Amount to repay", "value": "All USDT" },
+          { "label": "For debt holder", "value": "0x8e28CB9d81Bc0d5A201Dc23E668367BeA2a989Dc" }
+        ]
+      }
+    },
+    {
       "description": "repay 0.0001 WBTC (reserve 3) - chain 1",
       "rawTx": "0x02f88501808080830f42409494e7a5dcbe816e498b89ab752661904e2f56c48580b864b1e8f8ef0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000271000000000000000000000000090554d3c00b5b34fa2849b76c17bc874c90f9563c0",
       "txHash": "0x8dfab46756976a7558cf52e58bd4d6658715120d1b00134817cb778209e78984",
@@ -233,10 +246,23 @@
       "txHash": "0x229d2eee354191df5c349cd2dc4cef52d87735f64366180c0a3f3c9d813d1198",
       "expected": {
         "intent": "Set position manager",
-        "interpolatedIntent": "Approve 0x6c044c0D3801499bCAbfAd458B70880bc518e9F7 as manager of your Aave V4 position: a manager can supply, withdraw, borrow and repay for you",
+        "interpolatedIntent": "Approve 0x6c044c0D3801499bCAbfAd458B70880bc518e9F7 as manager of your Aave V4 position: a manager can withdraw and borrow from your position to its own address, and can also supply, repay and change collateral",
         "owner": "Aave DAO",
         "fields": [
           { "label": "Access", "value": "Approve" },
+          { "label": "Position manager", "value": "0x6c044c0D3801499bCAbfAd458B70880bc518e9F7" }
+        ]
+      }
+    },
+    {
+      "description": "setUserPositionManager: revoke 0x6c04...e9F7 (encoded; the case above with approve set to false) - chain 1",
+      "rawTx": "0x02f86501808080830f42409494e7a5dcbe816e498b89ab752661904e2f56c48580b8448874e1040000000000000000000000006c044c0d3801499bcabfad458b70880bc518e9f70000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Set position manager",
+        "interpolatedIntent": "Revoke 0x6c044c0D3801499bCAbfAd458B70880bc518e9F7 as manager of your Aave V4 position: a manager can withdraw and borrow from your position to its own address, and can also supply, repay and change collateral",
+        "owner": "Aave DAO",
+        "fields": [
+          { "label": "Access", "value": "Revoke" },
           { "label": "Position manager", "value": "0x6c044c0D3801499bCAbfAd458B70880bc518e9F7" }
         ]
       }
@@ -247,7 +273,7 @@
       "txHash": "0x907a316c74c155786c3f633d4afce0632a1d152ed242ba548e4098b5d2177fbd",
       "expected": {
         "intent": "Set position manager",
-        "interpolatedIntent": "Approve 0xe68ab4F90Fe026B9873F5F276eD2d7efBbbE42Be as manager of your Aave V4 position: a manager can supply, withdraw, borrow and repay for you",
+        "interpolatedIntent": "Approve 0xe68ab4F90Fe026B9873F5F276eD2d7efBbbE42Be as manager of your Aave V4 position: a manager can withdraw and borrow from your position to its own address, and can also supply, repay and change collateral",
         "owner": "Aave DAO",
         "fields": [
           { "label": "Access", "value": "Approve" },
@@ -413,6 +439,20 @@
         "owner": "Aave DAO",
         "fields": [
           { "label": "Approved amount", "value": "30820.580443 USDG" },
+          { "label": "Token owner", "value": "0xBA10248Ac4DCC76ef27b58Aad637F02A27FBc4f6" },
+          { "label": "Permit deadline", "value": "2026-11-11 06:01:20Z" }
+        ]
+      }
+    },
+    {
+      "description": "permitReserve with the maximum value (encoded; the case above with value set to type(uint256).max) - chain 1",
+      "rawTx": "0x02f9010501808080830f42409494e7a5dcbe816e498b89ab752661904e2f56c48580b8e42bccdfd5000000000000000000000000000000000000000000000000000000000000000b000000000000000000000000ba10248ac4dcc76ef27b58aad637f02a27fbc4f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000006af404b0000000000000000000000000000000000000000000000000000000000000001b2a4bb1e1c31a794086a248b86a823ad64abd091ea7b112866cc1219fe2996a6b679271751cd27dab50ee09cf6c7dbb3c1fe47244dd0acfef23e6615af2462db7c0",
+      "expected": {
+        "intent": "Approve token by permit",
+        "interpolatedIntent": "Allow Aave V4 to spend Unlimited USDG of 0xBA10248Ac4DCC76ef27b58Aad637F02A27FBc4f6 with a permit signature",
+        "owner": "Aave DAO",
+        "fields": [
+          { "label": "Approved amount", "value": "Unlimited USDG" },
           { "label": "Token owner", "value": "0xBA10248Ac4DCC76ef27b58Aad637F02A27FBc4f6" },
           { "label": "Permit deadline", "value": "2026-11-11 06:01:20Z" }
         ]

@@ -141,7 +141,11 @@
             "path": "value",
             "label": "Approved amount",
             "format": "tokenAmount",
-            "params": { "token": { "map": "$.metadata.maps.reserveToken", "keyPath": "reserveId" } }
+            "params": {
+              "token": { "map": "$.metadata.maps.reserveToken", "keyPath": "reserveId" },
+              "threshold": "$.metadata.constants.max",
+              "message": "Unlimited"
+            }
           },
           { "path": "onBehalfOf", "label": "Token owner", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
           { "path": "deadline", "label": "Permit deadline", "format": "date", "params": { "encoding": "timestamp" } },
@@ -153,7 +157,7 @@
       },
       "setUserPositionManager(address positionManager,bool approve)": {
         "intent": "Set position manager",
-        "interpolatedIntent": "{approve} {positionManager} as manager of your Aave V4 position: a manager can supply, withdraw, borrow and repay for you",
+        "interpolatedIntent": "{approve} {positionManager} as manager of your Aave V4 position: a manager can withdraw and borrow from your position to its own address, and can also supply, repay and change collateral",
         "fields": [
           { "path": "approve", "label": "Access", "format": "enum", "params": { "$ref": "$.metadata.enums.access" } },
           {
