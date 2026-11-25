@@ -14,12 +14,26 @@
       "depositEth()": {
         "intent": "Deposit ETH to Robinhood Chain",
         "interpolatedIntent": "Deposit {@.value} to Robinhood Chain",
-        "fields": [{ "path": "@.value", "label": "Amount", "format": "amount" }]
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount" },
+          {
+            "label": "Note",
+            "value": "From an account with code, the ETH goes to its aliased address on Robinhood Chain.",
+            "format": "raw"
+          }
+        ]
       },
       "depositEth(uint256)": {
         "intent": "Deposit ETH to Robinhood Chain",
         "interpolatedIntent": "Deposit {@.value} to Robinhood Chain",
-        "fields": [{ "path": "@.value", "label": "Amount", "format": "amount" }]
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount" },
+          {
+            "label": "Note",
+            "value": "From an account with code, the ETH goes to its aliased address on Robinhood Chain.",
+            "format": "raw"
+          }
+        ]
       },
       "createRetryableTicket(address to,uint256 l2CallValue,uint256 maxSubmissionCost,address excessFeeRefundAddress,address callValueRefundAddress,uint256 gasLimit,uint256 maxFeePerGas,bytes data)": {
         "intent": "Deposit ETH to Robinhood Chain",
@@ -42,12 +56,12 @@
           },
           {
             "path": "callValueRefundAddress",
-            "label": "Refund to on failure",
+            "label": "Can cancel/refund to",
             "format": "addressName",
             "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
           },
-          { "path": "gasLimit", "label": "Gas limit", "visible": "never" },
-          { "path": "maxFeePerGas", "label": "Max fee per gas", "visible": "never" },
+          { "path": "gasLimit", "label": "L2 gas limit", "format": "raw" },
+          { "path": "maxFeePerGas", "label": "L2 max fee per gas", "format": "unit", "params": { "base": " gwei", "decimals": 9 } },
           { "path": "data", "label": "Call data", "format": "raw", "visible": { "mustMatch": ["0x"] } }
         ]
       }
