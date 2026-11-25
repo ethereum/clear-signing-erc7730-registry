@@ -1,0 +1,137 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "PortfolioTokenLimitOrder",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x6658F677902e1Df805AdF42fac015E1124AEbFDB" },
+        { "chainId": 56, "address": "0xA2aA93cbB069B4BF246258E4D9cD093B914DcDFE" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Ondo Finance", "contractName": "Portfolio Token Limit Order", "info": { "url": "https://ondo.finance" } },
+  "display": {
+    "formats": {
+      "createBuyOrderExactIn(address assetToken, address quoteToken, uint256 quoteAmount, uint256 limitPrice, uint256 expiry)": {
+        "$id": "createBuyOrderExactIn",
+        "intent": "Limit Buy Portfolio Token",
+        "interpolatedIntent": "Buy {assetToken} for up to {quoteAmount} at max {limitPrice}",
+        "fields": [
+          {
+            "path": "assetToken",
+            "format": "addressName",
+            "label": "Portfolio Token",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "quoteAmount",
+            "format": "tokenAmount",
+            "label": "Spend Amount",
+            "params": { "tokenPath": "quoteToken" },
+            "visible": "always"
+          },
+          {
+            "path": "limitPrice",
+            "format": "unit",
+            "label": "Max Price",
+            "params": { "base": "USD", "decimals": 18 },
+            "visible": "always"
+          },
+          { "path": "expiry", "format": "date", "label": "Order Expires", "params": { "encoding": "timestamp" }, "visible": "always" },
+          { "path": "quoteToken", "label": "Quote Token", "visible": "never" }
+        ]
+      },
+      "createBuyOrderExactOut(address assetToken, address quoteToken, uint256 assetAmount, uint256 limitPrice, uint256 expiry)": {
+        "$id": "createBuyOrderExactOut",
+        "intent": "Limit Buy Portfolio Token",
+        "interpolatedIntent": "Buy {assetAmount} with {quoteToken} at max {limitPrice}",
+        "fields": [
+          {
+            "path": "assetAmount",
+            "format": "tokenAmount",
+            "label": "Amount to Buy",
+            "params": { "tokenPath": "assetToken" },
+            "visible": "always"
+          },
+          { "path": "quoteToken", "format": "addressName", "label": "Pay With", "params": { "types": ["token"] }, "visible": "always" },
+          {
+            "path": "limitPrice",
+            "format": "unit",
+            "label": "Max Price",
+            "params": { "base": "USD", "decimals": 18 },
+            "visible": "always"
+          },
+          { "path": "expiry", "format": "date", "label": "Order Expires", "params": { "encoding": "timestamp" }, "visible": "always" },
+          { "path": "assetToken", "label": "Portfolio Token", "visible": "never" }
+        ]
+      },
+      "createSellOrderExactIn(address assetToken, address quoteToken, uint256 assetAmount, uint256 limitPrice, uint256 expiry)": {
+        "$id": "createSellOrderExactIn",
+        "intent": "Limit Sell Portfolio Token",
+        "interpolatedIntent": "Sell {assetAmount} for {quoteToken} at min {limitPrice}",
+        "fields": [
+          {
+            "path": "assetAmount",
+            "format": "tokenAmount",
+            "label": "Amount to Sell",
+            "params": { "tokenPath": "assetToken" },
+            "visible": "always"
+          },
+          {
+            "path": "quoteToken",
+            "format": "addressName",
+            "label": "Receive Token",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "limitPrice",
+            "format": "unit",
+            "label": "Min Price",
+            "params": { "base": "USD", "decimals": 18 },
+            "visible": "always"
+          },
+          { "path": "expiry", "format": "date", "label": "Order Expires", "params": { "encoding": "timestamp" }, "visible": "always" },
+          { "path": "assetToken", "label": "Portfolio Token", "visible": "never" }
+        ]
+      },
+      "createSellOrderExactOut(address assetToken, address quoteToken, uint256 quoteAmount, uint256 limitPrice, uint256 expiry)": {
+        "$id": "createSellOrderExactOut",
+        "intent": "Limit Sell Portfolio Token",
+        "interpolatedIntent": "Sell {assetToken} to receive {quoteAmount} at min {limitPrice}",
+        "fields": [
+          {
+            "path": "assetToken",
+            "format": "addressName",
+            "label": "Portfolio Token",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "quoteAmount",
+            "format": "tokenAmount",
+            "label": "Receive Amount",
+            "params": { "tokenPath": "quoteToken" },
+            "visible": "always"
+          },
+          {
+            "path": "limitPrice",
+            "format": "unit",
+            "label": "Min Price",
+            "params": { "base": "USD", "decimals": 18 },
+            "visible": "always"
+          },
+          { "path": "expiry", "format": "date", "label": "Order Expires", "params": { "encoding": "timestamp" }, "visible": "always" },
+          { "path": "quoteToken", "label": "Quote Token", "visible": "never" }
+        ]
+      },
+      "cancelOrder(uint256 orderId)": {
+        "$id": "cancelOrder",
+        "intent": "Cancel Limit Order",
+        "interpolatedIntent": "Cancel limit order {orderId}",
+        "fields": [{ "path": "orderId", "format": "raw", "label": "Order ID", "visible": "always" }]
+      }
+    }
+  }
+}

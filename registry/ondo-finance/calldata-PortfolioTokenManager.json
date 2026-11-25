@@ -1,0 +1,99 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "PortfolioTokenManager",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x54aC0E5f60EC257385f134D5Fa490A00e5ddD17c" },
+        { "chainId": 56, "address": "0x28B2C711156EfB3238A19eFa6E0bF85F3523Bac4" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Ondo Finance", "contractName": "Portfolio Token Manager", "info": { "url": "https://ondo.finance" } },
+  "display": {
+    "formats": {
+      "mintWithAttestation((uint256 chainId, uint256 attestationId, bytes32 userId, address asset, uint256 price, uint256 quantity, uint256 expiration, uint8 side, bytes32 additionalData) quote, bytes signature)": {
+        "$id": "mintWithAttestation",
+        "intent": "Mint Portfolio Token",
+        "interpolatedIntent": "Mint {quote.quantity} at {quote.price} each",
+        "fields": [
+          {
+            "path": "quote.asset",
+            "format": "addressName",
+            "label": "Portfolio Token",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "quote.quantity",
+            "format": "tokenAmount",
+            "label": "Mint Amount",
+            "params": { "tokenPath": "quote.asset" },
+            "visible": "always"
+          },
+          {
+            "path": "quote.price",
+            "format": "unit",
+            "label": "Price per Token",
+            "params": { "base": "USD", "decimals": 18 },
+            "visible": "always"
+          },
+          {
+            "path": "quote.expiration",
+            "format": "date",
+            "label": "Quote Expires",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "quote.chainId", "label": "Chain ID", "visible": "never" },
+          { "path": "quote.attestationId", "label": "Attestation ID", "visible": "never" },
+          { "path": "quote.userId", "label": "User ID", "visible": "never" },
+          { "path": "quote.side", "label": "Side", "visible": "never" },
+          { "path": "quote.additionalData", "label": "Additional Data", "visible": "never" },
+          { "path": "signature", "label": "Signature", "visible": "never" }
+        ]
+      },
+      "redeemWithAttestation((uint256 chainId, uint256 attestationId, bytes32 userId, address asset, uint256 price, uint256 quantity, uint256 expiration, uint8 side, bytes32 additionalData) quote, bytes signature)": {
+        "$id": "redeemWithAttestation",
+        "intent": "Redeem Portfolio Token",
+        "interpolatedIntent": "Redeem {quote.quantity} at {quote.price} each",
+        "fields": [
+          {
+            "path": "quote.asset",
+            "format": "addressName",
+            "label": "Portfolio Token",
+            "params": { "types": ["token"] },
+            "visible": "always"
+          },
+          {
+            "path": "quote.quantity",
+            "format": "tokenAmount",
+            "label": "Redeem Amount",
+            "params": { "tokenPath": "quote.asset" },
+            "visible": "always"
+          },
+          {
+            "path": "quote.price",
+            "format": "unit",
+            "label": "Price per Token",
+            "params": { "base": "USD", "decimals": 18 },
+            "visible": "always"
+          },
+          {
+            "path": "quote.expiration",
+            "format": "date",
+            "label": "Quote Expires",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "quote.chainId", "label": "Chain ID", "visible": "never" },
+          { "path": "quote.attestationId", "label": "Attestation ID", "visible": "never" },
+          { "path": "quote.userId", "label": "User ID", "visible": "never" },
+          { "path": "quote.side", "label": "Side", "visible": "never" },
+          { "path": "quote.additionalData", "label": "Additional Data", "visible": "never" },
+          { "path": "signature", "label": "Signature", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
