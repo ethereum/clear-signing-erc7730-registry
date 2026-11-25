@@ -1,0 +1,67 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "OpenRouter",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x50cFe7c1938dB66A1a6D2e86D36F39FBef3d5c4a" },
+        { "chainId": 8453, "address": "0x50cFe7c1938dB66A1a6D2e86D36F39FBef3d5c4a" },
+        { "chainId": 57073, "address": "0x50cFe7c1938dB66A1a6D2e86D36F39FBef3d5c4a" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Socket",
+    "info": { "url": "https://socket.tech" },
+    "constants": { "addressAsEth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" },
+    "contractName": "OpenRouter"
+  },
+  "display": {
+    "formats": {
+      "swap(bytes32 quoteId, uint256 flags, (address user, address inputToken, uint256 inputAmount) input, (address receiver, uint256 amount) fee, (address target, address approvalSpender, address outputToken, uint256 value, uint256 minOutput, uint256 returnDataWordOffset) swapData, bytes swapCallData, address receiver)": {
+        "$id": "swap",
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {input.inputAmount} for at least {swapData.minOutput} to {receiver}",
+        "fields": [
+          {
+            "path": "input.inputAmount",
+            "label": "Amount to send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "input.inputToken", "nativeCurrencyAddress": "$.metadata.constants.addressAsEth" },
+            "visible": "always"
+          },
+          {
+            "path": "swapData.minOutput",
+            "label": "Minimum to receive",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "swapData.outputToken", "nativeCurrencyAddress": "$.metadata.constants.addressAsEth" },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "swapData.target",
+            "label": "Swap router",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "visible": "always"
+          },
+          { "path": "fee.amount", "label": "Fee (in token units)", "format": "raw", "visible": "always" },
+          { "path": "quoteId", "label": "Quote ID", "visible": "never" },
+          { "path": "flags", "label": "Flags", "visible": "never" },
+          { "path": "input.user", "label": "User", "visible": "never" },
+          { "path": "fee.receiver", "label": "Fee receiver", "visible": "never" },
+          { "path": "swapData.approvalSpender", "label": "Approval spender", "visible": "never" },
+          { "path": "swapData.value", "label": "Swap value", "visible": "never" },
+          { "path": "swapData.returnDataWordOffset", "label": "Return data offset", "visible": "never" },
+          { "path": "swapCallData", "label": "Swap data", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
