@@ -1,0 +1,78 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "USDT0-OFT-Adapter-Ethereum",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee" }] }
+  },
+  "metadata": {
+    "owner": "Tether Limited",
+    "info": { "url": "https://tether.to/" },
+    "contractName": "USDT0-OFT-Adapter-Ethereum",
+    "constants": { "usdt": "0xdAC17F958D2ee523a2206206994597C13D831ec7" },
+    "enums": {
+      "dstEid": {
+        "30109": "Polygon PoS",
+        "30110": "Arbitrum One",
+        "30111": "Optimism",
+        "30181": "Mantle",
+        "30212": "Conflux eSpace",
+        "30274": "XLayer",
+        "30280": "Sei",
+        "30295": "Flare",
+        "30316": "Hedera",
+        "30320": "Unichain",
+        "30322": "Morph",
+        "30333": "Rootstock",
+        "30339": "Ink",
+        "30362": "Berachain",
+        "30367": "HyperEVM",
+        "30383": "Plasma",
+        "30390": "Monad",
+        "30396": "Stable",
+        "30398": "MegaETH",
+        "30410": "Tempo",
+        "30600": "Stellar"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "send((uint32 dstEid,bytes32 to,uint256 amountLD,uint256 minAmountLD,bytes extraOptions,bytes composeMsg,bytes oftCmd) _sendParam,(uint256 nativeFee,uint256 lzTokenFee) _fee,address _refundAddress)": {
+        "intent": "Bridge USDT",
+        "interpolatedIntent": "Bridge {_sendParam.amountLD} to {_sendParam.to} on {_sendParam.dstEid}",
+        "fields": [
+          {
+            "path": "_sendParam.amountLD",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.usdt" }
+          },
+          {
+            "path": "_sendParam.minAmountLD",
+            "label": "Minimum to receive",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.usdt" }
+          },
+          {
+            "path": "_sendParam.dstEid",
+            "label": "Destination chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.dstEid" }
+          },
+          { "path": "_sendParam.to", "label": "Recipient", "format": "raw" },
+          { "path": "_fee.nativeFee", "label": "Bridge fee", "format": "amount" },
+          {
+            "path": "_refundAddress",
+            "label": "Refund to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "_sendParam.composeMsg", "label": "Compose message", "format": "raw", "visible": { "ifNotIn": ["0x"] } },
+          { "path": "_fee.lzTokenFee", "label": "LZ token fee", "format": "raw", "visible": { "ifNotIn": [0] } },
+          { "path": "_sendParam.extraOptions", "label": "Extra options", "format": "raw", "visible": { "ifNotIn": ["0x", "0x0003"] } },
+          { "path": "_sendParam.oftCmd", "label": "OFT command", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
