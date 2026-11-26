@@ -1,0 +1,54 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "RubicProxy",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x3335733c454805df6a77f825f266e136FB4a3333" },
+        { "chainId": 56, "address": "0x3335733c454805df6a77f825f266e136FB4a3333" },
+        { "chainId": 43114, "address": "0x3335733c454805df6a77f825f266e136FB4a3333" },
+        { "chainId": 1285, "address": "0x3335733c454805df6a77f825f266e136FB4a3333" },
+        { "chainId": 250, "address": "0x3335733c454805df6a77f825f266e136FB4a3333" },
+        { "chainId": 42161, "address": "0x3335733c454805df6a77f825f266e136FB4a3333" },
+        { "chainId": 40, "address": "0x3335733c454805df6a77f825f266e136FB4a3333" },
+        { "chainId": 10, "address": "0x3335733c454805df6a77f825f266e136FB4a3333" },
+        { "chainId": 25, "address": "0x3335733c454805df6a77f825f266e136FB4a3333" },
+        { "chainId": 1088, "address": "0x3335733c454805df6a77f825f266e136FB4a3333" },
+        { "chainId": 369, "address": "0x3335733c454805df6a77f825f266e136FB4a3333" },
+        { "chainId": 8453, "address": "0x3335733c454805df6a77f825f266e136FB4a3333" },
+        { "chainId": 7000, "address": "0x3335733c454805df6a77f825f266e136FB4a3333" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Rubic",
+    "info": { "url": "https://app.rubic.exchange" },
+    "contractName": "ERC20Proxy",
+    "constants": {
+      "addressAsEth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "addressAsNull": "0x0000000000000000000000000000000000000000"
+    }
+  },
+  "display": {
+    "formats": {
+      "startViaRubic(address[] tokens, uint256[] amounts, bytes facetCallData)": {
+        "$id": "startViaRubic",
+        "intent": "Swap",
+        "fields": [
+          { "path": "@.value", "label": "Amount to Send", "format": "amount", "visible": { "ifNotIn": [0, "0", ""] } },
+          {
+            "path": "amounts.[]",
+            "label": "Amount to Send",
+            "format": "tokenAmount",
+            "params": {
+              "tokenPath": "tokens.[]",
+              "nativeCurrencyAddress": ["$.metadata.constants.addressAsEth", "$.metadata.constants.addressAsNull"]
+            },
+            "visible": "always"
+          },
+          { "label": "Facet Call Data", "path": "facetCallData", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
