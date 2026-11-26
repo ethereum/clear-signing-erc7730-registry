@@ -1,0 +1,76 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Aave V4 NativeTokenGateway",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xe68ab4F90Fe026B9873F5F276eD2d7efBbbE42Be" }] }
+  },
+  "metadata": {
+    "owner": "Aave DAO",
+    "contractName": "Aave V4 NativeTokenGateway",
+    "info": { "url": "https://aave.com" },
+    "constants": {
+      "native": "0x0000000000000000000000000000000000000000",
+      "max": "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    }
+  },
+  "display": {
+    "definitions": { "spoke": { "label": "Spoke", "format": "addressName", "params": { "types": ["contract"] } } },
+    "formats": {
+      "supplyNative(address spoke,uint256 reserveId,uint256 amount)": {
+        "intent": "Supply",
+        "interpolatedIntent": "Supply {amount} to Aave V4 spoke {spoke}",
+        "fields": [
+          { "path": "amount", "label": "Amount to supply", "format": "amount" },
+          { "path": "spoke", "$ref": "$.display.definitions.spoke" },
+          { "path": "reserveId", "label": "Reserve ID", "format": "raw" }
+        ]
+      },
+      "supplyAsCollateralNative(address spoke,uint256 reserveId,uint256 amount)": {
+        "intent": "Supply as collateral",
+        "interpolatedIntent": "Supply {amount} as collateral to Aave V4 spoke {spoke}",
+        "fields": [
+          { "path": "amount", "label": "Amount to supply", "format": "amount" },
+          { "path": "spoke", "$ref": "$.display.definitions.spoke" },
+          { "path": "reserveId", "label": "Reserve ID", "format": "raw" }
+        ]
+      },
+      "withdrawNative(address spoke,uint256 reserveId,uint256 amount)": {
+        "intent": "Withdraw",
+        "interpolatedIntent": "Withdraw {amount} from Aave V4 spoke {spoke}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to withdraw",
+            "format": "tokenAmount",
+            "params": {
+              "token": "$.metadata.constants.native",
+              "nativeCurrencyAddress": ["$.metadata.constants.native"],
+              "threshold": "$.metadata.constants.max",
+              "message": "All"
+            }
+          },
+          { "path": "spoke", "$ref": "$.display.definitions.spoke" },
+          { "path": "reserveId", "label": "Reserve ID", "format": "raw" }
+        ]
+      },
+      "borrowNative(address spoke,uint256 reserveId,uint256 amount)": {
+        "intent": "Borrow",
+        "interpolatedIntent": "Borrow {amount} from Aave V4 spoke {spoke}",
+        "fields": [
+          { "path": "amount", "label": "Amount to borrow", "format": "amount" },
+          { "path": "spoke", "$ref": "$.display.definitions.spoke" },
+          { "path": "reserveId", "label": "Reserve ID", "format": "raw" }
+        ]
+      },
+      "repayNative(address spoke,uint256 reserveId,uint256 amount)": {
+        "intent": "Repay",
+        "interpolatedIntent": "Repay up to {amount} of your debt on Aave V4 spoke {spoke}",
+        "fields": [
+          { "path": "amount", "label": "Amount to repay", "format": "amount" },
+          { "path": "spoke", "$ref": "$.display.definitions.spoke" },
+          { "path": "reserveId", "label": "Reserve ID", "format": "raw" }
+        ]
+      }
+    }
+  }
+}

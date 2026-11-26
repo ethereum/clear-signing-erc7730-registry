@@ -1,0 +1,86 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-RootChainManager.json",
+  "dataProvider": {
+    "tokens": {
+      "0x6b175474e89094c44da98b954eedeac495271d0f": { "symbol": "DAI", "decimals": 18, "name": "Dai Stablecoin" },
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" },
+      "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": { "symbol": "WBTC", "decimals": 8, "name": "Wrapped BTC" }
+    }
+  },
+  "tests": [
+    {
+      "description": "depositEtherFor 100 ETH to the sender - chain 1",
+      "rawTx": "0x02f84d01808080830f424094a0c68c638235ee32657e8f720a23cec1bfc77c7789056bc75e2d63100000a44faa8a2600000000000000000000000017e49502febdf7b3bd3a9842a325036d729b7654c0",
+      "txHash": "0x4fe2b01e46cf62204d57165a33a8c718eba562b92f26dc3e3d500cda0efdc96d",
+      "expected": {
+        "intent": "Deposit ETH as WETH on Polygon",
+        "interpolatedIntent": "Deposit 100 ETH to 0x17E49502FebDF7b3Bd3a9842a325036D729b7654 on Polygon PoS as WETH",
+        "owner": "Polygon",
+        "fields": [
+          { "label": "Amount", "value": "100 ETH" },
+          { "label": "WETH recipient", "value": "0x17E49502FebDF7b3Bd3a9842a325036D729b7654" }
+        ]
+      }
+    },
+    {
+      "description": "depositEtherFor 0.119485 ETH from a contract wallet - chain 1",
+      "rawTx": "0x02f84c01808080830f424094a0c68c638235ee32657e8f720a23cec1bfc77c778801a87ef974fcd000a44faa8a26000000000000000000000000293cfcbc9aaa6afd97c25806ae6a526d3ce2c93ac0",
+      "txHash": "0x85c6758f7d5a128cfca2e4126ac44633cf855d37e6c9dd7dba24da045a53f727",
+      "expected": {
+        "intent": "Deposit ETH as WETH on Polygon",
+        "interpolatedIntent": "Deposit 0.119485 ETH to 0x293cFCbc9aAA6aFD97C25806aE6a526D3Ce2C93a on Polygon PoS as WETH",
+        "owner": "Polygon",
+        "fields": [
+          { "label": "Amount", "value": "0.119485 ETH" },
+          { "label": "WETH recipient", "value": "0x293cFCbc9aAA6aFD97C25806aE6a526D3Ce2C93a" }
+        ]
+      }
+    },
+    {
+      "description": "depositFor 30003 DAI - chain 1",
+      "rawTx": "0x02f8c501808080830f424094a0c68c638235ee32657e8f720a23cec1bfc77c7780b8a4e3dec8fb00000000000000000000000023365d889f860eb194e900d5c3048eaf16a7a0320000000000000000000000006b175474e89094c44da98b954eedeac495271d0f0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000065a7744814b0cec0000c0",
+      "txHash": "0x2e1be0cda1e102ce33fb5213c6fae6ba96c38e5d1f7bc0149b01ef423e64dff2",
+      "expected": {
+        "intent": "Deposit token to Polygon PoS",
+        "owner": "Polygon",
+        "fields": [
+          { "label": "Amount (ERC-20 only)", "value": "30003 DAI" },
+          { "label": "Token", "value": "0x6B175474E89094C44Da98b954EedeAC495271d0F" },
+          { "label": "Recipient on Polygon", "value": "0x23365d889f860eb194E900D5c3048eaF16a7A032" },
+          { "label": "Deposit data", "value": "0x00000000000000000000000000000000000000000000065a7744814b0cec0000" }
+        ]
+      }
+    },
+    {
+      "description": "depositFor 1 USDC for another address - chain 1",
+      "rawTx": "0x02f8c501808080830f424094a0c68c638235ee32657e8f720a23cec1bfc77c7780b8a4e3dec8fb000000000000000000000000a0f21e6d351baa9185716b5c00c2925ed9621848000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000f4240c0",
+      "txHash": "0x1f12c011a8aaba6b9d7e084460d298eeabfd32e94c081961b4d7ee3c59ad755d",
+      "expected": {
+        "intent": "Deposit token to Polygon PoS",
+        "owner": "Polygon",
+        "fields": [
+          { "label": "Amount (ERC-20 only)", "value": "1 USDC" },
+          { "label": "Token", "value": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" },
+          { "label": "Recipient on Polygon", "value": "0xA0f21E6d351BAa9185716B5c00C2925Ed9621848" },
+          { "label": "Deposit data", "value": "0x00000000000000000000000000000000000000000000000000000000000f4240" }
+        ]
+      }
+    },
+    {
+      "description": "depositFor 0.5012157 WBTC - chain 1",
+      "rawTx": "0x02f8c501808080830f424094a0c68c638235ee32657e8f720a23cec1bfc77c7780b8a4e3dec8fb000000000000000000000000d0d08887e8a5b16049534a7f3fc1de92848f5bea0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000002fccb62c0",
+      "txHash": "0x72c7bbf110b7ba0fccaad5fbfde14619b114042ee30820adb8fe46f20452a9ef",
+      "expected": {
+        "intent": "Deposit token to Polygon PoS",
+        "owner": "Polygon",
+        "fields": [
+          { "label": "Amount (ERC-20 only)", "value": "0.5012157 WBTC" },
+          { "label": "Token", "value": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599" },
+          { "label": "Recipient on Polygon", "value": "0xD0d08887E8a5B16049534A7F3FC1De92848F5BeA" },
+          { "label": "Deposit data", "value": "0x0000000000000000000000000000000000000000000000000000000002fccb62" }
+        ]
+      }
+    }
+  ]
+}

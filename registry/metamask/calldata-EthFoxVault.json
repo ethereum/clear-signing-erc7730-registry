@@ -1,0 +1,41 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "MetaMask Pooled Staking",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x4FEF9D741011476750A243aC70b9789a63dd47Df" }] }
+  },
+  "metadata": { "owner": "MetaMask", "contractName": "MetaMask Pooled Staking", "info": { "url": "https://metamask.io" } },
+  "display": {
+    "formats": {
+      "deposit(address receiver,address referrer)": {
+        "intent": "Stake ETH",
+        "interpolatedIntent": "Stake {@.value} in MetaMask Pooled Staking for {receiver}",
+        "fields": [
+          { "path": "@.value", "label": "Amount to stake", "format": "amount" },
+          { "path": "receiver", "label": "Stake recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "referrer", "label": "Referrer", "visible": "never" }
+        ]
+      },
+      "enterExitQueue(uint256 shares,address receiver)": {
+        "intent": "Unstake ETH",
+        "interpolatedIntent": "Unstake {shares} from MetaMask Pooled Staking; {receiver} can claim the ETH later",
+        "fields": [
+          { "path": "shares", "label": "Shares to unstake", "format": "unit", "params": { "base": " shares", "decimals": 18 } },
+          { "path": "receiver", "label": "ETH recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
+        ]
+      },
+      "claimExitedAssets(uint256 positionTicket,uint256 timestamp,uint256 exitQueueIndex)": {
+        "intent": "Claim unstaked ETH",
+        "fields": [
+          { "path": "timestamp", "label": "Unstake requested", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "positionTicket", "label": "Position ticket", "visible": "never" },
+          { "path": "exitQueueIndex", "label": "Exit queue index", "visible": "never" }
+        ]
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Batch staking actions",
+        "fields": [{ "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to" } }]
+      }
+    }
+  }
+}

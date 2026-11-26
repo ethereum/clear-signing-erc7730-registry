@@ -1,0 +1,226 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Tycho Router V3",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xe41c726421007e133a59365432fE886a73B45126" }] }
+  },
+  "metadata": {
+    "owner": "Propeller Heads",
+    "contractName": "Tycho Router V3",
+    "info": { "url": "https://propellerheads.xyz" },
+    "constants": { "native": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" }
+  },
+  "display": {
+    "definitions": {
+      "amountIn": {
+        "label": "Amount to send",
+        "format": "tokenAmount",
+        "params": { "tokenPath": "tokenIn", "nativeCurrencyAddress": ["$.metadata.constants.native"] }
+      },
+      "minAmountOut": {
+        "label": "Minimum to receive",
+        "format": "tokenAmount",
+        "params": { "tokenPath": "tokenOut", "nativeCurrencyAddress": ["$.metadata.constants.native"] }
+      },
+      "receiver": { "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+      "clientFee": { "label": "Client fee", "format": "unit", "params": { "base": "%", "decimals": 6 } },
+      "clientFeeReceiver": { "label": "Fee recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+      "deadline": { "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
+      "permitAmount": {
+        "label": "Permit2 allowance",
+        "format": "tokenAmount",
+        "params": {
+          "tokenPath": "permitSingle.details.token",
+          "threshold": "0xffffffffffffffffffffffffffffffffffffffff",
+          "message": "Unlimited"
+        }
+      },
+      "permitSpender": { "label": "Permit2 spender", "format": "addressName", "params": { "types": ["contract", "eoa"] } },
+      "permitExpiration": { "label": "Allowance expires", "format": "date", "params": { "encoding": "timestamp" } }
+    },
+    "formats": {
+      "singleSwap(uint256 amountIn,address tokenIn,address tokenOut,uint256 expectedAmountOut,uint256 minAmountOut,address receiver,(uint32 clientFeeBps,address clientFeeReceiver,uint256 maxClientContribution,uint256 deadline,bytes clientSignature) clientFeeParams,bytes swapData)": {
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {amountIn} for at least {minAmountOut}, sent to {receiver}",
+        "fields": [
+          { "path": "amountIn", "$ref": "$.display.definitions.amountIn" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
+          { "path": "minAmountOut", "$ref": "$.display.definitions.minAmountOut" },
+          { "path": "receiver", "$ref": "$.display.definitions.receiver" },
+          { "path": "clientFeeParams.clientFeeBps", "$ref": "$.display.definitions.clientFee", "visible": { "ifNotIn": [0, "0"] } },
+          {
+            "path": "clientFeeParams.clientFeeReceiver",
+            "$ref": "$.display.definitions.clientFeeReceiver",
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "path": "clientFeeParams.deadline",
+            "$ref": "$.display.definitions.deadline",
+            "visible": { "ifNotIn": ["115792089237316195423570985008687907853269984665640564039457584007913129639935"] }
+          },
+          { "path": "tokenIn", "label": "Token to send", "visible": "never" },
+          { "path": "tokenOut", "label": "Token to receive", "visible": "never" },
+          { "path": "expectedAmountOut", "label": "Quoted amount", "visible": "never" },
+          { "path": "clientFeeParams.maxClientContribution", "label": "Max client top-up", "visible": "never" },
+          { "path": "clientFeeParams.clientSignature", "label": "Client signature", "visible": "never" },
+          { "path": "swapData", "label": "Swap route", "visible": "never" }
+        ]
+      },
+      "singleSwapPermit2(uint256 amountIn,address tokenIn,address tokenOut,uint256 expectedAmountOut,uint256 minAmountOut,address receiver,(uint32 clientFeeBps,address clientFeeReceiver,uint256 maxClientContribution,uint256 deadline,bytes clientSignature) clientFeeParams,((address token,uint160 amount,uint48 expiration,uint48 nonce) details,address spender,uint256 sigDeadline) permitSingle,bytes signature,bytes swapData)": {
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {amountIn} for at least {minAmountOut}, sent to {receiver}",
+        "fields": [
+          { "path": "amountIn", "$ref": "$.display.definitions.amountIn" },
+          { "path": "minAmountOut", "$ref": "$.display.definitions.minAmountOut" },
+          { "path": "receiver", "$ref": "$.display.definitions.receiver" },
+          { "path": "clientFeeParams.clientFeeBps", "$ref": "$.display.definitions.clientFee", "visible": { "ifNotIn": [0, "0"] } },
+          {
+            "path": "clientFeeParams.clientFeeReceiver",
+            "$ref": "$.display.definitions.clientFeeReceiver",
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "path": "clientFeeParams.deadline",
+            "$ref": "$.display.definitions.deadline",
+            "visible": { "ifNotIn": ["115792089237316195423570985008687907853269984665640564039457584007913129639935"] }
+          },
+          { "path": "permitSingle.details.amount", "$ref": "$.display.definitions.permitAmount" },
+          { "path": "permitSingle.spender", "$ref": "$.display.definitions.permitSpender" },
+          { "path": "permitSingle.details.expiration", "$ref": "$.display.definitions.permitExpiration" },
+          { "path": "permitSingle.sigDeadline", "label": "Permit sig deadline", "visible": "never" },
+          { "path": "permitSingle.details.token", "label": "Permit token", "visible": "never" },
+          { "path": "permitSingle.details.nonce", "label": "Permit nonce", "visible": "never" },
+          { "path": "signature", "label": "Permit signature", "visible": "never" },
+          { "path": "tokenIn", "label": "Token to send", "visible": "never" },
+          { "path": "tokenOut", "label": "Token to receive", "visible": "never" },
+          { "path": "expectedAmountOut", "label": "Quoted amount", "visible": "never" },
+          { "path": "clientFeeParams.maxClientContribution", "label": "Max client top-up", "visible": "never" },
+          { "path": "clientFeeParams.clientSignature", "label": "Client signature", "visible": "never" },
+          { "path": "swapData", "label": "Swap route", "visible": "never" }
+        ]
+      },
+      "sequentialSwap(uint256 amountIn,address tokenIn,address tokenOut,uint256 expectedAmountOut,uint256 minAmountOut,address receiver,(uint32 clientFeeBps,address clientFeeReceiver,uint256 maxClientContribution,uint256 deadline,bytes clientSignature) clientFeeParams,bytes swaps)": {
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {amountIn} for at least {minAmountOut}, sent to {receiver}",
+        "fields": [
+          { "path": "amountIn", "$ref": "$.display.definitions.amountIn" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
+          { "path": "minAmountOut", "$ref": "$.display.definitions.minAmountOut" },
+          { "path": "receiver", "$ref": "$.display.definitions.receiver" },
+          { "path": "clientFeeParams.clientFeeBps", "$ref": "$.display.definitions.clientFee", "visible": { "ifNotIn": [0, "0"] } },
+          {
+            "path": "clientFeeParams.clientFeeReceiver",
+            "$ref": "$.display.definitions.clientFeeReceiver",
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "path": "clientFeeParams.deadline",
+            "$ref": "$.display.definitions.deadline",
+            "visible": { "ifNotIn": ["115792089237316195423570985008687907853269984665640564039457584007913129639935"] }
+          },
+          { "path": "tokenIn", "label": "Token to send", "visible": "never" },
+          { "path": "tokenOut", "label": "Token to receive", "visible": "never" },
+          { "path": "expectedAmountOut", "label": "Quoted amount", "visible": "never" },
+          { "path": "clientFeeParams.maxClientContribution", "label": "Max client top-up", "visible": "never" },
+          { "path": "clientFeeParams.clientSignature", "label": "Client signature", "visible": "never" },
+          { "path": "swaps", "label": "Swap route", "visible": "never" }
+        ]
+      },
+      "sequentialSwapPermit2(uint256 amountIn,address tokenIn,address tokenOut,uint256 expectedAmountOut,uint256 minAmountOut,address receiver,(uint32 clientFeeBps,address clientFeeReceiver,uint256 maxClientContribution,uint256 deadline,bytes clientSignature) clientFeeParams,((address token,uint160 amount,uint48 expiration,uint48 nonce) details,address spender,uint256 sigDeadline) permitSingle,bytes signature,bytes swaps)": {
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {amountIn} for at least {minAmountOut}, sent to {receiver}",
+        "fields": [
+          { "path": "amountIn", "$ref": "$.display.definitions.amountIn" },
+          { "path": "minAmountOut", "$ref": "$.display.definitions.minAmountOut" },
+          { "path": "receiver", "$ref": "$.display.definitions.receiver" },
+          { "path": "clientFeeParams.clientFeeBps", "$ref": "$.display.definitions.clientFee", "visible": { "ifNotIn": [0, "0"] } },
+          {
+            "path": "clientFeeParams.clientFeeReceiver",
+            "$ref": "$.display.definitions.clientFeeReceiver",
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "path": "clientFeeParams.deadline",
+            "$ref": "$.display.definitions.deadline",
+            "visible": { "ifNotIn": ["115792089237316195423570985008687907853269984665640564039457584007913129639935"] }
+          },
+          { "path": "permitSingle.details.amount", "$ref": "$.display.definitions.permitAmount" },
+          { "path": "permitSingle.spender", "$ref": "$.display.definitions.permitSpender" },
+          { "path": "permitSingle.details.expiration", "$ref": "$.display.definitions.permitExpiration" },
+          { "path": "permitSingle.sigDeadline", "label": "Permit sig deadline", "visible": "never" },
+          { "path": "permitSingle.details.token", "label": "Permit token", "visible": "never" },
+          { "path": "permitSingle.details.nonce", "label": "Permit nonce", "visible": "never" },
+          { "path": "signature", "label": "Permit signature", "visible": "never" },
+          { "path": "tokenIn", "label": "Token to send", "visible": "never" },
+          { "path": "tokenOut", "label": "Token to receive", "visible": "never" },
+          { "path": "expectedAmountOut", "label": "Quoted amount", "visible": "never" },
+          { "path": "clientFeeParams.maxClientContribution", "label": "Max client top-up", "visible": "never" },
+          { "path": "clientFeeParams.clientSignature", "label": "Client signature", "visible": "never" },
+          { "path": "swaps", "label": "Swap route", "visible": "never" }
+        ]
+      },
+      "splitSwap(uint256 amountIn,address tokenIn,address tokenOut,uint256 expectedAmountOut,uint256 minAmountOut,uint256 nTokens,address receiver,(uint32 clientFeeBps,address clientFeeReceiver,uint256 maxClientContribution,uint256 deadline,bytes clientSignature) clientFeeParams,bytes swaps)": {
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {amountIn} for at least {minAmountOut}, sent to {receiver}",
+        "fields": [
+          { "path": "amountIn", "$ref": "$.display.definitions.amountIn" },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount", "visible": { "ifNotIn": [0, "0"] } },
+          { "path": "minAmountOut", "$ref": "$.display.definitions.minAmountOut" },
+          { "path": "receiver", "$ref": "$.display.definitions.receiver" },
+          { "path": "clientFeeParams.clientFeeBps", "$ref": "$.display.definitions.clientFee", "visible": { "ifNotIn": [0, "0"] } },
+          {
+            "path": "clientFeeParams.clientFeeReceiver",
+            "$ref": "$.display.definitions.clientFeeReceiver",
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "path": "clientFeeParams.deadline",
+            "$ref": "$.display.definitions.deadline",
+            "visible": { "ifNotIn": ["115792089237316195423570985008687907853269984665640564039457584007913129639935"] }
+          },
+          { "path": "tokenIn", "label": "Token to send", "visible": "never" },
+          { "path": "tokenOut", "label": "Token to receive", "visible": "never" },
+          { "path": "expectedAmountOut", "label": "Quoted amount", "visible": "never" },
+          { "path": "nTokens", "label": "Route token count", "visible": "never" },
+          { "path": "clientFeeParams.maxClientContribution", "label": "Max client top-up", "visible": "never" },
+          { "path": "clientFeeParams.clientSignature", "label": "Client signature", "visible": "never" },
+          { "path": "swaps", "label": "Swap route", "visible": "never" }
+        ]
+      },
+      "splitSwapPermit2(uint256 amountIn,address tokenIn,address tokenOut,uint256 expectedAmountOut,uint256 minAmountOut,uint256 nTokens,address receiver,(uint32 clientFeeBps,address clientFeeReceiver,uint256 maxClientContribution,uint256 deadline,bytes clientSignature) clientFeeParams,((address token,uint160 amount,uint48 expiration,uint48 nonce) details,address spender,uint256 sigDeadline) permitSingle,bytes signature,bytes swaps)": {
+        "intent": "Swap",
+        "interpolatedIntent": "Swap {amountIn} for at least {minAmountOut}, sent to {receiver}",
+        "fields": [
+          { "path": "amountIn", "$ref": "$.display.definitions.amountIn" },
+          { "path": "minAmountOut", "$ref": "$.display.definitions.minAmountOut" },
+          { "path": "receiver", "$ref": "$.display.definitions.receiver" },
+          { "path": "clientFeeParams.clientFeeBps", "$ref": "$.display.definitions.clientFee", "visible": { "ifNotIn": [0, "0"] } },
+          {
+            "path": "clientFeeParams.clientFeeReceiver",
+            "$ref": "$.display.definitions.clientFeeReceiver",
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          },
+          {
+            "path": "clientFeeParams.deadline",
+            "$ref": "$.display.definitions.deadline",
+            "visible": { "ifNotIn": ["115792089237316195423570985008687907853269984665640564039457584007913129639935"] }
+          },
+          { "path": "permitSingle.details.amount", "$ref": "$.display.definitions.permitAmount" },
+          { "path": "permitSingle.spender", "$ref": "$.display.definitions.permitSpender" },
+          { "path": "permitSingle.details.expiration", "$ref": "$.display.definitions.permitExpiration" },
+          { "path": "permitSingle.sigDeadline", "label": "Permit sig deadline", "visible": "never" },
+          { "path": "permitSingle.details.token", "label": "Permit token", "visible": "never" },
+          { "path": "permitSingle.details.nonce", "label": "Permit nonce", "visible": "never" },
+          { "path": "signature", "label": "Permit signature", "visible": "never" },
+          { "path": "tokenIn", "label": "Token to send", "visible": "never" },
+          { "path": "tokenOut", "label": "Token to receive", "visible": "never" },
+          { "path": "expectedAmountOut", "label": "Quoted amount", "visible": "never" },
+          { "path": "nTokens", "label": "Route token count", "visible": "never" },
+          { "path": "clientFeeParams.maxClientContribution", "label": "Max client top-up", "visible": "never" },
+          { "path": "clientFeeParams.clientSignature", "label": "Client signature", "visible": "never" },
+          { "path": "swaps", "label": "Swap route", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

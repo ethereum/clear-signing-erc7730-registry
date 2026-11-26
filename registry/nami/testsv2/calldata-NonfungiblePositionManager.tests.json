@@ -1,0 +1,544 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-NonfungiblePositionManager.json",
+  "dataProvider": {
+    "tokens": {
+      "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": { "symbol": "WBTC", "decimals": 8, "name": "Wrapped Bitcoin" },
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" },
+      "0xdac17f958d2ee523a2206206994597c13d831ec7": { "symbol": "USDT", "decimals": 6, "name": "Tether USD" }
+    }
+  },
+  "tests": [
+    {
+      "description": "multicall: mint WBTC/WETH position and approve position 622 for farming - chain 1",
+      "rawTx": "0x02f902e601808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b902c4ac9650d800000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000000164fe3f3be70000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040f1a0000000000000000000000000000000000000000000000000000000000040f5600000000000000000000000000000000000000000000000000000000001289a000000000000000000000000000000000000000000000000005b93e51d380028000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e2b130d9379289c7686a0c8baea590cca1a77416000000000000000000000000000000000000000000000000000000006af4134d000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000064832f630a000000000000000000000000000000000000000000000000000000000000026e0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a487555d14b5281bccd2197adbdd1d3b86f0478100000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0x0652ee55e0fdc0227668995008626505ed6b60f53fe36e49fdb49fed2499d610",
+      "expected": {
+        "intent": "Batch position actions",
+        "interpolatedIntent": "Send 0 ETH and run every action below in one transaction; if one action fails, the whole transaction reverts",
+        "owner": "Nami",
+        "fields": [
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Open liquidity position",
+              "fields": [
+                { "label": "Maximum to Add", "value": "0.0121488 WBTC" },
+                { "label": "Maximum to Add", "value": "0.412429362042765952 WETH" },
+                { "label": "Minimum to Add", "value": "0 WBTC" },
+                { "label": "Minimum to Add", "value": "0 WETH" },
+                { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+                { "label": "Position Recipient", "value": "0xe2b130d9379289c7686a0c8bAEa590cCA1a77416" },
+                { "label": "Lower Tick", "value": "266010" },
+                { "label": "Upper Tick", "value": "266070" },
+                { "label": "Custom Pool Deployer", "value": "0x0000000000000000000000000000000000000000" },
+                { "label": "Deadline", "value": "2026-11-11 07:03:41Z" }
+              ],
+              "interpolatedIntent": "Add up to 0.0121488 WBTC and up to 0.412429362042765952 WETH to a new liquidity position for 0xe2b130d9379289c7686a0c8bAEa590cCA1a77416",
+              "owner": "Nami"
+            }
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Set farming approval",
+              "fields": [
+                { "label": "Position ID", "value": "622" },
+                { "label": "Farming Access", "value": "Grant" },
+                { "label": "Farming Center", "value": "0xA487555d14B5281bcCD2197adBDd1d3B86F04781" },
+                { "label": "ETH Sent (whole tx)", "value": "0 ETH" }
+              ],
+              "interpolatedIntent": "Grant farming access to position 622 for 0xA487555d14B5281bcCD2197adBDd1d3B86F04781",
+              "owner": "Nami"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "multicall: decreaseLiquidity and collect, position 586 - chain 1",
+      "rawTx": "0x02f9024601808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b90224ac9650d8000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000a40c49ccbe000000000000000000000000000000000000000000000000000000000000024a00000000000000000000000000000000000000000000000000000004ae21a24e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006af41bd1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000084fc6f7865000000000000000000000000000000000000000000000000000000000000024a0000000000000000000000003a33c49717d265251ef1039b863404e4a075564700000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0x8fc7819db93d1ffcde0b54b7c4b53d0488cc9fe026af853531fc4056bb61b176",
+      "expected": {
+        "intent": "Batch position actions",
+        "interpolatedIntent": "Send 0 ETH and run every action below in one transaction; if one action fails, the whole transaction reverts",
+        "owner": "Nami",
+        "fields": [
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Decrease liquidity",
+              "fields": [
+                { "label": "Position ID", "value": "586" },
+                { "label": "Liquidity to Remove", "value": "20101309006" },
+                { "label": "Min Token0 Due (raw)", "value": "0" },
+                { "label": "Min Token1 Due (raw)", "value": "0" },
+                { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+                { "label": "Deadline", "value": "2026-11-11 07:40:01Z" }
+              ],
+              "interpolatedIntent": "Remove 20101309006 liquidity from position 586: at least 0 token0 and 0 token1 (raw units) become owed to the position; nothing is transferred until collect",
+              "owner": "Nami"
+            }
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Collect from position",
+              "fields": [
+                { "label": "Position ID", "value": "586" },
+                { "label": "Max Token0 (raw)", "value": "340282366920938463463374607431768211455" },
+                { "label": "Max Token1 (raw)", "value": "340282366920938463463374607431768211455" },
+                { "label": "To (zero = contract)", "value": "0x3A33c49717d265251EF1039B863404E4a0755647" },
+                { "label": "ETH Sent (whole tx)", "value": "0 ETH" }
+              ],
+              "interpolatedIntent": "Collect up to 340282366920938463463374607431768211455 token0 and up to 340282366920938463463374607431768211455 token1 (raw units) owed to position 586, sent to 0x3A33c49717d265251EF1039B863404E4a0755647. The zero address keeps them in this contract, where any caller can sweep them",
+              "owner": "Nami"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "multicall: decreaseLiquidity and collect, position 621 - chain 1",
+      "rawTx": "0x02f9024601808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b90224ac9650d8000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000a40c49ccbe000000000000000000000000000000000000000000000000000000000000026d00000000000000000000000000000000000000000000000000035accb489e24e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006af412f1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000084fc6f7865000000000000000000000000000000000000000000000000000000000000026d000000000000000000000000e2b130d9379289c7686a0c8baea590cca1a7741600000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0x4b51c9bd711619f7a7fa689c7b25ffc0ebac8c6292e08b46228df37102117315",
+      "expected": {
+        "intent": "Batch position actions",
+        "interpolatedIntent": "Send 0 ETH and run every action below in one transaction; if one action fails, the whole transaction reverts",
+        "owner": "Nami",
+        "fields": [
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Decrease liquidity",
+              "fields": [
+                { "label": "Position ID", "value": "621" },
+                { "label": "Liquidity to Remove", "value": "944260178895438" },
+                { "label": "Min Token0 Due (raw)", "value": "0" },
+                { "label": "Min Token1 Due (raw)", "value": "0" },
+                { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+                { "label": "Deadline", "value": "2026-11-11 07:02:09Z" }
+              ],
+              "interpolatedIntent": "Remove 944260178895438 liquidity from position 621: at least 0 token0 and 0 token1 (raw units) become owed to the position; nothing is transferred until collect",
+              "owner": "Nami"
+            }
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Collect from position",
+              "fields": [
+                { "label": "Position ID", "value": "621" },
+                { "label": "Max Token0 (raw)", "value": "340282366920938463463374607431768211455" },
+                { "label": "Max Token1 (raw)", "value": "340282366920938463463374607431768211455" },
+                { "label": "To (zero = contract)", "value": "0xe2b130d9379289c7686a0c8bAEa590cCA1a77416" },
+                { "label": "ETH Sent (whole tx)", "value": "0 ETH" }
+              ],
+              "interpolatedIntent": "Collect up to 340282366920938463463374607431768211455 token0 and up to 340282366920938463463374607431768211455 token1 (raw units) owed to position 621, sent to 0xe2b130d9379289c7686a0c8bAEa590cCA1a77416. The zero address keeps them in this contract, where any caller can sweep them",
+              "owner": "Nami"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "mint WETH/USDT position, 0.421437867929559808 WETH and 795.008275 USDT - chain 1",
+      "rawTx": "0x02f9018601808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b90164fe3f3be7000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec70000000000000000000000000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcf252fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcf28e00000000000000000000000000000000000000000000000005d93f820cd6e300000000000000000000000000000000000000000000000000000000002f62dd1300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ddccf40d6fc65dfa1a008a4e1d1f35cea643bff1000000000000000000000000000000000000000000000000000000006af3a3aec0",
+      "txHash": "0x712dc55aa357f8842b5723dd3313a113e9e539f4785234e7d1e09255b418998f",
+      "expected": {
+        "intent": "Open liquidity position",
+        "interpolatedIntent": "Add up to 0.421437867929559808 WETH and up to 795.008275 USDT to a new liquidity position for 0xDDcCf40d6fC65dFa1a008A4E1d1F35CeA643bff1",
+        "owner": "Nami",
+        "fields": [
+          { "label": "Maximum to Add", "value": "0.421437867929559808 WETH" },
+          { "label": "Maximum to Add", "value": "795.008275 USDT" },
+          { "label": "Minimum to Add", "value": "0 WETH" },
+          { "label": "Minimum to Add", "value": "0 USDT" },
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+          { "label": "Position Recipient", "value": "0xDDcCf40d6fC65dFa1a008A4E1d1F35CeA643bff1" },
+          { "label": "Lower Tick", "value": "-200110" },
+          { "label": "Upper Tick", "value": "-200050" },
+          { "label": "Custom Pool Deployer", "value": "0x0000000000000000000000000000000000000000" },
+          { "label": "Deadline", "value": "2026-11-10 23:07:26Z" }
+        ]
+      }
+    },
+    {
+      "description": "mint WETH/USDT position, 0.388568949478318592 WETH and 937.766087 USDT - chain 1",
+      "rawTx": "0x02f9018601808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b90164fe3f3be7000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec70000000000000000000000000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcf374fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcf428000000000000000000000000000000000000000000000000056479669c66e2000000000000000000000000000000000000000000000000000000000037e52cc700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ddccf40d6fc65dfa1a008a4e1d1f35cea643bff1000000000000000000000000000000000000000000000000000000006af1b06ac0",
+      "txHash": "0x09ee50222e01a6e6d71effcbde3427c85f5e6313629e4110c12ac2a2713550d6",
+      "expected": {
+        "intent": "Open liquidity position",
+        "interpolatedIntent": "Add up to 0.388568949478318592 WETH and up to 937.766087 USDT to a new liquidity position for 0xDDcCf40d6fC65dFa1a008A4E1d1F35CeA643bff1",
+        "owner": "Nami",
+        "fields": [
+          { "label": "Maximum to Add", "value": "0.388568949478318592 WETH" },
+          { "label": "Maximum to Add", "value": "937.766087 USDT" },
+          { "label": "Minimum to Add", "value": "0 WETH" },
+          { "label": "Minimum to Add", "value": "0 USDT" },
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+          { "label": "Position Recipient", "value": "0xDDcCf40d6fC65dFa1a008A4E1d1F35CeA643bff1" },
+          { "label": "Lower Tick", "value": "-199820" },
+          { "label": "Upper Tick", "value": "-199640" },
+          { "label": "Custom Pool Deployer", "value": "0x0000000000000000000000000000000000000000" },
+          { "label": "Deadline", "value": "2026-11-09 11:37:14Z" }
+        ]
+      }
+    },
+    {
+      "description": "increaseLiquidity, position 551 - chain 1",
+      "rawTx": "0x02f8e501808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b8c4219f5d17000000000000000000000000000000000000000000000000000000000000022700000000000000000000000000000000000000000000000000000000000fbd0500000000000000000000000000000000000000000000000000000000342c20e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006af41c12c0",
+      "txHash": "0x0cc09650a549e784732d28ae84b233714ea0a2223b66ad8596062c077cff9e33",
+      "expected": {
+        "intent": "Add to liquidity position",
+        "interpolatedIntent": "Add up to 1031429 token0 and up to 875307232 token1 (raw units) to position 551",
+        "owner": "Nami",
+        "fields": [
+          { "label": "Position ID", "value": "551" },
+          { "label": "Max Token0 (raw)", "value": "1031429" },
+          { "label": "Max Token1 (raw)", "value": "875307232" },
+          { "label": "Min Token0 (raw)", "value": "0" },
+          { "label": "Min Token1 (raw)", "value": "0" },
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+          { "label": "Deadline", "value": "2026-11-11 07:41:06Z" }
+        ]
+      }
+    },
+    {
+      "description": "increaseLiquidity, position 586 - chain 1",
+      "rawTx": "0x02f8e501808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b8c4219f5d17000000000000000000000000000000000000000000000000000000000000024a000000000000000000000000000000000000000000000000000000000013a5960000000000000000000000000000000000000000000000000000000028f938cc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006af41054c0",
+      "txHash": "0x8eaf536d454475932f779fe5d58496346956082803026625ae485a355e084e94",
+      "expected": {
+        "intent": "Add to liquidity position",
+        "interpolatedIntent": "Add up to 1287574 token0 and up to 687421644 token1 (raw units) to position 586",
+        "owner": "Nami",
+        "fields": [
+          { "label": "Position ID", "value": "586" },
+          { "label": "Max Token0 (raw)", "value": "1287574" },
+          { "label": "Max Token1 (raw)", "value": "687421644" },
+          { "label": "Min Token0 (raw)", "value": "0" },
+          { "label": "Min Token1 (raw)", "value": "0" },
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+          { "label": "Deadline", "value": "2026-11-11 06:51:00Z" }
+        ]
+      }
+    },
+    {
+      "description": "approveForFarming, position 594 - chain 1",
+      "rawTx": "0x02f88501808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b864832f630a00000000000000000000000000000000000000000000000000000000000002520000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a487555d14b5281bccd2197adbdd1d3b86f04781c0",
+      "txHash": "0x04357b5bde5202a09d627e3074209c3fd2159567341e079588898ca0a2b95c06",
+      "expected": {
+        "intent": "Set farming approval",
+        "interpolatedIntent": "Grant farming access to position 594 for 0xA487555d14B5281bcCD2197adBDd1d3B86F04781",
+        "owner": "Nami",
+        "fields": [
+          { "label": "Position ID", "value": "594" },
+          { "label": "Farming Access", "value": "Grant" },
+          { "label": "Farming Center", "value": "0xA487555d14B5281bcCD2197adBDd1d3B86F04781" },
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "approveForFarming, position 488 - chain 1",
+      "rawTx": "0x02f88501808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b864832f630a00000000000000000000000000000000000000000000000000000000000001e80000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a487555d14b5281bccd2197adbdd1d3b86f04781c0",
+      "txHash": "0xe8af87111d86fb2000e4c1f052dfec5c84b116dc85f0d3848e9b44bf5f8b49a0",
+      "expected": {
+        "intent": "Set farming approval",
+        "interpolatedIntent": "Grant farming access to position 488 for 0xA487555d14B5281bcCD2197adBDd1d3B86F04781",
+        "owner": "Nami",
+        "fields": [
+          { "label": "Position ID", "value": "488" },
+          { "label": "Farming Access", "value": "Grant" },
+          { "label": "Farming Center", "value": "0xA487555d14B5281bcCD2197adBDd1d3B86F04781" },
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "setApprovalForAll, grant to 0x0100...2b4C - chain 1",
+      "rawTx": "0x02f86501808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b844a22cb4650000000000000000000000000100000002935dce071f4afa607b961575672b4c0000000000000000000000000000000000000000000000000000000000000001c0",
+      "txHash": "0x052133be72baad7f6c25dbb5e45d054e3db5ff9570e039b032db32d957c3ce3f",
+      "expected": {
+        "intent": "Set operator for all NFTs",
+        "interpolatedIntent": "Grant 0x0100000002935Dce071f4AFA607b961575672b4C access to withdraw and transfer all your position NFTs",
+        "owner": "Nami",
+        "fields": [{ "label": "Access", "value": "Grant" }, { "label": "Operator", "value": "0x0100000002935Dce071f4AFA607b961575672b4C" }]
+      }
+    },
+    {
+      "description": "collect, position 415 - chain 1",
+      "rawTx": "0x02f8a501808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b884fc6f7865000000000000000000000000000000000000000000000000000000000000019f0000000000000000000000003a33c49717d265251ef1039b863404e4a075564700000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000ffffffffffffffffffffffffffffffffc0",
+      "txHash": "0xfc15a2c0261ced088f3c8dbed61ba8484fa956c2f9dc9fb6dd950372efd9d7d5",
+      "expected": {
+        "intent": "Collect from position",
+        "interpolatedIntent": "Collect up to 340282366920938463463374607431768211455 token0 and up to 340282366920938463463374607431768211455 token1 (raw units) owed to position 415, sent to 0x3A33c49717d265251EF1039B863404E4a0755647. The zero address keeps them in this contract, where any caller can sweep them",
+        "owner": "Nami",
+        "fields": [
+          { "label": "Position ID", "value": "415" },
+          { "label": "Max Token0 (raw)", "value": "340282366920938463463374607431768211455" },
+          { "label": "Max Token1 (raw)", "value": "340282366920938463463374607431768211455" },
+          { "label": "To (zero = contract)", "value": "0x3A33c49717d265251EF1039B863404E4a0755647" },
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "setApprovalForAll, revoke - chain 1",
+      "rawTx": "0x02f86501808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b844a22cb4650000000000000000000000000100000002935dce071f4afa607b961575672b4c0000000000000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0xcefd88f44ed0b35f2954bde39b79493ab363cf9bcb4868ad984591db280b6b6f",
+      "expected": {
+        "intent": "Set operator for all NFTs",
+        "interpolatedIntent": "Revoke 0x0100000002935Dce071f4AFA607b961575672b4C access to withdraw and transfer all your position NFTs",
+        "owner": "Nami",
+        "fields": [{ "label": "Access", "value": "Revoke" }, { "label": "Operator", "value": "0x0100000002935Dce071f4AFA607b961575672b4C" }]
+      }
+    },
+    {
+      "description": "decreaseLiquidity, position 586, as a direct call (inner call 1 of multicall 0x8fc7819db93d1ffcde0b54b7c4b53d0488cc9fe026af853531fc4056bb61b176; no direct call exists on chain) - chain 1",
+      "rawTx": "0x02f8c501808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b8a40c49ccbe000000000000000000000000000000000000000000000000000000000000024a00000000000000000000000000000000000000000000000000000004ae21a24e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006af41bd1c0",
+      "expected": {
+        "intent": "Decrease liquidity",
+        "interpolatedIntent": "Remove 20101309006 liquidity from position 586: at least 0 token0 and 0 token1 (raw units) become owed to the position; nothing is transferred until collect",
+        "owner": "Nami",
+        "fields": [
+          { "label": "Position ID", "value": "586" },
+          { "label": "Liquidity to Remove", "value": "20101309006" },
+          { "label": "Min Token0 Due (raw)", "value": "0" },
+          { "label": "Min Token1 Due (raw)", "value": "0" },
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+          { "label": "Deadline", "value": "2026-11-11 07:40:01Z" }
+        ]
+      }
+    },
+    {
+      "description": "multicall: decreaseLiquidity, collect and burn, position 55 - chain 1",
+      "rawTx": "0x02f902c601808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b902a4ac9650d80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000a40c49ccbe0000000000000000000000000000000000000000000000000000000000000037000000000000000000000000000000000000000000000000000013bdcec64ca700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006aecc2db000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000084fc6f78650000000000000000000000000000000000000000000000000000000000000037000000000000000000000000858df5bf805b14e70bd3ce5584386878e9a60eed00000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002442966c68000000000000000000000000000000000000000000000000000000000000003700000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Batch position actions",
+        "interpolatedIntent": "Send 0 ETH and run every action below in one transaction; if one action fails, the whole transaction reverts",
+        "owner": "Nami",
+        "fields": [
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Decrease liquidity",
+              "fields": [
+                { "label": "Position ID", "value": "55" },
+                { "label": "Liquidity to Remove", "value": "21705938848935" },
+                { "label": "Min Token0 Due (raw)", "value": "0" },
+                { "label": "Min Token1 Due (raw)", "value": "0" },
+                { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+                { "label": "Deadline", "value": "2026-11-05 17:54:35Z" }
+              ],
+              "interpolatedIntent": "Remove 21705938848935 liquidity from position 55: at least 0 token0 and 0 token1 (raw units) become owed to the position; nothing is transferred until collect",
+              "owner": "Nami"
+            }
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Collect from position",
+              "fields": [
+                { "label": "Position ID", "value": "55" },
+                { "label": "Max Token0 (raw)", "value": "340282366920938463463374607431768211455" },
+                { "label": "Max Token1 (raw)", "value": "340282366920938463463374607431768211455" },
+                { "label": "To (zero = contract)", "value": "0x858dF5Bf805b14E70bD3ce5584386878e9A60EEd" },
+                { "label": "ETH Sent (whole tx)", "value": "0 ETH" }
+              ],
+              "interpolatedIntent": "Collect up to 340282366920938463463374607431768211455 token0 and up to 340282366920938463463374607431768211455 token1 (raw units) owed to position 55, sent to 0x858dF5Bf805b14E70bD3ce5584386878e9A60EEd. The zero address keeps them in this contract, where any caller can sweep them",
+              "owner": "Nami"
+            }
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Burn empty position NFT",
+              "fields": [{ "label": "Position ID", "value": "55" }, { "label": "ETH Sent (whole tx)", "value": "0 ETH" }],
+              "interpolatedIntent": "Burn empty position NFT 55",
+              "owner": "Nami"
+            }
+          }
+        ]
+      },
+      "txHash": "0x4c2ab1a7e311a8d239e8b293b5ccfd3dbca5b52265ce2dd035f643c3d8cfe835"
+    },
+    {
+      "description": "burn, position 55, as a direct call (inner call 3 of multicall 0x4c2ab1a7e311a8d239e8b293b5ccfd3dbca5b52265ce2dd035f643c3d8cfe835; no direct call found in the last 2,390 transactions) - chain 1",
+      "rawTx": "0x02f84401808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80a442966c680000000000000000000000000000000000000000000000000000000000000037c0",
+      "expected": {
+        "intent": "Burn empty position NFT",
+        "interpolatedIntent": "Burn empty position NFT 55",
+        "owner": "Nami",
+        "fields": [{ "label": "Position ID", "value": "55" }, { "label": "ETH Sent (whole tx)", "value": "0 ETH" }]
+      }
+    },
+    {
+      "description": "multicall: collect to the zero address, unwrapWNativeToken and sweepToken (encoded; collect of the position 586 case with recipient zero; no real call of these two functions found in the last 2,390 transactions) - chain 1",
+      "rawTx": "0x02f903a601808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b90384ac9650d80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000160000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000000a40c49ccbe000000000000000000000000000000000000000000000000000000000000024a00000000000000000000000000000000000000000000000000000004ae21a24e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006af41bd1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000084fc6f7865000000000000000000000000000000000000000000000000000000000000024a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004469bc35b2000000000000000000000000000000000000000000000000016345785d8a0000000000000000000000000000858df5bf805b14e70bd3ce5584386878e9a60eed000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000064df2ab5bb000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec7000000000000000000000000000000000000000000000000000000000ee6b280000000000000000000000000858df5bf805b14e70bd3ce5584386878e9a60eed00000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Batch position actions",
+        "interpolatedIntent": "Send 0 ETH and run every action below in one transaction; if one action fails, the whole transaction reverts",
+        "owner": "Nami",
+        "fields": [
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Decrease liquidity",
+              "fields": [
+                { "label": "Position ID", "value": "586" },
+                { "label": "Liquidity to Remove", "value": "20101309006" },
+                { "label": "Min Token0 Due (raw)", "value": "0" },
+                { "label": "Min Token1 Due (raw)", "value": "0" },
+                { "label": "ETH Sent (whole tx)", "value": "0 ETH" },
+                { "label": "Deadline", "value": "2026-11-11 07:40:01Z" }
+              ],
+              "interpolatedIntent": "Remove 20101309006 liquidity from position 586: at least 0 token0 and 0 token1 (raw units) become owed to the position; nothing is transferred until collect",
+              "owner": "Nami"
+            }
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Collect from position",
+              "fields": [
+                { "label": "Position ID", "value": "586" },
+                { "label": "Max Token0 (raw)", "value": "340282366920938463463374607431768211455" },
+                { "label": "Max Token1 (raw)", "value": "340282366920938463463374607431768211455" },
+                { "label": "To (zero = contract)", "value": "0x0000000000000000000000000000000000000000" },
+                { "label": "ETH Sent (whole tx)", "value": "0 ETH" }
+              ],
+              "interpolatedIntent": "Collect up to 340282366920938463463374607431768211455 token0 and up to 340282366920938463463374607431768211455 token1 (raw units) owed to position 586, sent to 0x0000000000000000000000000000000000000000. The zero address keeps them in this contract, where any caller can sweep them",
+              "owner": "Nami"
+            }
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Unwrap WETH to ETH",
+              "fields": [
+                { "label": "Minimum to Unwrap", "value": "0.1 WETH" },
+                { "label": "Recipient", "value": "0x858dF5Bf805b14E70bD3ce5584386878e9A60EEd" },
+                { "label": "ETH Sent (whole tx)", "value": "0 ETH" }
+              ],
+              "interpolatedIntent": "Unwrap the WETH held by this contract, at least 0.1 WETH, and send the ETH to 0x858dF5Bf805b14E70bD3ce5584386878e9A60EEd",
+              "owner": "Nami"
+            }
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Sweep leftover tokens",
+              "fields": [
+                { "label": "Minimum to Sweep", "value": "250 USDT" },
+                { "label": "Recipient", "value": "0x858dF5Bf805b14E70bD3ce5584386878e9A60EEd" },
+                { "label": "ETH Sent (whole tx)", "value": "0 ETH" }
+              ],
+              "interpolatedIntent": "Send the whole token balance held by this contract, at least 250 USDT, to 0x858dF5Bf805b14E70bD3ce5584386878e9A60EEd",
+              "owner": "Nami"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "unwrapWNativeToken, at least 0.1 WETH (encoded; no real call found) - chain 1",
+      "rawTx": "0x02f86501808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b84469bc35b2000000000000000000000000000000000000000000000000016345785d8a0000000000000000000000000000858df5bf805b14e70bd3ce5584386878e9a60eedc0",
+      "expected": {
+        "intent": "Unwrap WETH to ETH",
+        "interpolatedIntent": "Unwrap the WETH held by this contract, at least 0.1 WETH, and send the ETH to 0x858dF5Bf805b14E70bD3ce5584386878e9A60EEd",
+        "owner": "Nami",
+        "fields": [
+          { "label": "Minimum to Unwrap", "value": "0.1 WETH" },
+          { "label": "Recipient", "value": "0x858dF5Bf805b14E70bD3ce5584386878e9A60EEd" },
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "sweepToken, at least 250 USDT (encoded; no real call found) - chain 1",
+      "rawTx": "0x02f88501808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b864df2ab5bb000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec7000000000000000000000000000000000000000000000000000000000ee6b280000000000000000000000000858df5bf805b14e70bd3ce5584386878e9a60eedc0",
+      "expected": {
+        "intent": "Sweep leftover tokens",
+        "interpolatedIntent": "Send the whole token balance held by this contract, at least 250 USDT, to 0x858dF5Bf805b14E70bD3ce5584386878e9A60EEd",
+        "owner": "Nami",
+        "fields": [
+          { "label": "Minimum to Sweep", "value": "250 USDT" },
+          { "label": "Recipient", "value": "0x858dF5Bf805b14E70bD3ce5584386878e9A60EEd" },
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "refundNativeToken (encoded; no real call found) - chain 1",
+      "rawTx": "0x02e401808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f808441865270c0",
+      "expected": {
+        "intent": "Refund leftover ETH",
+        "interpolatedIntent": "Send the ETH held by this contract to you",
+        "owner": "Nami",
+        "fields": [{ "label": "ETH Sent (whole tx)", "value": "0 ETH" }]
+      }
+    },
+    {
+      "description": "multicall: mint WETH/USDT position with 0.5 ETH sent and refundNativeToken (encoded; the first mint case and a refund, with a native value) - chain 1",
+      "rawTx": "0x02f9028e01808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f8806f05b59d3b20000b90264ac9650d800000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000000164fe3f3be7000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec70000000000000000000000000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcf252fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcf28e00000000000000000000000000000000000000000000000005d93f820cd6e300000000000000000000000000000000000000000000000000000000002f62dd1300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ddccf40d6fc65dfa1a008a4e1d1f35cea643bff1000000000000000000000000000000000000000000000000000000006af3a3ae0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044186527000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "Batch position actions",
+        "interpolatedIntent": "Send 0.5 ETH and run every action below in one transaction; if one action fails, the whole transaction reverts",
+        "owner": "Nami",
+        "fields": [
+          { "label": "ETH Sent (whole tx)", "value": "0.5 ETH" },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Open liquidity position",
+              "fields": [
+                { "label": "Maximum to Add", "value": "0.421437867929559808 WETH" },
+                { "label": "Maximum to Add", "value": "795.008275 USDT" },
+                { "label": "Minimum to Add", "value": "0 WETH" },
+                { "label": "Minimum to Add", "value": "0 USDT" },
+                { "label": "ETH Sent (whole tx)", "value": "0.5 ETH" },
+                { "label": "Position Recipient", "value": "0xDDcCf40d6fC65dFa1a008A4E1d1F35CeA643bff1" },
+                { "label": "Lower Tick", "value": "-200110" },
+                { "label": "Upper Tick", "value": "-200050" },
+                { "label": "Custom Pool Deployer", "value": "0x0000000000000000000000000000000000000000" },
+                { "label": "Deadline", "value": "2026-11-10 23:07:26Z" }
+              ],
+              "interpolatedIntent": "Add up to 0.421437867929559808 WETH and up to 795.008275 USDT to a new liquidity position for 0xDDcCf40d6fC65dFa1a008A4E1d1F35CeA643bff1",
+              "owner": "Nami"
+            }
+          },
+          {
+            "label": "Action",
+            "value": {
+              "intent": "Refund leftover ETH",
+              "fields": [{ "label": "ETH Sent (whole tx)", "value": "0.5 ETH" }],
+              "interpolatedIntent": "Send the ETH held by this contract to you",
+              "owner": "Nami"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "approveForFarming, revoke, position 594 (encoded; the position 594 case with approve set to false) - chain 1",
+      "rawTx": "0x02f88501808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b864832f630a00000000000000000000000000000000000000000000000000000000000002520000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a487555d14b5281bccd2197adbdd1d3b86f04781c0",
+      "expected": {
+        "intent": "Set farming approval",
+        "interpolatedIntent": "Revoke farming access to position 594 for 0xA487555d14B5281bcCD2197adBDd1d3B86F04781",
+        "owner": "Nami",
+        "fields": [
+          { "label": "Position ID", "value": "594" },
+          { "label": "Farming Access", "value": "Revoke" },
+          { "label": "Farming Center", "value": "0xA487555d14B5281bcCD2197adBDd1d3B86F04781" },
+          { "label": "ETH Sent (whole tx)", "value": "0 ETH" }
+        ]
+      }
+    }
+  ]
+}

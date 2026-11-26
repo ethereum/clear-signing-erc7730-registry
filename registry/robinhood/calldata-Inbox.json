@@ -1,0 +1,70 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Robinhood Chain Inbox",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x1A07cc4BD17E0118BdB54D70990D2158AbAD7a2D" }] }
+  },
+  "metadata": {
+    "owner": "Robinhood Chain",
+    "contractName": "Robinhood Chain Delayed Inbox",
+    "info": { "url": "https://robinhood.com/chain" }
+  },
+  "display": {
+    "formats": {
+      "depositEth()": {
+        "intent": "Deposit ETH to Robinhood Chain",
+        "interpolatedIntent": "Deposit {@.value} to Robinhood Chain",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount" },
+          {
+            "label": "Note",
+            "value": "From an account with code, the ETH goes to its aliased address on Robinhood Chain.",
+            "format": "raw"
+          }
+        ]
+      },
+      "depositEth(uint256)": {
+        "intent": "Deposit ETH to Robinhood Chain",
+        "interpolatedIntent": "Deposit {@.value} to Robinhood Chain",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount" },
+          {
+            "label": "Note",
+            "value": "From an account with code, the ETH goes to its aliased address on Robinhood Chain.",
+            "format": "raw"
+          }
+        ]
+      },
+      "createRetryableTicket(address to,uint256 l2CallValue,uint256 maxSubmissionCost,address excessFeeRefundAddress,address callValueRefundAddress,uint256 gasLimit,uint256 maxFeePerGas,bytes data)": {
+        "intent": "Deposit ETH to Robinhood Chain",
+        "interpolatedIntent": "Deposit {l2CallValue} to {to} on Robinhood Chain",
+        "fields": [
+          { "path": "l2CallValue", "label": "Amount", "format": "amount" },
+          {
+            "path": "to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
+          { "path": "maxSubmissionCost", "label": "Max submission fee", "format": "amount" },
+          {
+            "path": "excessFeeRefundAddress",
+            "label": "Fee refund to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "callValueRefundAddress",
+            "label": "Can cancel/refund to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "gasLimit", "label": "L2 gas limit", "format": "raw" },
+          { "path": "maxFeePerGas", "label": "L2 max fee per gas", "format": "unit", "params": { "base": " gwei", "decimals": 9 } },
+          { "path": "data", "label": "Call data", "format": "raw", "visible": { "mustMatch": ["0x"] } }
+        ]
+      }
+    }
+  }
+}

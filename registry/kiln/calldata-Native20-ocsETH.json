@@ -1,0 +1,30 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Kiln Pooled Staking - ocsETH",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x2401c39d7ba9E283668a53fcC7B8F5FD9e716fdf" }] }
+  },
+  "metadata": { "owner": "Kiln", "contractName": "Kiln Pooled Staking - ocsETH", "info": { "url": "https://kiln.fi" } },
+  "display": {
+    "formats": {
+      "stake()": {
+        "intent": "Stake ETH",
+        "interpolatedIntent": "Stake {@.value} with Kiln pooled staking",
+        "fields": [{ "path": "@.value", "label": "Amount to stake", "format": "amount" }]
+      },
+      "requestExit(uint256 amount)": {
+        "intent": "Request unstaking",
+        "interpolatedIntent": "Request unstaking of {amount} from Kiln pooled staking",
+        "fields": [{ "path": "amount", "label": "Amount to unstake", "format": "tokenAmount", "params": { "tokenPath": "@.to" } }]
+      },
+      "multiClaim(address[] exitQueues,uint256[][] ticketIds,uint32[][] casksIds)": {
+        "intent": "Claim unstaked ETH",
+        "fields": [
+          { "path": "exitQueues.[]", "label": "Exit queue", "format": "addressName", "params": { "types": ["contract"] } },
+          { "path": "ticketIds", "label": "Exit ticket IDs", "visible": "never" },
+          { "path": "casksIds", "label": "Cask IDs", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

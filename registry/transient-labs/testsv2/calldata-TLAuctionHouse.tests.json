@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-TLAuctionHouse.json",
+  "dataProvider": { "tokens": { "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" } } },
+  "tests": [
+    {
+      "description": "list, reserve auction at 0.05 ETH for one day - chain 1",
+      "rawTx": "0x02f9014601808080830f4240946f66b95a0c512f3497fb46660e0bc3b94b989f8d80b9012465f3952b00000000000000000000000012d9558eb516017cd82a86a6986492da0ed436de000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000020000000000000000000000005ff5dd789ce7369140f82734f86dfb39bd6239850000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006af4091c00000000000000000000000000000000000000000000000000b1a2bc2ec5000000000000000000000000000000000000000000000000000000000000000151800000000000000000000000000000000000000000000000000000000000000000c0",
+      "txHash": "0x04cf2830bf9b20393b6beb03556aeb4bee16e198e3b91cfa7cdca7e54f39b875",
+      "expected": {
+        "intent": "List NFT (moves to escrow)",
+        "owner": "Transient Labs",
+        "fields": [
+          { "label": "Collection", "value": "0x12d9558Eb516017cD82a86a6986492dA0ed436DE" },
+          { "label": "Token ID", "value": "4" },
+          { "label": "Listing Type", "value": "Reserve Auction" },
+          { "label": "Reserve Price", "value": "0.05 ETH" },
+          { "label": "Buy Now Price", "value": "0 ETH" },
+          { "label": "Start Time", "value": "2026-11-11 06:20:12Z" },
+          { "label": "Duration", "value": "24:00:00" },
+          { "label": "Payout (after fees)", "value": "0x5FF5dd789Ce7369140f82734F86DFb39bD623985" }
+        ]
+      }
+    },
+    {
+      "description": "list, reserve auction at 0.05 WETH (encoded; the case above with WETH as the currency) - chain 1",
+      "rawTx": "0x02f9014601808080830f4240946f66b95a0c512f3497fb46660e0bc3b94b989f8d80b9012465f3952b00000000000000000000000012d9558eb516017cd82a86a6986492da0ed436de000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000020000000000000000000000005ff5dd789ce7369140f82734f86dfb39bd623985000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000006af4091c00000000000000000000000000000000000000000000000000b1a2bc2ec5000000000000000000000000000000000000000000000000000000000000000151800000000000000000000000000000000000000000000000000000000000000000c0",
+      "expected": {
+        "intent": "List NFT (moves to escrow)",
+        "owner": "Transient Labs",
+        "fields": [
+          { "label": "Collection", "value": "0x12d9558Eb516017cD82a86a6986492dA0ed436DE" },
+          { "label": "Token ID", "value": "4" },
+          { "label": "Listing Type", "value": "Reserve Auction" },
+          { "label": "Reserve Price", "value": "0.05 WETH" },
+          { "label": "Buy Now Price", "value": "0 WETH" },
+          { "label": "Start Time", "value": "2026-11-11 06:20:12Z" },
+          { "label": "Duration", "value": "24:00:00" },
+          { "label": "Payout (after fees)", "value": "0x5FF5dd789Ce7369140f82734F86DFb39bD623985" }
+        ]
+      }
+    },
+    {
+      "description": "list, fixed price 0.025 ETH - chain 1",
+      "rawTx": "0x02f9014601808080830f4240946f66b95a0c512f3497fb46660e0bc3b94b989f8d80b9012465f3952b00000000000000000000000077ec922ab221af8c9974685cecbc9d19aa15a42900000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000004000000000000000000000000d398f23fbb5a327540ea818d018dd6ab4597bbde0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006af3f44b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000058d15e17628000c0",
+      "txHash": "0x82a61c4529f3559dd94f089920bc4ec53cee1c5e2c0fa872fb975c0a43c57c92",
+      "expected": {
+        "intent": "List NFT (moves to escrow)",
+        "owner": "Transient Labs",
+        "fields": [
+          { "label": "Collection", "value": "0x77EC922aB221AF8c9974685CECBc9d19aa15A429" },
+          { "label": "Token ID", "value": "3" },
+          { "label": "Listing Type", "value": "Fixed Price" },
+          { "label": "Reserve Price", "value": "0 ETH" },
+          { "label": "Buy Now Price", "value": "0.025 ETH" },
+          { "label": "Start Time", "value": "2026-11-11 04:51:23Z" },
+          { "label": "Duration", "value": "00:00:00" },
+          { "label": "Payout (after fees)", "value": "0xD398f23Fbb5A327540EA818d018Dd6Ab4597BBDe" }
+        ]
+      }
+    },
+    {
+      "description": "delist - chain 1",
+      "rawTx": "0x02f86501808080830f4240946f66b95a0c512f3497fb46660e0bc3b94b989f8d80b844f074258e00000000000000000000000077ec922ab221af8c9974685cecbc9d19aa15a4290000000000000000000000000000000000000000000000000000000000000003c0",
+      "txHash": "0x70f58c5017f7688d43fce8f508f1dd5beb18bc4b21ad2365aec022aea4669794",
+      "expected": {
+        "intent": "End Sale",
+        "interpolatedIntent": "End the sale of token 3 of 0x77EC922aB221AF8c9974685CECBc9d19aa15A429 and take the NFT back",
+        "owner": "Transient Labs",
+        "fields": [{ "label": "Collection", "value": "0x77EC922aB221AF8c9974685CECBc9d19aa15A429" }, { "label": "Token ID", "value": "3" }]
+      }
+    },
+    {
+      "description": "bid 0.01 ETH - chain 1",
+      "rawTx": "0x02f8ac01808080830f4240946f66b95a0c512f3497fb46660e0bc3b94b989f8d872386f26fc10000b884b56785880000000000000000000000000a958403d6d713129ef187a4e480923c5cc19d0d0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000cf8d4b1b2264f55dc3511c214212ab999d27d9e8000000000000000000000000000000000000000000000000002386f26fc10000c0",
+      "txHash": "0x2da32591d96a9cc2c9766db473ca3d0fd9ef81870dc985c8969bcec9d90a2e24",
+      "expected": {
+        "intent": "Place Bid",
+        "owner": "Transient Labs",
+        "fields": [
+          { "label": "Collection", "value": "0x0a958403d6D713129Ef187a4E480923C5cc19d0d" },
+          { "label": "Token ID", "value": "2" },
+          { "label": "ETH Sent", "value": "0.01 ETH" },
+          { "label": "Bid (smallest unit)", "value": "10000000000000000" },
+          { "label": "NFT Recipient", "value": "0xCf8D4B1B2264f55dc3511c214212Ab999d27D9e8" }
+        ]
+      }
+    },
+    {
+      "description": "buyNow for 0.03 ETH - chain 1",
+      "rawTx": "0x02f88c01808080830f4240946f66b95a0c512f3497fb46660e0bc3b94b989f8d876a94d74f430000b8641bd859e1000000000000000000000000f0b542cf96d42af5debec8b35f68628cc44cf89300000000000000000000000000000000000000000000000000000000000000a9000000000000000000000000f3860788d1597cecf938424baabe976fac87dc26c0",
+      "txHash": "0x1cc74bab2f4a054adce2089aca6537dda91d66cfb718159afb04c797404bfb6e",
+      "expected": {
+        "intent": "Buy Now",
+        "owner": "Transient Labs",
+        "fields": [
+          { "label": "Collection", "value": "0xf0B542cf96D42AF5DEBEC8b35F68628CC44cF893" },
+          { "label": "Token ID", "value": "169" },
+          { "label": "ETH Sent", "value": "0.03 ETH" },
+          { "label": "NFT Recipient", "value": "0xf3860788D1597cecF938424bAABe976FaC87dC26" }
+        ]
+      }
+    },
+    {
+      "description": "settleAuction - chain 1",
+      "rawTx": "0x02f86501808080830f4240946f66b95a0c512f3497fb46660e0bc3b94b989f8d80b8445138b08c0000000000000000000000005139d6b8c52527b1ee70033e327f2c6fec1a6412000000000000000000000000000000000000000000000000000000000000000bc0",
+      "txHash": "0x22e15725f6a48a16f5397903561afa2bc5d9014aaf02148d212b00f010973b2f",
+      "expected": {
+        "intent": "Settle Auction",
+        "interpolatedIntent": "Settle the auction of token 11 of 0x5139d6b8C52527b1eE70033E327F2c6fec1a6412",
+        "owner": "Transient Labs",
+        "fields": [{ "label": "Collection", "value": "0x5139d6b8C52527b1eE70033E327F2c6fec1a6412" }, { "label": "Token ID", "value": "11" }]
+      }
+    }
+  ]
+}

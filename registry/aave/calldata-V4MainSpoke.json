@@ -1,0 +1,178 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Aave V4 Main Spoke",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x94e7A5dCbE816e498b89aB752661904E2F56c485" }] }
+  },
+  "metadata": {
+    "owner": "Aave DAO",
+    "contractName": "Aave V4 Main Spoke",
+    "info": { "url": "https://aave.com" },
+    "constants": { "max": "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" },
+    "enums": {
+      "reserve": {
+        "0": "WETH",
+        "1": "wstETH",
+        "2": "weETH",
+        "3": "WBTC",
+        "4": "cbBTC",
+        "5": "AAVE",
+        "6": "LINK",
+        "7": "USDC",
+        "8": "USDT",
+        "9": "EURC",
+        "10": "RLUSD",
+        "11": "USDG",
+        "12": "frxUSD",
+        "13": "GHO",
+        "14": "cirBTC"
+      },
+      "collateral": { "true": "Enable", "false": "Disable" },
+      "access": { "true": "Approve", "false": "Revoke" }
+    },
+    "maps": {
+      "reserveToken": {
+        "$keyType": "Reserve ID",
+        "values": {
+          "0": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "1": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "2": "0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee",
+          "3": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+          "4": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+          "5": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
+          "6": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+          "7": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "8": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "9": "0x1aBaEA1f7C830bD89Acc67eC4af516284b1bC33c",
+          "10": "0x8292Bb45bf1Ee4d140127049757C2E0fF06317eD",
+          "11": "0xe343167631d89B6Ffc58B88d6b7fB0228795491D",
+          "12": "0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29",
+          "13": "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
+          "14": "0x72DFB2E44f59C5AD2bAFE84314E5b99a7cd5075E"
+        }
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "supply(uint256 reserveId,uint256 amount,address onBehalfOf)": {
+        "intent": "Supply",
+        "interpolatedIntent": "Supply {amount} to Aave V4 for {onBehalfOf}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to supply",
+            "format": "tokenAmount",
+            "params": { "token": { "map": "$.metadata.maps.reserveToken", "keyPath": "reserveId" } }
+          },
+          { "path": "onBehalfOf", "label": "Supplied for", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "reserveId", "label": "Reserve ID", "visible": "never" }
+        ]
+      },
+      "withdraw(uint256 reserveId,uint256 amount,address onBehalfOf)": {
+        "intent": "Withdraw",
+        "interpolatedIntent": "Withdraw {amount} to your wallet from the Aave V4 position of {onBehalfOf}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to withdraw",
+            "format": "tokenAmount",
+            "params": {
+              "token": { "map": "$.metadata.maps.reserveToken", "keyPath": "reserveId" },
+              "threshold": "$.metadata.constants.max",
+              "message": "All"
+            }
+          },
+          { "path": "onBehalfOf", "label": "Position owner", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "reserveId", "label": "Reserve ID", "visible": "never" }
+        ]
+      },
+      "borrow(uint256 reserveId,uint256 amount,address onBehalfOf)": {
+        "intent": "Borrow",
+        "interpolatedIntent": "Borrow {amount} to your wallet from Aave V4, as debt of {onBehalfOf}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to borrow",
+            "format": "tokenAmount",
+            "params": { "token": { "map": "$.metadata.maps.reserveToken", "keyPath": "reserveId" } }
+          },
+          { "path": "onBehalfOf", "label": "Debtor", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "reserveId", "label": "Reserve ID", "visible": "never" }
+        ]
+      },
+      "repay(uint256 reserveId,uint256 amount,address onBehalfOf)": {
+        "intent": "Repay",
+        "interpolatedIntent": "Repay up to {amount} of the Aave V4 debt of {onBehalfOf}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to repay",
+            "format": "tokenAmount",
+            "params": {
+              "token": { "map": "$.metadata.maps.reserveToken", "keyPath": "reserveId" },
+              "threshold": "$.metadata.constants.max",
+              "message": "All"
+            }
+          },
+          { "path": "onBehalfOf", "label": "For debt holder", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "reserveId", "label": "Reserve ID", "visible": "never" }
+        ]
+      },
+      "setUsingAsCollateral(uint256 reserveId,bool usingAsCollateral,address onBehalfOf)": {
+        "intent": "Manage collateral",
+        "interpolatedIntent": "{usingAsCollateral} {reserveId} as collateral for {onBehalfOf}",
+        "fields": [
+          { "path": "reserveId", "label": "Reserve", "format": "enum", "params": { "$ref": "$.metadata.enums.reserve" } },
+          {
+            "path": "usingAsCollateral",
+            "label": "Use as collateral",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.collateral" }
+          },
+          { "path": "onBehalfOf", "label": "Position owner", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
+        ]
+      },
+      "permitReserve(uint256 reserveId,address onBehalfOf,uint256 value,uint256 deadline,uint8 permitV,bytes32 permitR,bytes32 permitS)": {
+        "intent": "Approve token by permit",
+        "interpolatedIntent": "Allow Aave V4 to spend {value} of {onBehalfOf} with a permit signature",
+        "fields": [
+          {
+            "path": "value",
+            "label": "Approved amount",
+            "format": "tokenAmount",
+            "params": {
+              "token": { "map": "$.metadata.maps.reserveToken", "keyPath": "reserveId" },
+              "threshold": "$.metadata.constants.max",
+              "message": "Unlimited"
+            }
+          },
+          { "path": "onBehalfOf", "label": "Token owner", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "deadline", "label": "Permit deadline", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "reserveId", "label": "Reserve ID", "visible": "never" },
+          { "path": "permitV", "label": "Signature v", "visible": "never" },
+          { "path": "permitR", "label": "Signature r", "visible": "never" },
+          { "path": "permitS", "label": "Signature s", "visible": "never" }
+        ]
+      },
+      "setUserPositionManager(address positionManager,bool approve)": {
+        "intent": "Set position manager",
+        "interpolatedIntent": "{approve} {positionManager} as manager of your Aave V4 position: a manager can withdraw and borrow from your position to its own address, and can also supply, repay and change collateral",
+        "fields": [
+          { "path": "approve", "label": "Access", "format": "enum", "params": { "$ref": "$.metadata.enums.access" } },
+          {
+            "path": "positionManager",
+            "label": "Position manager",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] }
+          }
+        ]
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Batch Aave V4 actions",
+        "interpolatedIntent": "Run every action below in one transaction; if one action fails, the whole transaction reverts",
+        "fields": [{ "path": "data.[]", "label": "Action", "format": "calldata", "params": { "calleePath": "@.to" } }]
+      }
+    }
+  }
+}

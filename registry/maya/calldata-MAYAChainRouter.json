@@ -1,0 +1,25 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "contract": { "deployments": [{ "chainId": 1, "address": "0xe3985E6b61b814F7Cdb188766562ba71b446B46d" }] } },
+  "metadata": { "owner": "Maya Protocol", "contractName": "MAYAChain Router", "info": { "url": "https://www.mayaprotocol.com" } },
+  "display": {
+    "formats": {
+      "depositWithExpiry(address vault,address asset,uint256 amount,string memo,uint256 expiration)": {
+        "intent": "Deposit to Maya Protocol",
+        "fields": [
+          { "path": "@.value", "label": "ETH Sent", "format": "amount" },
+          {
+            "path": "amount",
+            "label": "Amount (if token)",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "asset", "nativeCurrencyAddress": ["0x0000000000000000000000000000000000000000"] }
+          },
+          { "path": "vault", "label": "Vault", "format": "addressName", "params": { "types": ["eoa"] } },
+          { "path": "memo", "label": "MAYAChain Memo", "format": "raw" },
+          { "path": "expiration", "label": "Expires", "format": "date", "params": { "encoding": "timestamp" } },
+          { "path": "asset", "label": "Asset", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

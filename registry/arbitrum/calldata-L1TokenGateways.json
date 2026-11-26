@@ -1,0 +1,39 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Arbitrum One L1 token gateways",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC" },
+        { "chainId": 1, "address": "0xcEe284F754E854890e311e3280b767F80797180d" },
+        { "chainId": 1, "address": "0xd92023E9d9911199a6711321D1277285e6d4e2db" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Arbitrum", "contractName": "Arbitrum One L1 token gateways", "info": { "url": "https://arbitrum.io/" } },
+  "display": {
+    "formats": {
+      "finalizeInboundTransfer(address _token,address _from,address _to,uint256 _amount,bytes _data)": {
+        "intent": "Release bridged token",
+        "interpolatedIntent": "Release {_amount} from the Arbitrum bridge to {_to}",
+        "fields": [
+          { "path": "_amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "_token" } },
+          {
+            "path": "_to",
+            "label": "Recipient",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "_from",
+            "label": "Sender on Arbitrum",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "_token", "label": "Token", "visible": "never" },
+          { "path": "_data", "label": "Exit data", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

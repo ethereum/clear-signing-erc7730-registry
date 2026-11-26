@@ -1,0 +1,31 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": { "$id": "swEXIT", "contract": { "deployments": [{ "chainId": 1, "address": "0x48C11b86807627AF70a34662D4865cF854251663" }] } },
+  "metadata": {
+    "owner": "Swell",
+    "contractName": "swEXIT",
+    "info": { "url": "https://www.swellnetwork.io/" },
+    "constants": { "swETH": "0xf951E335afb289353dc249e82926178EaC7DEd78" }
+  },
+  "display": {
+    "formats": {
+      "createWithdrawRequest(uint256 amount)": {
+        "intent": "Request to unstake swETH",
+        "interpolatedIntent": "Unstake {amount} and get a swEXIT withdrawal NFT",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount to unstake",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.swETH" }
+          }
+        ]
+      },
+      "finalizeWithdrawal(uint256 tokenId)": {
+        "intent": "Claim unstaked ETH",
+        "interpolatedIntent": "Claim the ETH of withdrawal NFT {tokenId}",
+        "fields": [{ "path": "tokenId", "label": "Withdrawal NFT", "format": "nftName", "params": { "collectionPath": "@.to" } }]
+      }
+    }
+  }
+}

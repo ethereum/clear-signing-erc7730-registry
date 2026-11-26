@@ -1,0 +1,42 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Arbitrum One Outbox",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x0B9857ae2D4A3DBe74ffE1d7DF045bb7F96E4840" }] }
+  },
+  "metadata": { "owner": "Arbitrum", "contractName": "Arbitrum One Outbox", "info": { "url": "https://arbitrum.io/" } },
+  "display": {
+    "formats": {
+      "executeTransaction(bytes32[] proof,uint256 index,address l2Sender,address to,uint256 l2Block,uint256 l1Block,uint256 l2Timestamp,uint256 value,bytes data)": {
+        "intent": "Claim withdrawal",
+        "fields": [
+          { "path": "value", "label": "ETH amount", "format": "amount", "visible": { "ifNotIn": [0] } },
+          {
+            "path": "to",
+            "label": "Destination",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "l2Sender",
+            "label": "Sender on Arbitrum",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "data",
+            "label": "Call on destination",
+            "format": "calldata",
+            "params": { "calleePath": "to", "amountPath": "value", "spender": "0x8315177aB297bA92A06054cE80a67Ed4DBd7ed3a" },
+            "visible": { "ifNotIn": ["0x"] }
+          },
+          { "path": "proof", "label": "Proof", "visible": "never" },
+          { "path": "index", "label": "Message index", "visible": "never" },
+          { "path": "l2Block", "label": "Arbitrum block", "visible": "never" },
+          { "path": "l1Block", "label": "Ethereum block", "visible": "never" },
+          { "path": "l2Timestamp", "label": "Arbitrum timestamp", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
