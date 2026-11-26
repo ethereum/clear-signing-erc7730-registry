@@ -6,7 +6,8 @@
       "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": { "symbol": "WBTC", "decimals": 8, "name": "Wrapped Bitcoin" },
       "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" },
       "0xdac17f958d2ee523a2206206994597c13d831ec7": { "symbol": "USDT", "decimals": 6, "name": "Tether USD" }
-    }
+    },
+    "nftCollectionNames": { "0x7b4128f23f9d440368340a8fbe1fde1f99e0153f": "Nami CL Positions" }
   },
   "tests": [
     {
@@ -266,7 +267,11 @@
         "intent": "Set operator for all NFTs",
         "interpolatedIntent": "Grant 0x0100000002935Dce071f4AFA607b961575672b4C access to withdraw and transfer all your position NFTs",
         "owner": "Nami",
-        "fields": [{ "label": "Access", "value": "Grant" }, { "label": "Operator", "value": "0x0100000002935Dce071f4AFA607b961575672b4C" }]
+        "fields": [
+          { "label": "Collection", "value": "0x7b4128F23F9d440368340A8FBE1fDE1f99E0153f" },
+          { "label": "Operator", "value": "0x0100000002935Dce071f4AFA607b961575672b4C" },
+          { "label": "Access", "value": "Grant" }
+        ]
       }
     },
     {
@@ -294,7 +299,11 @@
         "intent": "Set operator for all NFTs",
         "interpolatedIntent": "Revoke 0x0100000002935Dce071f4AFA607b961575672b4C access to withdraw and transfer all your position NFTs",
         "owner": "Nami",
-        "fields": [{ "label": "Access", "value": "Revoke" }, { "label": "Operator", "value": "0x0100000002935Dce071f4AFA607b961575672b4C" }]
+        "fields": [
+          { "label": "Collection", "value": "0x7b4128F23F9d440368340A8FBE1fDE1f99E0153f" },
+          { "label": "Operator", "value": "0x0100000002935Dce071f4AFA607b961575672b4C" },
+          { "label": "Access", "value": "Revoke" }
+        ]
       }
     },
     {
@@ -537,6 +546,44 @@
           { "label": "Farming Access", "value": "Revoke" },
           { "label": "Farming Center", "value": "0xA487555d14B5281bcCD2197adBDd1d3B86F04781" },
           { "label": "ETH Sent (whole tx)", "value": "0 ETH" }
+        ]
+      }
+    },
+    {
+      "description": "transferFrom, NFT 586 (encoded; synthetic) - chain 1",
+      "rawTx": "0x02f88501808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b86423b872dd000000000000000000000000ab5801a7d398351b8be11c439e05c5b3259aec9b000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045000000000000000000000000000000000000000000000000000000000000024ac0",
+      "expected": {
+        "intent": "Send NFT",
+        "owner": "Nami",
+        "fields": [
+          { "label": "From", "value": "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B" },
+          { "label": "To", "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" },
+          { "label": "NFT", "value": "Nami CL Positions #586" }
+        ]
+      }
+    },
+    {
+      "description": "safeTransferFrom, NFT 586 (encoded; synthetic) - chain 1",
+      "rawTx": "0x02f88501808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b86442842e0e000000000000000000000000ab5801a7d398351b8be11c439e05c5b3259aec9b000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045000000000000000000000000000000000000000000000000000000000000024ac0",
+      "expected": {
+        "intent": "Send NFT",
+        "owner": "Nami",
+        "fields": [
+          { "label": "From", "value": "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B" },
+          { "label": "To", "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" },
+          { "label": "NFT", "value": "Nami CL Positions #586" }
+        ]
+      }
+    },
+    {
+      "description": "approve, NFT 586 (encoded; synthetic) - chain 1",
+      "rawTx": "0x02f86501808080830f4240947b4128f23f9d440368340a8fbe1fde1f99e0153f80b844095ea7b30000000000000000000000001111111254eeb25477b68fb85ed929f73a960582000000000000000000000000000000000000000000000000000000000000024ac0",
+      "expected": {
+        "intent": "Approve operator for NFT",
+        "owner": "Nami",
+        "fields": [
+          { "label": "Operator", "value": "0x1111111254EEB25477B68fb85Ed929f73A960582" },
+          { "label": "NFT", "value": "Nami CL Positions #586" }
         ]
       }
     }
