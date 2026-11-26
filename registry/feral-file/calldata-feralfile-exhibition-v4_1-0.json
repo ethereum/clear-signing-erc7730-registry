@@ -96,9 +96,14 @@
       "mintArtworks((uint256 seriesId,uint256 tokenId,address owner)[] data)": {
         "intent": "Mint artworks",
         "fields": [
-          { "path": "data.[].seriesId", "label": "Series ID", "format": "raw" },
-          { "path": "data.[].tokenId", "label": "Artwork", "format": "nftName", "params": { "collectionPath": "@.to" } },
-          { "path": "data.[].owner", "label": "Owner", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
+          {
+            "path": "data.[]",
+            "fields": [
+              { "path": "seriesId", "label": "Series ID", "format": "raw" },
+              { "path": "tokenId", "label": "Artwork", "format": "nftName", "params": { "collectionPath": "@.to" } },
+              { "path": "owner", "label": "Owner", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
+            ]
+          }
         ]
       },
       "setVault(address vault_)": {

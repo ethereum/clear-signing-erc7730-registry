@@ -68,12 +68,12 @@
           { "path": "saleData_.expiryTime", "label": "Offer expires", "format": "date", "params": { "encoding": "timestamp" } },
           { "path": "saleData_.payByVaultContract", "label": "Pay via vault", "format": "raw" },
           {
-            "path": "saleData_.revenueShares.[].recipient",
-            "label": "Revenue recipient",
-            "format": "addressName",
-            "params": { "types": ["eoa", "contract"] }
-          },
-          { "path": "saleData_.revenueShares.[].bps", "label": "Revenue share (basis points)", "format": "raw" }
+            "path": "saleData_.revenueShares.[]",
+            "fields": [
+              { "path": "recipient", "label": "Revenue recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+              { "path": "bps", "label": "Revenue share (basis points)", "format": "raw" }
+            ]
+          }
         ]
       },
       "startSale()": { "intent": "Start artwork sale", "fields": [] },
@@ -90,9 +90,14 @@
       "mintArtworks((uint256 seriesId,uint256 tokenId,address owner)[] data)": {
         "intent": "Mint artworks",
         "fields": [
-          { "path": "data.[].seriesId", "label": "Series ID", "format": "raw" },
-          { "path": "data.[].tokenId", "label": "Artwork", "format": "nftName", "params": { "collectionPath": "@.to" } },
-          { "path": "data.[].owner", "label": "Owner", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
+          {
+            "path": "data.[]",
+            "fields": [
+              { "path": "seriesId", "label": "Series ID", "format": "raw" },
+              { "path": "tokenId", "label": "Artwork", "format": "nftName", "params": { "collectionPath": "@.to" } },
+              { "path": "owner", "label": "Owner", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
+            ]
+          }
         ]
       },
       "setVault(address vault_)": {

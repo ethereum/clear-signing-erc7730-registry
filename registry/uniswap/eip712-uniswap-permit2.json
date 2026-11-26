@@ -25,12 +25,17 @@
         "fields": [
           { "path": "spender", "label": "Spender", "format": "raw", "visible": "always" },
           {
-            "path": "details.[].amount",
-            "label": "Amount allowance",
-            "format": "tokenAmount",
-            "params": { "tokenPath": "details.[].token", "threshold": "0xffffffffffffffffffffffffffffffffffffffff", "message": "Unlimited" }
+            "path": "details.[]",
+            "fields": [
+              {
+                "path": "amount",
+                "label": "Amount allowance",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "token", "threshold": "0xffffffffffffffffffffffffffffffffffffffff", "message": "Unlimited" }
+              },
+              { "path": "expiration", "label": "Approval expires", "format": "date", "params": { "encoding": "timestamp" } }
+            ]
           },
-          { "path": "details.[].expiration", "label": "Approval expires", "format": "date", "params": { "encoding": "timestamp" } },
           { "label": "Sig Deadline", "path": "sigDeadline", "visible": "never" }
         ]
       },
