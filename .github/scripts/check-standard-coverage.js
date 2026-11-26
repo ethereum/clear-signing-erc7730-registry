@@ -21,7 +21,15 @@
  *   warning. The reviewer decides with docs/REVIEWING.md.
  *
  * A deployment without a verified ABI on Sourcify requires no standard: the
- * check never fails without a fact. EIP-712 descriptors are not checked.
+ * check never fails without a fact.
+ *
+ * An EIP-712 descriptor is checked through its verifying contracts
+ * (context.eip712.deployments):
+ *
+ * - ERC-2612 and DAI permit: as above. An error if not.
+ * - ERC-4626 and ERC-7540: a calldata-*.json descriptor of the registry lists
+ *   the deployment. An error if not. The check of that descriptor finds its
+ *   gaps. A plain ERC-20 or ERC-721 token needs no calldata descriptor.
  *
  * Usage: node check-standard-coverage.js <descriptor.json|directory>...
  *
@@ -252,6 +260,25 @@ function permitIndex() {
   return index;
 }
 
+/** "chainId:address" -> the calldata descriptors that list the deployment. */
+function calldataIndex() {
+  const index = new Map();
+  for (const file of collect(path.join(repoRoot, 'registry'), [])) {
+    let doc;
+    try {
+      doc = resolveDescriptor(file);
+    } catch {
+      continue; // The check of that file reports it.
+    }
+    for (const d of doc.context?.contract?.deployments ?? []) {
+      const key = `${d.chainId}:${String(d.address).toLowerCase()}`;
+      if (!index.has(key)) index.set(key, []);
+      index.get(key).push(rel(file));
+    }
+  }
+  return index;
+}
+
 // --- Check -------------------------------------------------------------------
 
 function collect(target, out, pattern = /^calldata-.*\.json$/) {
@@ -319,37 +346,11 @@ function excepted(exceptions, descriptor, item) {
 }
 
 /**
- * The findings of one descriptor: { errors, warnings, notices }, or null when
- * it is not a calldata descriptor with deployments.
+ * The standards of each deployment: { found, checked }. "found" maps a
+ * standard id to the deployments that implement it.
  */
-async function checkDescriptor(abs, ctx) {
-  const descriptor = rel(abs);
-  const errors = [];
-  const warnings = [];
-  const notices = [];
-
-  let merged;
-  try {
-    merged = resolveDescriptor(abs);
-  } catch (error) {
-    return { errors: [`Cannot read the descriptor: ${error.message}`], warnings, notices };
-  }
-  const deployments = merged.context?.contract?.deployments ?? [];
-  if (deployments.length === 0) return null;
-
-  const formats = formatsOf(merged);
-  const selectors = selectorMap(formats);
-  const closure = includeClosure(abs);
-
-  // Rule 2: only standard token functions. Vaults have other functions.
-  const rule2 = !ctx.changed || (ctx.changed.has(descriptor) && !sameAsBase(descriptor));
-  if (rule2 && selectors.size > 0 && [...selectors.keys()].every((s) => TOKEN_SELECTORS.has(s))) {
-    warnings.push(
-      'This descriptor has only standard token functions. The registry does not take descriptors for plain ERC-20 or ERC-721 tokens: wallets build them on the fly from their trusted token list (sourcifyeth/clear-signing#16). Keep it only if it changes the display of a standard function for a clear reason. See "Pull Request content requirements" in README.md.',
-    );
-  }
-
-  const found = new Map(); // standard id -> deployments that implement it
+async function detectStandards(deployments, notices) {
+  const found = new Map();
   let checked = 0;
   for (const { chainId, address } of deployments) {
     // The values come from the pull request: they go into a URL and into annotations.
@@ -377,6 +378,90 @@ async function checkDescriptor(abs, ctx) {
       }
     }
   }
+  return { found, checked };
+}
+
+/** An error for each permit that no EIP-712 descriptor of the registry shows. */
+function permitErrors(found, ctx, descriptor) {
+  const errors = [];
+  for (const p of PERMITS) {
+    const where = found.get(p.id);
+    if (!where) continue;
+    const template = ctx.templates[p.id];
+    const types = template.ownKeys.map(encodeTypeKey);
+    const uncovered = where.filter((w) => {
+      const have = ctx.permits.get(w.toLowerCase());
+      return !have || !types.every((t) => have.has(t));
+    });
+    if (uncovered.length > 0 && !excepted(ctx.exceptions, descriptor, 'Permit')) {
+      errors.push(
+        `The contract implements ${p.id} (${uncovered.join(', ')}), but no eip712-*.json descriptor of the registry lists this deployment with the ${template.ownKeys.join(', ')} format. Add an eip712-*.json file in your entity folder that includes ${template.file} and sets the domain of the token. ${HELP}`,
+      );
+    }
+  }
+  return errors;
+}
+
+/** The findings of an EIP-712 descriptor, from its verifying contracts. */
+async function checkEip712Descriptor(descriptor, deployments, ctx) {
+  const errors = [];
+  const notices = [];
+  const { found, checked } = await detectStandards(deployments, notices);
+  errors.push(...permitErrors(found, ctx, descriptor));
+
+  // A plain token needs no calldata descriptor (Rule 2). A vault does.
+  const vaults = new Map(); // deployment -> standard ids
+  for (const s of STANDARDS.filter((x) => x.id !== 'ERC-20' && x.id !== 'ERC-721')) {
+    for (const w of found.get(s.id) ?? []) vaults.set(w, [...(vaults.get(w) ?? []), s.id]);
+  }
+  ctx.calldata ??= calldataIndex();
+  for (const [w, ids] of vaults) {
+    if (ctx.calldata.has(w.toLowerCase()) || excepted(ctx.exceptions, descriptor, 'Calldata')) continue;
+    const one = new Map(ids.map((id) => [id, [w]]));
+    errors.push(
+      `The verifying contract implements ${ids.join(' and ')} (${w}), but no calldata-*.json descriptor of the registry lists this deployment. Add a calldata-*.json file in your entity folder that includes ${vaultFile(one, ctx.templates)}. ${HELP}`,
+    );
+  }
+
+  if (checked === 0) notices.push('No deployment has a verified ABI on Sourcify, so no standard was checked.');
+  return { errors, warnings: [], notices };
+}
+
+/**
+ * The findings of one descriptor: { errors, warnings, notices }, or null when
+ * it has no deployments.
+ */
+async function checkDescriptor(abs, ctx) {
+  const descriptor = rel(abs);
+  const errors = [];
+  const warnings = [];
+  const notices = [];
+
+  let merged;
+  try {
+    merged = resolveDescriptor(abs);
+  } catch (error) {
+    return { errors: [`Cannot read the descriptor: ${error.message}`], warnings, notices };
+  }
+  const deployments = merged.context?.contract?.deployments ?? [];
+  if (deployments.length === 0) {
+    const verifying = merged.context?.eip712?.deployments ?? [];
+    return verifying.length === 0 ? null : checkEip712Descriptor(descriptor, verifying, ctx);
+  }
+
+  const formats = formatsOf(merged);
+  const selectors = selectorMap(formats);
+  const closure = includeClosure(abs);
+
+  // Rule 2: only standard token functions. Vaults have other functions.
+  const rule2 = !ctx.changed || (ctx.changed.has(descriptor) && !sameAsBase(descriptor));
+  if (rule2 && selectors.size > 0 && [...selectors.keys()].every((s) => TOKEN_SELECTORS.has(s))) {
+    warnings.push(
+      'This descriptor has only standard token functions. The registry does not take descriptors for plain ERC-20 or ERC-721 tokens: wallets build them on the fly from their trusted token list (sourcifyeth/clear-signing#16). Keep it only if it changes the display of a standard function for a clear reason. See "Pull Request content requirements" in README.md.',
+    );
+  }
+
+  const { found, checked } = await detectStandards(deployments, notices);
 
   for (const s of STANDARDS) {
     const where = found.get(s.id);
@@ -429,21 +514,7 @@ async function checkDescriptor(abs, ctx) {
     }
   }
 
-  for (const p of PERMITS) {
-    const where = found.get(p.id);
-    if (!where) continue;
-    const template = ctx.templates[p.id];
-    const types = template.ownKeys.map(encodeTypeKey);
-    const uncovered = where.filter((w) => {
-      const have = ctx.permits.get(w.toLowerCase());
-      return !have || !types.every((t) => have.has(t));
-    });
-    if (uncovered.length > 0 && !excepted(ctx.exceptions, descriptor, 'Permit')) {
-      errors.push(
-        `The contract implements ${p.id} (${uncovered.join(', ')}), but no eip712-*.json descriptor of the registry lists this deployment with the ${template.ownKeys.join(', ')} format. Add an eip712-*.json file in your entity folder that includes ${template.file} and sets the domain of the token. ${HELP}`,
-      );
-    }
-  }
+  errors.push(...permitErrors(found, ctx, descriptor));
 
   if (checked === 0) notices.push('No deployment has a verified ABI on Sourcify, so no standard was checked.');
   return { errors, warnings, notices };
@@ -470,8 +541,8 @@ async function main() {
     changed: changedList.length > 0 ? new Set(changedList.map((f) => f.replace(/^\.\//, ''))) : null,
   };
 
-  const descriptors = [...new Set(targets.flatMap((t) => collect(path.resolve(t), [])))]
-    .filter((f) => /^calldata-/.test(path.basename(f)))
+  const descriptors = [...new Set(targets.flatMap((t) => collect(path.resolve(t), [], /^(calldata|eip712)-.*\.json$/)))]
+    .filter((f) => /^(calldata|eip712)-/.test(path.basename(f)))
     .sort();
 
   let failed = 0;
