@@ -33,7 +33,6 @@ CI enforces the [standard functions requirement](../README.md#pull-request-conte
 
 - **Plain token descriptors.** The check warns when a descriptor has only standard token functions. Ask the author to remove the descriptor, unless it adds a function that is not in the `ercs/` template or changes the display of a standard function for a clear reason. A clear reason is a behaviour that the template shows wrong: a fee on transfer, a rebasing amount, a `transfer` with another meaning. Other labels, another intent or a token constant equal to `@.to` are not clear reasons.
 - **Own formats for a standard function.** The check warns when a descriptor writes the formats of a standard itself, without the `ercs/` include. Accept it only for a clear reason, as above. Otherwise ask for the include.
-- **Exceptions.** A change to [`.github/standard-coverage-exceptions.json`](../.github/standard-coverage-exceptions.json) needs a reason that a reviewer can verify, for example "the contract reverts on `transfer`".
 
 ### 5. One entity per PR
 

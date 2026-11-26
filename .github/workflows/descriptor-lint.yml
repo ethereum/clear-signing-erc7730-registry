@@ -175,8 +175,8 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          # The same merge ref as in validate_descriptors. The scripts and the
-          # exceptions file stay those of the base.
+          # The same merge ref as in validate_descriptors. The scripts stay those of
+          # the base.
           if git fetch --no-tags --depth=1 origin "refs/pull/${PR_NUMBER}/merge" \
              && git cat-file -p FETCH_HEAD | grep -q "^parent ${HEAD_SHA}$"; then
             echo "Using the merge of ${HEAD_SHA} into the base"
