@@ -1,0 +1,58 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Relay ApprovalProxy",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x5567954cd026cebfe486062cb75848e0f1c12e58" },
+        { "chainId": 10, "address": "0x5567954cd026cebfe486062cb75848e0f1c12e58" },
+        { "chainId": 56, "address": "0x5567954cd026cebfe486062cb75848e0f1c12e58" },
+        { "chainId": 100, "address": "0x5567954cd026cebfe486062cb75848e0f1c12e58" },
+        { "chainId": 137, "address": "0x5567954cd026cebfe486062cb75848e0f1c12e58" },
+        { "chainId": 8453, "address": "0x5567954cd026cebfe486062cb75848e0f1c12e58" },
+        { "chainId": 42161, "address": "0x5567954cd026cebfe486062cb75848e0f1c12e58" },
+        { "chainId": 42220, "address": "0x5567954cd026cebfe486062cb75848e0f1c12e58" },
+        { "chainId": 43114, "address": "0x5567954cd026cebfe486062cb75848e0f1c12e58" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Relay", "contractName": "RelayApprovalProxy", "info": { "url": "https://relay.link" } },
+  "display": {
+    "formats": {
+      "transferAndMulticall(address[] tokens, uint256[] amounts, (address target, bool allowFailure, uint256 value, bytes callData)[] calls, address refundTo, address nftRecipient, bytes metadata)": {
+        "intent": "Swap or bridge",
+        "fields": [
+          {
+            "path": "amounts.[]",
+            "label": "Send",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokens.[]" },
+            "visible": "always"
+          },
+          { "path": "@.value", "label": "ETH sent", "format": "amount", "visible": { "ifNotIn": ["0"] } },
+          {
+            "path": "calls.[].callData",
+            "label": "Call",
+            "format": "calldata",
+            "params": { "calleePath": "calls.[].target", "amountPath": "calls.[].value" },
+            "visible": "always"
+          },
+          {
+            "path": "refundTo",
+            "label": "Leftover ETH to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "nftRecipient",
+            "label": "NFTs to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000"] }
+          }
+        ]
+      }
+    }
+  }
+}
