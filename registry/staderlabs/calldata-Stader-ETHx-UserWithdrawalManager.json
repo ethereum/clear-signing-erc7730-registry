@@ -1,0 +1,38 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Stader ETHx UserWithdrawalManager",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x9f0491b32dbce587c50c4c43ab303b06478193a7" }] }
+  },
+  "metadata": {
+    "owner": "Stader Labs",
+    "info": { "url": "https://staderlabs.com/" },
+    "contractName": "Stader ETHx Withdrawal Manager",
+    "constants": { "ETHx": "0xa35b1b31ce002fbf2058d22f30f95d405200a15b" }
+  },
+  "display": {
+    "formats": {
+      "requestWithdraw(uint256 _ethXAmount, address _owner, string _referralId)": {
+        "intent": "Unstake ETHx",
+        "fields": [
+          {
+            "path": "#._ethXAmount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.ETHx" },
+            "visible": "always"
+          },
+          {
+            "path": "#._owner",
+            "label": "Receiver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#._referralId", "label": "Referral id", "visible": "never" }
+        ]
+      },
+      "claim(uint256 _requestId)": { "intent": "Claim ETH", "fields": [{ "path": "#._requestId", "label": "Request id", "format": "raw", "visible": "always" }] }
+    }
+  }
+}

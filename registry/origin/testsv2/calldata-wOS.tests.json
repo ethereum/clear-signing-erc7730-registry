@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-wOS.json",
+  "dataProvider": {
+    "tokens": {
+      "0x9f0df7799f6fdad409300080cff680f5a23df4b1": { "symbol": "wOS", "decimals": 18, "name": "Wrapped Origin Sonic" },
+      "0xb1e25689d55734fd3fffc939c4c3eb52dff8a794": { "symbol": "OS", "decimals": 18, "name": "Origin Sonic" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Wrap on chain 146 #1",
+      "rawTx": "0x02f872819280843b9aca008504a817c800830493e0949f0df7799f6fdad409300080cff680f5a23df4b180b8446e553f650000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000001c0800101",
+      "expected": {
+        "intent": "Wrap",
+        "owner": "Origin Protocol",
+        "fields": [
+          { "label": "Deposit", "value": "100 OS" },
+          { "label": "Receive", "value": "wOS" },
+          { "label": "Send shares to", "value": "0x0000000000000000000000000000000000000001" }
+        ]
+      }
+    },
+    {
+      "description": "Unwrap (synthetic) on chain 146 #2",
+      "rawTx": "0x02f88f819280843b9aca008504a817c8008307a120949f0df7799f6fdad409300080cff680f5a23df4b180b864ba08765200000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Unwrap",
+        "owner": "Origin Protocol",
+        "fields": [
+          { "label": "Redeem", "value": "1500 wOS" },
+          { "label": "To", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" },
+          { "label": "Owner", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    }
+  ]
+}

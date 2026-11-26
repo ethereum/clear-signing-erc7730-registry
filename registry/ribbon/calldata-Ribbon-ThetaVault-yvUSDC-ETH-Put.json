@@ -1,0 +1,72 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Ribbon yvUSDC ETH Put Vault",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xcc323557c71c0d1d20a1861dc69c06c5f3cc9624" }] }
+  },
+  "metadata": {
+    "owner": "Ribbon Finance",
+    "info": { "url": "https://ribbon.finance" },
+    "contractName": "RibbonThetaYearnVault",
+    "constants": { "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" }
+  },
+  "display": {
+    "definitions": {
+      "shares": { "label": "Shares", "format": "unit", "params": { "base": "shares", "decimals": 6 } },
+      "assetAmount": { "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.asset" } },
+      "creditor": {
+        "label": "Beneficiary",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      }
+    },
+    "formats": {
+      "deposit(uint256 amount)": {
+        "intent": "Deposit",
+        "fields": [
+          { "value": "Ribbon yvUSDC ETH Put Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.amount", "$ref": "$.display.definitions.assetAmount" }
+        ]
+      },
+      "depositFor(uint256 amount, address creditor)": {
+        "intent": "Deposit",
+        "fields": [
+          { "value": "Ribbon yvUSDC ETH Put Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.amount", "$ref": "$.display.definitions.assetAmount" },
+          { "path": "#.creditor", "$ref": "$.display.definitions.creditor" }
+        ]
+      },
+      "withdrawInstantly(uint256 amount)": {
+        "intent": "Instant Withdraw",
+        "fields": [
+          { "value": "Ribbon yvUSDC ETH Put Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.amount", "$ref": "$.display.definitions.assetAmount" }
+        ]
+      },
+      "initiateWithdraw(uint256 numShares)": {
+        "intent": "Initiate Withdraw",
+        "fields": [
+          { "value": "Ribbon yvUSDC ETH Put Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.numShares", "$ref": "$.display.definitions.shares" }
+        ]
+      },
+      "completeWithdraw()": { "intent": "Complete Withdraw", "fields": [{ "value": "Ribbon yvUSDC ETH Put Vault", "label": "Vault", "format": "raw" }] },
+      "redeem(uint256 numShares)": {
+        "intent": "Redeem shares",
+        "fields": [
+          { "value": "Ribbon yvUSDC ETH Put Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.numShares", "$ref": "$.display.definitions.shares" }
+        ]
+      },
+      "maxRedeem()": { "intent": "Redeem all shares", "fields": [{ "value": "Ribbon yvUSDC ETH Put Vault", "label": "Vault", "format": "raw" }] },
+      "stake(uint256 numShares)": {
+        "intent": "Stake shares",
+        "fields": [
+          { "value": "Ribbon yvUSDC ETH Put Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.numShares", "$ref": "$.display.definitions.shares" }
+        ]
+      },
+      "pausePosition()": { "intent": "Pause position", "fields": [{ "value": "Ribbon yvUSDC ETH Put Vault", "label": "Vault", "format": "raw" }] }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-singularv-svUSDT.json",
+  "dataProvider": {
+    "tokens": {
+      "0xbdd4859050468fbc11dec07113a6e633608a1372": { "symbol": "svUSDT", "decimals": 18, "name": "SingularV USDT" },
+      "0xdac17f958d2ee523a2206206994597c13d831ec7": { "symbol": "USDT", "decimals": 6, "name": "Tether USD" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit (synthetic) on chain 1 #1",
+      "rawTx": "0x02f86e0180843b9aca008504a817c8008307a12094bdd4859050468fbc11dec07113a6e633608a137280b8446e553f650000000000000000000000000000000000000000000000000000000059682f000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "SingularV",
+        "fields": [
+          { "label": "Deposit asset", "value": "1500 USDT" },
+          { "label": "Share ticker", "value": "svUSDT" },
+          { "label": "Send shares to", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    },
+    {
+      "description": "Mint (synthetic) on chain 1 #2",
+      "rawTx": "0x02f86e0180843b9aca008504a817c8008307a12094bdd4859050468fbc11dec07113a6e633608a137280b84494bf804d00000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Mint",
+        "owner": "SingularV",
+        "fields": [
+          { "label": "Deposit asset", "value": "USDT" },
+          { "label": "Minted shares", "value": "1500 svUSDT" },
+          { "label": "Mint shares to", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw (synthetic) on chain 1 #3",
+      "rawTx": "0x02f88e0180843b9aca008504a817c8008307a12094bdd4859050468fbc11dec07113a6e633608a137280b864b460af940000000000000000000000000000000000000000000000000000000059682f000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "SingularV",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "1500 USDT" },
+          { "label": "To", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" },
+          { "label": "Owner", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    },
+    {
+      "description": "Redeem (synthetic) on chain 1 #4",
+      "rawTx": "0x02f88e0180843b9aca008504a817c8008307a12094bdd4859050468fbc11dec07113a6e633608a137280b864ba08765200000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "SingularV",
+        "fields": [
+          { "label": "Shares to redeem", "value": "1500 svUSDT" },
+          { "label": "To", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" },
+          { "label": "Owner", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    }
+  ]
+}

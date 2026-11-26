@@ -1,0 +1,105 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "$comment": "payloadType must be 1: custom payloads run arbitrary code on the destination chain, which cannot be displayed. Avalanche not listed: contract unverified and bytecode differs.",
+  "includes": "common-Mayan.json",
+  "context": {
+    "$id": "MayanCircle",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x875d6d37ec55c8cf220b9e5080717549d8aa8eca" },
+        { "chainId": 10, "address": "0x875d6d37ec55c8cf220b9e5080717549d8aa8eca" },
+        { "chainId": 137, "address": "0x875d6d37ec55c8cf220b9e5080717549d8aa8eca" },
+        { "chainId": 8453, "address": "0x875d6d37ec55c8cf220b9e5080717549d8aa8eca" },
+        { "chainId": 42161, "address": "0x875d6d37ec55c8cf220b9e5080717549d8aa8eca" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Mayan Finance", "info": { "url": "https://mayan.finance" }, "contractName": "Mayan MCTP" },
+  "display": {
+    "formats": {
+      "createOrder((address tokenIn, uint256 amountIn, uint64 gasDrop, bytes32 destAddr, uint16 destChain, bytes32 tokenOut, uint64 minAmountOut, uint64 deadline, uint64 redeemFee, bytes32 referrerAddr, uint8 referrerBps) params)": {
+        "$id": "createOrder",
+        "intent": "Bridge and swap via Mayan MCTP",
+        "fields": [
+          {
+            "path": "params.amountIn",
+            "label": "Amount sent",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.tokenIn", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
+            "visible": "always"
+          },
+          { "path": "params.destChain", "$ref": "$.display.definitions.wormholeDestChain", "visible": "always" },
+          { "path": "params.destAddr", "$ref": "$.display.definitions.destAddr", "visible": "always" },
+          { "path": "params.tokenOut", "$ref": "$.display.definitions.tokenOut", "visible": "always" },
+          { "path": "params.minAmountOut", "$ref": "$.display.definitions.minAmountOut", "visible": "always" },
+          { "path": "params.deadline", "$ref": "$.display.definitions.deadline", "visible": "always" },
+          {
+            "path": "params.redeemFee",
+            "label": "Relayer fee",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "params.tokenIn", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
+            "visible": "always"
+          },
+          { "path": "params.gasDrop", "$ref": "$.display.definitions.gasDrop", "visible": { "ifNotIn": [0] } },
+          { "path": "params.referrerBps", "$ref": "$.display.definitions.referrerBps", "visible": "always" },
+          {
+            "path": "params.referrerAddr",
+            "label": "Referrer",
+            "format": "raw",
+            "visible": { "ifNotIn": ["0x0000000000000000000000000000000000000000000000000000000000000000"] }
+          },
+          { "path": "@.value", "label": "Wormhole fee", "format": "amount", "visible": "always" }
+        ]
+      },
+      "bridgeWithFee(address tokenIn, uint256 amountIn, uint64 redeemFee, uint64 gasDrop, bytes32 destAddr, uint32 destDomain, uint8 payloadType, bytes customPayload)": {
+        "$id": "bridgeWithFee",
+        "intent": "Bridge via Mayan MCTP",
+        "fields": [
+          {
+            "path": "amountIn",
+            "label": "Amount sent",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenIn", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
+            "visible": "always"
+          },
+          { "path": "destDomain", "$ref": "$.display.definitions.cctpDestDomain", "visible": "always" },
+          { "path": "destAddr", "$ref": "$.display.definitions.destAddr", "visible": "always" },
+          {
+            "path": "redeemFee",
+            "label": "Relayer fee",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenIn", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
+            "visible": "always"
+          },
+          { "path": "gasDrop", "$ref": "$.display.definitions.gasDrop", "visible": { "ifNotIn": [0] } },
+          { "path": "@.value", "label": "Wormhole fee", "format": "amount", "visible": "always" },
+          { "path": "payloadType", "label": "Payload type", "format": "raw", "visible": { "mustMatch": [1] } },
+          { "path": "customPayload", "label": "Custom payload", "visible": "never" }
+        ]
+      },
+      "bridgeWithLockedFee(address tokenIn, uint256 amountIn, uint64 gasDrop, uint256 redeemFee, uint32 destDomain, bytes32 destAddr)": {
+        "$id": "bridgeWithLockedFee",
+        "intent": "Bridge via Mayan MCTP",
+        "fields": [
+          {
+            "path": "amountIn",
+            "label": "Amount sent",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenIn", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
+            "visible": "always"
+          },
+          { "path": "destDomain", "$ref": "$.display.definitions.cctpDestDomain", "visible": "always" },
+          { "path": "destAddr", "$ref": "$.display.definitions.destAddr", "visible": "always" },
+          {
+            "path": "redeemFee",
+            "label": "Relayer fee",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "tokenIn", "nativeCurrencyAddress": "$.metadata.constants.addressAsNull" },
+            "visible": "always"
+          },
+          { "path": "gasDrop", "$ref": "$.display.definitions.gasDrop", "visible": { "ifNotIn": [0] } }
+        ]
+      }
+    }
+  }
+}

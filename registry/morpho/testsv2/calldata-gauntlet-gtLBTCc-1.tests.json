@@ -1,0 +1,64 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-gauntlet-gtLBTCc-1.json",
+  "dataProvider": {
+    "tokens": {
+      "0x8236a87084f8b84306f72007f36f2618a5634494": { "symbol": "LBTC", "decimals": 8, "name": "Lombard Staked Bitcoin" },
+      "0xdc94785959b73f7a168452b3654e44fec6a750e4": { "symbol": "gtLBTCc", "decimals": 18, "name": "Gauntlet LBTC Core" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit (synthetic) on chain 1 #1",
+      "rawTx": "0x02f86e0180843b9aca008504a817c8008307a12094dc94785959b73f7a168452b3654e44fec6a750e480b8446e553f6500000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Gauntlet",
+        "fields": [
+          { "label": "Deposit asset", "value": "1500 LBTC" },
+          { "label": "Share ticker", "value": "gtLBTCc" },
+          { "label": "Send shares to", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    },
+    {
+      "description": "Mint (synthetic) on chain 1 #2",
+      "rawTx": "0x02f86e0180843b9aca008504a817c8008307a12094dc94785959b73f7a168452b3654e44fec6a750e480b84494bf804d00000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Gauntlet",
+        "fields": [
+          { "label": "Deposit asset", "value": "LBTC" },
+          { "label": "Minted shares", "value": "1500 gtLBTCc" },
+          { "label": "Mint shares to", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw (synthetic) on chain 1 #3",
+      "rawTx": "0x02f88e0180843b9aca008504a817c8008307a12094dc94785959b73f7a168452b3654e44fec6a750e480b864b460af9400000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Gauntlet",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "1500 LBTC" },
+          { "label": "To", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" },
+          { "label": "Owner", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    },
+    {
+      "description": "Redeem (synthetic) on chain 1 #4",
+      "rawTx": "0x02f88e0180843b9aca008504a817c8008307a12094dc94785959b73f7a168452b3654e44fec6a750e480b864ba08765200000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Gauntlet",
+        "fields": [
+          { "label": "Shares to redeem", "value": "1500 gtLBTCc" },
+          { "label": "To", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" },
+          { "label": "Owner", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    }
+  ]
+}

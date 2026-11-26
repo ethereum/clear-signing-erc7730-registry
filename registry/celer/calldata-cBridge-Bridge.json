@@ -1,0 +1,69 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "cBridge Bridge",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x5427fefa711eff984124bfbb1ab6fbf5e3da1820" },
+        { "chainId": 56, "address": "0xdd90e5e87a2081dcf0391920868ebc2ffb81a1af" },
+        { "chainId": 137, "address": "0x88dcdc47d2f83a99cf0000fdf667a468bb958a78" }
+      ]
+    }
+  },
+  "metadata": { "owner": "Celer Network", "info": { "url": "https://celer.network/" }, "contractName": "Bridge" },
+  "display": {
+    "definitions": {
+      "dstChainId": { "label": "Destination chain ID", "format": "raw" },
+      "receiver": {
+        "label": "Recipient",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      },
+      "maxSlippage": { "label": "Max slippage", "format": "unit", "params": { "base": "%", "decimals": 4 } }
+    },
+    "formats": {
+      "send(address _receiver, address _token, uint256 _amount, uint64 _dstChainId, uint64 _nonce, uint32 _maxSlippage)": {
+        "intent": "Bridge",
+        "fields": [
+          { "path": "#._amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "#._token" } },
+          { "path": "#._dstChainId", "$ref": "$.display.definitions.dstChainId" },
+          { "path": "#._receiver", "$ref": "$.display.definitions.receiver" },
+          { "path": "#._maxSlippage", "$ref": "$.display.definitions.maxSlippage" },
+          { "path": "#._token", "label": "Token", "visible": "never" },
+          { "path": "#._nonce", "label": "Nonce", "visible": "never" }
+        ]
+      },
+      "sendNative(address _receiver, uint256 _amount, uint64 _dstChainId, uint64 _nonce, uint32 _maxSlippage)": {
+        "intent": "Bridge",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount" },
+          { "path": "#._dstChainId", "$ref": "$.display.definitions.dstChainId" },
+          { "path": "#._receiver", "$ref": "$.display.definitions.receiver" },
+          { "path": "#._maxSlippage", "$ref": "$.display.definitions.maxSlippage" },
+          { "path": "#._amount", "label": "Amount", "visible": "never" },
+          { "path": "#._nonce", "label": "Nonce", "visible": "never" }
+        ]
+      },
+      "withdraw(bytes _wdmsg, bytes[] _sigs, address[] _signers, uint256[] _powers)": {
+        "intent": "Withdraw from cBridge",
+        "fields": [
+          { "path": "#._wdmsg", "label": "Withdrawal message", "visible": "never" },
+          { "path": "#._sigs.[]", "label": "Signatures", "visible": "never" },
+          { "path": "#._signers.[]", "label": "Signers", "visible": "never" },
+          { "path": "#._powers.[]", "label": "Powers", "visible": "never" }
+        ]
+      },
+      "addLiquidity(address _token, uint256 _amount)": {
+        "intent": "Add liquidity",
+        "fields": [
+          { "path": "#._amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "#._token" } },
+          { "path": "#._token", "label": "Token", "visible": "never" }
+        ]
+      },
+      "addNativeLiquidity(uint256 _amount)": {
+        "intent": "Add liquidity",
+        "fields": [{ "path": "@.value", "label": "Amount", "format": "amount" }, { "path": "#._amount", "label": "Amount", "visible": "never" }]
+      }
+    }
+  }
+}

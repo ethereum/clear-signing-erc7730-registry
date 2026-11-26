@@ -1,0 +1,46 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ENS Wrapped ETH Registrar",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x253553366Da8546fC250F225fe3d25d0C782303b" }] }
+  },
+  "metadata": { "owner": "ENS", "info": { "url": "https://ens.domains" }, "contractName": "WrappedETHRegistrarController" },
+  "display": {
+    "formats": {
+      "commit(bytes32 commitment)": { "intent": "Commit to register a name", "fields": [{ "path": "#.commitment", "label": "Commitment", "format": "raw" }] },
+      "register(string name,address owner,uint256 duration,bytes32 secret,address resolver,bytes[] data,bool reverseRecord,uint16 ownerControlledFuses)": {
+        "intent": "Register ENS name",
+        "fields": [
+          { "path": "#.name", "label": "Name (.eth)", "format": "raw" },
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.duration", "label": "Duration", "format": "duration" },
+          { "path": "@.value", "label": "Maximum payment", "format": "amount" },
+          {
+            "path": "#.resolver",
+            "label": "Resolver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.reverseRecord", "label": "Set as primary name", "format": "raw" },
+          { "path": "#.ownerControlledFuses", "label": "Owner fuses", "format": "raw" },
+          { "path": "#.secret", "label": "Secret", "visible": "never" },
+          { "path": "#.data.[]", "label": "Resolver record", "format": "calldata", "params": { "calleePath": "#.resolver" } }
+        ]
+      },
+      "renew(string name,uint256 duration)": {
+        "intent": "Renew ENS name",
+        "fields": [
+          { "path": "#.name", "label": "Name (.eth)", "format": "raw" },
+          { "path": "#.duration", "label": "Extend by", "format": "duration" },
+          { "path": "@.value", "label": "Maximum payment", "format": "amount" }
+        ]
+      },
+      "withdraw()": { "intent": "Send fees to ENS", "fields": [] }
+    }
+  }
+}

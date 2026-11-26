@@ -1,0 +1,104 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ENS Registry",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e" }] }
+  },
+  "metadata": { "owner": "ENS", "info": { "url": "https://ens.domains" }, "contractName": "ENSRegistryWithFallback" },
+  "display": {
+    "formats": {
+      "setOwner(bytes32 node,address owner)": {
+        "intent": "Transfer name ownership",
+        "fields": [
+          { "path": "#.node", "label": "Node", "format": "raw" },
+          {
+            "path": "#.owner",
+            "label": "New owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "setResolver(bytes32 node,address resolver)": {
+        "intent": "Set resolver",
+        "fields": [
+          { "path": "#.node", "label": "Node", "format": "raw" },
+          {
+            "path": "#.resolver",
+            "label": "Resolver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "setTTL(bytes32 node,uint64 ttl)": {
+        "intent": "Set TTL",
+        "fields": [{ "path": "#.node", "label": "Node", "format": "raw" }, { "path": "#.ttl", "label": "TTL", "format": "duration" }]
+      },
+      "setRecord(bytes32 node,address owner,address resolver,uint64 ttl)": {
+        "intent": "Set name record",
+        "fields": [
+          { "path": "#.node", "label": "Node", "format": "raw" },
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#.resolver",
+            "label": "Resolver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.ttl", "label": "TTL", "format": "duration" }
+        ]
+      },
+      "setSubnodeOwner(bytes32 node,bytes32 label,address owner)": {
+        "intent": "Set subname owner",
+        "fields": [
+          { "path": "#.node", "label": "Parent node", "format": "raw" },
+          { "path": "#.label", "label": "Label hash", "format": "raw" },
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "setSubnodeRecord(bytes32 node,bytes32 label,address owner,address resolver,uint64 ttl)": {
+        "intent": "Set subname record",
+        "fields": [
+          { "path": "#.node", "label": "Parent node", "format": "raw" },
+          { "path": "#.label", "label": "Label hash", "format": "raw" },
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#.resolver",
+            "label": "Resolver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.ttl", "label": "TTL", "format": "duration" }
+        ]
+      },
+      "setApprovalForAll(address operator,bool approved)": {
+        "intent": "Approve operator",
+        "fields": [
+          {
+            "path": "#.operator",
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.approved", "label": "Approved", "format": "raw" }
+        ]
+      }
+    }
+  }
+}

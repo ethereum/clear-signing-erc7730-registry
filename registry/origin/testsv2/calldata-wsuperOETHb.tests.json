@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-wsuperOETHb.json",
+  "dataProvider": {
+    "tokens": {
+      "0x7fcd174e80f264448ebee8c88a7c4476aaf58ea6": { "symbol": "wsupOETHb", "decimals": 18, "name": "Wrapped Super OETH" },
+      "0xdbfefd2e8460a6ee4955a68582f85708baea60a3": { "symbol": "superOETHb", "decimals": 18, "name": "Super OETH" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Wrap on chain 8453 #1",
+      "rawTx": "0x02f87382210580843b9aca008504a817c800830493e0947fcd174e80f264448ebee8c88a7c4476aaf58ea680b8446e553f650000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000000000000000001c0800101",
+      "expected": {
+        "intent": "Wrap",
+        "owner": "Origin Protocol",
+        "fields": [
+          { "label": "Deposit", "value": "1 superOETHb" },
+          { "label": "Receive", "value": "wsuperOETHb" },
+          { "label": "Send shares to", "value": "0x0000000000000000000000000000000000000001" }
+        ]
+      }
+    },
+    {
+      "description": "Unwrap (synthetic) on chain 8453 #2",
+      "rawTx": "0x02f89082210580843b9aca008504a817c8008307a120947fcd174e80f264448ebee8c88a7c4476aaf58ea680b864ba08765200000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Unwrap",
+        "owner": "Origin Protocol",
+        "fields": [
+          { "label": "Redeem", "value": "1500 wsupOETHb" },
+          { "label": "To", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" },
+          { "label": "Owner", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    }
+  ]
+}

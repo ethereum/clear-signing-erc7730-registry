@@ -1,0 +1,51 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Kelp rsETHAdapter",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xbf28c9fcb12a97441488f9c68faa49811a98688a" }] }
+  },
+  "metadata": {
+    "owner": "Kelp DAO",
+    "info": { "url": "https://kelpdao.xyz/" },
+    "contractName": "Kelp Gain rsETH Adapter",
+    "constants": { "rsETH": "0xa1290d69c65a6fe4df752f95823fae25cb99e5a7" }
+  },
+  "display": {
+    "formats": {
+      "getRSETHWithETH(string referralId)": {
+        "intent": "Deposit ETH to Kelp Gain",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount", "visible": "always" },
+          { "path": "#.referralId", "label": "Referral id", "visible": "never" }
+        ]
+      },
+      "depositRsETH(uint256 rsETHAmount, string referralId)": {
+        "intent": "Deposit rsETH to Kelp Gain",
+        "fields": [
+          {
+            "path": "#.rsETHAmount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.rsETH" },
+            "visible": "always"
+          },
+          { "path": "#.referralId", "label": "Referral id", "visible": "never" }
+        ]
+      },
+      "getRSETHWithERC20(address asset, uint256 depositAmount, string referralId)": {
+        "intent": "Deposit to Kelp Gain",
+        "fields": [
+          {
+            "path": "#.depositAmount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.asset" },
+            "visible": "always"
+          },
+          { "path": "#.asset", "label": "Asset", "visible": "never" },
+          { "path": "#.referralId", "label": "Referral id", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

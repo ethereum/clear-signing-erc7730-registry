@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-superOETHb-vault.json",
+  "dataProvider": {
+    "tokens": {
+      "0x4200000000000000000000000000000000000006": { "symbol": "WETH", "decimals": 18, "name": "Wrapped Ether" },
+      "0xdbfefd2e8460a6ee4955a68582f85708baea60a3": { "symbol": "superOETHb", "decimals": 18, "name": "Super OETH" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Mint on chain 8453 #1",
+      "rawTx": "0x02f89382210580843b9aca008504a817c800830493e09498a0cbef61bd2d21435f433be4cd42b56b38cc9380b864156e29f600000000000000000000000042000000000000000000000000000000000000060000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000de0b6b3a7640000c0800101",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Origin Protocol",
+        "fields": [{ "label": "Amount", "value": "1 WETH" }, { "label": "Minimum Received", "value": "1 superOETHb" }]
+      }
+    },
+    {
+      "description": "Claim withdrawal request (synthetic) on chain 8453 #2",
+      "rawTx": "0x02f84f82210580843b9aca008504a817c8008307a1209498a0cbef61bd2d21435f433be4cd42b56b38cc9380a4f844443600000000000000000000000000000000000000000000000000000000000003e8c0",
+      "expected": { "intent": "Claim withdrawal request", "owner": "Origin Protocol", "fields": [{ "label": "Request Id", "value": "1000" }] }
+    },
+    {
+      "description": "Claim withdrawal requests (synthetic) on chain 8453 #3",
+      "rawTx": "0x02f89082210580843b9aca008504a817c8008307a1209498a0cbef61bd2d21435f433be4cd42b56b38cc9380b86448e30f540000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003e8c0",
+      "expected": { "intent": "Claim withdrawal requests", "owner": "Origin Protocol", "fields": [{ "label": "Request Ids", "value": "1000" }] }
+    },
+    {
+      "description": "Request withdrawal (synthetic) on chain 8453 #4",
+      "rawTx": "0x02f84f82210580843b9aca008504a817c8008307a1209498a0cbef61bd2d21435f433be4cd42b56b38cc9380a49ee679e800000000000000000000000000000000000000000000005150ae84a8cdf00000c0",
+      "expected": { "intent": "Request withdrawal", "owner": "Origin Protocol", "fields": [{ "label": "Amount", "value": "1500 superOETHb" }] }
+    }
+  ]
+}

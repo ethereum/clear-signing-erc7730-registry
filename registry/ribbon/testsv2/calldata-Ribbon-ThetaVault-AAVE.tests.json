@@ -1,0 +1,97 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-Ribbon-ThetaVault-AAVE.json",
+  "dataProvider": {
+    "tokens": {
+      "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9": { "symbol": "AAVE", "decimals": 18, "name": "Aave" },
+      "0xe63151a0ed4e5fafdc951d877102cf0977abd365": { "decimals": 18, "name": "Ribbon Aave Theta Vault", "symbol": "rAAVE-THETA" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit on chain 1 #1",
+      "rawTx": "0x02f88f015a84010a41c9840715fec28302b38d94e63151a0ed4e5fafdc951d877102cf0977abd36580a4b6b55f250000000000000000000000000000000000000000000000000011c37937e08000c080a0f7569bade17b7860d53e1f695863592bec389da00b9fb82b1230a0395ae09264a00199001d90211380d196f7024b8aff69ffaa6746bb00d712e0ff4f9db5c26337",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Ribbon Finance",
+        "fields": [{ "label": "Vault", "value": "Ribbon Aave Theta Vault" }, { "label": "Amount", "value": "0.005 AAVE" }]
+      }
+    },
+    {
+      "description": "Deposit on chain 1 #2",
+      "rawTx": "0x02f8710180843b9aca008506fc23ac0083061a8094e63151a0ed4e5fafdc951d877102cf0977abd36580b84436efd16f00000000000000000000000000000000000000000000000014d1120d7b1600000000000000000000000000008bda12496bf61cd2ea89ad32562670bcdfdc5404c0800101",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Ribbon Finance",
+        "fields": [
+          { "label": "Vault", "value": "Ribbon Aave Theta Vault" },
+          { "label": "Amount", "value": "1.5 AAVE" },
+          { "label": "Beneficiary", "value": "0x8bDA12496BF61cd2ea89AD32562670BcdFDc5404" }
+        ]
+      }
+    },
+    {
+      "description": "Instant Withdraw on chain 1 #3",
+      "rawTx": "0x02f88f01068477359400847c58caf08301812794e63151a0ed4e5fafdc951d877102cf0977abd36580a42775d01c000000000000000000000000000000000000000000000000085de9a056ee2000c001a0f2582c4c0867721f68d8b8fe8247830fda54fe9409b61cca3ee246b82b5b859aa01b433e46e824b18ff10625504e35adc5f4ef908c4cb68837ef09fb069bbb4d48",
+      "expected": {
+        "intent": "Instant Withdraw",
+        "owner": "Ribbon Finance",
+        "fields": [{ "label": "Vault", "value": "Ribbon Aave Theta Vault" }, { "label": "Amount", "value": "0.6028948 AAVE" }]
+      }
+    },
+    {
+      "description": "Initiate Withdraw on chain 1 #4",
+      "rawTx": "0x02f88f0181aa830186a08402f56667830207f094e63151a0ed4e5fafdc951d877102cf0977abd36580a47e108d520000000000000000000000000000000000000000000000007f57f57d55c7e49cc001a02973767bebfdd2738f0771ea5b88fdfdeebcb54b7179315477fa7d1767b879c9a06b515ddf721f14120b5dca8ef35dfe7c4abb388033d44f7dc0afc55f08ef6d90",
+      "expected": {
+        "intent": "Initiate Withdraw",
+        "owner": "Ribbon Finance",
+        "fields": [{ "label": "Vault", "value": "Ribbon Aave Theta Vault" }, { "label": "Shares", "value": "9.176072684449555612shares" }]
+      }
+    },
+    {
+      "description": "Complete Withdraw on chain 1 #5",
+      "rawTx": "0x02f8710182071e8477359400847a7339168302b77994e63151a0ed4e5fafdc951d877102cf0977abd3658084f756fa21c001a01d49d36747f4f8c9f5945ac2401989e22484740e058c91add7ca7771581de9f5a04d1423355b2cf8322d0be1eebe57a278363de3c430950f04d5b4b8f681696849",
+      "expected": {
+        "intent": "Complete Withdraw",
+        "owner": "Ribbon Finance",
+        "fields": [{ "label": "Vault", "value": "Ribbon Aave Theta Vault" }]
+      }
+    },
+    {
+      "description": "Redeem shares on chain 1 #6",
+      "rawTx": "0x02f8500180843b9aca008506fc23ac0083061a8094e63151a0ed4e5fafdc951d877102cf0977abd36580a4db006a7500000000000000000000000000000000000000000000000014d1120d7b160000c0800101",
+      "expected": {
+        "intent": "Redeem shares",
+        "owner": "Ribbon Finance",
+        "fields": [{ "label": "Vault", "value": "Ribbon Aave Theta Vault" }, { "label": "Shares", "value": "1.5shares" }]
+      }
+    },
+    {
+      "description": "Redeem all shares on chain 1 #7",
+      "rawTx": "0x02f8710182071b8477359400847abcd71e8301e00494e63151a0ed4e5fafdc951d877102cf0977abd36580846f31ab34c001a030b508d6ebeec85a42b73ee681892aeadb92f2eafce7bfae76c4508dbc31606da0368c9c60035b5941317216eecb02a2ecb53eaceb0c18342ee1f007a5adea2d66",
+      "expected": {
+        "intent": "Redeem all shares",
+        "owner": "Ribbon Finance",
+        "fields": [{ "label": "Vault", "value": "Ribbon Aave Theta Vault" }]
+      }
+    },
+    {
+      "description": "Stake shares on chain 1 #8",
+      "rawTx": "0x02f890014c8405f5e1008505f27b567b8307a12094e63151a0ed4e5fafdc951d877102cf0977abd36580a4a694fc3a000000000000000000000000000000000000000000000000229f582f55e357bac080a04d160f9dc39729b838a59fa1a0728de9723b4567bbba9ec899df3f3365ef21b2a06a461cb661a63f0547ea2d1d8fe122abedbfef3bec3946ab0f91d48152210c36",
+      "expected": {
+        "intent": "Stake shares",
+        "owner": "Ribbon Finance",
+        "fields": [{ "label": "Vault", "value": "Ribbon Aave Theta Vault" }, { "label": "Shares", "value": "2.494809678914213818shares" }]
+      }
+    },
+    {
+      "description": "Pause position on chain 1 #9",
+      "rawTx": "0x02f8700103847735940085051f4d5c008302ff1f94e63151a0ed4e5fafdc951d877102cf0977abd3658084ca594094c001a043009da5adcd7d2cdb91d8474171edc8a56c9acb3e94a30b14d0d20eacd42b9ca0210122ff2b2ca7a5f48fedbb6612fef57f6ff0f821172f06f9e296a423b5b79d",
+      "expected": {
+        "intent": "Pause position",
+        "owner": "Ribbon Finance",
+        "fields": [{ "label": "Vault", "value": "Ribbon Aave Theta Vault" }]
+      }
+    }
+  ]
+}

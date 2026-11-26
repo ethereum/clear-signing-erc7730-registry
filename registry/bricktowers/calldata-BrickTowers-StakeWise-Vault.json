@@ -1,0 +1,120 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Brick Towers StakeWise Vaults",
+    "contract": {
+      "deployments": [
+        { "chainId": 1, "address": "0x302be829c61c287787030888bbcf11115ecd5773" },
+        { "chainId": 1, "address": "0x91804d6d10f2bd4e03338f40dee01cf294085cd1" }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Brick Towers",
+    "info": { "url": "https://bricktowers.io/" },
+    "contractName": "Pooled Staking Vault",
+    "constants": { "osETH": "0xf1c9acdc66974dfb6decb12aa385b9cd01190e38" }
+  },
+  "display": {
+    "definitions": {
+      "receiver": {
+        "label": "Receiver",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      },
+      "osToken": { "label": "osETH amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.osETH" } },
+      "shares": { "label": "Vault shares", "format": "unit", "params": { "base": "shares", "decimals": 18 } }
+    },
+    "formats": {
+      "deposit(address receiver, address referrer)": {
+        "intent": "Stake ETH",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount", "visible": "always" },
+          { "path": "#.receiver", "$ref": "$.display.definitions.receiver", "visible": "always" },
+          { "path": "#.referrer", "label": "Referrer", "visible": "never" }
+        ]
+      },
+      "updateStateAndDeposit(address receiver, address referrer, (bytes32 rewardsRoot, int160 reward, uint160 unlockedMevReward, bytes32[] proof) harvestParams)": {
+        "intent": "Stake ETH",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount", "visible": "always" },
+          { "path": "#.receiver", "$ref": "$.display.definitions.receiver", "visible": "always" },
+          { "path": "#.referrer", "label": "Referrer", "visible": "never" },
+          { "path": "#.harvestParams", "label": "Harvest params", "visible": "never" },
+          { "path": "#.harvestParams.rewardsRoot", "label": "Rewards root", "visible": "never" },
+          { "path": "#.harvestParams.reward", "label": "Reward", "visible": "never" },
+          { "path": "#.harvestParams.unlockedMevReward", "label": "Unlocked MEV reward", "visible": "never" },
+          { "path": "#.harvestParams.proof.[]", "label": "Proof", "visible": "never" }
+        ]
+      },
+      "updateState((bytes32 rewardsRoot, int160 reward, uint160 unlockedMevReward, bytes32[] proof) harvestParams)": {
+        "intent": "Update vault state",
+        "fields": [
+          { "path": "#.harvestParams", "label": "Harvest params", "visible": "never" },
+          { "path": "#.harvestParams.rewardsRoot", "label": "Rewards root", "visible": "never" },
+          { "path": "#.harvestParams.reward", "label": "Reward", "visible": "never" },
+          { "path": "#.harvestParams.unlockedMevReward", "label": "Unlocked MEV reward", "visible": "never" },
+          { "path": "#.harvestParams.proof.[]", "label": "Proof", "visible": "never" }
+        ]
+      },
+      "enterExitQueue(uint256 shares, address receiver)": {
+        "intent": "Unstake ETH",
+        "fields": [
+          { "path": "#.shares", "$ref": "$.display.definitions.shares", "visible": "always" },
+          { "path": "#.receiver", "$ref": "$.display.definitions.receiver", "visible": "always" }
+        ]
+      },
+      "claimExitedAssets(uint256 positionTicket, uint256 timestamp, uint256 exitQueueIndex)": {
+        "intent": "Claim unstaked ETH",
+        "fields": [
+          {
+            "path": "#.timestamp",
+            "label": "Unstake requested on",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          { "path": "#.positionTicket", "label": "Position ticket", "format": "raw", "visible": "always" },
+          { "path": "#.exitQueueIndex", "label": "Exit queue index", "format": "raw", "visible": "always" }
+        ]
+      },
+      "redeem(uint256 shares, address receiver)": {
+        "intent": "Redeem ETH",
+        "fields": [
+          { "path": "#.shares", "$ref": "$.display.definitions.shares", "visible": "always" },
+          { "path": "#.receiver", "$ref": "$.display.definitions.receiver", "visible": "always" }
+        ]
+      },
+      "mintOsToken(address receiver, uint256 osTokenShares, address referrer)": {
+        "intent": "Mint osETH",
+        "fields": [
+          { "path": "#.osTokenShares", "$ref": "$.display.definitions.osToken", "visible": "always" },
+          { "path": "#.receiver", "$ref": "$.display.definitions.receiver", "visible": "always" },
+          { "path": "#.referrer", "label": "Referrer", "visible": "never" }
+        ]
+      },
+      "burnOsToken(uint128 osTokenShares)": {
+        "intent": "Burn osETH",
+        "fields": [{ "path": "#.osTokenShares", "$ref": "$.display.definitions.osToken", "visible": "always" }]
+      },
+      "redeemOsToken(uint256 osTokenShares, address owner, address receiver)": {
+        "intent": "Redeem osETH",
+        "fields": [
+          { "path": "#.osTokenShares", "$ref": "$.display.definitions.osToken", "visible": "always" },
+          {
+            "path": "#.owner",
+            "label": "Position owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.receiver", "$ref": "$.display.definitions.receiver", "visible": "always" }
+        ]
+      },
+      "multicall(bytes[] data)": {
+        "intent": "Vault batch",
+        "fields": [{ "path": "#.data.[]", "label": "Operation", "format": "calldata", "params": { "calleePath": "@.to" }, "visible": "always" }]
+      }
+    }
+  }
+}

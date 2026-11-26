@@ -1,0 +1,153 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-swell-node-operator-registry.json",
+  "dataProvider": { "tokens": { "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { "symbol": "USDC", "decimals": 6, "name": "USD Coin" } } },
+  "tests": [
+    {
+      "description": "Add validators on chain 1 #1",
+      "rawTx": "0x02f901f10181f4830222e084163e5abd8308cbb09446ddc39e780088b1b146aba8cbbe15dc321a1a1d80b9018460ec5216000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000309086ded8d20c5180185574d886ed0344b0bd8e642db4f0c4d280f7145fe84b33d221c86a71d212a86f84803ddb71bab7000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060b49729e1ff1565120a2eb458d42abbe8c6fca1d47b59eac86e23c8372ef6011bfce99648fc41b86c9ca872f7db6644c3159bbb5959f72b70eba38116d2cf5f7ec2f0d73d4246bff9b0e5b3ea8be78708abcfc812f651d9e90830b85e17212f18c001a0c737de0d729642aa053a44520617126d66f6b667a55ca0f71049c2f698882375a05bc6f6d02797cd7edbd7c7f84654402ca89e93d8c2d56299b5ff770ca39c22b3",
+      "txHash": "0xc8f2b1ff533bde8e25c3df19310c5a6964668f821e0f0cb700af12da9cd2cf32",
+      "expected": {
+        "intent": "Add validators",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Validator public key",
+            "value": "0x9086ded8d20c5180185574d886ed0344b0bd8e642db4f0c4d280f7145fe84b33d221c86a71d212a86f84803ddb71bab7"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Add operator on chain 1 #2",
+      "rawTx": "0x02f8d10180843b9aca008506fc23ac00830493e09446ddc39e780088b1b146aba8cbbe15dc321a1a1d80b8a454741d6d00000000000000000000000000000000000000000000000000000000000000600000000000000000000000002b1ad6184a6b0fac06bd225ed37c2abc04415ff40000000000000000000000008a0c2bf7d1b8e1e1c0a7a0f4d8f4c6a2e1e1e1e1000000000000000000000000000000000000000000000000000000000000000e4c6564676572204e6f6465204f70000000000000000000000000000000000000c0800101",
+      "expected": {
+        "intent": "Add operator",
+        "owner": "Swell",
+        "fields": [
+          { "label": "Name", "value": "Ledger Node Op" },
+          { "label": "Operator", "value": "0x2B1Ad6184a6B0fac06bD225ed37C2AbC04415fF4" },
+          { "label": "Reward address", "value": "0x8A0c2bf7d1B8E1e1c0A7A0f4d8F4C6a2E1E1e1E1" }
+        ]
+      }
+    },
+    {
+      "description": "Delete active validators on chain 1 #3",
+      "rawTx": "0x02f901720180843b9aca008506fc23ac00830493e09446ddc39e780088b1b146aba8cbbe15dc321a1a1d80b90144eda74e7100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000030a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b200000000000000000000000000000000c0800101",
+      "expected": {
+        "intent": "Delete active validators",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Validator public key",
+            "value": "0xa1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1"
+          },
+          {
+            "label": "Validator public key",
+            "value": "0xb2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Delete pending validators on chain 1 #4",
+      "rawTx": "0x02f8f10180843b9aca008506fc23ac00830493e09446ddc39e780088b1b146aba8cbbe15dc321a1a1d80b8c4242eba0e0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000030a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a100000000000000000000000000000000c0800101",
+      "expected": {
+        "intent": "Delete pending validators",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Validator public key",
+            "value": "0xa1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Disable operator on chain 1 #5",
+      "rawTx": "0x02f8500180843b9aca008506fc23ac00830493e09446ddc39e780088b1b146aba8cbbe15dc321a1a1d80a4f56408ed0000000000000000000000002b1ad6184a6b0fac06bd225ed37c2abc04415ff4c0800101",
+      "expected": {
+        "intent": "Disable operator",
+        "owner": "Swell",
+        "fields": [{ "label": "Operator", "value": "0x2B1Ad6184a6B0fac06bD225ed37C2AbC04415fF4" }]
+      }
+    },
+    {
+      "description": "Enable operator on chain 1 #6",
+      "rawTx": "0x02f8500180843b9aca008506fc23ac00830493e09446ddc39e780088b1b146aba8cbbe15dc321a1a1d80a4dd307b990000000000000000000000002b1ad6184a6b0fac06bd225ed37c2abc04415ff4c0800101",
+      "expected": {
+        "intent": "Enable operator",
+        "owner": "Swell",
+        "fields": [{ "label": "Operator", "value": "0x2B1Ad6184a6B0fac06bD225ed37C2AbC04415fF4" }]
+      }
+    },
+    {
+      "description": "Initialize on chain 1 #7",
+      "rawTx": "0x02f8500180843b9aca008506fc23ac00830493e09446ddc39e780088b1b146aba8cbbe15dc321a1a1d80a4c4d66de8000000000000000000000000625087d72c762254a72cb22cc2ecb22ddb8b7b3dc0800101",
+      "expected": {
+        "intent": "Initialize",
+        "owner": "Swell",
+        "fields": [{ "label": "Control manager", "value": "0x625087d72c762254a72CB22CC2ECb22Ddb8b7b3d" }]
+      }
+    },
+    {
+      "description": "Update operator address on chain 1 #8",
+      "rawTx": "0x02f8710180843b9aca008506fc23ac00830493e09446ddc39e780088b1b146aba8cbbe15dc321a1a1d80b84432f732580000000000000000000000002b1ad6184a6b0fac06bd225ed37c2abc04415ff400000000000000000000000071c7656ec7ab88b098defb751b7401b5f6d8976fc0800101",
+      "expected": {
+        "intent": "Update operator address",
+        "owner": "Swell",
+        "fields": [
+          { "label": "Operator", "value": "0x2B1Ad6184a6B0fac06bD225ed37C2AbC04415fF4" },
+          { "label": "New operator", "value": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F" }
+        ]
+      }
+    },
+    {
+      "description": "Update operator name on chain 1 #9",
+      "rawTx": "0x02f8b10180843b9aca008506fc23ac00830493e09446ddc39e780088b1b146aba8cbbe15dc321a1a1d80b8849f5db69c0000000000000000000000002b1ad6184a6b0fac06bd225ed37c2abc04415ff4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000104c6564676572204e6f6465204f70203200000000000000000000000000000000c0800101",
+      "expected": {
+        "intent": "Update operator name",
+        "owner": "Swell",
+        "fields": [
+          { "label": "Operator", "value": "0x2B1Ad6184a6B0fac06bD225ed37C2AbC04415fF4" },
+          { "label": "Name", "value": "Ledger Node Op 2" }
+        ]
+      }
+    },
+    {
+      "description": "Update reward address on chain 1 #10",
+      "rawTx": "0x02f8710180843b9aca008506fc23ac00830493e09446ddc39e780088b1b146aba8cbbe15dc321a1a1d80b844e8f28a6c0000000000000000000000002b1ad6184a6b0fac06bd225ed37c2abc04415ff400000000000000000000000071c7656ec7ab88b098defb751b7401b5f6d8976fc0800101",
+      "expected": {
+        "intent": "Update reward address",
+        "owner": "Swell",
+        "fields": [
+          { "label": "Operator", "value": "0x2B1Ad6184a6B0fac06bD225ed37C2AbC04415fF4" },
+          { "label": "New reward address", "value": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F" }
+        ]
+      }
+    },
+    {
+      "description": "Use validators for setup on chain 1 #11",
+      "rawTx": "0x02f8f10180843b9aca008506fc23ac00830493e09446ddc39e780088b1b146aba8cbbe15dc321a1a1d80b8c4c39535020000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000030a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a100000000000000000000000000000000c0800101",
+      "expected": {
+        "intent": "Use validators for setup",
+        "owner": "Swell",
+        "fields": [
+          {
+            "label": "Validator public key",
+            "value": "0xa1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw ERC20 tokens on chain 1 #12",
+      "rawTx": "0x02f8500180843b9aca008506fc23ac00830493e09446ddc39e780088b1b146aba8cbbe15dc321a1a1d80a4f4f3b200000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48c0800101",
+      "expected": {
+        "intent": "Withdraw ERC20 tokens",
+        "owner": "Swell",
+        "fields": [{ "label": "Token", "value": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" }]
+      }
+    }
+  ]
+}

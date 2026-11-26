@@ -1,0 +1,142 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Swell Node Operator Registry",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x46DdC39E780088B1B146Aba8cBBe15DC321A1A1d" }] }
+  },
+  "metadata": { "owner": "Swell", "info": { "url": "https://www.swellnetwork.io/" }, "contractName": "Swell Node Operator Registry" },
+  "display": {
+    "formats": {
+      "addNewValidatorDetails((bytes pubKey, bytes signature)[] _validatorDetails)": {
+        "intent": "Add validators",
+        "fields": [
+          { "label": "Validator public key", "format": "raw", "path": "#._validatorDetails.[].pubKey", "visible": "always" },
+          { "label": "Signature", "path": "#._validatorDetails.[].signature", "visible": "never" }
+        ]
+      },
+      "addOperator(string _name, address _operatorAddress, address _rewardAddress)": {
+        "intent": "Add operator",
+        "fields": [
+          { "label": "Name", "format": "raw", "path": "#._name", "visible": "always" },
+          {
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"] },
+            "path": "#._operatorAddress",
+            "visible": "always"
+          },
+          {
+            "label": "Reward address",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"] },
+            "path": "#._rewardAddress",
+            "visible": "always"
+          }
+        ]
+      },
+      "deleteActiveValidators(bytes[] _pubKeys)": {
+        "intent": "Delete active validators",
+        "fields": [{ "label": "Validator public key", "format": "raw", "path": "#._pubKeys.[]", "visible": "always" }]
+      },
+      "deletePendingValidators(bytes[] _pubKeys)": {
+        "intent": "Delete pending validators",
+        "fields": [{ "label": "Validator public key", "format": "raw", "path": "#._pubKeys.[]", "visible": "always" }]
+      },
+      "disableOperator(address _operatorAddress)": {
+        "intent": "Disable operator",
+        "fields": [
+          {
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"] },
+            "path": "#._operatorAddress",
+            "visible": "always"
+          }
+        ]
+      },
+      "enableOperator(address _operatorAddress)": {
+        "intent": "Enable operator",
+        "fields": [
+          {
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"] },
+            "path": "#._operatorAddress",
+            "visible": "always"
+          }
+        ]
+      },
+      "initialize(address _accessControlManager)": {
+        "intent": "Initialize",
+        "fields": [
+          {
+            "label": "Control manager",
+            "format": "addressName",
+            "params": { "types": ["contract"] },
+            "path": "#._accessControlManager",
+            "visible": "always"
+          }
+        ]
+      },
+      "updateOperatorControllingAddress(address _operatorAddress, address _newOperatorAddress)": {
+        "intent": "Update operator address",
+        "fields": [
+          {
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"] },
+            "path": "#._operatorAddress",
+            "visible": "always"
+          },
+          {
+            "label": "New operator",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"] },
+            "path": "#._newOperatorAddress",
+            "visible": "always"
+          }
+        ]
+      },
+      "updateOperatorName(address _operatorAddress, string _name)": {
+        "intent": "Update operator name",
+        "fields": [
+          {
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"] },
+            "path": "#._operatorAddress",
+            "visible": "always"
+          },
+          { "label": "Name", "format": "raw", "path": "#._name", "visible": "always" }
+        ]
+      },
+      "updateOperatorRewardAddress(address _operatorAddress, address _newRewardAddress)": {
+        "intent": "Update reward address",
+        "fields": [
+          {
+            "label": "Operator",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"] },
+            "path": "#._operatorAddress",
+            "visible": "always"
+          },
+          {
+            "label": "New reward address",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"] },
+            "path": "#._newRewardAddress",
+            "visible": "always"
+          }
+        ]
+      },
+      "usePubKeysForValidatorSetup(bytes[] _pubKeys)": {
+        "intent": "Use validators for setup",
+        "fields": [{ "label": "Validator public key", "format": "raw", "path": "#._pubKeys.[]", "visible": "always" }]
+      },
+      "withdrawERC20(address _token)": {
+        "intent": "Withdraw ERC20 tokens",
+        "fields": [{ "label": "Token", "format": "addressName", "params": { "types": ["token"] }, "path": "#._token", "visible": "always" }]
+      }
+    }
+  }
+}

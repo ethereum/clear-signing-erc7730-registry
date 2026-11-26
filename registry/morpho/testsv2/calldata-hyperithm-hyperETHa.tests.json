@@ -1,0 +1,64 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../calldata-hyperithm-hyperETHa.json",
+  "dataProvider": {
+    "tokens": {
+      "0x6d6d386c4855d9b604d7e14c70526407f6272394": { "decimals": 18, "name": "Hyperithm ETH Apex", "symbol": "hyperETHa" },
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { "symbol": "WETH", "decimals": 18, "name": "WETH" }
+    }
+  },
+  "tests": [
+    {
+      "description": "Deposit (synthetic) on chain 1 #1",
+      "rawTx": "0x02f86e0180843b9aca008504a817c8008307a120946d6d386c4855d9b604d7e14c70526407f627239480b8446e553f6500000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Deposit",
+        "owner": "Hyperithm",
+        "fields": [
+          { "label": "Deposit asset", "value": "1500 WETH" },
+          { "label": "Share ticker", "value": "hyperETHa" },
+          { "label": "Send shares to", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    },
+    {
+      "description": "Mint (synthetic) on chain 1 #2",
+      "rawTx": "0x02f86e0180843b9aca008504a817c8008307a120946d6d386c4855d9b604d7e14c70526407f627239480b84494bf804d00000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Mint",
+        "owner": "Hyperithm",
+        "fields": [
+          { "label": "Deposit asset", "value": "WETH" },
+          { "label": "Minted shares", "value": "1500 hyperETHa" },
+          { "label": "Mint shares to", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    },
+    {
+      "description": "Withdraw (synthetic) on chain 1 #3",
+      "rawTx": "0x02f88e0180843b9aca008504a817c8008307a120946d6d386c4855d9b604d7e14c70526407f627239480b864b460af9400000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Withdraw",
+        "owner": "Hyperithm",
+        "fields": [
+          { "label": "Withdraw exactly", "value": "1500 WETH" },
+          { "label": "To", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" },
+          { "label": "Owner", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    },
+    {
+      "description": "Redeem (synthetic) on chain 1 #4",
+      "rawTx": "0x02f88e0180843b9aca008504a817c8008307a120946d6d386c4855d9b604d7e14c70526407f627239480b864ba08765200000000000000000000000000000000000000000000005150ae84a8cdf000000000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000001234567890abcdef1234567890abcdef12345678c0",
+      "expected": {
+        "intent": "Redeem",
+        "owner": "Hyperithm",
+        "fields": [
+          { "label": "Shares to redeem", "value": "1500 hyperETHa" },
+          { "label": "To", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" },
+          { "label": "Owner", "value": "0x1234567890AbcdEF1234567890aBcdef12345678" }
+        ]
+      }
+    }
+  ]
+}

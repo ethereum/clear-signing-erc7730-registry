@@ -1,0 +1,42 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Coinbase lcETH",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xc4dcb059dd98b45b090da8982234c61d0b9e84f9" }] }
+  },
+  "metadata": { "owner": "Coinbase", "info": { "url": "https://www.coinbase.com/" }, "contractName": "LC Staked Shared ETH" },
+  "display": {
+    "formats": {
+      "stake()": {
+        "intent": "Stake ETH",
+        "fields": [{ "path": "@.value", "label": "Amount to stake", "format": "amount", "visible": "always" }]
+      },
+      "requestExit(uint256 amount)": {
+        "intent": "Request exit",
+        "fields": [
+          {
+            "path": "#.amount",
+            "label": "Shares to exit",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          }
+        ]
+      },
+      "multiClaim(address[] exitQueues, uint256[][] ticketIds, uint32[][] casksIds)": {
+        "intent": "Withdraw exited positions",
+        "fields": [
+          {
+            "path": "#.exitQueues.[]",
+            "label": "Exit queue",
+            "format": "addressName",
+            "params": { "types": ["contract"], "sources": ["local"] },
+            "visible": "always"
+          },
+          { "path": "#.ticketIds", "label": "Ticket ids", "visible": "never" },
+          { "path": "#.casksIds", "label": "Cask ids", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

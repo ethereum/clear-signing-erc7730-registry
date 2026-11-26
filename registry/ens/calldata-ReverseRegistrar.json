@@ -1,0 +1,88 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ENS Reverse Registrar",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb" }] }
+  },
+  "metadata": { "owner": "ENS", "info": { "url": "https://ens.domains" }, "contractName": "ReverseRegistrar" },
+  "display": {
+    "formats": {
+      "setName(string name)": { "intent": "Set primary name", "fields": [{ "path": "#.name", "label": "Name", "format": "raw" }] },
+      "setNameForAddr(address addr,address owner,address resolver,string name)": {
+        "intent": "Set primary name",
+        "fields": [
+          {
+            "path": "#.addr",
+            "label": "For address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.name", "label": "Name", "format": "raw" },
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#.resolver",
+            "label": "Resolver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "claim(address owner)": {
+        "intent": "Claim reverse record",
+        "fields": [
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "claimWithResolver(address owner,address resolver)": {
+        "intent": "Claim reverse record",
+        "fields": [
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#.resolver",
+            "label": "Resolver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      },
+      "claimForAddr(address addr,address owner,address resolver)": {
+        "intent": "Claim reverse record",
+        "fields": [
+          {
+            "path": "#.addr",
+            "label": "For address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#.resolver",
+            "label": "Resolver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          }
+        ]
+      }
+    }
+  }
+}

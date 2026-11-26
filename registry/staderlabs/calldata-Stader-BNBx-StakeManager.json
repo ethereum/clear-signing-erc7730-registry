@@ -1,0 +1,38 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Stader BNBx StakeManager",
+    "contract": { "deployments": [{ "chainId": 56, "address": "0x3b961e83400d51e6e1af5c450d3c7d7b80588d28" }] }
+  },
+  "metadata": {
+    "owner": "Stader Labs",
+    "info": { "url": "https://staderlabs.com/" },
+    "contractName": "Stader BNBx Stake Manager",
+    "constants": { "BNBx": "0x1bdd3cf7f79cfb8edbb955f20ad99211551ba275" }
+  },
+  "display": {
+    "formats": {
+      "delegate(string _referralId)": {
+        "intent": "Stake BNB",
+        "fields": [
+          { "path": "@.value", "label": "Amount", "format": "amount", "visible": "always" },
+          { "path": "#._referralId", "label": "Referral id", "visible": "never" }
+        ]
+      },
+      "requestWithdraw(uint256 _amount, string _referralId)": {
+        "intent": "Unstake BNBx",
+        "fields": [
+          {
+            "path": "#._amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.BNBx" },
+            "visible": "always"
+          },
+          { "path": "#._referralId", "label": "Referral id", "visible": "never" }
+        ]
+      },
+      "claimWithdrawal(uint256 _idx)": { "intent": "Claim BNB", "fields": [{ "path": "#._idx", "label": "Request id", "format": "raw", "visible": "always" }] }
+    }
+  }
+}

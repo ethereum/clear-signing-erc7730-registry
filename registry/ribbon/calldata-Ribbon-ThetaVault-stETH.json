@@ -1,0 +1,87 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Ribbon stETH Theta Vault",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x53773e034d9784153471813dacaff53dbbb78e8c" }] }
+  },
+  "metadata": {
+    "owner": "Ribbon Finance",
+    "info": { "url": "https://ribbon.finance" },
+    "contractName": "RibbonThetaSTETHVault",
+    "constants": { "stETH": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84" }
+  },
+  "display": {
+    "definitions": {
+      "shares": { "label": "Shares", "format": "unit", "params": { "base": "shares", "decimals": 18 } },
+      "creditor": {
+        "label": "Beneficiary",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      }
+    },
+    "formats": {
+      "depositETH()": {
+        "intent": "Deposit",
+        "fields": [
+          { "value": "Ribbon stETH Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "@.value", "label": "Amount", "format": "amount" }
+        ]
+      },
+      "depositFor(address creditor)": {
+        "intent": "Deposit",
+        "fields": [
+          { "value": "Ribbon stETH Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "@.value", "label": "Amount", "format": "amount" },
+          { "path": "#.creditor", "$ref": "$.display.definitions.creditor" }
+        ]
+      },
+      "depositYieldToken(uint256 amount)": {
+        "intent": "Deposit",
+        "fields": [
+          { "value": "Ribbon stETH Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.amount", "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.stETH" } }
+        ]
+      },
+      "depositYieldTokenFor(uint256 amount, address creditor)": {
+        "intent": "Deposit",
+        "fields": [
+          { "value": "Ribbon stETH Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.amount", "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.stETH" } },
+          { "path": "#.creditor", "$ref": "$.display.definitions.creditor" }
+        ]
+      },
+      "withdrawInstantly(uint256 amount, uint256 minETHOut)": {
+        "intent": "Instant Withdraw",
+        "fields": [
+          { "value": "Ribbon stETH Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.amount", "label": "Amount", "format": "amount" },
+          { "path": "#.minETHOut", "label": "Unused", "visible": "never" }
+        ]
+      },
+      "initiateWithdraw(uint256 numShares)": {
+        "intent": "Initiate Withdraw",
+        "fields": [
+          { "value": "Ribbon stETH Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.numShares", "$ref": "$.display.definitions.shares" }
+        ]
+      },
+      "completeWithdraw()": { "intent": "Complete Withdraw", "fields": [{ "value": "Ribbon stETH Theta Vault", "label": "Vault", "format": "raw" }] },
+      "redeem(uint256 numShares)": {
+        "intent": "Redeem shares",
+        "fields": [
+          { "value": "Ribbon stETH Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.numShares", "$ref": "$.display.definitions.shares" }
+        ]
+      },
+      "maxRedeem()": { "intent": "Redeem all shares", "fields": [{ "value": "Ribbon stETH Theta Vault", "label": "Vault", "format": "raw" }] },
+      "stake(uint256 numShares)": {
+        "intent": "Stake shares",
+        "fields": [
+          { "value": "Ribbon stETH Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.numShares", "$ref": "$.display.definitions.shares" }
+        ]
+      },
+      "pausePosition()": { "intent": "Pause position", "fields": [{ "value": "Ribbon stETH Theta Vault", "label": "Vault", "format": "raw" }] }
+    }
+  }
+}

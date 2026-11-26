@@ -1,0 +1,64 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "ENS Registrar Controller 2020",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x283Af0B28c62C092C9727F1Ee09c02CA627EB7F5" }] }
+  },
+  "metadata": { "owner": "ENS", "info": { "url": "https://ens.domains" }, "contractName": "ETHRegistrarController" },
+  "display": {
+    "formats": {
+      "commit(bytes32 commitment)": { "intent": "Commit to register a name", "fields": [{ "path": "#.commitment", "label": "Commitment", "format": "raw" }] },
+      "register(string name,address owner,uint256 duration,bytes32 secret)": {
+        "intent": "Register ENS name",
+        "fields": [
+          { "path": "#.name", "label": "Name (.eth)", "format": "raw" },
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.duration", "label": "Duration", "format": "duration" },
+          { "path": "@.value", "label": "Maximum payment", "format": "amount" },
+          { "path": "#.secret", "label": "Secret", "visible": "never" }
+        ]
+      },
+      "registerWithConfig(string name,address owner,uint256 duration,bytes32 secret,address resolver,address addr)": {
+        "intent": "Register ENS name",
+        "fields": [
+          { "path": "#.name", "label": "Name (.eth)", "format": "raw" },
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.duration", "label": "Duration", "format": "duration" },
+          { "path": "@.value", "label": "Maximum payment", "format": "amount" },
+          {
+            "path": "#.resolver",
+            "label": "Resolver",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          {
+            "path": "#.addr",
+            "label": "ETH address",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "#.secret", "label": "Secret", "visible": "never" }
+        ]
+      },
+      "renew(string name,uint256 duration)": {
+        "intent": "Renew ENS name",
+        "fields": [
+          { "path": "#.name", "label": "Name (.eth)", "format": "raw" },
+          { "path": "#.duration", "label": "Extend by", "format": "duration" },
+          { "path": "@.value", "label": "Maximum payment", "format": "amount" }
+        ]
+      },
+      "withdraw()": { "intent": "Send fees to ENS", "fields": [] }
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Ribbon Aave Theta Vault",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0xe63151a0ed4e5fafdc951d877102cf0977abd365" }] }
+  },
+  "metadata": {
+    "owner": "Ribbon Finance",
+    "info": { "url": "https://ribbon.finance" },
+    "contractName": "RibbonThetaVault",
+    "constants": { "asset": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9" }
+  },
+  "display": {
+    "definitions": {
+      "shares": { "label": "Shares", "format": "unit", "params": { "base": "shares", "decimals": 18 } },
+      "assetAmount": { "label": "Amount", "format": "tokenAmount", "params": { "token": "$.metadata.constants.asset" } },
+      "creditor": {
+        "label": "Beneficiary",
+        "format": "addressName",
+        "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+      }
+    },
+    "formats": {
+      "deposit(uint256 amount)": {
+        "intent": "Deposit",
+        "fields": [
+          { "value": "Ribbon Aave Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.amount", "$ref": "$.display.definitions.assetAmount" }
+        ]
+      },
+      "depositFor(uint256 amount, address creditor)": {
+        "intent": "Deposit",
+        "fields": [
+          { "value": "Ribbon Aave Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.amount", "$ref": "$.display.definitions.assetAmount" },
+          { "path": "#.creditor", "$ref": "$.display.definitions.creditor" }
+        ]
+      },
+      "withdrawInstantly(uint256 amount)": {
+        "intent": "Instant Withdraw",
+        "fields": [
+          { "value": "Ribbon Aave Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.amount", "$ref": "$.display.definitions.assetAmount" }
+        ]
+      },
+      "initiateWithdraw(uint256 numShares)": {
+        "intent": "Initiate Withdraw",
+        "fields": [
+          { "value": "Ribbon Aave Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.numShares", "$ref": "$.display.definitions.shares" }
+        ]
+      },
+      "completeWithdraw()": { "intent": "Complete Withdraw", "fields": [{ "value": "Ribbon Aave Theta Vault", "label": "Vault", "format": "raw" }] },
+      "redeem(uint256 numShares)": {
+        "intent": "Redeem shares",
+        "fields": [
+          { "value": "Ribbon Aave Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.numShares", "$ref": "$.display.definitions.shares" }
+        ]
+      },
+      "maxRedeem()": { "intent": "Redeem all shares", "fields": [{ "value": "Ribbon Aave Theta Vault", "label": "Vault", "format": "raw" }] },
+      "stake(uint256 numShares)": {
+        "intent": "Stake shares",
+        "fields": [
+          { "value": "Ribbon Aave Theta Vault", "label": "Vault", "format": "raw" },
+          { "path": "#.numShares", "$ref": "$.display.definitions.shares" }
+        ]
+      },
+      "pausePosition()": { "intent": "Pause position", "fields": [{ "value": "Ribbon Aave Theta Vault", "label": "Vault", "format": "raw" }] }
+    }
+  }
+}
