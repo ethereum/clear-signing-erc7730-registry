@@ -1,0 +1,54 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "USDT-LegacyMesh-OFT-Ethereum",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x1F748c76dE468e9D11bd340fA9D5CBADf315dFB0" }] }
+  },
+  "metadata": {
+    "owner": "Tether Limited",
+    "info": { "url": "https://tether.to/" },
+    "contractName": "USDT-LegacyMesh-OFT-Ethereum",
+    "constants": { "usdt": "0xdAC17F958D2ee523a2206206994597C13D831ec7" },
+    "enums": { "dstEid": { "30110": "Arbitrum", "30125": "Celo", "30168": "Solana", "30343": "TON", "30420": "Tron" } }
+  },
+  "display": {
+    "formats": {
+      "send((uint32 dstEid,bytes32 to,uint256 amountLD,uint256 minAmountLD,bytes extraOptions,bytes composeMsg,bytes oftCmd) _sendParam,(uint256 nativeFee,uint256 lzTokenFee) _fee,address _refundAddress)": {
+        "intent": "Bridge USDT",
+        "interpolatedIntent": "Bridge {_sendParam.amountLD} to {_sendParam.to} on {_sendParam.dstEid}",
+        "fields": [
+          {
+            "path": "_sendParam.amountLD",
+            "label": "Amount to send",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.usdt" }
+          },
+          {
+            "path": "_sendParam.minAmountLD",
+            "label": "Minimum to receive",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.usdt" }
+          },
+          {
+            "path": "_sendParam.dstEid",
+            "label": "Destination chain",
+            "format": "enum",
+            "params": { "$ref": "$.metadata.enums.dstEid" }
+          },
+          { "path": "_sendParam.to", "label": "Recipient", "format": "raw" },
+          { "path": "_fee.nativeFee", "label": "Bridge fee", "format": "amount" },
+          {
+            "path": "_refundAddress",
+            "label": "Refund to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] }
+          },
+          { "path": "_sendParam.composeMsg", "label": "Compose message", "format": "raw", "visible": { "ifNotIn": ["0x"] } },
+          { "path": "_fee.lzTokenFee", "label": "LZ token fee", "format": "raw", "visible": { "ifNotIn": [0] } },
+          { "path": "_sendParam.extraOptions", "label": "Extra options", "format": "raw", "visible": { "ifNotIn": ["0x", "0x0003"] } },
+          { "path": "_sendParam.oftCmd", "label": "OFT command", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

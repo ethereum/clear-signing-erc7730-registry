@@ -1,0 +1,47 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "Aster Deposit Bridge",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x604DD02d620633Ae427888d41bfd15e38483736E" }] }
+  },
+  "metadata": {
+    "owner": "Aster",
+    "contractName": "Aster Deposit Bridge",
+    "info": { "url": "https://www.asterdex.com/" },
+    "constants": { "native": "0xfdAE1bA7C826aBDc4c99903c8056f82a1A04a615" }
+  },
+  "display": {
+    "definitions": { "broker": { "label": "Broker ID", "format": "raw" } },
+    "formats": {
+      "deposit(address currency,uint256 amount,uint256 broker)": {
+        "intent": "Deposit to Aster",
+        "interpolatedIntent": "Deposit {amount} to your Aster account",
+        "fields": [
+          { "path": "amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "currency" } },
+          { "path": "broker", "$ref": "$.display.definitions.broker" },
+          { "path": "currency", "label": "Token", "visible": "never" }
+        ]
+      },
+      "depositNative(uint256 broker)": {
+        "intent": "Deposit to Aster",
+        "interpolatedIntent": "Deposit {@.value} to your Aster account",
+        "fields": [{ "path": "@.value", "label": "Amount", "format": "amount" }, { "path": "broker", "$ref": "$.display.definitions.broker" }]
+      },
+      "depositFor(address currency,address forAddress,uint256 amount,uint256 broker)": {
+        "intent": "Deposit to Aster for a user",
+        "interpolatedIntent": "Deposit {amount} to the Aster account of {forAddress}",
+        "fields": [
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "currency", "nativeCurrencyAddress": ["$.metadata.constants.native"] }
+          },
+          { "path": "forAddress", "label": "Account credited", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+          { "path": "broker", "$ref": "$.display.definitions.broker" },
+          { "path": "currency", "label": "Token", "visible": "never" }
+        ]
+      }
+    }
+  }
+}

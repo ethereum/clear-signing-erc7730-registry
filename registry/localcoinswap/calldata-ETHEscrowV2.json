@@ -1,0 +1,36 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "$id": "LocalCoinSwap ETH Escrow V2",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x3a362a1966FF5aAB35298E1565bDa2c9FB124e41" }] }
+  },
+  "metadata": { "owner": "LocalCoinSwap", "contractName": "ETH Escrow V2", "info": { "url": "https://localcoinswap.com/" } },
+  "display": {
+    "formats": {
+      "createEscrow(bytes16 tradeID,address seller,address buyer,uint256 value,uint256 fee,uint256 invitationDeadline,uint8 v1,bytes32 r1,bytes32 s1,uint8 v2,bytes32 r2,bytes32 s2)": {
+        "intent": "Fund Escrow",
+        "interpolatedIntent": "Fund the escrow with {value} for buyer {buyer}, including a fee of {fee} on release",
+        "fields": [
+          { "path": "tradeID", "label": "Trade ID", "format": "raw" },
+          { "path": "value", "label": "Escrow Amount", "format": "amount" },
+          { "path": "fee", "label": "Fee from Escrow", "format": "amount" },
+          { "path": "buyer", "label": "Buyer", "format": "addressName", "params": { "types": ["eoa"] } },
+          { "path": "seller", "label": "Seller", "format": "addressName", "params": { "types": ["eoa"] } },
+          {
+            "path": "invitationDeadline",
+            "label": "Valid Until",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": { "ifNotIn": ["115792089237316195423570985008687907853269984665640564039457584007913129639935"] }
+          },
+          { "path": "v1", "label": "Signature 1 v", "visible": "never" },
+          { "path": "r1", "label": "Signature 1 r", "visible": "never" },
+          { "path": "s1", "label": "Signature 1 s", "visible": "never" },
+          { "path": "v2", "label": "Signature 2 v", "visible": "never" },
+          { "path": "r2", "label": "Signature 2 r", "visible": "never" },
+          { "path": "s2", "label": "Signature 2 s", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
