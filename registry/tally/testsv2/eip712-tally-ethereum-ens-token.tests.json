@@ -1,6 +1,9 @@
 {
   "$schema": "../../../specs/erc7730-tests-v2.schema.json",
   "descriptor": "../eip712-tally-ethereum-ens-token.json",
+  "dataProvider": {
+    "tokens": { "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72": { "symbol": "ENS", "decimals": 18, "name": "Ethereum Name Service" } }
+  },
   "tests": [
     {
       "description": "ENS token",
@@ -30,6 +33,45 @@
           { "label": "Delegatee", "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" },
           { "label": "Nonce", "value": "42" },
           { "label": "Expiry", "value": "1798761600" }
+        ]
+      }
+    },
+    {
+      "description": "Authorize spending of tokens",
+      "data": {
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "Permit": [
+            { "name": "owner", "type": "address" },
+            { "name": "spender", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" }
+          ]
+        },
+        "primaryType": "Permit",
+        "domain": { "name": "Ethereum Name Service", "version": "1", "chainId": 1, "verifyingContract": "0xC18360217D8F7Ab5e7c516566761Ea12Ce7f9D72" },
+        "message": {
+          "owner": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "spender": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+          "value": "100000000000000000000",
+          "nonce": "12",
+          "deadline": "1779321600"
+        }
+      },
+      "expected": {
+        "intent": "Authorize spending of tokens",
+        "owner": "Ethereum Name Service",
+        "fields": [
+          { "label": "Spender", "value": "0x000000000022D473030F116dDEE9F6B43aC78BA3" },
+          { "label": "Max spending amount", "value": "100 ENS" },
+          { "label": "Valid until", "value": "2026-05-21 00:00:00Z" },
+          { "label": "Owner", "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" }
         ]
       }
     }

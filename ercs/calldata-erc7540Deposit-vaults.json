@@ -1,9 +1,49 @@
 {
   "$schema": "../specs/erc7730-v2.schema.json",
+  "includes": "calldata-erc20-tokens.json",
   "context": { "contract": {} },
   "metadata": { "constants": { "underlyingToken": "0x0" } },
   "display": {
     "formats": {
+      "deposit(uint256 assets, address receiver)": {
+        "intent": "Claim deposit",
+        "fields": [
+          {
+            "path": "assets",
+            "label": "Assets of the deposit to claim",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
+          },
+          { "label": "Share ticker", "format": "raw", "value": "$.metadata.constants.vaultTicker" },
+          {
+            "path": "receiver",
+            "label": "Send shares to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "mint(uint256 shares, address receiver)": {
+        "intent": "Claim deposit",
+        "fields": [
+          {
+            "path": "shares",
+            "label": "Shares to claim",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "Send shares to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
       "deposit(uint256 assets, address receiver, address controller)": {
         "intent": "Claim deposit",
         "fields": [
@@ -77,7 +117,59 @@
           },
           {
             "path": "owner",
-            "label": "Owner of the shares",
+            "label": "Owner of the assets",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdraw(uint256 assets, address receiver, address owner)": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "path": "assets",
+            "label": "Withdraw exactly",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "redeem(uint256 shares, address receiver, address owner)": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "path": "shares",
+            "label": "Shares to redeem",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "owner",
+            "label": "Owner",
             "format": "addressName",
             "params": { "types": ["eoa", "contract"] },
             "visible": "always"

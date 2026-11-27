@@ -33,6 +33,7 @@ Deterministic checks ran before you and passed. They own these topics, so do not
 - The arguments of a test transaction or typed message: the runners decoded them and produced the expected rendering from them. A value in the expected rendering is the value the test sent.
 - The parties of a test case: a test names them with placeholders such as Sender, Receiver or Owner by design, and the address of each is a placeholder too. Who the signer is for a function, the spender, the sender, the owner, follows from the code, not from the test. Placeholder names, placeholder addresses or the signer's role in a test case are never a finding.
 - Missing `interpolatedIntent`: a separate comment lists it.
+- A missing format for a standard function when the verified ABI has the full function set of ERC-20, ERC-4626, ERC-721, ERC-7540 or ERC-2612 permit: a deterministic check requires the formats of the related `ercs/` file, and an `eip712-*.json` permit descriptor. The check also does this for the verifying contract of an `eip712-*.json` descriptor. A descriptor that has only standard token functions is also its topic.
 - `unit.deployments` being fewer than the descriptor's deployments: that is how units are built.
 - The `amount` format showing the native currency of the transaction's chain, ETH on Ethereum, CELO on Celo, SGB on Songbird: that is what it is for. It is wrong only when the value is not native currency, see the examples.
 - A hidden `nonce`, deadline bookkeeping, or another value the signer does not choose and that changes nothing about who gets what.

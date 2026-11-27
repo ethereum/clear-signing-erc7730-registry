@@ -17,7 +17,10 @@
       "deadline": { "label": "Deadline", "format": "date", "params": { "encoding": "timestamp" } },
       "ethSent": { "label": "ETH Sent (whole tx)", "format": "amount" },
       "recipient": { "label": "Recipient", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
-      "operator": { "label": "Operator", "format": "addressName", "params": { "types": ["eoa", "contract"] } }
+      "operator": { "label": "Operator", "format": "addressName", "params": { "types": ["eoa", "contract"] } },
+      "from": { "label": "From", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+      "to": { "label": "To", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+      "tokenId": { "label": "NFT", "format": "nftName", "params": { "collectionPath": "@.to" } }
     },
     "formats": {
       "mint((address token0,address token1,address deployer,int24 tickLower,int24 tickUpper,uint256 amount0Desired,uint256 amount1Desired,uint256 amount0Min,uint256 amount1Min,address recipient,uint256 deadline) params)": {
@@ -160,6 +163,29 @@
         "fields": [
           { "path": "approved", "label": "Access", "format": "enum", "params": { "$ref": "$.metadata.enums.access" } },
           { "path": "operator", "$ref": "$.display.definitions.operator" }
+        ]
+      },
+      "transferFrom(address from, address to, uint256 tokenId)": {
+        "intent": "Send NFT",
+        "fields": [
+          { "path": "from", "$ref": "$.display.definitions.from" },
+          { "path": "to", "$ref": "$.display.definitions.to", "visible": "always" },
+          { "path": "tokenId", "$ref": "$.display.definitions.tokenId", "visible": "always" }
+        ]
+      },
+      "safeTransferFrom(address from, address to, uint256 tokenId)": {
+        "intent": "Send NFT",
+        "fields": [
+          { "path": "from", "$ref": "$.display.definitions.from" },
+          { "path": "to", "$ref": "$.display.definitions.to" },
+          { "path": "tokenId", "$ref": "$.display.definitions.tokenId" }
+        ]
+      },
+      "approve(address to, uint256 tokenId)": {
+        "intent": "Approve operator for NFT",
+        "fields": [
+          { "path": "to", "$ref": "$.display.definitions.operator" },
+          { "path": "tokenId", "$ref": "$.display.definitions.tokenId" }
         ]
       }
     }
