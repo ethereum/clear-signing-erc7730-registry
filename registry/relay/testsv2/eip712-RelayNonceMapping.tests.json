@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../specs/erc7730-tests-v2.schema.json",
+  "descriptor": "../eip712-RelayNonceMapping.json",
+  "dataProvider": { "tokens": {} },
+  "tests": [
+    {
+      "description": "Link transfer to Relay request on chain 1 #1",
+      "data": {
+        "domain": {
+          "name": "RelayNonceMapping",
+          "version": "2",
+          "chainId": 1,
+          "verifyingContract": "0x0000000000000000000000000000000000000000"
+        },
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" }
+          ],
+          "NonceMapping": [
+            { "name": "chainId", "type": "string" },
+            { "name": "wallet", "type": "address" },
+            { "name": "depositor", "type": "address" },
+            { "name": "id", "type": "bytes32" },
+            { "name": "nonce", "type": "uint256" }
+          ]
+        },
+        "primaryType": "NonceMapping",
+        "message": {
+          "chainId": "hyperliquid",
+          "wallet": "0xf3d63166f0ca56c3c1a3508fce03ff0cf3fb691e",
+          "depositor": "0xf3d63166f0ca56c3c1a3508fce03ff0cf3fb691e",
+          "id": "0x7b3e352d6bb600f7d937250968dc9b9c7deaf34b3787fb2312fc7374603f1667",
+          "nonce": 1765463670254
+        }
+      },
+      "expected": {
+        "intent": "Link transfer to Relay request",
+        "owner": "Relay",
+        "fields": [
+          { "label": "Request ID", "value": "0x7b3e352d6bb600f7d937250968dc9b9c7deaf34b3787fb2312fc7374603f1667" },
+          { "label": "Wallet", "value": "0xf3d63166F0Ca56C3c1A3508FcE03Ff0Cf3Fb691e" },
+          { "label": "Depositor", "value": "0xf3d63166F0Ca56C3c1A3508FcE03Ff0Cf3Fb691e" },
+          { "label": "Chain", "value": "hyperliquid" }
+        ]
+      }
+    }
+  ]
+}

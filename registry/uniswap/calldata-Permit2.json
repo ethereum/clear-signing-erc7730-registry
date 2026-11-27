@@ -8,11 +8,15 @@
         { "chainId": 10, "address": "0x000000000022d473030f116ddee9f6b43ac78ba3" },
         { "chainId": 56, "address": "0x000000000022d473030f116ddee9f6b43ac78ba3" },
         { "chainId": 100, "address": "0x000000000022d473030f116ddee9f6b43ac78ba3" },
+        { "chainId": 130, "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3" },
         { "chainId": 137, "address": "0x000000000022d473030f116ddee9f6b43ac78ba3" },
+        { "chainId": 143, "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3" },
+        { "chainId": 480, "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3" },
         { "chainId": 8453, "address": "0x000000000022d473030f116ddee9f6b43ac78ba3" },
         { "chainId": 42161, "address": "0x000000000022d473030f116ddee9f6b43ac78ba3" },
         { "chainId": 42220, "address": "0x000000000022d473030f116ddee9f6b43ac78ba3" },
         { "chainId": 43114, "address": "0x000000000022d473030f116ddee9f6b43ac78ba3" },
+        { "chainId": 747474, "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3" },
         { "chainId": 11155111, "address": "0x000000000022d473030f116ddee9f6b43ac78ba3" }
       ]
     }
@@ -38,6 +42,301 @@
             "visible": "always"
           },
           { "path": "expiration", "label": "Until", "format": "date", "params": { "encoding": "timestamp" }, "visible": "always" }
+        ]
+      },
+      "permit(address owner, ((address token, uint160 amount, uint48 expiration, uint48 nonce) details, address spender, uint256 sigDeadline) permitSingle, bytes signature)": {
+        "$id": "Permit2 Permit Single",
+        "intent": "Approve token spending",
+        "fields": [
+          {
+            "path": "#.permitSingle.spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.permitSingle.details.amount",
+            "label": "Amount allowance",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.permitSingle.details.token" },
+            "visible": "always"
+          },
+          {
+            "path": "#.permitSingle.details.expiration",
+            "label": "Approval expires",
+            "format": "date",
+            "params": { "encoding": "timestamp" },
+            "visible": "always"
+          },
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.permitSingle.details.token", "label": "Token", "format": "raw", "visible": "never" },
+          { "path": "#.permitSingle.details.nonce", "label": "Nonce", "format": "raw", "visible": "never" },
+          { "path": "#.permitSingle.sigDeadline", "label": "Sig Deadline", "format": "raw", "visible": "never" },
+          { "path": "#.signature", "label": "Signature", "format": "raw", "visible": "never" }
+        ]
+      },
+      "permit(address owner, ((address token, uint160 amount, uint48 expiration, uint48 nonce)[] details, address spender, uint256 sigDeadline) permitBatch, bytes signature)": {
+        "$id": "Permit2 Permit Batch",
+        "intent": "Approve spending of tokens",
+        "fields": [
+          {
+            "path": "#.permitBatch.spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.permitBatch.details.[]",
+            "fields": [
+              {
+                "path": "amount",
+                "label": "Amount allowance",
+                "format": "tokenAmount",
+                "params": { "tokenPath": "token" },
+                "visible": "always"
+              },
+              {
+                "path": "expiration",
+                "label": "Approval expires",
+                "format": "date",
+                "params": { "encoding": "timestamp" },
+                "visible": "always"
+              }
+            ]
+          },
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.permitBatch.sigDeadline", "label": "Sig Deadline", "format": "raw", "visible": "never" },
+          { "path": "#.signature", "label": "Signature", "format": "raw", "visible": "never" }
+        ]
+      },
+      "lockdown((address token, address spender)[] approvals)": {
+        "$id": "Permit2 Lockdown",
+        "intent": "Revoke token approvals",
+        "fields": [
+          {
+            "path": "#.approvals.[]",
+            "fields": [
+              { "path": "token", "label": "Token", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+              {
+                "path": "spender",
+                "label": "Spender",
+                "format": "addressName",
+                "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+                "visible": "always"
+              }
+            ]
+          }
+        ]
+      },
+      "invalidateNonces(address token, address spender, uint48 newNonce)": {
+        "$id": "Permit2 Invalidate Nonces",
+        "intent": "Revoke token approval",
+        "fields": [
+          { "path": "#.token", "label": "Token", "format": "addressName", "params": { "types": ["token"] }, "visible": "always" },
+          {
+            "path": "#.spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.newNonce", "label": "New nonce", "format": "raw", "visible": "never" }
+        ]
+      },
+      "invalidateUnorderedNonces(uint256 wordPos, uint256 mask)": {
+        "$id": "Permit2 Invalidate Unordered Nonces",
+        "intent": "Revoke permit signatures",
+        "fields": [
+          { "path": "#.wordPos", "label": "Word position", "format": "raw", "visible": "always" },
+          { "path": "#.mask", "label": "Mask", "format": "raw", "visible": "always" }
+        ]
+      },
+      "transferFrom(address from, address to, uint160 amount, address token)": {
+        "$id": "Permit2 Transfer From",
+        "intent": "Transfer token",
+        "fields": [
+          {
+            "path": "#.from",
+            "label": "From",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.to",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          { "path": "#.amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "#.token" }, "visible": "always" },
+          { "path": "#.token", "label": "Token", "format": "raw", "visible": "never" }
+        ]
+      },
+      "transferFrom((address from, address to, uint160 amount, address token)[] transferDetails)": {
+        "$id": "Permit2 Transfer From Batch",
+        "intent": "Transfer tokens",
+        "fields": [
+          {
+            "path": "#.transferDetails.[]",
+            "fields": [
+              {
+                "path": "from",
+                "label": "From",
+                "format": "addressName",
+                "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+                "visible": "always"
+              },
+              {
+                "path": "to",
+                "label": "To",
+                "format": "addressName",
+                "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+                "visible": "always"
+              },
+              { "path": "amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "token" }, "visible": "always" }
+            ]
+          }
+        ]
+      },
+      "permitTransferFrom(((address token, uint256 amount) permitted, uint256 nonce, uint256 deadline) permit, (address to, uint256 requestedAmount) transferDetails, address owner, bytes signature)": {
+        "$id": "Permit2 Permit Transfer From",
+        "intent": "Transfer token with permit",
+        "fields": [
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.transferDetails.to",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.transferDetails.requestedAmount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.permit.permitted.token" },
+            "visible": "always"
+          },
+          { "path": "#.permit.permitted.token", "label": "Token", "format": "raw", "visible": "never" },
+          { "path": "#.permit.permitted.amount", "label": "Permitted amount", "format": "raw", "visible": "never" },
+          { "path": "#.permit.nonce", "label": "Nonce", "format": "raw", "visible": "never" },
+          { "path": "#.permit.deadline", "label": "Deadline", "format": "raw", "visible": "never" },
+          { "path": "#.signature", "label": "Signature", "format": "raw", "visible": "never" }
+        ]
+      },
+      "permitTransferFrom(((address token, uint256 amount)[] permitted, uint256 nonce, uint256 deadline) permit, (address to, uint256 requestedAmount)[] transferDetails, address owner, bytes signature)": {
+        "$id": "Permit2 Permit Transfer From Batch",
+        "intent": "Transfer tokens with permit",
+        "fields": [
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.transferDetails.[]",
+            "fields": [
+              {
+                "path": "to",
+                "label": "To",
+                "format": "addressName",
+                "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+                "visible": "always"
+              },
+              { "path": "requestedAmount", "label": "Amount", "format": "raw", "visible": "always" }
+            ]
+          },
+          { "path": "#.permit.nonce", "label": "Nonce", "format": "raw", "visible": "never" },
+          { "path": "#.permit.deadline", "label": "Deadline", "format": "raw", "visible": "never" },
+          { "path": "#.signature", "label": "Signature", "format": "raw", "visible": "never" }
+        ]
+      },
+      "permitWitnessTransferFrom(((address token, uint256 amount) permitted, uint256 nonce, uint256 deadline) permit, (address to, uint256 requestedAmount) transferDetails, address owner, bytes32 witness, string witnessTypeString, bytes signature)": {
+        "$id": "Permit2 Permit Witness Transfer From",
+        "intent": "Transfer token with permit",
+        "fields": [
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.transferDetails.to",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.transferDetails.requestedAmount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "#.permit.permitted.token" },
+            "visible": "always"
+          },
+          { "path": "#.permit.permitted.token", "label": "Token", "format": "raw", "visible": "never" },
+          { "path": "#.permit.permitted.amount", "label": "Permitted amount", "format": "raw", "visible": "never" },
+          { "path": "#.permit.nonce", "label": "Nonce", "format": "raw", "visible": "never" },
+          { "path": "#.permit.deadline", "label": "Deadline", "format": "raw", "visible": "never" },
+          { "path": "#.witness", "label": "Witness", "format": "raw", "visible": "never" },
+          { "path": "#.witnessTypeString", "label": "Witness type", "format": "raw", "visible": "never" },
+          { "path": "#.signature", "label": "Signature", "format": "raw", "visible": "never" }
+        ]
+      },
+      "permitWitnessTransferFrom(((address token, uint256 amount)[] permitted, uint256 nonce, uint256 deadline) permit, (address to, uint256 requestedAmount)[] transferDetails, address owner, bytes32 witness, string witnessTypeString, bytes signature)": {
+        "$id": "Permit2 Permit Witness Transfer From Batch",
+        "intent": "Transfer tokens with permit",
+        "fields": [
+          {
+            "path": "#.owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa", "contract"], "sources": ["local", "ens"] },
+            "visible": "always"
+          },
+          {
+            "path": "#.transferDetails.[]",
+            "fields": [
+              {
+                "path": "to",
+                "label": "To",
+                "format": "addressName",
+                "params": { "types": ["eoa", "wallet", "contract"], "sources": ["local", "ens"] },
+                "visible": "always"
+              },
+              { "path": "requestedAmount", "label": "Amount", "format": "raw", "visible": "always" }
+            ]
+          },
+          { "path": "#.permit.nonce", "label": "Nonce", "format": "raw", "visible": "never" },
+          { "path": "#.permit.deadline", "label": "Deadline", "format": "raw", "visible": "never" },
+          { "path": "#.witness", "label": "Witness", "format": "raw", "visible": "never" },
+          { "path": "#.witnessTypeString", "label": "Witness type", "format": "raw", "visible": "never" },
+          { "path": "#.signature", "label": "Signature", "format": "raw", "visible": "never" }
         ]
       }
     }

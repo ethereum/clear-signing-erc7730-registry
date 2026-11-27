@@ -1,0 +1,41 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "eip712": {
+      "deployments": [
+        { "chainId": 1, "address": "0x0000000000000000000000000000000000000000" },
+        { "chainId": 10, "address": "0x0000000000000000000000000000000000000000" },
+        { "chainId": 8453, "address": "0x0000000000000000000000000000000000000000" },
+        { "chainId": 42161, "address": "0x0000000000000000000000000000000000000000" }
+      ],
+      "domain": { "name": "RelayNonceMapping", "version": "2" }
+    }
+  },
+  "metadata": { "owner": "Relay", "info": { "url": "https://relay.link" } },
+  "display": {
+    "formats": {
+      "NonceMapping(string chainId,address wallet,address depositor,bytes32 id,uint256 nonce)": {
+        "intent": "Link transfer to Relay request",
+        "fields": [
+          { "path": "id", "label": "Request ID", "format": "raw", "visible": "always" },
+          {
+            "path": "wallet",
+            "label": "Wallet",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa"], "sources": ["local"] },
+            "visible": "always"
+          },
+          {
+            "path": "depositor",
+            "label": "Depositor",
+            "format": "addressName",
+            "params": { "types": ["wallet", "eoa"], "sources": ["local"] },
+            "visible": "always"
+          },
+          { "path": "chainId", "label": "Chain", "format": "raw", "visible": "always" },
+          { "path": "nonce", "label": "Nonce", "visible": "never" }
+        ]
+      }
+    }
+  }
+}
