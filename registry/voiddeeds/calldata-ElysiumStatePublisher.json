@@ -1,0 +1,77 @@
+{
+  "$schema": "../../specs/erc7730-v2.schema.json",
+  "context": {
+    "contract": {
+      "deployments": [
+        {
+          "chainId": 11155111,
+          "address": "0x187AaB71cFA66c97045EbACa6e68A1ba98F8eE9c"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "owner": "Voiddeeds",
+    "contractName": "ElysiumStatePublisher",
+    "info": {
+      "url": "https://voiddeeds.xyz/"
+    },
+    "enums": {
+      "Destinations": {
+        "4286062357653186312": "Elysium via HyperEVM"
+      }
+    }
+  },
+  "display": {
+    "formats": {
+      "dispatch(uint64 selector,uint256 id,uint256 expectedSequence)": {
+        "intent": "Send Deed activation",
+        "interpolatedIntent": "Send Deed #{id} activation",
+        "fields": [
+          {
+            "path": "id",
+            "label": "Deed ID",
+            "format": "raw"
+          },
+          {
+            "path": "selector",
+            "label": "Destination network",
+            "format": "enum",
+            "params": {
+              "$ref": "$.metadata.enums.Destinations"
+            }
+          },
+          {
+            "path": "expectedSequence",
+            "label": "Settings version",
+            "format": "raw"
+          },
+          {
+            "path": "@.value",
+            "label": "Maximum CCIP fee",
+            "format": "amount"
+          }
+        ]
+      },
+      "configureToll(uint256 id,uint256 amount)": {
+        "intent": "Set Elysium toll",
+        "fields": [
+          {
+            "path": "id",
+            "label": "Deed ID",
+            "format": "raw"
+          },
+          {
+            "path": "amount",
+            "label": "Elysium toll",
+            "format": "unit",
+            "params": {
+              "base": " HYPE",
+              "decimals": 18
+            }
+          }
+        ]
+      }
+    }
+  }
+}
