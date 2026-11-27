@@ -1,6 +1,5 @@
 {
   "$schema": "../../specs/erc7730-v2.schema.json",
-  "includes": "../../ercs/calldata-erc4626-erc20-vaults.json",
   "context": {
     "$id": "Staked USDe",
     "contract": { "deployments": [{ "chainId": 1, "address": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497" }] }
@@ -9,7 +8,11 @@
     "owner": "Ethena",
     "info": { "url": "https://ethena.fi/" },
     "contractName": "Staked USDe",
-    "constants": { "underlyingToken": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3", "underlyingTicker": "USDe", "vaultTicker": "sUSDe" }
+    "constants": {
+      "underlyingToken": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",
+      "underlyingTicker": "USDe",
+      "vaultTicker": "sUSDe"
+    }
   },
   "display": {
     "formats": {
@@ -45,6 +48,130 @@
             "format": "addressName",
             "params": { "types": ["eoa", "wallet"], "sources": ["local", "ens"] },
             "path": "#.receiver",
+            "visible": "always"
+          }
+        ]
+      },
+      "transfer(address to, uint256 amount)": {
+        "intent": "Send",
+        "fields": [
+          { "path": "amount", "label": "Amount", "format": "tokenAmount", "params": { "tokenPath": "@.to" }, "visible": "always" },
+          {
+            "path": "to",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa"], "sources": ["local", "ens"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "approve(address spender, uint256 amount)": {
+        "intent": "Approve",
+        "fields": [
+          {
+            "path": "spender",
+            "label": "Spender",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "amount",
+            "label": "Amount",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to", "threshold": "0x8000000000000000000000000000000000000000000000000000000000000000" },
+            "visible": "always"
+          }
+        ]
+      },
+      "deposit(uint256 assets, address receiver)": {
+        "intent": "Deposit",
+        "fields": [
+          {
+            "path": "assets",
+            "label": "Deposit asset",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
+          },
+          { "label": "Share ticker", "format": "raw", "value": "$.metadata.constants.vaultTicker" },
+          {
+            "path": "receiver",
+            "label": "Send shares to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "mint(uint256 shares, address receiver)": {
+        "intent": "Mint",
+        "fields": [
+          { "label": "Deposit asset", "format": "raw", "value": "$.metadata.constants.underlyingTicker" },
+          {
+            "path": "shares",
+            "label": "Minted shares",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "Mint shares to",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "withdraw(uint256 assets, address receiver, address _owner)": {
+        "intent": "Withdraw",
+        "fields": [
+          {
+            "path": "assets",
+            "label": "Withdraw exactly",
+            "format": "tokenAmount",
+            "params": { "token": "$.metadata.constants.underlyingToken" },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "_owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          }
+        ]
+      },
+      "redeem(uint256 shares, address receiver, address _owner)": {
+        "intent": "Redeem",
+        "fields": [
+          {
+            "path": "shares",
+            "label": "Shares to redeem",
+            "format": "tokenAmount",
+            "params": { "tokenPath": "@.to" },
+            "visible": "always"
+          },
+          {
+            "path": "receiver",
+            "label": "To",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
+            "visible": "always"
+          },
+          {
+            "path": "_owner",
+            "label": "Owner",
+            "format": "addressName",
+            "params": { "types": ["eoa", "contract"] },
             "visible": "always"
           }
         ]

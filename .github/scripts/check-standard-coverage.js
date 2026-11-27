@@ -451,7 +451,7 @@ async function checkDescriptor(abs, ctx) {
       // A vault gets ERC-20 from its vault file, not from the token file.
       const include = (s.id === 'ERC-721' ? null : vaultFile(found, ctx.templates)) ?? template.file;
       errors.push(
-        `The contract implements ${s.id} (${where.join(', ')}), but the descriptor has no format for: ${missing.map(([sel, key]) => `${normalize(key)} (${sel})`).join(', ')}. Include ${include}, or include it through your common file. ${HELP}`,
+        `The contract implements ${s.id} (${where.join(', ')}), but the descriptor has no format for: ${missing.map(([sel, key]) => `${normalize(key)} (${sel})`).join(', ')}. Include ${include}, or include it through your common file. If the contract uses other parameter names than that file, write these formats in the descriptor with the names of the contract. ${HELP}`,
       );
     }
     for (const claim of s.claims ?? []) {
@@ -467,7 +467,7 @@ async function checkDescriptor(abs, ctx) {
     const includesTemplate = [template.file, ...template.aliases].some((f) => closure.has(f));
     if (!includesTemplate && missing.length === 0) {
       warnings.push(
-        `The descriptor writes the ${s.id} formats itself, but does not include ${template.file}. Include the file unless the formats change the display for a clear reason.`,
+        `The descriptor writes the ${s.id} formats itself, but does not include ${template.file}. Include the file unless the contract uses other parameter names, or the formats change the display for a clear reason.`,
       );
     }
   }

@@ -1,14 +1,23 @@
 {
   "$schema": "../../specs/erc7730-v2.schema.json",
-  "includes": "../../ercs/calldata-erc721-nfts.json",
-  "context": { "$id": "swEXIT", "contract": { "deployments": [{ "chainId": 1, "address": "0x48C11b86807627AF70a34662D4865cF854251663" }] } },
+  "context": {
+    "$id": "swEXIT",
+    "contract": { "deployments": [{ "chainId": 1, "address": "0x48C11b86807627AF70a34662D4865cF854251663" }] }
+  },
   "metadata": {
     "owner": "Swell",
     "contractName": "swEXIT",
     "info": { "url": "https://www.swellnetwork.io/" },
-    "constants": { "swETH": "0xf951E335afb289353dc249e82926178EaC7DEd78" }
+    "constants": { "swETH": "0xf951E335afb289353dc249e82926178EaC7DEd78" },
+    "enums": { "rights": { "True": "Grant all", "False": "Deny all" } }
   },
   "display": {
+    "definitions": {
+      "from": { "label": "From", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+      "to": { "label": "To", "format": "addressName", "params": { "types": ["eoa"], "sources": ["local", "ens"] } },
+      "operator": { "label": "Operator", "format": "addressName", "params": { "types": ["contract"], "sources": ["local", "ens"] } },
+      "tokenId": { "label": "NFT", "format": "nftName", "params": { "collectionPath": "@.to" } }
+    },
     "formats": {
       "createWithdrawRequest(uint256 amount)": {
         "intent": "Request to unstake swETH",
@@ -26,6 +35,42 @@
         "intent": "Claim unstaked ETH",
         "interpolatedIntent": "Claim the ETH of withdrawal NFT {tokenId}",
         "fields": [{ "path": "tokenId", "label": "Withdrawal NFT", "format": "nftName", "params": { "collectionPath": "@.to" } }]
+      },
+      "transferFrom(address from, address to, uint256 tokenId)": {
+        "intent": "Send NFT",
+        "fields": [
+          { "path": "from", "$ref": "$.display.definitions.from" },
+          { "path": "to", "$ref": "$.display.definitions.to", "visible": "always" },
+          { "path": "tokenId", "$ref": "$.display.definitions.tokenId", "visible": "always" }
+        ]
+      },
+      "safeTransferFrom(address from, address to, uint256 tokenId)": {
+        "intent": "Send NFT",
+        "fields": [
+          { "path": "from", "$ref": "$.display.definitions.from" },
+          { "path": "to", "$ref": "$.display.definitions.to" },
+          { "path": "tokenId", "$ref": "$.display.definitions.tokenId" }
+        ]
+      },
+      "approve(address to, uint256 tokenId)": {
+        "intent": "Approve operator for NFT",
+        "fields": [
+          { "path": "to", "$ref": "$.display.definitions.operator" },
+          { "path": "tokenId", "$ref": "$.display.definitions.tokenId" }
+        ]
+      },
+      "setApprovalForAll(address operator, bool approved)": {
+        "intent": "Manage operator rights for",
+        "fields": [
+          {
+            "path": "@.to",
+            "label": "Collection",
+            "format": "addressName",
+            "params": { "types": ["collection"], "sources": ["local", "ens"] }
+          },
+          { "path": "operator", "$ref": "$.display.definitions.operator" },
+          { "path": "approved", "label": "Access rights", "format": "enum", "params": { "$ref": "$.metadata.enums.rights" } }
+        ]
       }
     }
   }
