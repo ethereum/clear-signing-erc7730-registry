@@ -186,6 +186,20 @@ jobs:
 
           [ "$FAILED" -eq 0 ] || exit 1
 
+      - name: Check that no two paths differ only by case
+        timeout-minutes: 5
+        run: |
+          # macOS and Windows check out on case-insensitive file systems by
+          # default, where two such paths are one file: the clone then shows
+          # changes nobody made. Rename one of them, for example with a chain id
+          # suffix (an attested descriptor keeps its name).
+          DUPES=$(git ls-files | sort -f | uniq -di)
+          [ -z "$DUPES" ] && exit 0
+          while IFS= read -r file; do
+            echo "::error file=${file},line=1::Another path differs from this one only by case."
+          done < <(git ls-files | grep -ixF "$DUPES")
+          exit 1
+
   # An auditor attestation in sigs/ is bound to a descriptor by file name. A
   # change to that descriptor, also through a shared file it includes, would
   # make the attestation vouch for content the auditor never saw. A deleted
